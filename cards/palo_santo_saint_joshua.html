@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palo Santo — Saint Joshua</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EFF3EC;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #6E9068;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#CFE2C8;border-color:#2C5028;color:#152E12}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #B8D2B0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#CFE2C8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#CFE2C8;color:#152E12;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #D2E2CC;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #D2E2CC;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #D2E2CC;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#2C5028}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#CFE2C8;color:#152E12;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EFF3EC;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #B8D2B0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #D2E2CC}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#152E12}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #D2E2CC;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EFF3EC;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EFF3EC;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#152E12;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #D2E2CC;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#CFE2C8;color:#152E12;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EFF3EC;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#2C5028;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#152E12;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #D2E2CC;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#CFE2C8;color:#152E12;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#B8D2B0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #D2E2CC;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#2C5028;background:#CFE2C8;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#152E12;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #EFF3EC;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#CFE2C8;color:#152E12;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#EFF3EC;border-left:3px solid #2C5028;border-radius:10px;padding:12px 14px;font-size:13px;color:#2C5028;line-height:1.8}
+  .twist-box b{color:#152E12;font-weight:600}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🪵</div>
+      <div>
+        <h2>Palo Santo</h2>
+        <p>Saint Joshua · EP2 (2022) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EFF3EC;border:1px solid #6E9068;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#152E12;line-height:1.7">
+      🪵 <b>Saint Joshua</b> (본명 Brad Joshua De Silva) · 2022년 5월 20일 발매<br>
+      <b>Palo Santo</b>는 스페인어로 <b>"성스러운 나무(holy wood)"</b>예요! 남미에서 나쁜 기운을 정화할 때 태우는 향나무죠. 이 곡은 그 향나무처럼 <b>나쁜 에너지를 몰아내고 좋은 것만 남기자</b>는 따뜻하고 나른한 R&B 곡이에요 🌿
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">난 절대로 의심한 적 없어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I never really had a doubt.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Guess it's really funny how I never really had a doubt that you will always be around</b> — 완벽해요! 👏<br>
+            💡 <b>have a doubt</b> = 의심을 품다. <b>never</b>(결코) + <b>really</b>(정말) 강조!<br>
+            &nbsp;&nbsp;"네가 늘 곁에 있을 거란 걸 난 한 번도 의심한 적 없어"라는 신뢰의 표현이에요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">무슨 일이죠, 뭐가 문제죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Being weary is our antidote.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">So what's the deal?</span>
+          </div>
+          <span class="pill-fix">한국어 뜻과 영어 문장이 서로 달라요!</span>
+          <p class="note-text">
+            ⚠️ 흥미로운 케이스예요! <b>Being weary is our antidote</b>는 <b>가사에 실제로 나오는 문장</b>이지만, 뜻이 <b>"경계하는 것이 우리의 해독제야"</b>예요. Eugene님이 적으신 한국어 뜻과 달라요!<br>
+            💡 <b>"무슨 일이죠, 뭐가 문제죠"</b>에 해당하는 가사는 <b>So what's the deal?</b>이에요.<br>
+            &nbsp;&nbsp;가사 순서: <i>Being weary is our antidote → And the truth is we are capable → <b>So what's the deal</b></i><br>
+            &nbsp;&nbsp;두 문장이 가사에서 가까이 붙어 있어 헷갈리신 것 같아요! 둘 다 알아두면 좋아요 😊<br>
+            &nbsp;&nbsp;📌 <b>weary</b> = 지친, 경계하는 / <b>antidote</b> = 해독제 / <b>what's the deal</b> = 무슨 일이야?
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 뭐가 좋은 줄 알죠</p>
+          <div class="sent-row">
+            <span class="sent-right">You know what's good.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>If you want a lover, you know what's good</b> — 완벽해요! 👏<br>
+            💡 <b>You know what's good</b> = 넌 뭐가 좋은지 알잖아 (= 좋은 걸 알아보는 안목이 있다!)<br>
+            &nbsp;&nbsp;<b>what's good</b> = 무엇이 좋은지 (what = 관계대명사 "~하는 것")<br>
+            &nbsp;&nbsp;지난번 <b>what makes you beautiful</b>과 같은 구조예요! 👍
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">never had a doubt</p>
+      <p class="expr-ko">한 번도 의심한 적 없다</p>
+      <span class="expr-tag">신뢰 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I never really had a doubt.</b> → 난 정말 한 번도 의심한 적 없어.</p>
+        <p><b>I had my doubts about him.</b> → 그에 대해 의심이 좀 있었어.</p>
+        <p><b>There's no doubt about it.</b> → 그건 의심의 여지가 없어.</p>
+        <p><b>I doubt he'll come.</b> → 그가 올지 의문이야. (동사!)</p>
+        <p class="ex-note">💡 <b>have a doubt</b> = 의심을 품다 (명사 doubt)<br><b>doubt</b>는 동사로도 써요: I doubt it(그럴 것 같지 않아)<br>⚠️ <b>doubt</b>의 <b>b</b>는 <b>묵음</b>! [다웃] — debt[뎃], subtle[써틀]도 같아요!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">What's the deal?</p>
+      <p class="expr-ko">무슨 일이야? 뭐가 문제야?</p>
+      <span class="expr-tag">구어 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>So what's the deal?</b> → 그래서 무슨 일이야?</p>
+        <p><b>What's the deal with you two?</b> → 너희 둘 무슨 사이야?</p>
+        <p><b>What's going on?</b> → 무슨 일이야? (비슷한 표현)</p>
+        <p><b>It's a big deal.</b> → 그건 큰일이야.</p>
+        <p class="ex-note">💡 <b>What's the deal?</b> = 무슨 일이야? 어떻게 된 거야? (구어체)<br><b>deal</b> = 거래, 사정, 상황<br>비슷한 표현: What's going on?(무슨 일이야?), What's up?(잘 지내?)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">You know what's good.</p>
+      <p class="expr-ko">넌 뭐가 좋은지 알잖아</p>
+      <span class="expr-tag">what = ~하는 것</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>You know what's good.</b> → 넌 뭐가 좋은지 알잖아.</p>
+        <p><b>I know what you mean.</b> → 무슨 말인지 알아.</p>
+        <p><b>Tell me what's wrong.</b> → 뭐가 잘못됐는지 말해줘.</p>
+        <p><b>That's what I need.</b> → 그게 내가 필요한 거야.</p>
+        <p class="ex-note">💡 <b>what</b> = ~하는 것 (관계대명사, the thing that)<br>what's good(좋은 것), what you mean(네가 말하는 것), what I need(내가 필요한 것)<br>지난번 <b>what makes you beautiful</b>과 같은 구조예요!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I never really had a doubt.</span> → 난 절대로 의심한 적 없어요.<br>
+      <span>So what's the deal?</span> → 무슨 일이죠, 뭐가 문제죠.<br>
+      <span>You know what's good.</span> → 당신은 뭐가 좋은 줄 알죠.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🪵</div>
+      <div><h2>곡 이야기</h2><p>Palo Santo · Saint Joshua (2022)</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Saint Joshua</b>(본명 Brad Joshua De Silva)의 곡으로, <b>2022년 5월 20일</b> EP <i>Ep2</i>에 수록돼 발매됐어요. Pearse MacIntyre, Claudio Cignitti가 프로듀싱을 맡았죠.
+        </p>
+        <p class="story-p">
+          제목 <b>"Palo Santo"</b>는 스페인어로 <b>"성스러운 나무(holy wood)"</b>예요. 남미에서 자라는 향나무로, 태우면 나쁜 기운을 정화한다고 여겨져 명상이나 정화 의식에 쓰이죠 🌿
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 흔들리지 않는 믿음</b><br>참 웃긴 게, 네가 늘 곁에 있을 거란 걸 난 한 번도 의심한 적이 없어. 진심이야. 너무 가까워지고 싶진 않아 — 경계하는 게 우리의 해독제니까. 근데 사실 우린 할 수 있잖아. 그래서, 무슨 일이야?</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — 내겐 팔로 산토가 있어</b><br>연인을 원한다면, 넌 뭐가 좋은지 알잖아. 내겐 팔로 산토가 있어 — 그 성스러운 나무가. <b>"No wahala"</b>(문제없어)라고 말할게, 네가 내 마음을 이해해준다면.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Verse 2 — 나쁜 기운</b><br>참 웃긴 게, 나쁜 기운은 소리를 내지 않아. 하지만 그 영향은 금방 느껴지지. 그냥 두지 마 — 바로잡아.</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">알아두면 좋은 표현 ✨</span>
+        <div class="twist-box">
+          🌿 <b>Palo Santo</b> — 스페인어로 "성스러운 나무". 가사에서 <b>the holy wood</b>라고 직접 번역해서 부르기도 해요. 나쁜 기운을 태워 없애는 정화의 상징이죠.<br><br>
+          🇳🇬 <b>No wahala</b> — 나이지리아 피진 영어로 <b>"문제없어, 걱정 마"</b>라는 뜻이에요! (wahala = 문제, 골칫거리) 아프로비트 음악에서 자주 들을 수 있는 표현이에요.<br><br>
+          이 곡은 <b>나쁜 에너지를 정화하고 좋은 것만 남기자</b>는 메시지를 팔로 산토라는 향나무에 비유한 셈이에요 🪵
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① I never really had a doubt</p>
+          <p class="learn-ko">난 절대로 의심한 적 없어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② So what's the deal?</p>
+          <p class="learn-ko">무슨 일이죠, 뭐가 문제죠</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ You know what's good</p>
+          <p class="learn-ko">당신은 뭐가 좋은 줄 알죠</p>
+        </div>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 Melon · 지니 · Spotify · Apple Music 등<br>정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Saint Joshua · Pearse MacIntyre 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🪵</div>
+      <div><h2>핵심 단어 발음</h2><p>Palo Santo · Saint Joshua</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">doubt</span>
+        <span class="ref-ipa">[daʊt]</span>
+        <span class="ref-kr"><span class="s">다</span>웃</span>
+        <span class="ref-mean">의심 (b 묵음!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">deal</span>
+        <span class="ref-ipa">[diːl]</span>
+        <span class="ref-kr"><span class="s">딜</span></span>
+        <span class="ref-mean">사정, 거래</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">weary</span>
+        <span class="ref-ipa">[ˈwɪri]</span>
+        <span class="ref-kr"><span class="s">위</span>어리</span>
+        <span class="ref-mean">지친, 경계하는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">antidote</span>
+        <span class="ref-ipa">[ˈæntidoʊt]</span>
+        <span class="ref-kr"><span class="s">앤</span>티도우트</span>
+        <span class="ref-mean">해독제</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">capable</span>
+        <span class="ref-ipa">[ˈkeɪpəbəl]</span>
+        <span class="ref-kr"><span class="s">케</span>이퍼블</span>
+        <span class="ref-mean">할 수 있는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">Palo Santo</span>
+        <span class="ref-ipa">[ˈpɑːloʊ ˈsɑːntoʊ]</span>
+        <span class="ref-kr"><span class="s">팔</span>로 <span class="s">산</span>토</span>
+        <span class="ref-mean">성스러운 나무</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 — doubt (b 묵음!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">doubt</p><p class="word-mean">의심 (b가 안 들려요!)</p></div>
+        <span class="word-tag">⚠️ 묵음 b</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[daʊt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">다</span>웃</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>b</b>는 <b>묵음</b>! "다우브트"(✗) → "다웃"(✓)<br>
+        🔸 <b>ou</b>: "아우" [aʊ] — 이중모음!<br>
+        🔸 같은 묵음 b: <b>debt</b>[뎃](빚), <b>subtle</b>[써틀](미묘한), <b>lamb</b>[램](양)<br>
+        🔸 <b>never had a doubt</b>: "네버 해더 다웃" 연음!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">weary</p><p class="word-mean">지친, 경계하는</p></div>
+        <span class="word-tag">혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈwɪri]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">위</span>어리</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wea-</b>: "위어" [wɪ] — ea가 "이어" 소리!<br>
+        🔸 ⚠️ <b>weary</b>[위어리](지친) vs <b>wary</b>[웨어리](조심하는) — 비슷하지만 달라요!<br>
+        🔸 ⚠️ <b>weary</b>[위어리] vs <b>very</b>[베리] — w/v 구별!<br>
+        🔸 <b>be weary of ~</b> = ~에 지치다 / 경계하다
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">antidote</p><p class="word-mean">해독제</p></div>
+        <span class="word-tag">anti- 접두사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈæntidoʊt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">앤</span>티도우트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>anti-</b>: "앤티" [ˈænti] — a = "애"! ANT에 강세<br>
+        🔸 <b>-dote</b>: "도우트" [doʊt]<br>
+        🔸 <b>anti</b>(반대) + <b>dote</b>(주다) = 독을 막아주는 것 → 해독제!<br>
+        🔸 같은 접두사: <b>anti</b>biotic(항생제), <b>anti</b>social(반사회적)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">Palo Santo</p><p class="word-mean">성스러운 나무 (제목!)</p></div>
+        <span class="word-tag">스페인어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈpɑːloʊ ˈsɑːntoʊ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">팔</span>로 <span class="stress">산</span>토</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>Palo</b>: "팔로" — 스페인어로 "나무, 막대"<br>
+        🔸 <b>Santo</b>: "산토" — 스페인어로 "성스러운"<br>
+        🔸 영어로는 가사에서 <b>the holy wood</b>라고 번역!<br>
+        🔸 나쁜 기운을 정화하는 남미 향나무예요 🌿
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🪵 [Good Morning Pops] Palo Santo
+— Saint Joshua · 2022
+
+🎵 Palo Santo = 스페인어로 "성스러운 나무"
+   남미에서 나쁜 기운을 정화할 때 태우는 향나무!
+   나쁜 에너지를 몰아내고 좋은 것만 남기자는
+   따뜻하고 나른한 R&B 곡 🌿
+
+💡 No wahala = 나이지리아 피진 영어로
+   "문제없어, 걱정 마"라는 뜻이에요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 never had a doubt
+   한 번도 의심한 적 없다
+   • I never really had a doubt.
+     (난 정말 한 번도 의심한 적 없어.)
+   • There's no doubt about it.
+     (그건 의심의 여지가 없어.)
+   • I doubt he'll come.
+     (그가 올지 의문이야.)
+💡 have a doubt = 의심을 품다
+   ⚠️ doubt의 b는 묵음! [다웃]
+   같은 묵음 b: debt[뎃], subtle[써틀], lamb[램]
+
+🔹 What's the deal?
+   무슨 일이야? 뭐가 문제야?
+   • So what's the deal?
+     (그래서 무슨 일이야?)
+   • What's the deal with you two?
+     (너희 둘 무슨 사이야?)
+   • What's going on?
+     (무슨 일이야? — 비슷한 표현)
+💡 deal = 거래, 사정, 상황
+   구어체로 정말 자주 써요!
+
+🔹 You know what's good.
+   넌 뭐가 좋은지 알잖아
+   • You know what's good.
+     (넌 뭐가 좋은지 알잖아.)
+   • I know what you mean.
+     (무슨 말인지 알아.)
+   • That's what I need.
+     (그게 내가 필요한 거야.)
+💡 what = ~하는 것 (관계대명사)
+   what makes you beautiful과 같은 구조!
+
+——————————————————
+#GoodMorningPops #팝송영어 #PaloSanto #SaintJoshua</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

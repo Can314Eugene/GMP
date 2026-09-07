@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For the Best — Ebony Loren</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EEF4F6;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #6890A0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C8E0E8;border-color:#185868;color:#0A2E38}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #B0D0DA}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C8E0E8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C8E0E8;color:#0A2E38;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #CCE0E6;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #CCE0E6;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #CCE0E6;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#185868}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C8E0E8;color:#0A2E38;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EEF4F6;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #B0D0DA}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #CCE0E6}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#0A2E38}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #CCE0E6;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEF4F6;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EEF4F6;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#0A2E38;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #CCE0E6;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C8E0E8;color:#0A2E38;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EEF4F6;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#185868;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#0A2E38;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #CCE0E6;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C8E0E8;color:#0A2E38;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#A8D0DC}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #CCE0E6;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#185868;background:#C8E0E8;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #EEF4F6}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌧️</div>
+      <div>
+        <h2>For the Best</h2>
+        <p>Ebony Loren · 2022 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EEF4F6;border:1px solid #6890A0;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#0A2E38;line-height:1.7">
+      🌧️ <b>가수 이름:</b> 에프리 (✗) → <b>Ebony Loren (에보니 로렌)</b> (✓) — 지난번 "All That I Need"의 그 가수예요!<br>
+      "For the Best"는 끝나가는 관계를 받아들이며 "이게 최선이야"라고 담담하게 이별을 정리하는 곡이에요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">너무 슬픈 척하지 말아요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Don't try to act said.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Don't try to act so sad now.</span>
+          </div>
+          <span class="pill-fix">said → so sad (철자·단어 오류)</span>
+          <p class="note-text">
+            가사 정확: <b>Don't try to act so sad now</b><br>
+            ⚠️ <b>said</b>(말했다)(✗) → <b>so sad</b>(너무 슬픈)(✓) — 발음이 비슷해 헷갈리셨네요!<br>
+            💡 <b>said</b>[쎄드] = say의 과거 / <b>sad</b>[쌔드] = 슬픈 — 모음이 달라요!<br>
+            &nbsp;&nbsp;<b>act sad</b> = 슬픈 척하다. <b>so</b>(너무) + <b>sad</b>(슬픈) = 너무 슬픈 (척)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">이게 최선이에요</p>
+          <div class="sent-row">
+            <span class="sent-right">It's for the best.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>It's for the best, just forget the rest</b> — 완벽해요! 👏<br>
+            💡 <b>for the best</b> = 결국 최선인, 잘된 일인. 힘든 결정이지만 "이게 결국 더 나은 거야"라고 위로·정리할 때 쓰는 표현이에요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">너무도 모르는 척 그만해요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Stop acting so coolness.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Stop acting so clueless.</span>
+          </div>
+          <span class="pill-fix">coolness → clueless (완전히 다른 단어!)</span>
+          <p class="note-text">
+            가사 정확: <b>Stop acting so clueless</b><br>
+            ⚠️ <b>coolness</b>(시원함, 멋짐)(✗) → <b>clueless</b>(아무것도 모르는)(✓)<br>
+            💡 <b>clueless</b> = 단서(clue)가 없는 → 아무것도 모르는, 영문을 모르는<br>
+            &nbsp;&nbsp;<b>act/be clueless</b> = 모르는 척하다, 영문 모르는 척하다 → "왜 헤어지는지 모르는 척하지 마"라는 뜻!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">act sad / act + 형용사</p>
+      <p class="expr-ko">슬픈 척하다 / ~한 척하다</p>
+      <span class="expr-tag">행동 묘사 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Don't try to act so sad now.</b> → 이제 와서 너무 슬픈 척하지 마.</p>
+        <p><b>Stop acting tough.</b> → 강한 척 그만해.</p>
+        <p><b>She's acting weird today.</b> → 그녀가 오늘 이상하게 행동해.</p>
+        <p><b>Don't act surprised — you knew.</b> → 놀란 척하지 마 — 너 알고 있었잖아.</p>
+        <p class="ex-note">💡 <b>act + 형용사</b> = ~한 척하다, ~하게 행동하다<br>act sad(슬픈 척), act cool(쿨한 척), act surprised(놀란 척)<br>⚠️ <b>said</b>[쎄드] ≠ <b>sad</b>[쌔드] — 발음·뜻 모두 달라요!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">It's for the best.</p>
+      <p class="expr-ko">이게 최선이에요 / 결국 잘된 일이에요</p>
+      <span class="expr-tag">위로·정리 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>It's for the best.</b> → 이게 최선이야 / 결국 잘된 일이야.</p>
+        <p><b>Maybe breaking up was for the best.</b> → 어쩌면 헤어진 게 잘된 일일지도 몰라.</p>
+        <p><b>It's all for the best in the end.</b> → 결국엔 다 잘된 일이야.</p>
+        <p><b>I know it hurts, but it's for the best.</b> → 아픈 거 알아, 하지만 이게 최선이야.</p>
+        <p class="ex-note">💡 <b>for the best</b> = 결국 최선인, 더 나은. 힘든 결정·이별을 받아들이며 위로할 때 자주 써요!<br>"지금은 아파도 길게 보면 더 나은 선택"이라는 뉘앙스</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">act/be clueless</p>
+      <p class="expr-ko">아무것도 모르는 척하다 / 영문을 모르다</p>
+      <span class="expr-tag">clueless vs coolness</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Stop acting so clueless.</b> → 그렇게 모르는 척 그만해.</p>
+        <p><b>I'm completely clueless about cars.</b> → 난 차에 대해 완전히 문외한이야.</p>
+        <p><b>He had no clue what was going on.</b> → 그는 무슨 일인지 전혀 몰랐어.</p>
+        <p><b>Don't play clueless with me.</b> → 나한테 모르는 척하지 마.</p>
+        <p class="ex-note">💡 <b>clueless</b> = clue(단서) + less(없는) → 아무것도 모르는<br>⚠️ <b>coolness</b>(시원함/멋짐)와 발음이 비슷하지만 완전히 다른 단어!<br><b>clue</b>[클루] = 단서, 실마리</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Don't try to act so sad now.</span> → 너무 슬픈 척하지 말아요.<br>
+      <span>It's for the best.</span> → 이게 최선이에요.<br>
+      <span>Stop acting so clueless.</span> → 너무도 모르는 척 그만해요.
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌧️</div>
+      <div><h2>전체 가사</h2><p>For the Best · Ebony Loren (2022)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1</span>
+        <div class="lyric-line"><span class="lyric-en">Things are going wrong</span><span class="lyric-ko">일이 잘못되어 가고 있어</span></div>
+        <div class="lyric-line"><span class="lyric-en">You won't pick up phone and</span><span class="lyric-ko">넌 전화를 받지 않고</span></div>
+        <div class="lyric-line"><span class="lyric-en">I can't get ahold of the you I used to know</span><span class="lyric-ko">내가 알던 너에게 닿을 수가 없어</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Don't try to act so sad now</span></span><span class="lyric-ko">이제 와서 너무 슬픈 척하지 마 ①</span></div>
+        <div class="lyric-line"><span class="lyric-en">You made me feel bad</span><span class="lyric-ko">넌 날 기분 나쁘게 했잖아</span></div>
+        <div class="lyric-line"><span class="lyric-en">How did you just now find out?</span><span class="lyric-ko">어떻게 이제서야 알았어?</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Pre-Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">We're standing in the rain</span><span class="lyric-ko">우린 빗속에 서 있어</span></div>
+        <div class="lyric-line"><span class="lyric-en">You start to feel the pain</span><span class="lyric-ko">넌 이제야 아픔을 느끼기 시작해</span></div>
+        <div class="lyric-line"><span class="lyric-en">That things are gonna change, we can't stay the same</span><span class="lyric-ko">상황이 변할 거고, 우린 그대로일 수 없어</span></div>
+        <div class="lyric-line"><span class="lyric-en">That blue look on your face, no you don't have to say it</span><span class="lyric-ko">네 얼굴의 그 우울한 표정, 말 안 해도 돼</span></div>
+        <div class="lyric-line"><span class="lyric-en">This is better anyway</span><span class="lyric-ko">어차피 이게 더 나아</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">We don't have to try to fix what's broken</span><span class="lyric-ko">망가진 걸 고치려 애쓸 필요 없어</span></div>
+        <div class="lyric-line"><span class="lyric-en">Your heart has spoken, let's say goodbye</span><span class="lyric-ko">네 마음은 이미 말했어, 작별하자</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">It's for the best, just forget the rest</span></span><span class="lyric-ko">이게 최선이야, 나머진 그냥 잊어 ②</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Stop acting so clueless</span></span><span class="lyric-ko">그렇게 모르는 척 그만해 ③</span></div>
+        <div class="lyric-line"><span class="lyric-en">'Cause I've got a long list of all the things you did</span><span class="lyric-ko">네가 한 일들의 긴 목록을 갖고 있으니까</span></div>
+        <div class="lyric-line"><span class="lyric-en">To make me feel down</span><span class="lyric-ko">날 우울하게 만든 일들 말이야</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Post-Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">I'm done with the drama</span><span class="lyric-ko">이런 드라마는 이제 그만</span></div>
+        <div class="lyric-line"><span class="lyric-en">No I ain't your mama, you should go and find her</span><span class="lyric-ko">난 네 엄마가 아니야, 가서 (네 엄마를) 찾아</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장 (①②③)<br>※ 가사는 학습 참고용이며 저작권은 아티스트·저작권자에게 있습니다</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌧️</div>
+      <div><h2>핵심 단어 발음</h2><p>For the Best · Ebony Loren</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">sad</span>
+        <span class="ref-ipa">[sæd]</span>
+        <span class="ref-kr"><span class="s">쌔</span>드</span>
+        <span class="ref-mean">슬픈 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">said</span>
+        <span class="ref-ipa">[sɛd]</span>
+        <span class="ref-kr"><span class="s">쎄</span>드</span>
+        <span class="ref-mean">말했다 (혼동 주의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">clueless</span>
+        <span class="ref-ipa">[ˈkluːləs]</span>
+        <span class="ref-kr"><span class="s">클루</span>리스</span>
+        <span class="ref-mean">아무것도 모르는 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">coolness</span>
+        <span class="ref-ipa">[ˈkuːlnəs]</span>
+        <span class="ref-kr"><span class="s">쿨</span>니스</span>
+        <span class="ref-mean">시원함 (혼동 주의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">act</span>
+        <span class="ref-ipa">[ækt]</span>
+        <span class="ref-kr"><span class="s">액</span>트</span>
+        <span class="ref-mean">~인 척하다, 행동하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">for the best</span>
+        <span class="ref-ipa">[fɔːr ðə bɛst]</span>
+        <span class="ref-kr">포 더 <span class="s">베</span>스트</span>
+        <span class="ref-mean">결국 최선인</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 1 — sad vs said</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">sad</p><p class="word-mean">슬픈 (형용사)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[sæd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쌔</span>드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>a</b>: "애" [æ] — 입을 옆으로 크게! → "쌔드"<br>
+        🔸 <b>act sad</b> = 슬픈 척하다<br>
+        🔸 <b>so sad</b> = 너무 슬픈
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">said</p><p class="word-mean">말했다 (say의 과거)</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[sɛd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쎄</span>드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>ai</b>: "에" [ɛ] — "쎄드" (말했다)<br>
+        🔸 🔑 <b>sad [쌔드]</b>(슬픈) vs <b>said [쎄드]</b>(말했다)<br>
+        모음이 "애" vs "에"로 달라요!<br>
+        🔸 <b>say → said → said</b> (불규칙, 발음 주의: 세이→쎄드)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 2 — clueless vs coolness</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">clueless</p><p class="word-mean">아무것도 모르는</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈkluːləs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">클루</span>리스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>clue</b>: "클루" [kluː] — cl 연결 + 긴 우!<br>
+        🔸 <b>-less</b>: "리스" — ~이 없는<br>
+        🔸 <b>clue(단서) + less(없는)</b> = 단서가 없는 → 아무것도 모르는<br>
+        🔸 <b>act clueless</b> = 모르는 척하다
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">coolness</p><p class="word-mean">시원함, 멋짐</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈkuːlnəs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쿨</span>니스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>cool</b>: "쿨" [kuːl] — l이 먼저!<br>
+        🔸 🔑 <b>clueless [클루리스]</b>(모르는) vs <b>coolness [쿨니스]</b>(시원함)<br>
+        🔸 cl-ue(클루) vs c-oo-l(쿨) — l 위치와 모음이 달라요!<br>
+        🔸 의미도 전혀 다른 단어예요!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">for the best</p><p class="word-mean">결국 최선인 (제목!)</p></div>
+        <span class="word-tag">관용표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[fɔːr ðə bɛst]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">포 더 <span class="stress">베</span>스트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>for</b>: "포" [fɔːr] — 약하게<br>
+        🔸 <b>the</b>: "더" [ðə] — th 혀끝을 이 사이에!<br>
+        🔸 <b>best</b>: "베스트" [bɛst] — 강세!<br>
+        🔸 <b>It's for the best</b>: "잇츠 포 더 베스트"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">act</p><p class="word-mean">~인 척하다, 행동하다</p></div>
+        <span class="word-tag">act + 형용사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ækt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">액</span>트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>act</b>: "액트" [ækt] — a = "애"!<br>
+        🔸 <b>act + 형용사</b> = ~한 척하다<br>
+        🔸 act sad(슬픈 척), act cool(쿨한 척), act clueless(모르는 척)<br>
+        🔸 <b>acting</b>(연기) = 척하는 것에서 온 단어!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌧️ [Good Morning Pops] For the Best
+— Ebony Loren (에보니 로렌) · 2022
+
+🎵 끝나가는 관계를 받아들이며
+   "이게 최선이야"라고 담담하게
+   이별을 정리하는 곡
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 act sad / act + 형용사
+   슬픈 척하다 / ~한 척하다
+   • Don't try to act so sad now.
+     (이제 와서 너무 슬픈 척하지 마.)
+   • Stop acting tough.
+     (강한 척 그만해.)
+   • Don't act surprised — you knew.
+     (놀란 척하지 마 — 너 알고 있었잖아.)
+💡 act + 형용사 = ~한 척하다, ~하게 행동하다
+   ⚠️ said[쎄드](말했다) ≠ sad[쌔드](슬픈)!
+
+🔹 It's for the best.
+   이게 최선이에요 / 결국 잘된 일이에요
+   • Maybe breaking up was for the best.
+     (어쩌면 헤어진 게 잘된 일일지도 몰라.)
+   • It's all for the best in the end.
+     (결국엔 다 잘된 일이야.)
+   • I know it hurts, but it's for the best.
+     (아픈 거 알아, 하지만 이게 최선이야.)
+💡 for the best = 결국 최선인, 더 나은
+   힘든 이별을 받아들이며 위로할 때!
+
+🔹 act/be clueless
+   아무것도 모르는 척하다 / 영문을 모르다
+   • Stop acting so clueless.
+     (그렇게 모르는 척 그만해.)
+   • I'm completely clueless about cars.
+     (난 차에 대해 완전히 문외한이야.)
+   • Don't play clueless with me.
+     (나한테 모르는 척하지 마.)
+💡 clue(단서) + less(없는) = 아무것도 모르는
+   ⚠️ coolness[쿨니스](시원함)와 혼동 금지!
+
+——————————————————
+#GoodMorningPops #팝송영어 #ForTheBest #EbonyLoren</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

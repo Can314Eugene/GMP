@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>what's wrong with me — Olivia Rodrigo</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F1F2F6;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #7480A0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#D2D6E4;border-color:#38405C;color:#1C2136}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #BCC2D4}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#D2D6E4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#D2D6E4;color:#1C2136;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #D6DAE6;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #D6DAE6;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #D6DAE6;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#38405C}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#D2D6E4;color:#1C2136;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F1F2F6;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #BCC2D4}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #D6DAE6}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#1C2136}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #D6DAE6;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F1F2F6;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F1F2F6;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#1C2136;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #D6DAE6;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#D2D6E4;color:#1C2136;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F1F2F6;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#38405C;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#1C2136;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #D6DAE6;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#D2D6E4;color:#1C2136;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#B8C0D6}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #D6DAE6;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#38405C;background:#D2D6E4;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#1C2136;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F1F2F6;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#D2D6E4;color:#1C2136;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#F1F2F6;border-left:3px solid #38405C;border-radius:10px;padding:12px 14px;font-size:13px;color:#38405C;line-height:1.8}
+  .twist-box b{color:#1C2136;font-weight:600}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌙</div>
+      <div>
+        <h2>what's wrong with me</h2>
+        <p>Olivia Rodrigo & Robert Smith · 2026 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7">
+      💡 <b>가수 이름 교정:</b> 올리브아 (✗) → <b>Olivia Rodrigo (올리비아 로드리고)</b> (✓)<br>
+      전설적인 밴드 <b>The Cure</b>의 보컬 <b>Robert Smith</b>와의 듀엣이에요! 2026년 6월 12일 발매된 앨범 <i>you seem pretty sad for a girl so in love</i> 수록곡이에요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">난 그저 천장만 바라보고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I'm just staring at the siling.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I'm just staring at the ceiling.</span>
+          </div>
+          <span class="pill-fix">siling → ceiling (철자!)</span>
+          <p class="note-text">
+            ⚠️ <b>siling</b>(✗) → <b>ceiling</b>(✓) — 소리 나는 대로 적으셨네요!<br>
+            💡 <b>ceiling</b> [<b>씰</b>링] = 천장. 첫 글자 <b>c</b>가 "ㅅ" 소리를 내요!<br>
+            &nbsp;&nbsp;<b>ce-</b>, <b>ci-</b>, <b>cy-</b>는 c가 "ㅅ" 소리: <b>ce</b>iling, <b>ci</b>ty, <b>cy</b>cle<br>
+            &nbsp;&nbsp;<b>stare at ~</b> = ~을 빤히 바라보다 (멍하니 응시하는 느낌!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">나답지 않은 기분이에요</p>
+          <div class="sent-row">
+            <span class="sent-right">I'm not feeling like myself.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            완벽해요! 👏 철자·문법·구조 모두 정확해요.<br>
+            💡 <b>feel like myself</b> = 나답게 느끼다, 평소의 나 같다<br>
+            &nbsp;&nbsp;<b>I'm not feeling like myself</b> = 요즘 내가 나 같지 않아 (컨디션·기분이 평소와 다를 때!)<br>
+            &nbsp;&nbsp;<b>feel like + 명사</b>(~같은 기분이다) vs <b>feel like + -ing</b>(~하고 싶다) — 구별 주의!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">마치 누군가가 내 가슴에 무거운 걸 올려놓은 것 같아요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">It's like somebody put on my chest heavy thing.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">It's like somebody put a weight on my chest.</span>
+          </div>
+          <span class="pill-fix">어순: put + 목적어 + on my chest</span>
+          <span class="pill-fix">heavy thing → a weight</span>
+          <p class="note-text">
+            ⚠️ 두 가지를 바로잡았어요!<br>
+            ① <b>어순</b>: <b>put</b> 다음엔 <b>무엇을</b>(목적어)이 먼저, <b>어디에</b>(전치사구)가 나중!<br>
+            &nbsp;&nbsp;put <b>a weight</b> <b>on my chest</b> (무엇을 → 어디에) ✓<br>
+            ② <b>heavy thing</b>(✗) → <b>a weight</b>(✓) — "무거운 것"은 명사 <b>weight</b> 한 단어로!<br>
+            💡 <b>It's like somebody ~</b> = 마치 누군가 ~한 것 같다 (비유 표현)<br>
+            &nbsp;&nbsp;<b>a weight on my chest</b> = 가슴을 짓누르는 무게 → 답답함·불안의 관용적 비유!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">stare at the ceiling</p>
+      <p class="expr-ko">천장을 빤히 바라보다</p>
+      <span class="expr-tag">ceiling 철자 핵심!</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I'm just staring at the ceiling.</b> → 난 그저 천장만 바라보고 있어.</p>
+        <p><b>He stared at me in silence.</b> → 그는 말없이 날 빤히 쳐다봤어.</p>
+        <p><b>Don't stare — it's rude.</b> → 빤히 쳐다보지 마 — 무례해.</p>
+        <p><b>The ceiling fan was spinning slowly.</b> → 천장 선풍기가 천천히 돌고 있었어.</p>
+        <p class="ex-note">💡 <b>ceiling</b> [씰링] = 천장. c가 "ㅅ" 소리! (ce-, ci-, cy- 패턴)<br><b>stare at ~</b> = ~을 빤히 바라보다 (look보다 강한 응시)<br>⚠️ 잠 못 들 때 천장을 보는 장면 = 불면·불안의 클래식한 이미지예요</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">feel like myself</p>
+      <p class="expr-ko">나답게 느끼다 / 평소의 나 같다</p>
+      <span class="expr-tag">feel like 활용</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I'm not feeling like myself.</b> → 요즘 내가 나 같지 않아.</p>
+        <p><b>I finally feel like myself again.</b> → 드디어 다시 나다워진 기분이야.</p>
+        <p><b>You don't seem like yourself today.</b> → 오늘 너 평소 같지 않아 보여.</p>
+        <p><b>I feel like taking a walk.</b> → 산책하고 싶어. (feel like + -ing)</p>
+        <p class="ex-note">💡 <b>feel like + 명사/대명사</b> = ~같은 기분이다<br><b>feel like + -ing</b> = ~하고 싶다 (완전히 다른 뜻!)<br>feel like myself(나 같다) vs feel like eating(먹고 싶다)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">a weight on my chest</p>
+      <p class="expr-ko">가슴을 짓누르는 무게 (답답함)</p>
+      <span class="expr-tag">비유 표현 + 어순</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>It's like somebody put a weight on my chest.</b> → 누가 내 가슴에 무거운 걸 올려놓은 것 같아.</p>
+        <p><b>That's a weight off my shoulders.</b> → 어깨의 짐을 던 기분이야. (반대!)</p>
+        <p><b>It's like I'm carrying the world.</b> → 마치 세상을 짊어진 것 같아.</p>
+        <p><b>Put the book on the table.</b> → 책을 탁자 위에 놓아. (어순 연습!)</p>
+        <p class="ex-note">💡 <b>put + 목적어 + 전치사구</b> — "무엇을" 먼저, "어디에" 나중!<br>put a weight on my chest ✓ / put on my chest a weight ✗<br><b>a weight on one's chest</b> = 답답함·불안의 관용적 비유. 반대로 <b>a weight off one's shoulders</b> = 짐을 던 홀가분함!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I'm just staring at the ceiling.</span> → 난 그저 천장만 바라보고 있어요.<br>
+      <span>I'm not feeling like myself.</span> → 나답지 않은 기분이에요.<br>
+      <span>It's like somebody put a weight on my chest.</span><br>→ 마치 누군가가 내 가슴에 무거운 걸 올려놓은 것 같아요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌙</div>
+      <div><h2>곡 이야기</h2><p>what's wrong with me · Olivia Rodrigo & Robert Smith (2026)</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Olivia Rodrigo (올리비아 로드리고)</b>의 세 번째 정규 앨범 <i>you seem pretty sad for a girl so in love</i>(2026년 6월 12일 발매) 수록곡이에요.
+        </p>
+        <p class="story-p">
+          가장 큰 화제는 <b>Robert Smith</b>와의 듀엣! 영국 밴드 <b>The Cure</b>의 전설적인 프론트맨이죠. 2025년 글래스턴베리 페스티벌에서 함께 무대에 선 인연이 이어져 공동 작곡까지 하게 됐고, 2026년 6월 6일 바르셀로나 <b>Primavera Sound</b>에서 깜짝 라이브로 첫 공개됐어요. 프로듀서는 Dan Nigro예요.
+        </p>
+        <p class="story-p">
+          올리비아의 <b>격정적이고 날것 같은 보컬</b>과 로버트 스미스의 <b>낮고 몽환적인 음색</b>이 겹쳐지며, 고전 얼터너티브 록과 현대 팝이 만나는 독특한 질감을 만들어내요 🎸
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 설명할 수 없는 감각</b><br>침대에 누워 천장만 바라봐요. 머릿속 이 기분을 뭐라 표현할 수가 없어요. 검색창에 증상을 하나씩 쳐 보지만, 나답지 않은 이 느낌엔 아무것도 도움이 안 돼요.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — 병원에 갔지만</b><br>의사는 "아무 이상 없다"고 해요. 그런데 보는 영화마다 눈물이 나고, 가슴엔 무언가 얹힌 듯 답답하고, 머리는 어지럽고 속은 울렁거려요. 먹지도 자지도 못하죠.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Verse 2 (Robert Smith) — 도망칠 곳이 없다</b><br>딴 데 정신을 팔아보려 해도, 이 기분은 지나가지 않고 날마다 더 심해져요. 머릿속엔 단순한 질문 하나가 계속 울려요.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 감출 수가 없다</b><br>나답지 않은 이 상태. 온통 경고등과 경보음뿐. 그리고 이제는 잘 숨기지도 못해요.</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 반전 ✨</span>
+        <div class="twist-box">
+          곡 내내 나열되는 건 마치 <b>병의 증상</b>처럼 들려요 — 불면, 식욕 부진, 가슴 답답함, 어지러움…<br><br>
+          하지만 마지막에 밝혀지는 진짜 원인은 <b>사랑</b>이에요. 화자는 결국 이렇게 말하죠. <b>"내가 이상한 건, 아무래도 너 때문인 것 같아."</b><br><br>
+          <b>"what's wrong with me"</b>는 원래 "나 왜 이러지?"라는 자책의 말인데, 이 곡에서는 <b>"내 문제는 바로 너야"</b>라는 고백으로 뒤집혀요. 증상 목록처럼 시작해서 러브송으로 끝나는 셈이죠 💘
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① I'm just staring at the ceiling</p>
+          <p class="learn-ko">난 그저 천장만 바라보고 있어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I'm not feeling like myself</p>
+          <p class="learn-ko">나답지 않은 기분이에요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ It's like somebody put a weight on my chest</p>
+          <p class="learn-ko">마치 누군가 내 가슴에 무거운 걸 올려놓은 것 같아요</p>
+        </div>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 Melon · 지니 · Spotify · Apple Music 등<br>정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Olivia Rodrigo · Robert Smith · Dan Nigro 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌙</div>
+      <div><h2>핵심 단어 발음</h2><p>what's wrong with me · Olivia Rodrigo</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">ceiling</span>
+        <span class="ref-ipa">[ˈsiːlɪŋ]</span>
+        <span class="ref-kr"><span class="s">씰</span>링</span>
+        <span class="ref-mean">천장 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">sealing</span>
+        <span class="ref-ipa">[ˈsiːlɪŋ]</span>
+        <span class="ref-kr"><span class="s">씰</span>링</span>
+        <span class="ref-mean">봉인 (동음이의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">weight</span>
+        <span class="ref-ipa">[weɪt]</span>
+        <span class="ref-kr"><span class="s">웨</span>이트</span>
+        <span class="ref-mean">무게, 무거운 것 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wait</span>
+        <span class="ref-ipa">[weɪt]</span>
+        <span class="ref-kr"><span class="s">웨</span>이트</span>
+        <span class="ref-mean">기다리다 (동음이의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">chest</span>
+        <span class="ref-ipa">[tʃɛst]</span>
+        <span class="ref-kr"><span class="s">체</span>스트</span>
+        <span class="ref-mean">가슴</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">stare</span>
+        <span class="ref-ipa">[stɛr]</span>
+        <span class="ref-kr"><span class="s">스테</span>어</span>
+        <span class="ref-mean">빤히 보다</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — ceiling 철자</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">ceiling</p><p class="word-mean">천장</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsiːlɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">씰</span>링</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>c</b>가 "ㅅ" 소리! "크"(✗) → "ㅅ"(✓)<br>
+        🔸 <b>ce-, ci-, cy-</b> 뒤에선 c가 "ㅅ": <b>ce</b>iling, <b>ci</b>ty, <b>cy</b>cle, <b>ce</b>nter<br>
+        🔸 <b>ca-, co-, cu-</b> 뒤에선 c가 "ㅋ": <b>ca</b>t, <b>co</b>ld, <b>cu</b>p<br>
+        🔸 철자: <b>c-e-i-l-i-n-g</b> — "ei" 순서 주의! (siling ✗)<br>
+        🔸 <b>sealing</b>[씰링](봉인)과 발음이 똑같아요!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ weight vs wait — 동음이의어</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">weight</p><p class="word-mean">무게, 무거운 것</p></div>
+        <span class="word-tag">gh 묵음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[weɪt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">웨</span>이트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>weigh + t</b> — <b>gh</b>는 묵음! "웨이트"<br>
+        🔸 🔑 <b>weight</b>(무게) vs <b>wait</b>(기다리다) — 발음 완전 동일!<br>
+        🔸 철자로만 구별해요: wei<b>gh</b>t / w<b>ai</b>t<br>
+        🔸 <b>a weight on my chest</b> = 가슴을 짓누르는 무게<br>
+        🔸 "무거운 것"은 <b>heavy thing</b>보다 <b>a weight</b> 한 단어로!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">chest</p><p class="word-mean">가슴, 흉부</p></div>
+        <span class="word-tag">ch 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[tʃɛst]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">체</span>스트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>ch</b>: "치" [tʃ] — chair, cheese와 같은 소리!<br>
+        🔸 <b>-est</b>: "에스트" [ɛst]<br>
+        🔸 <b>on my chest</b>: "온 마이 체스트"<br>
+        🔸 chest는 "가슴"이자 "궤짝"! (treasure chest = 보물상자)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">staring</p><p class="word-mean">빤히 바라보는</p></div>
+        <span class="word-tag">stare + ing</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈstɛrɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">스테</span>어링</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>stare</b>: "스테어" [stɛr] — a = "에어"!<br>
+        🔸 <b>stare → staring</b> (e 빼고 -ing)<br>
+        🔸 <b>stare at ~</b> = ~을 빤히 응시하다 (전치사 at 필수!)<br>
+        🔸 ⚠️ <b>starring</b>[스타링](주연을 맡은)과 철자 혼동 주의! (r 개수!)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">myself</p><p class="word-mean">나 자신</p></div>
+        <span class="word-tag">재귀대명사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[maɪˈsɛlf]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">마이<span class="stress">셀</span>프</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>-SELF</b>에 강세! "마이<b>셀</b>프"<br>
+        🔸 <b>feel like myself</b> = 나답게 느끼다<br>
+        🔸 재귀대명사: myself, yourself, himself, herself<br>
+        🔸 <b>be yourself</b> = 너답게 있어라 (자주 쓰는 표현!)
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌙 [Good Morning Pops] what's wrong with me
+— Olivia Rodrigo & Robert Smith · 2026
+
+💡 가수명: 올리브아 ✗ → Olivia Rodrigo ✓
+   The Cure의 전설 Robert Smith와의 듀엣!
+   앨범 "you seem pretty sad for a girl so in love"
+
+✨ 곡의 반전: 병의 증상처럼 나열되던 것들이
+   결국 "사랑" 때문이었다는 고백으로 끝나요.
+   "내가 이상한 건, 아무래도 너 때문인 것 같아" 💘
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 stare at the ceiling
+   천장을 빤히 바라보다
+   • I'm just staring at the ceiling.
+     (난 그저 천장만 바라보고 있어.)
+   • He stared at me in silence.
+     (그는 말없이 날 빤히 쳐다봤어.)
+   • Don't stare — it's rude.
+     (빤히 쳐다보지 마 — 무례해.)
+💡 ceiling [씰링] = 천장. c가 "ㅅ" 소리!
+   ce-, ci-, cy- → c는 "ㅅ" (ceiling, city, cycle)
+   ca-, co-, cu- → c는 "ㅋ" (cat, cold, cup)
+   ⚠️ siling ✗ → ceiling ✓ (ei 순서 주의!)
+
+🔹 feel like myself
+   나답게 느끼다 / 평소의 나 같다
+   • I'm not feeling like myself.
+     (요즘 내가 나 같지 않아.)
+   • I finally feel like myself again.
+     (드디어 다시 나다워진 기분이야.)
+   • You don't seem like yourself today.
+     (오늘 너 평소 같지 않아 보여.)
+💡 feel like + 명사 = ~같은 기분이다
+   feel like + -ing = ~하고 싶다 (전혀 다른 뜻!)
+
+🔹 a weight on my chest
+   가슴을 짓누르는 무게 (답답함)
+   • It's like somebody put a weight on my chest.
+     (누가 내 가슴에 무거운 걸 올려놓은 것 같아.)
+   • That's a weight off my shoulders.
+     (어깨의 짐을 던 기분이야.)
+   • Put the book on the table.
+     (책을 탁자 위에 놓아.)
+💡 어순: put + 무엇을 + 어디에!
+   put a weight on my chest ✓
+   put on my chest a weight ✗
+   "무거운 것" = heavy thing보다 a weight 한 단어로!
+
+——————————————————
+#GoodMorningPops #팝송영어 #whatswrongwithme #OliviaRodrigo #RobertSmith</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

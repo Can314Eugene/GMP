@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Good Lovin' — GOLDA</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FFF8E8;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #D8A828;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#F8E4A0;border-color:#8A6410;color:#4A3404}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #EAD088}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#F8E4A0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#F8E4A0;color:#4A3404;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #EED89C;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #EED89C;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #EED89C;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#8A6410}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#F8E4A0;color:#4A3404;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FFF8E8;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #EAD088}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #EED89C}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#4A3404}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EED89C;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FFF8E8;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FFF8E8;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#4A3404;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #EED89C;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#F8E4A0;color:#4A3404;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FFF8E8;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#8A6410;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#4A3404;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #EED89C;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#F8E4A0;color:#4A3404;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#EED488}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #EED89C;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#8A6410;background:#F8E4A0;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#4A3404;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FFF8E8;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#F8E4A0;color:#4A3404;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🚗</div>
+      <div>
+        <h2>Good Lovin'</h2>
+        <p>GOLDA · 2019 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8E8;border:1px solid #D8A828;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#4A3404;line-height:1.7">
+      🚗 <b>GOLDA (골다)</b> · 2019년 발매<br>
+      부드러운 R&B/소울 사운드의 곡이에요! 오픈카를 타고 도시를 달리며, "서두르지 말고 이 순간을 천천히 즐기자"고 노래하는 여유롭고 달콤한 곡이에요. <b>세 문장 모두 거의 완벽</b>하게 쓰셨어요! 👏
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">나에게 미소 지어 줘요</p>
+          <div class="sent-row">
+            <span class="sent-right">Throw me a smile.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Freshen up your lips, throw me a smile</b> — 완벽해요! 👏<br>
+            💡 <b>throw me a smile</b> = 나에게 미소를 던지다 → 미소 지어주다<br>
+            &nbsp;&nbsp;<b>throw + 사람 + 사물</b> = ~에게 …을 던지다 (4형식!)<br>
+            &nbsp;&nbsp;직역은 "미소를 던져줘"지만, 가볍고 사랑스럽게 "웃어줘"라는 뉘앙스예요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 너무 과속하고 있네요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Your're speeding too much.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">You're speeding too much.</span>
+          </div>
+          <span class="pill-note">Your're → You're (철자만!)</span>
+          <p class="note-text">
+            가사 정확: <b>You're speeding too much</b> — 내용은 완벽! 철자만 살짝! 👏<br>
+            ⚠️ <b>Your're</b>(✗) → <b>You're</b>(✓) — You are의 축약은 <b>You're</b>!<br>
+            💡 헷갈리기 쉬운 짝: <b>You're</b>(You are) vs <b>Your</b>(너의)<br>
+            &nbsp;&nbsp;<b>speed</b> = 과속하다, 속도를 내다. 실제 운전 + 관계를 서두르는 것 둘 다 의미!<br>
+            &nbsp;&nbsp;"차도 마음도 너무 빨리 달리고 있어, 천천히 하자"는 곡의 메시지!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">난 좀처럼 선을 긋는 타입은 아니에요</p>
+          <div class="sent-row">
+            <span class="sent-right">I'm not the type to ever draw a line.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Not the type to ever draw a line</b> — 완벽해요! 👏<br>
+            💡 <b>the type to + 동사</b> = ~하는 타입[스타일]이다<br>
+            &nbsp;&nbsp;<b>draw a line</b> = 선을 긋다 → 경계·한계를 정하다, 거리를 두다<br>
+            &nbsp;&nbsp;<b>ever</b>(강조) = 좀처럼, 결코. "난 좀처럼 선 긋는 사람이 아니야" = 마음을 여는 편이라는 뜻!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">throw me a smile</p>
+      <p class="expr-ko">나에게 미소 지어주다</p>
+      <span class="expr-tag">throw + 사람 + 사물</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Throw me a smile.</b> → 나에게 미소 지어줘.</p>
+        <p><b>She threw me a look.</b> → 그녀가 나에게 눈길을 던졌어.</p>
+        <p><b>Throw me the ball.</b> → 공 좀 던져줘.</p>
+        <p><b>He threw her a kiss.</b> → 그가 그녀에게 키스를 날렸어.</p>
+        <p class="ex-note">💡 <b>throw + 사람 + 사물</b> = ~에게 …을 던지다 (4형식)<br>물건(the ball)뿐 아니라 미소·눈길(a smile, a look)도 "던질" 수 있어요!<br>가볍고 사랑스러운 표현이에요 😊</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">You're vs Your</p>
+      <p class="expr-ko">너는 ~이다 vs 너의</p>
+      <span class="expr-tag">철자 혼동 주의!</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>You're speeding too much.</b> → 너 너무 과속하고 있어. (You are)</p>
+        <p><b>Your car is fast.</b> → 네 차는 빨라. (너의)</p>
+        <p><b>You're my best friend.</b> → 넌 내 가장 친한 친구야.</p>
+        <p><b>Is this your phone?</b> → 이거 네 폰이야?</p>
+        <p class="ex-note">💡 <b>You're</b> = You are (너는 ~이다) / <b>Your</b> = 너의 (소유격)<br>⚠️ <b>Your're</b>는 없는 단어! You are → You're (o 하나, 아포스트로피!)<br>발음이 같아서 헷갈리지만 뜻이 완전 달라요!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">draw a line / the type to ~</p>
+      <p class="expr-ko">선을 긋다 / ~하는 타입이다</p>
+      <span class="expr-tag">관용 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I'm not the type to ever draw a line.</b> → 난 좀처럼 선 긋는 타입이 아니야.</p>
+        <p><b>We need to draw the line somewhere.</b> → 우린 어딘가에 선을 그어야 해.</p>
+        <p><b>She's not the type to give up.</b> → 그녀는 포기하는 타입이 아니야.</p>
+        <p><b>I'm the type to overthink.</b> → 난 지나치게 생각하는 타입이야.</p>
+        <p class="ex-note">💡 <b>draw a line</b> = 선을 긋다 → 경계·한계를 정하다, 거리를 두다<br><b>the type to + 동사</b> = ~하는 타입[성격]이다<br><b>ever</b>(강조) = 좀처럼, 결코 (부정문에서!)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Throw me a smile.</span> → 나에게 미소 지어 줘요.<br>
+      <span>You're speeding too much.</span> → 당신은 너무 과속하고 있네요.<br>
+      <span>I'm not the type to ever draw a line.</span><br>→ 난 좀처럼 선을 긋는 타입은 아니에요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🚗</div>
+      <div><h2>곡 이야기</h2><p>Good Lovin' · GOLDA (2019)</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>GOLDA (골다)</b>의 <b>"Good Lovin'"</b>은 2019년에 나온 부드러운 R&B/소울 곡이에요.
+        </p>
+        <p class="story-p">
+          <b>오픈카(top down)를 타고 도시를 달리는</b> 장면으로 시작해요. 옆자리엔 드레스를 입은 예쁜 그녀. 나른한 아침 햇살, 여유로운 드라이브, 그리고 막 시작된 설레는 관계 — "서두르지 말고 이 순간을 천천히 즐기자"는 달콤하고 여유로운 무드의 곡이에요 🌅
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 드라이브</b><br>지붕을 열고 도시를 달려요. 옆엔 드레스 입은 그녀. 입술을 다듬고, 나에게 미소를 던져줘. 넌 왜 좋은지 모르겠다면서도 곁에 있는 게 좋대.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — 서두르지 마</b><br>서두르지 마, 넌 너무 빨리 달리고 있어. 우리에게 영원이 있는 척하자. 함께일 땐 속도를 늦추자.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Verse 2 — 마음을 여는 나</b><br>난 좀처럼 선 긋는 타입이 아니야. 오랫동안 이런 기분 못 느꼈는데. 차 안엔 아침 햇살이 가득하고, 왜 이렇게 좋은지 모르겠지만 — 이건 잘될 것 같아.</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① Throw me a smile</p>
+          <p class="learn-ko">나에게 미소 지어 줘요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② You're speeding too much</p>
+          <p class="learn-ko">당신은 너무 과속하고 있네요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ (I'm) not the type to ever draw a line</p>
+          <p class="learn-ko">난 좀처럼 선을 긋는 타입은 아니에요</p>
+        </div>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 Melon · 지니 · Spotify · Apple Music 등<br>정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 GOLDA 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🚗</div>
+      <div><h2>핵심 단어 발음</h2><p>Good Lovin' · GOLDA</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">throw</span>
+        <span class="ref-ipa">[θroʊ]</span>
+        <span class="ref-kr"><span class="s">쓰로</span>우</span>
+        <span class="ref-mean">던지다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">speeding</span>
+        <span class="ref-ipa">[ˈspiːdɪŋ]</span>
+        <span class="ref-kr"><span class="s">스피</span>딩</span>
+        <span class="ref-mean">과속하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">you're</span>
+        <span class="ref-ipa">[jʊr]</span>
+        <span class="ref-kr"><span class="s">유</span>어</span>
+        <span class="ref-mean">너는 ~이다 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">your</span>
+        <span class="ref-ipa">[jʊr]</span>
+        <span class="ref-kr"><span class="s">유</span>어</span>
+        <span class="ref-mean">너의 (혼동!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">draw</span>
+        <span class="ref-ipa">[drɔː]</span>
+        <span class="ref-kr"><span class="s">드로</span></span>
+        <span class="ref-mean">긋다, 그리다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">type</span>
+        <span class="ref-ipa">[taɪp]</span>
+        <span class="ref-kr"><span class="s">타</span>입</span>
+        <span class="ref-mean">타입, 유형</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — You're vs Your</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">You're</p><p class="word-mean">You are (너는 ~이다)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 이 문장 정답</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[jʊr]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">유</span>어</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>You're</b> = You are 축약! (o 하나 + 아포스트로피)<br>
+        🔸 ⚠️ <b>Your're</b>(✗)는 없는 단어예요! (o가 하나!)<br>
+        🔸 <b>You're speeding</b> = 너는 과속하고 있다<br>
+        🔸 뒤에 <b>동사/-ing</b>가 오면 You're! (You are ~ing)
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">Your</p><p class="word-mean">너의 (소유격)</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[jʊr]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">유</span>어</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>Your</b> = 너의 (뒤에 명사!)<br>
+        🔸 🔑 <b>You're</b>(너는 ~이다) vs <b>Your</b>(너의)<br>
+        🔸 발음은 똑같이 "유어"지만 뜻이 달라요!<br>
+        🔸 Your <b>car</b>(네 차), Your <b>lips</b>(네 입술) — 뒤에 명사!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">throw</p><p class="word-mean">던지다</p></div>
+        <span class="word-tag">th 무성음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[θroʊ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쓰로</span>우</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>th</b>: 혀끝을 이 사이에! "쓰" [θ] (무성음)<br>
+        🔸 <b>-row</b>: "로우" [roʊ] — ow = "오우"!<br>
+        🔸 <b>throw</b> = 던지다 (throw-threw-thrown 불규칙)<br>
+        🔸 ⚠️ throw[쓰로우] ≠ true[트루] — th 발음 주의!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">draw a line</p><p class="word-mean">선을 긋다</p></div>
+        <span class="word-tag">연음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[drɔː ə laɪn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">드로</span> 어 <span class="stress">라</span>인</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>draw</b>: "드로" [drɔː] — dr 연결!<br>
+        🔸 <b>line</b>: "라인" [laɪn] — l 혀끝!<br>
+        🔸 <b>draw a line</b>: "드로러라인" 연음!<br>
+        🔸 draw = 긋다 + 그리다 (draw a picture 그림 그리다)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">speeding</p><p class="word-mean">과속하다</p></div>
+        <span class="word-tag">긴 이 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈspiːdɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">스피</span>딩</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>spee-</b>: "스피" [spiː] — 긴 이 소리!<br>
+        🔸 <b>-ding</b>: "딩" [dɪŋ]<br>
+        🔸 <b>speed</b>(속도) → <b>speeding</b>(과속하는)<br>
+        🔸 ⚠️ 짧은 i(spitting)와 긴 iː(speeding) 구별!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🚗 [Good Morning Pops] Good Lovin'
+— GOLDA (골다) · 2019
+
+🎵 오픈카를 타고 도시를 달리며
+   "서두르지 말고 이 순간을 천천히 즐기자"
+   여유롭고 달콤한 R&B/소울 곡
+
+👏 세 문장 모두 거의 완벽하게 쓰셨어요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 throw me a smile
+   나에게 미소 지어주다
+   • Throw me a smile.
+     (나에게 미소 지어줘.)
+   • She threw me a look.
+     (그녀가 나에게 눈길을 던졌어.)
+   • Throw me the ball.
+     (공 좀 던져줘.)
+💡 throw + 사람 + 사물 = ~에게 …을 던지다
+   물건뿐 아니라 미소·눈길도 "던질" 수 있어요!
+
+🔹 You're vs Your (철자 혼동!)
+   너는 ~이다 vs 너의
+   • You're speeding too much.
+     (너 너무 과속하고 있어.) → You are
+   • Your car is fast.
+     (네 차는 빨라.) → 너의
+   • You're my best friend.
+     (넌 내 가장 친한 친구야.)
+💡 You're = You are / Your = 너의
+   ⚠️ Your're는 없는 단어! (o 하나 + 아포스트로피)
+   발음은 같지만 뜻이 완전 달라요!
+
+🔹 draw a line / the type to ~
+   선을 긋다 / ~하는 타입이다
+   • I'm not the type to ever draw a line.
+     (난 좀처럼 선 긋는 타입이 아니야.)
+   • We need to draw the line somewhere.
+     (우린 어딘가에 선을 그어야 해.)
+   • She's not the type to give up.
+     (그녀는 포기하는 타입이 아니야.)
+💡 draw a line = 경계·한계를 정하다
+   the type to + 동사 = ~하는 타입이다
+   ever(강조) = 좀처럼, 결코 (부정문에서!)
+
+——————————————————
+#GoodMorningPops #팝송영어 #GoodLovin #GOLDA</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

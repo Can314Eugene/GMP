@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memories We'll Never Make — Michael Minelli</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EAEAF0;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #46485E;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C9CAD9;border-color:#1E1F2E;color:#111220}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #B2B4C9}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C9CAD9;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C9CAD9;color:#111220;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C0C2D5;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C0C2D5;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C0C2D5;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#1E1F2E}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C9CAD9;color:#111220;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EAEAF0;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #B2B4C9}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C0C2D5}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#111220}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C0C2D5;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EAEAF0;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EAEAF0;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#111220;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C9CAD9;color:#111220;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EAEAF0;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#1E1F2E;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#111220;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C9CAD9;color:#111220;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#B2B4C9}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#1E1F2E;background:#C9CAD9;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#111220;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #EAEAF0;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#C9CAD9;color:#111220;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#EAEAF0;border-left:3px solid #1E1F2E;border-radius:10px;padding:12px 14px;font-size:13px;color:#1E1F2E;line-height:1.8}
+  .twist-box b{color:#111220;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#C9CAD9;color:#111220;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #46485E}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #B2B4C9;background:#EAEAF0;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#C9CAD9;border-color:#46485E}
+  .speed-btn.playing{background:#C9CAD9;border-color:#1E1F2E;box-shadow:0 0 0 2px #C9CAD9}
+  .speed-label{font-size:13px;font-weight:600;color:#111220;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#C9CAD9;color:#111220;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#B2B4C9}
+  .play-all-btn.playing{background:#1E1F2E;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#1E1F2E;background:#C9CAD9;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#33344A;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #B2B4C9;background:#fff;color:#33344A;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#C9CAD9;border-color:#1E1F2E;color:#111220}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#46485E;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#1E1F2E;background:#C9CAD9;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#111220;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#AAA;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1A1A2E;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #46485E;background:#EAEAF0;font-size:15px;font-family:inherit;font-weight:600;color:#1E1F2E;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#C9CAD9;border-bottom-color:#1E1F2E}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#C9CAD9;color:#111220;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#B2B4C9}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #B2B4C9;background:#fff;color:#33344A;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#EAEAF0}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#AAA;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #B2B4C9;background:#EAEAF0;color:#111220;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#C9CAD9;border-color:#46485E}
+  .quiz-say.playing{background:#C9CAD9;border-color:#1E1F2E;box-shadow:0 0 0 2px #C9CAD9}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#1E1F2E}
+  .score-label{font-size:12px;color:#888;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#1E1F2E;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#111220}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🥃</div>
+      <div>
+        <h2>Memories We'll Never Make</h2>
+        <p>Michael Minelli · With Love &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EAEAF0;border:1px solid #46485E;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#111220;line-height:1.7">
+      🥃 <b>Michael Minelli (마이클 미넬리)</b> · 2025년 3월 6일 싱글 발매 · 이후 앨범 <i>With Love</i> 수록<br>
+      <b>Michael Minelli · Oswin Benjamin</b> 공동 작사, 프로듀싱 <b>Rebbel Beats</b>. TikTok 길거리 즉흥 공연 영상으로 입소문을 타며 <b>Remix I·II·III</b>까지 이어진 화제작이에요.<br>
+      <b>"Memories We'll Never Make"</b>는 <b>함께 만들지 못할 추억들</b>이라는 뜻 — 이미 떠난 사람에게 건네는 마지막 건배 같은 곡이에요 🥃<br>
+      👏 <b>세 문장 모두 가사와 정확히 일치해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">난 다시 허공에 이야기 하고 있네요</p>
+          <div class="sent-row">
+            <span class="sent-right">I'm talking to the wind again.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Dark liquor gets the best of me / I'm talking to the wind again</b> — 완벽해요! 👏<br>
+            💡 <b>talk to the wind</b> = 허공에 대고 말하다 → <b>아무도 듣지 않는다, 소용없다</b><br>
+            &nbsp;&nbsp;우리말 <b>"벽에 대고 말하다"</b>와 같은 느낌이에요<br>
+            &nbsp;&nbsp;문장 끝의 <b>again</b>이 핵심 — "또야…"라는 <b>체념과 자조</b>가 이 한 단어에 담겨요 🌬️
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">지금 당신 마음속에 누가 있는지 궁금하네요</p>
+          <div class="sent-row">
+            <span class="sent-right">I wonder who's in your heart now.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I wonder who's in your heart now / Does he see the things I missed?</b> — 완벽해요! 👏<br>
+            💡 <b>I wonder who…</b> = 누굴까 궁금하다 — <b>질문이 아니라 혼잣말</b>이에요<br>
+            &nbsp;&nbsp;물어볼 수 없는 사이가 됐다는 <b>거리감</b>이 이 표현 하나에 깔려 있어요<br>
+            &nbsp;&nbsp;<b>in your heart</b>는 물리적 옆자리가 아니라 <b>마음속 자리</b> — "지금 네 마음의 주인은 누구니" 💭
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">이번 생에 내가 기회를 놓쳤네요</p>
+          <div class="sent-row">
+            <span class="sent-right">I dropped the ball this lifetime.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I dropped the ball this lifetime / But I'll ball in another one</b> — 완벽해요! 👏<br>
+            💡 <b>drop the ball</b> = (야구·미식축구에서 공을 놓치다) → <b>결정적인 순간에 그르치다, 자기 책임으로 망치다</b><br>
+            &nbsp;&nbsp;단순히 "기회를 놓쳤다"보다 <b>"내 잘못이었다"</b>는 자책이 훨씬 강해요<br>
+            &nbsp;&nbsp;<b>this lifetime</b>(이번 생) — 다음 생을 전제로 해서 후회가 더 깊어지죠 ⚾<br>
+            <span class="pill-note">가사 이본(異本) 확인 필요</span> 일부 가사 사이트는 뒷줄을 <b>But I won't in another one</b>으로 표기해요
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">talk to the wind</p>
+      <p class="expr-ko">허공에 대고 말하다, 소용없는 말을 하다</p>
+      <span class="expr-tag">벽에 대고 말하다</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Dark liquor gets the best of me, I'm talking to the wind again.</b><br>→ 독한 술에 무너지고, 난 또 허공에 대고 말하고 있어요.</p>
+        <p><b>I keep giving him advice, but I'm just talking to the wind.</b><br>→ 계속 조언해 주는데, 난 그냥 벽에 대고 말하는 거야.</p>
+        <p class="ex-note">💡 <b>talk to the wind</b> = 듣는 사람이 없는 말을 하다 (허무함·체념)<br>⚠️ 문장 끝 <b>again</b>이 "또야…"라는 <b>자조</b>를 만들어요<br>📌 <b>get the best of ~</b> = ~를 이기다, ~를 무너뜨리다 (Dark liquor gets the best of me)<br>비슷한 표현: <b>talk to a brick wall</b>(벽에 대고 말하다), <b>fall on deaf ears</b>(귀담아듣지 않다)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">I wonder who's in your heart</p>
+      <p class="expr-ko">네 마음속에 누가 있을지 궁금해</p>
+      <span class="expr-tag">혼잣말 어법</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I wonder who's in your heart now.</b><br>→ 지금 당신 마음속엔 누가 있는지 궁금하네요.</p>
+        <p><b>I wonder who left this note on my desk.</b><br>→ 누가 내 책상에 이 쪽지를 두고 갔을까.</p>
+        <p class="ex-note">💡 <b>I wonder + 의문사절</b> = ~일지 궁금하다 (물음표 없이, 혼잣말처럼!)<br>⚠️ 어순 주의: <b>I wonder who he is</b> (✓) / <s>I wonder who is he</s> (✗) — 간접의문문!<br>📌 <b>in your heart</b> = 마음속 자리 (곁 ≠ 마음)<br>비슷한 표현: <b>I can't help wondering ~</b>(궁금해하지 않을 수 없다), <b>Who's got your heart?</b></p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">drop the ball</p>
+      <p class="expr-ko">결정적인 순간에 그르치다, 내 잘못으로 망치다</p>
+      <span class="expr-tag">⭐ 오늘의 핵심</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I dropped the ball this lifetime, but I'll ball in another one.</b><br>→ 이번 생엔 내가 공을 놓쳤지만, 다음 생엔 제대로 해낼게요.</p>
+        <p><b>We dropped the ball on the deadline, and the client noticed.</b><br>→ 우리가 마감 건을 그르쳤고, 고객사도 눈치챘어.</p>
+        <p class="ex-note">💡 <b>drop the ball</b> = 야구·미식축구에서 공을 놓치다 → <b>자기 책임으로 일을 그르치다</b><br>⭐ 가사의 백미: 앞줄 <b>ball</b>은 명사(공), 뒷줄 <b>ball</b>은 동사(멋지게 해내다) — <b>말장난(pun)</b>이에요!<br>📌 <b>drop the ball on ~</b> = ~건을 그르치다 / <b>this lifetime</b> = 이번 생에는<br>비슷한 표현: <b>mess up</b>(망치다), <b>let someone down</b>(실망시키다), <b>blow it</b>(날려버리다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I'm talking to the wind again.</span> → 난 다시 허공에 이야기 하고 있네요.<br>
+      <span>I wonder who's in your heart now.</span> → 지금 당신 마음속에 누가 있는지 궁금하네요.<br>
+      <span>I dropped the ball this lifetime.</span> → 이번 생에 내가 기회를 놓쳤네요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🥃</div>
+      <div><h2>곡 이야기</h2><p>Memories We'll Never Make · Michael Minelli</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Michael Minelli (마이클 미넬리)</b>는 미국의 싱어송라이터예요. <b>"Memories We'll Never Make"</b>는 <b>2025년 3월 6일</b> 싱글로 발매됐고, 이후 앨범 <i>With Love</i>에 수록됐어요.
+        </p>
+        <p class="story-p">
+          <b>Michael Minelli</b>와 <b>Oswin Benjamin</b>이 함께 작사했고, <b>Rebbel Beats</b>가 프로듀싱에 참여했어요. TikTok의 <b>길거리 즉흥 공연 영상</b>을 통해 알려지면서, <b>Kennedy Ryon · Rubi Mar · Allison Kirby · Mass of Man</b> 등이 참여한 <b>Remix I·II·III</b>까지 이어졌어요.
+        </p>
+        <p class="story-p">
+          제목을 직역하면 <b>"우리가 결코 만들지 못할 추억들"</b> — 이미 끝난 관계에 건네는 <b>마지막 건배</b>를 담은 곡이에요 🥃
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 술과 허공</b><br>독한 술이 나를 이기고, <b>난 또 허공에 대고 말하고 있어요</b>(오늘 첫 문장!). 서로 연기할 필요 없던 그때가 훨씬 쉬웠는데. <b>지금 당신 마음속엔 누가 있는지 궁금해요</b>(두 번째 문장!) — 그 사람은 내가 놓친 걸 볼까요? 🥃</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — 마지막 건배</b><br>가장 좋았던 그 순간에도 우리가 <b>그저 실수였다</b>는 걸 알게 되는 건 싫어요. 그러니 마지막으로 한 번, <b>우리가 만들지 못할 추억들에게 건배</b>를 🥂</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Post-Chorus — 그 사람은 어때?</b><br>그는 나처럼 당신을 웃게 하나요? 나처럼 울게 하나요? 당신 어머니는 그를 <b>the one</b>이라 여기고, 아버지는 그를 <b>son</b>이라 부르나요? 그리고 — <b>이번 생엔 내가 공을 놓쳤네요</b>(세 번째 문장!) ⚾</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Verse 2 — 소문으로 듣는 소식</b><br>소문으로(<b>through the grapevine</b>) 당신이 마지막으로 집에 왔다는 걸 들었어요. 붉어진 눈, 어두운 하늘, 작아 보이는 집들. 여긴 소식이 참 빨리 돌아요 — 결국 <b>해피엔딩은 있긴 있나 봐요</b>, 나만 빼고 😔</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          ⚾ <b>"ball"을 두 번 다르게 쓰는 말장난</b><br><br>
+          <b>I dropped the ball this lifetime / But I'll ball in another one</b><br><br>
+          앞줄의 <b>ball</b>은 <b>명사(공)</b> — drop the ball은 "공을 놓치다 → 결정적으로 그르치다".<br>
+          뒷줄의 <b>ball</b>은 <b>동사</b>로, 미국 구어에서 <b>"멋지게 해내다, 잘나가다"</b>라는 뜻이에요.<br><br>
+          그래서 이 두 줄은 <b>"이번 생엔 공을 놓쳤지만, 다음 생엔 제대로 해낼게"</b>가 됩니다. 후회를 인정하면서도 <b>다음을 기약하는</b> — 이 곡에서 가장 사랑받는 구절이에요 ⚾<br><br>
+          👀 그리고 후렴의 <b>Does he make you laugh like I did?</b>는 <b>과거형 did</b>가 핵심이에요. "나는 그랬었다"는 <b>이미 끝난 시제</b>로 말하면서, 그 사실을 스스로 확인하는 아픔이 담겨 있죠.
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① I'm talking to the wind again</p>
+          <p class="learn-ko">난 다시 허공에 이야기 하고 있네요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I wonder who's in your heart now</p>
+          <p class="learn-ko">지금 당신 마음속에 누가 있는지 궁금하네요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ I dropped the ball this lifetime</p>
+          <p class="learn-ko">이번 생에 내가 기회를 놓쳤네요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Michael+Minelli+Memories+We%27ll+Never+Make+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Memories We'll Never Make 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Michael Minelli · Oswin Benjamin 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🥃</div>
+      <div><h2>핵심 단어 발음</h2><p>Memories We'll Never Make · Michael Minelli</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">liquor</span>
+        <span class="ref-ipa">[ˈlɪkər]</span>
+        <span class="ref-kr"><span class="s">리</span>커</span>
+        <span class="ref-mean">독한 술 (qu = k!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">dropped</span>
+        <span class="ref-ipa">[drɑːpt]</span>
+        <span class="ref-kr"><span class="s">드랍</span>트</span>
+        <span class="ref-mean">떨어뜨렸다 (-ed = t!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wonder</span>
+        <span class="ref-ipa">[ˈwʌndər]</span>
+        <span class="ref-kr"><span class="s">원</span>더</span>
+        <span class="ref-mean">궁금해하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">heart</span>
+        <span class="ref-ipa">[hɑːrt]</span>
+        <span class="ref-kr"><span class="s">하</span>아트</span>
+        <span class="ref-mean">마음, 심장</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">lifetime</span>
+        <span class="ref-ipa">[ˈlaɪftaɪm]</span>
+        <span class="ref-kr"><span class="s">라이프</span>타임</span>
+        <span class="ref-mean">일생, 생애</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">grapevine</span>
+        <span class="ref-ipa">[ˈɡreɪpvaɪn]</span>
+        <span class="ref-kr"><span class="s">그레입</span>바인</span>
+        <span class="ref-mean">소문, 포도덩굴</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — liquor (qu가 [k]!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">liquor</p><p class="word-mean">독한 술 (증류주)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ "리쿼" ✗ → "리커" ✓</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈlɪkər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">리</span>커</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>qu-</b>는 보통 [kw](quick, queen)인데, <b>liquor에서는 [k]만</b> 발음돼요!<br>
+        🔸 "리쿼"(✗) → <b>"리커"</b>(✓) — <b>LI</b>에 강세<br>
+        🔸 📌 같은 함정 단어: <b>liquid</b>는 [ˈlɪkwɪd] "리퀴드"로 [kw] 발음! 구별하세요<br>
+        🔸 <b>dark liquor</b> = 위스키·럼 같은 <b>갈색 독주</b> 🥃 (↔ clear liquor: 보드카·진)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — dropped (-ed를 [t]로!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">dropped</p><p class="word-mean">떨어뜨렸다, 놓쳤다</p></div>
+        <span class="word-tag">-ed = [t]</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[drɑːpt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">드랍</span>트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>-ed</b>는 앞이 <b>무성음(p, k, f, s, ʃ, tʃ)</b>이면 <b>[t]</b>로 발음!<br>
+        🔸 "드랍<b>피드</b>"(✗) → <b>"드랍트"</b>(✓) — 1음절이에요!<br>
+        🔸 📌 같은 규칙: <b>stopped</b>[stɑːpt], <b>missed</b>[mɪst], <b>watched</b>[wɑːtʃt]<br>
+        🔸 <b>dropped the ball</b>: "드랍더볼" — <b>t가 the와 만나 거의 사라져요</b> ⚾
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">wonder</p><p class="word-mean">궁금해하다</p></div>
+        <span class="word-tag">wander와 구별!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈwʌndər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">원</span>더</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wo-</b>: o를 "오"가 아니라 <b>[ʌ] "어"</b>로! — "원더"(✓) "완더"(✗)<br>
+        🔸 ⚠️ <b>wander</b>[ˈwɑːndər] "완더"(배회하다)와 <b>발음이 달라요</b>!<br>
+        🔸 <b>I wonder who's…</b>: "아이 원더 후즈" — <b>wonder</b>에 강세<br>
+        🔸 미국식에서 <b>-nd-</b>의 d는 약해져 "워너~"처럼 들리기도 해요 💭
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">grapevine</p><p class="word-mean">소문 (포도덩굴)</p></div>
+        <span class="word-tag">복합어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɡreɪpvaɪn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">그레입</span>바인</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>grape</b>(포도) + <b>vine</b>(덩굴) = grapevine — 앞쪽 <b>GRAPE</b>에 강세!<br>
+        🔸 <b>v</b>는 윗니를 아랫입술에 대고! "바인"(b) ✗ → <b>[vaɪn]</b> ✓<br>
+        🔸 📌 <b>hear through the grapevine</b> = <b>풍문으로 듣다</b> (덩굴처럼 뻗어나가는 소문!)<br>
+        🔸 가사: <b>I heard through the grapevine you came home for the last time</b> 🍇
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">lifetime</p><p class="word-mean">일생, 생애</p></div>
+        <span class="word-tag">이중모음 ai×2</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈlaɪftaɪm]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">라이프</span>타임</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>life</b>(삶) + <b>time</b>(시간) — 두 음절 모두 <b>[aɪ] "아이"</b> 이중모음!<br>
+        🔸 앞쪽 <b>LIFE</b>에 강세 — "라이프타임"<br>
+        🔸 <b>this lifetime</b> = 이번 생에는 (다음 생을 전제한 표현!)<br>
+        🔸 📌 <b>once in a lifetime</b> = 일생에 한 번뿐인 ✨
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Memories We'll Never Make</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 talk to the wind <span>· 허공에 대고 말하다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">Dark liquor gets the best of me, I'm talking to the wind again.</p>
+      <p class="listen-ko">독한 술에 무너지고, 난 또 허공에 대고 말하고 있어요.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Dark liquor gets the best of me, I'm talking to the wind again.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Dark liquor gets the best of me, I'm talking to the wind again.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;Dark liquor gets the best of me, I'm talking to the wind again.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">I keep giving him advice, but I'm just talking to the wind.</p>
+      <p class="listen-ko">계속 조언해 주는데, 난 그냥 벽에 대고 말하는 거야.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I keep giving him advice, but I'm just talking to the wind.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I keep giving him advice, but I'm just talking to the wind.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I keep giving him advice, but I'm just talking to the wind.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 I wonder who's ~ <span>· 누굴지 궁금하다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I wonder who's in your heart now.</p>
+      <p class="listen-ko">지금 당신 마음속에 누가 있는지 궁금하네요.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I wonder who's in your heart now.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I wonder who's in your heart now.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I wonder who's in your heart now.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">I wonder who left this note on my desk.</p>
+      <p class="listen-ko">누가 내 책상에 이 쪽지를 두고 갔을까.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I wonder who left this note on my desk.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'I wonder who left this note on my desk.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'I wonder who left this note on my desk.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 drop the ball <span>· 결정적으로 그르치다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I dropped the ball this lifetime, but I'll ball in another one.</p>
+      <p class="listen-ko">이번 생엔 내가 공을 놓쳤지만, 다음 생엔 제대로 해낼게요.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I dropped the ball this lifetime, but I'll ball in another one.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I dropped the ball this lifetime, but I'll ball in another one.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I dropped the ball this lifetime, but I'll ball in another one.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">We dropped the ball on the deadline, and the client noticed.</p>
+      <p class="listen-ko">우리가 마감 건을 그르쳤고, 고객사도 눈치챘어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'We dropped the ball on the deadline, and the client noticed.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'We dropped the ball on the deadline, and the client noticed.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'We dropped the ball on the deadline, and the client noticed.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#EAEAF0;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#1E1F2E;border:1px solid #B2B4C9">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div><h2>문장 암기</h2><p>빈칸 채우기 + 발음 연습 · Memories We'll Never Make</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      ✏️ <b>빈칸에 알맞은 영어 단어를 직접 입력</b>해서 오늘 배운 문장을 통째로 외워봐요!<br>
+      <b>오늘의 세 문장 + 표현별 예문</b>까지 전부 연습할 수 있어요.<br>
+      난이도를 골라 도전하세요 — <b>Level 1</b>(쉬움) → <b>Level 2</b>(보통) → <b>Level 3</b>(어려움)<br>
+      💡 각 칸을 채우고 <b>"정답 확인"</b>(또는 Enter)을 누르면 채점돼요.<br>
+      🔊 문장마다 <b>발음 듣기 버튼</b>이 있어요 — 듣고 따라 하면 더 빨리 외워져요!
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" id="lv1" onclick="setLevel(1,this)">Level 1<span>핵심 단어</span></button>
+      <button class="level-btn" id="lv2" onclick="setLevel(2,this)">Level 2<span>표현 위주</span></button>
+      <button class="level-btn" id="lv3" onclick="setLevel(3,this)">Level 3<span>거의 전체</span></button>
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">정답 확인을 누르면 점수가 표시돼요</div>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+
+    <div class="quiz-card" style="background:#EAEAF0;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#1E1F2E;border:1px solid #B2B4C9;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🥃 [Good Morning Pops] Memories We'll Never Make
+— Michael Minelli
+
+🎵 2025년 3월 6일 싱글 발매
+   이후 앨범 With Love 수록
+   Michael Minelli · Oswin Benjamin 공동 작사
+   TikTok 길거리 공연으로 화제, Remix I·II·III까지
+
+   "우리가 결코 만들지 못할 추억들"
+   이미 떠난 사람에게 건네는
+   마지막 건배 같은 곡 🥃
+
+👏 세 문장 모두 가사와 정확히 일치해요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 talk to the wind
+   허공에 대고 말하다, 소용없는 말을 하다
+   • Dark liquor gets the best of me,
+     I'm talking to the wind again.
+     (독한 술에 무너지고, 난 또 허공에
+      대고 말하고 있어요.)
+   • I keep giving him advice, but I'm
+     just talking to the wind.
+     (계속 조언해 주는데, 난 그냥 벽에
+      대고 말하는 거야.)
+💡 우리말 "벽에 대고 말하다"와 같은 느낌!
+   끝의 again이 "또야…" 하는 자조를 만들어요
+   비슷한 표현: fall on deaf ears
+
+🔹 I wonder who's ~
+   누구일지 궁금하다 (혼잣말 어법)
+   • I wonder who's in your heart now.
+     (지금 당신 마음속에 누가 있는지
+      궁금하네요.)
+   • I wonder who left this note on my desk.
+     (누가 내 책상에 이 쪽지를 두고 갔을까.)
+💡 어순 주의! 간접의문문이에요
+   I wonder who he is (O)
+   I wonder who is he (X)
+
+🔹 drop the ball  ⭐ 오늘의 핵심
+   결정적인 순간에 그르치다, 내 잘못으로 망치다
+   • I dropped the ball this lifetime,
+     but I'll ball in another one.
+     (이번 생엔 내가 공을 놓쳤지만,
+      다음 생엔 제대로 해낼게요.)
+   • We dropped the ball on the deadline,
+     and the client noticed.
+     (우리가 마감 건을 그르쳤고,
+      고객사도 눈치챘어.)
+💡 야구·미식축구에서 "공을 놓치다"에서 온 말
+   단순한 "기회를 놓쳤다"보다
+   "내 잘못이었다"는 자책이 강해요
+⭐ 앞줄 ball = 명사(공)
+   뒷줄 ball = 동사(멋지게 해내다)
+   → 가사의 백미인 말장난!
+
+🔊 발음 팁
+   • liquor = [리]커 (qu가 [k]! "리쿼" ✗)
+     cf. liquid는 [리퀴드]로 [kw] 발음
+   • dropped = [드랍]트 (-ed를 [t]로!)
+     무성음 뒤 -ed는 [t] (stopped, missed)
+   • wonder = [원]더 (o를 "어"로!)
+     wander[완더](배회하다)와 구별!
+   • grapevine = [그레입]바인 (v 발음 주의)
+     hear through the grapevine = 풍문으로 듣다
+
+——————————————————
+#GoodMorningPops #팝송영어 #MemoriesWellNeverMake #MichaelMinelli</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "\uD83D\uDCDD \uC624\uB298\uC758 \uC138 \uBB38\uC7A5",
+    items: [
+      { ko:"난 다시 허공에 이야기 하고 있네요.", en:"I'm talking to the wind again.", key:["talking","wind","again"] },
+      { ko:"지금 당신 마음속에 누가 있는지 궁금하네요.", en:"I wonder who's in your heart now.", key:["wonder","heart"] },
+      { ko:"이번 생에 내가 기회를 놓쳤네요.", en:"I dropped the ball this lifetime.", key:["dropped","ball","lifetime"] }
+    ]
+  },
+  {
+    title: "\uD83D\uDD39 talk to the wind",
+    items: [
+      { ko:"독한 술에 무너지고, 난 또 허공에 대고 말하고 있어요.", en:"Dark liquor gets the best of me, I'm talking to the wind again.", key:["liquor","best","talking","wind"] },
+      { ko:"계속 조언해 주는데, 난 그냥 벽에 대고 말하는 거야.", en:"I keep giving him advice, but I'm just talking to the wind.", key:["advice","talking","wind"] }
+    ]
+  },
+  {
+    title: "\uD83D\uDD39 I wonder who's ~",
+    items: [
+      { ko:"지금 당신 마음속에 누가 있는지 궁금하네요.", en:"I wonder who's in your heart now.", key:["wonder","heart","now"] },
+      { ko:"누가 내 책상에 이 쪽지를 두고 갔을까.", en:"I wonder who left this note on my desk.", key:["wonder","left","desk"] }
+    ]
+  },
+  {
+    title: "\uD83D\uDD39 drop the ball",
+    items: [
+      { ko:"이번 생엔 내가 공을 놓쳤지만, 다음 생엔 제대로 해낼게요.", en:"I dropped the ball this lifetime, but I'll ball in another one.", key:["dropped","lifetime","another"] },
+      { ko:"우리가 마감 건을 그르쳤고, 고객사도 눈치챘어.", en:"We dropped the ball on the deadline, and the client noticed.", key:["dropped","deadline","noticed"] }
+    ]
+  }
+];
+
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return s.toLowerCase().replace(/[.,!?'"\u2014\u2013\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level===1) target = Math.max(1, Math.round(n*0.20));
+  else if(level===2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">'+ item.ko +'</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blankIdx.length +'칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blankIdx.indexOf(wi) >= 0){
+          var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+          var pre = m ? m[1] : '';
+          var core = m && m[2] ? m[2] : w;
+          var post = m ? m[3] : '';
+          var size = Math.max(core.length, 4);
+          if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+          html += '<input class="quiz-blank" data-q="'+qi+'" data-w="'+wi+'" data-ans="'+encodeURIComponent(core)+'" size="'+size+'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkOne('+qi+')">';
+          if(post) html += '<span class="quiz-word">'+ post +'</span>';
+        } else {
+          html += '<span class="quiz-word">'+ w +'</span>';
+        }
+        html += ' ';
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne('+qi+')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne('+qi+')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.8)">🚶 보통</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',1.0)">🏃 원어민</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz2(this,'+qi+')">▶ 2회 반복</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr'+qi+'"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="'+qi+'"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayQuiz2(btn, qi){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr'+qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr'+qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">'+ getQuizText(qi) +'</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi=0; qi<total; qi++){
+    if(checkOne(qi)) correct++;
+  }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1){
+    label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  } else if(ratio >= 0.7){
+    label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  } else if(ratio >= 0.4){
+    label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  } else {
+    label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderQuiz);
+if(document.readyState !== 'loading') renderQuiz();
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

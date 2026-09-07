@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stay — Gracie Abrams</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F6F4F2;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #B0A498;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#E8E0D8;border-color:#6A5848;color:#3A2C20}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #DCD2C8}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#E8E0D8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#E8E0D8;color:#3A2C20;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E2DAD0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E2DAD0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E2DAD0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#6A5848}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#E8E0D8;color:#3A2C20;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F6F4F2;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #DCD2C8}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E2DAD0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#3A2C20}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E2DAD0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F6F4F2;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F6F4F2;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#3A2C20;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E2DAD0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#E8E0D8;color:#3A2C20;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F6F4F2;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#6A5848;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#3A2C20;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #E2DAD0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#E8E0D8;color:#3A2C20;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#D8CCC0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #E2DAD0;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#6A5848;background:#E8E0D8;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #F3F0EC}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🤍</div>
+      <div>
+        <h2>Stay</h2>
+        <p>Gracie Abrams · minor (2020) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#F6F4F2;border:1px solid #B0A498;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#3A2C20;line-height:1.7">
+      🤍 <b>Gracie Abrams (그레이시 에이브럼스)</b> · LA 출신 싱어송라이터 (영화감독 J.J. Abrams의 딸)<br>
+      "Stay"는 끝난 관계에 대한 미련과, 말보다 그저 안아주길 바라는 애틋한 마음을 그린 곡이에요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신이 날 안아주지 않아서 내가 스스로를 안아주었어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I held myself cause I had.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I held myself 'cause you wouldn't.</span>
+          </div>
+          <span class="pill-fix">cause I had → 'cause you wouldn't</span>
+          <p class="note-text">
+            가사 정확: <b>I held myself 'cause you wouldn't, all wrapped in my sweatshirt</b><br>
+            ⚠️ <b>cause I had</b>(✗) → <b>'cause you wouldn't</b>(✓)<br>
+            💡 <b>you wouldn't</b> = "당신이 (안아주려) 하지 않았으니까" — wouldn't 뒤에 hold me가 생략됐어요!<br>
+            &nbsp;&nbsp;<b>'cause</b> = because의 축약형. <b>hold → held</b>(과거형, 불규칙!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">내 말들이 항상 방해가 되었어요</p>
+          <div class="sent-row">
+            <span class="sent-right">My words always got in the way.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Know that I tried but my words always got in the way</b> — 완벽해요! 👏<br>
+            💡 <b>get in the way</b> = 방해가 되다, 걸림돌이 되다. <b>got</b>은 get의 과거형!<br>
+            "노력했지만 내 말들이 늘 걸림돌이 됐다"는 후회의 표현이에요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">아무 말 없이 날 안아줄 수 있어요?</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Could you hold me without any taking?</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Could you hold me without any talking?</span>
+          </div>
+          <span class="pill-fix">taking → talking (l 빠진 철자 오류)</span>
+          <p class="note-text">
+            가사 정확: <b>Could you hold me without any talking?</b><br>
+            ⚠️ <b>taking</b>(가져가는)(✗) → <b>talking</b>(말하는)(✓) — l이 빠졌어요!<br>
+            💡 <b>talk</b>[톡] = 말하다 / <b>take</b>[테이크] = 가져가다 — 발음도 뜻도 완전히 달라요!<br>
+            &nbsp;&nbsp;<b>without any talking</b> = 아무 말 없이 → "그저 말없이 안아줄 수 있어?"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">hold myself / 'cause you wouldn't</p>
+      <p class="expr-ko">스스로를 안다 / 당신이 안 해줬으니까</p>
+      <span class="expr-tag">감정 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I held myself 'cause you wouldn't.</b> → 당신이 안 해줘서 내가 날 안았어.</p>
+        <p><b>I had to do it 'cause no one else would.</b> → 아무도 안 하니까 내가 해야 했어.</p>
+        <p><b>She comforted herself when no one was there.</b> → 아무도 없을 때 그녀는 스스로를 위로했어.</p>
+        <p class="ex-note">💡 <b>'cause</b> = because (축약). <b>you wouldn't</b> = 당신은 (그러려고) 하지 않았다<br>뒤에 반복되는 동사(hold me)가 생략된 형태! <b>hold → held → held</b> (불규칙)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">get in the way</p>
+      <p class="expr-ko">방해가 되다 / 걸림돌이 되다</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>My words always got in the way.</b> → 내 말들이 항상 방해가 됐어.</p>
+        <p><b>Don't let fear get in the way of your dreams.</b> → 두려움이 네 꿈을 방해하게 두지 마.</p>
+        <p><b>Work keeps getting in the way of our plans.</b> → 일이 자꾸 우리 계획을 방해해.</p>
+        <p><b>I'm sorry if I got in the way.</b> → 방해가 됐다면 미안해.</p>
+        <p class="ex-note">💡 <b>get in the way (of ~)</b> = (~의) 방해가 되다, 가로막다<br>물리적으로 길을 막는 것 + 비유적으로 일을 방해하는 것 둘 다!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">hold me without any talking</p>
+      <p class="expr-ko">아무 말 없이 안아주다</p>
+      <span class="expr-tag">talk vs take 핵심!</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Could you hold me without any talking?</b> → 아무 말 없이 날 안아줄 수 있어?</p>
+        <p><b>Sometimes I just need a hug, no words.</b> → 가끔은 그냥 말없이 안아주는 게 필요해.</p>
+        <p><b>Let's talk it out.</b> → 우리 대화로 풀어보자. (talk = 말하다)</p>
+        <p><b>Don't take it personally.</b> → 기분 나쁘게 받아들이지 마. (take = 받아들이다)</p>
+        <p class="ex-note">💡 <b>talk</b>[톡] = 말하다 / <b>take</b>[테이크] = 가져가다, 받아들이다<br>철자 한 글자(l) 차이지만 발음도 뜻도 완전히 달라요!<br><b>without any talking</b> = 아무 말 없이 (말을 전혀 하지 않고)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I held myself 'cause you wouldn't.</span> → 당신이 날 안아주지 않아서 내가 스스로를 안아주었어요.<br>
+      <span>My words always got in the way.</span> → 내 말들이 항상 방해가 되었어요.<br>
+      <span>Could you hold me without any talking?</span> → 아무 말 없이 날 안아줄 수 있어요?
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🤍</div>
+      <div><h2>전체 가사</h2><p>Stay · Gracie Abrams (2020)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1</span>
+        <div class="lyric-line"><span class="lyric-en">You told me something when I left but I don't remember</span><span class="lyric-ko">내가 떠날 때 당신이 뭔가 말했지만 기억이 안 나</span></div>
+        <div class="lyric-line"><span class="lyric-en">Maybe 'cause all I could do then was stare at the floor</span><span class="lyric-ko">아마 그때 내가 할 수 있던 건 바닥만 보는 것뿐이라서</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">I held myself 'cause you wouldn't, all wrapped in my sweatshirt</span></span><span class="lyric-ko">당신이 안 해줘서 내가 날 안았어, 내 스웨트셔츠로 꽁꽁 감싸고 ① </span></div>
+        <div class="lyric-line"><span class="lyric-en">Wonder if you even noticed that that one was yours</span><span class="lyric-ko">그게 당신 거였단 걸 알기나 했을까</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1 (cont.)</span>
+        <div class="lyric-line"><span class="lyric-en">And maybe I should've but I never told you "I'm sorry"</span><span class="lyric-ko">그래야 했는데, 난 한 번도 "미안하다"고 말 못 했어</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Know that I tried but my words always got in the way</span></span><span class="lyric-ko">노력했단 걸 알아줘, 하지만 내 말들이 늘 방해가 됐어 ② </span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Chorus</span>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Could you hold me without any talking?</span></span><span class="lyric-ko">아무 말 없이 날 안아줄 수 있어? ③ </span></div>
+        <div class="lyric-line"><span class="lyric-en">We could try to go back where we started</span><span class="lyric-ko">우리 시작했던 곳으로 돌아가볼 수도 있어</span></div>
+        <div class="lyric-line"><span class="lyric-en">I don't even have to stay</span><span class="lyric-ko">난 머무르지 않아도 돼</span></div>
+        <div class="lyric-line"><span class="lyric-en">I don't even have to stay but</span><span class="lyric-ko">난 머무르지 않아도 돼, 하지만</span></div>
+        <div class="lyric-line"><span class="lyric-en">If I woke up with you in the morning</span><span class="lyric-ko">아침에 당신과 함께 눈을 뜬다면</span></div>
+        <div class="lyric-line"><span class="lyric-en">I'd forget all the ways that we're broken</span><span class="lyric-ko">우리가 망가진 모든 이유를 잊을 텐데</span></div>
+        <div class="lyric-line"><span class="lyric-en">I don't care if you've changed, I don't even have to stay</span><span class="lyric-ko">당신이 변했어도 상관없어, 난 머무르지 않아도 돼</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장<br>※ 가사는 학습 참고용이며 저작권은 아티스트·저작권자에게 있습니다</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🤍</div>
+      <div><h2>핵심 단어 발음</h2><p>Stay · Gracie Abrams</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">talking</span>
+        <span class="ref-ipa">[ˈtɔːkɪŋ]</span>
+        <span class="ref-kr"><span class="s">토</span>킹</span>
+        <span class="ref-mean">말하는 것 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">taking</span>
+        <span class="ref-ipa">[ˈteɪkɪŋ]</span>
+        <span class="ref-kr"><span class="s">테</span>이킹</span>
+        <span class="ref-mean">가져가는 것 (혼동!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">held</span>
+        <span class="ref-ipa">[hɛld]</span>
+        <span class="ref-kr"><span class="s">헬</span>드</span>
+        <span class="ref-mean">안았다 (hold 과거)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wouldn't</span>
+        <span class="ref-ipa">[ˈwʊdənt]</span>
+        <span class="ref-kr"><span class="s">우</span>든트</span>
+        <span class="ref-mean">~하려 하지 않았다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">'cause</span>
+        <span class="ref-ipa">[kɔz]</span>
+        <span class="ref-kr"><span class="s">코</span>즈</span>
+        <span class="ref-mean">because (축약)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">way</span>
+        <span class="ref-ipa">[weɪ]</span>
+        <span class="ref-kr"><span class="s">웨</span>이</span>
+        <span class="ref-mean">길, 방식</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — talking vs taking</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">talking</p><p class="word-mean">말하는 것 (talk + ing)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈtɔːkɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">토</span>킹</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>talk</b>: "톡" [tɔːk] — al = "오"! l은 거의 묵음<br>
+        🔸 <b>-ing</b>: "킹" → "토킹"<br>
+        🔸 철자: ta<b>l</b>king — l이 들어가요!<br>
+        🔸 <b>without any talking</b> = 아무 말 없이
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">taking</p><p class="word-mean">가져가는 것 (take + ing)</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈteɪkɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">테</span>이킹</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>take</b>: "테이크" [teɪk] — a = "에이" 이중모음!<br>
+        🔸 🔑 차이: <b>talking [토킹]</b>(말하다) vs <b>taking [테이킹]</b>(가져가다)<br>
+        🔸 l 한 글자로 발음(오↔에이)과 뜻이 완전히 달라져요!<br>
+        🔸 ta<b>l</b>k(말하다) vs take(가져가다)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">held</p><p class="word-mean">안았다 (hold의 과거)</p></div>
+        <span class="word-tag">불규칙 과거</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[hɛld]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">헬</span>드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>held</b>: "헬드" [hɛld] — e = "에"!<br>
+        🔸 <b>hold → held → held</b> (불규칙 변화!)<br>
+        🔸 <b>I held myself</b>: "아이헬드마이셀프"<br>
+        🔸 hold = 안다, 잡다 / held = 그 과거형
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">get in the way</p><p class="word-mean">방해가 되다</p></div>
+        <span class="word-tag">관용표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɡɛt ɪn ðə weɪ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">겟 인 더 <span class="stress">웨</span>이</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>get in</b>: "게린" — 연음으로!<br>
+        🔸 <b>the way</b>: "더 웨이" [ðə weɪ]<br>
+        🔸 <b>got in the way</b>(과거): "가린더웨이"<br>
+        🔸 get in the way = 길을 막다 → 방해하다
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">'cause you wouldn't</p><p class="word-mean">당신이 안 해줬으니까</p></div>
+        <span class="word-tag">축약·연음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[kɔz juː ˈwʊdənt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">코즈 유 <span class="stress">우</span>든트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>'cause</b>: "코즈" — because의 축약!<br>
+        🔸 <b>wouldn't</b>: "우든트" [ˈwʊdənt] — would + not<br>
+        🔸 l은 묵음! "우든트" (would처럼)<br>
+        🔸 뒤에 hold me 생략: "안아주지 않았으니까"
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🤍 [Good Morning Pops] Stay
+— Gracie Abrams (그레이시 에이브럼스) · 2020
+
+🎵 LA 출신 싱어송라이터 (J.J. Abrams 감독의 딸)
+   끝난 관계에 대한 미련과, 말보다 그저
+   안아주길 바라는 애틋한 마음을 그린 곡
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 당신이 날 안아주지 않아서 내가 스스로를 안아주었어요
+✗ I held myself cause I had.
+→ I held myself 'cause you wouldn't. ✓
+   발음: 아이 헬드 마이셀프 코즈 유 우든트
+⚠️ cause I had → 'cause you wouldn't
+💡 you wouldn't = 당신이 (안아주려) 하지 않았으니까
+   (뒤에 hold me 생략!)
+   hold → held (불규칙 과거)
+
+2️⃣ 내 말들이 항상 방해가 되었어요
+→ My words always got in the way. ✓
+   발음: 마이 워즈 올웨이즈 가린 더 웨이
+✨ 완벽! 👏
+💡 get in the way = 방해가 되다, 걸림돌이 되다
+
+3️⃣ 아무 말 없이 날 안아줄 수 있어요?
+✗ Could you hold me without any taking?
+→ Could you hold me without any talking? ✓
+   발음: 쿠쥬 홀드 미 위다웃 애니 토킹
+⚠️ taking → talking (l 빠진 철자!)
+💡 talk[톡] = 말하다 / take[테이크] = 가져가다
+   l 한 글자로 발음·뜻이 완전히 달라요!
+   without any talking = 아무 말 없이
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 talking [토킹] vs taking [테이킹]
+  talking = "토킹" (al = 오) → 말하다 ✓
+  taking = "테이킹" (a = 에이) → 가져가다
+  l 한 글자로 완전히 달라져요!
+
+🔹 held [헬드]
+  hold → held (불규칙 과거!)
+
+🔹 get in the way [게린 더 웨이]
+  방해가 되다 (got in = 가린)
+
+🔹 'cause you wouldn't [코즈 유 우든트]
+  'cause = because 축약
+  wouldn't = 안 하려 했다 (l 묵음)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 I held myself 'cause you wouldn't.
+   당신이 안 해줘서 내가 날 안았어
+   • I had to do it 'cause no one else would.
+     (아무도 안 하니까 내가 해야 했어.)
+💡 'cause = because, you wouldn't 뒤 동사 생략
+
+🔹 get in the way
+   방해가 되다, 걸림돌이 되다
+   • Don't let fear get in the way of your dreams.
+     (두려움이 네 꿈을 방해하게 두지 마.)
+💡 길을 막다 → 비유적으로 방해하다
+
+🔹 hold me without any talking
+   아무 말 없이 안아주다
+   • Sometimes I just need a hug, no words.
+     (가끔은 그냥 말없이 안아주는 게 필요해.)
+💡 talk(말하다) ≠ take(가져가다) — l 차이!
+
+——————————————————
+
+📝 한 번에 정리
+
+I held myself 'cause you wouldn't.
+→ 당신이 날 안아주지 않아서 내가 스스로를 안아주었어요.
+
+My words always got in the way.
+→ 내 말들이 항상 방해가 되었어요.
+
+Could you hold me without any talking?
+→ 아무 말 없이 날 안아줄 수 있어요?
+
+——————————————————
+
+🎶 전체 가사 흐름
+떠날 때 당신이 안 안아줘서 내가 날 안았어 (V1) →
+미안하다 말 못 했어, 말이 늘 방해됐어 (V1) →
+그냥 말없이 안아줄래? 처음으로 돌아가보자 (Chorus)
+
+——————————————————
+#GoodMorningPops #팝송영어 #Stay #GracieAbrams</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

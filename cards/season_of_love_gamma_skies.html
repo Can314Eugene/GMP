@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Season of Love — Gamma Skies</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FBF2E4;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #C08A3E;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#F4DFB8;border-color:#6E4410;color:#432802}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #E8CFA0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#F4DFB8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#F4DFB8;color:#432802;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #EBD7B0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #EBD7B0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #EBD7B0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#6E4410}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#F4DFB8;color:#432802;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FBF2E4;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #E8CFA0}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #EBD7B0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#432802}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EBD7B0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FBF2E4;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FBF2E4;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#432802;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #EBD7B0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#F4DFB8;color:#432802;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FBF2E4;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#6E4410;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#432802;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #EBD7B0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#F4DFB8;color:#432802;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#E8CFA0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #EBD7B0;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#6E4410;background:#F4DFB8;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#432802;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FBF2E4;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#F4DFB8;color:#432802;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#FBF2E4;border-left:3px solid #6E4410;border-radius:10px;padding:12px 14px;font-size:13px;color:#6E4410;line-height:1.8}
+  .twist-box b{color:#432802;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#F4DFB8;color:#432802;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #C08A3E}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #EBD7B0;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #E8CFA0;background:#FBF2E4;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#F4DFB8;border-color:#C08A3E}
+  .speed-btn.playing{background:#F4DFB8;border-color:#6E4410;box-shadow:0 0 0 2px #F4DFB8}
+  .speed-label{font-size:13px;font-weight:600;color:#432802;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#F4DFB8;color:#432802;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#E8CFA0}
+  .play-all-btn.playing{background:#6E4410;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#6E4410;background:#F4DFB8;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#8A5A1E;font-weight:500}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🍂</div>
+      <div>
+        <h2>Season of Love</h2>
+        <p>Gamma Skies feat. Victor Lundberg &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7">
+      💡 <b>가수 이름 교정:</b> 감마스 가이 (✗) → <b>Gamma Skies (감마 스카이즈)</b> (✓)<br>
+      <b>gamma</b>(감마) + <b>skies</b>(하늘들) = "감마 하늘"이라는 뜻이에요. 이 곡은 <b>Victor Lundberg</b>가 피처링으로 참여했어요 (feat.)
+    </div>
+
+    <div style="background:#FBF2E4;border:1px solid #C08A3E;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#432802;line-height:1.7">
+      🍂 <b>Season of Love</b> — 여름이 저물고 <b>잎이 물드는 계절</b>에, 네온 불빛 아래에서 사랑에 빠지는 순간을 그린 곡이에요. 별빛·달빛·낙엽·겨울 햇살이 차례로 등장하는 <b>계절감이 아름다운</b> 노래죠 ✨<br>
+      👏 <b>세 문장 모두 가사와 정확히 일치해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">매번 날 설레게 만들죠</p>
+          <div class="sent-row">
+            <span class="sent-right">It gets me every time.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <span class="pill-note">가사는 주어 없이 "Gets me every time"</span>
+          <p class="note-text">
+            가사: <b>Beneath the moonlight, soft touch, your hand in mine / Gets me every time</b><br>
+            문장 앞에 <b>It</b>을 붙여 완전한 문장으로 만드신 게 정확해요! 👏<br>
+            💡 <b>get me</b> = 날 사로잡다, 마음을 흔들다 (감동·설렘을 줄 때!)<br>
+            &nbsp;&nbsp;<b>every time</b> = 매번, 볼 때마다<br>
+            &nbsp;&nbsp;가사에선 <b>달빛 아래 맞잡은 손</b>이 주어예요 — "그게 매번 날 설레게 해" 🌙
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 날 편안하게 느끼게 해주죠</p>
+          <div class="sent-row">
+            <span class="sent-right">You make me feel at home.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I know July is gone, you make me feel at home</b> — 완벽해요! 👏<br>
+            💡 <b>feel at home</b> = 집에 있는 것처럼 편안하다<br>
+            &nbsp;&nbsp;<b>make + 목적어 + 동사원형</b> = ~가 …하게 만들다 (사역동사!)<br>
+            &nbsp;&nbsp;⚠️ make 뒤엔 <b>to</b> 없이 동사원형! (make me <b>feel</b> ✓ / make me to feel ✗)<br>
+            &nbsp;&nbsp;"7월(여름)은 갔지만, 넌 여전히 날 편안하게 해줘"라는 따뜻한 문장이에요 🏡
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">난 당신에게 깊이 빠져들어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I dive into you.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>As the leaves change color, I dive into you</b> — 완벽해요! 👏<br>
+            💡 <b>dive into ~</b> = ~에 뛰어들다, 몰두하다, 푹 빠지다<br>
+            &nbsp;&nbsp;원래는 <b>물속으로 다이빙하다</b>는 뜻인데, 여기선 사람에게 빠져드는 비유로 썼어요 🏊<br>
+            &nbsp;&nbsp;<b>as</b> = ~함에 따라, ~하면서 (동시에 일어나는 일!)<br>
+            &nbsp;&nbsp;"나뭇잎이 물들어 가는 동안, 난 너에게 빠져들어" — 계절 변화와 사랑을 겹쳐놓은 아름다운 표현이에요 🍂
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">get me every time</p>
+      <p class="expr-ko">매번 날 사로잡다, 설레게 하다</p>
+      <span class="expr-tag">감정을 흔드는 get</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Your smile in the morning gets me every time, no matter how tired I am.</b><br>→ 아침에 짓는 네 미소는 내가 아무리 피곤해도 매번 날 설레게 해.</p>
+        <p><b>That scene at the end of the movie gets me every time I watch it.</b><br>→ 그 영화 마지막 장면은 볼 때마다 매번 날 울려.</p>
+        <p><b>He tells the same joke every year, and somehow it still gets me.</b><br>→ 그는 해마다 같은 농담을 하는데, 어째선지 여전히 나한테 먹혀.</p>
+        <p class="ex-note">💡 <b>get me</b> = 날 사로잡다, 마음을 움직이다 (감동·설렘·웃음 모두!)<br><b>every time</b> = 매번, ~할 때마다<br>📌 <b>It gets me every time</b>은 통째로 외우면 좋은 <b>덩어리 표현</b>이에요<br>비슷한 표현: <b>It never fails to move me</b>(늘 날 감동시켜), <b>It always hits me</b>(늘 와닿아)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">make me feel at home</p>
+      <p class="expr-ko">날 편안하게 해주다</p>
+      <span class="expr-tag">사역동사 make</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>You make me feel at home even when everything else feels unfamiliar.</b><br>→ 다른 모든 게 낯설게 느껴질 때도 넌 날 편안하게 해줘.</p>
+        <p><b>Please make yourself at home while I finish cooking dinner.</b><br>→ 저녁 준비 마칠 동안 편하게 계세요.</p>
+        <p><b>Her warm welcome made everyone feel at home right away.</b><br>→ 그녀의 따뜻한 환대가 모두를 곧바로 편안하게 만들었어.</p>
+        <p class="ex-note">💡 <b>feel at home</b> = (남의 집·낯선 곳에서도) 내 집처럼 편안하다<br><b>make + 목적어 + 동사원형</b> = ~가 …하게 만들다 (사역동사)<br>⚠️ make 뒤엔 <b>to 없이</b> 동사원형! (make me feel ✓ / make me to feel ✗)<br>📌 <b>Make yourself at home!</b> = 편하게 계세요! (손님 맞을 때 필수 표현 🏡)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">dive into ~</p>
+      <p class="expr-ko">~에 뛰어들다, 푹 빠지다</p>
+      <span class="expr-tag">비유 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>As the leaves change color, I dive into you without a second thought.</b><br>→ 나뭇잎이 물들어 가는 동안, 난 망설임 없이 너에게 빠져들어.</p>
+        <p><b>She dove into her new project and forgot about everything else.</b><br>→ 그녀는 새 프로젝트에 푹 빠져서 다른 건 다 잊어버렸어.</p>
+        <p><b>Let's dive into the details before we make any decisions.</b><br>→ 결정을 내리기 전에 세부 사항을 자세히 들여다보자.</p>
+        <p class="ex-note">💡 <b>dive into ~</b> = ① 물속으로 뛰어들다 ② ~에 몰두하다, 푹 빠지다<br>물에 <b>풍덩</b> 빠지는 이미지 → 무언가에 온전히 잠기는 느낌! 🏊<br>📌 <b>dive - dove/dived - dived</b> (과거형 두 가지 다 써요)<br>비슷한 표현: <b>throw yourself into ~</b>(몰두하다), <b>fall for ~</b>(사랑에 빠지다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>It gets me every time.</span> → 매번 날 설레게 만들죠.<br>
+      <span>You make me feel at home.</span> → 당신은 날 편안하게 느끼게 해주죠.<br>
+      <span>I dive into you.</span> → 난 당신에게 깊이 빠져들어요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🍂</div>
+      <div><h2>곡 이야기</h2><p>Season of Love · Gamma Skies feat. Victor Lundberg</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Gamma Skies (감마 스카이즈)</b>의 곡으로, 스웨덴 싱어송라이터 <b>Victor Lundberg</b>가 보컬 피처링으로 참여했어요. 2024년경 공개된 곡이에요.
+        </p>
+        <p class="story-p">
+          Gamma Skies는 여러 보컬리스트와 협업하는 프로젝트 형태로 활동해요 — <i>Every Song</i>(feat. Mia Niles), <i>Be Mine</i>(feat. Jaslyn Edgar), <i>I Bet You're Cold</i>(feat. Cara Rainer) 같은 곡들이 있죠.
+        </p>
+        <p class="story-p">
+          <b>"Season of Love"</b>는 <b>여름이 저물고 가을로 접어드는 계절</b>에 사랑에 빠지는 순간을 그렸어요. 별빛, 달빛, 네온 불빛, 물드는 낙엽, 겨울 햇살… <b>빛과 계절의 이미지</b>가 겹겹이 쌓여 있는 게 이 곡의 매력이에요 ✨
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 별빛 아래의 비밀</b><br>별이 총총한 하늘 아래, 두 사람만의 <b>비밀스러운 선</b>이 이어져요. 낙엽처럼 두 사람은 높이 날아오르죠. 달빛 아래 부드러운 손길, 내 손 안의 네 손 — 그게 <b>매번 날 설레게 해요</b>. 오늘 배운 <b>Gets me every time</b>이 바로 여기예요! 🌙</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Verse 2 — 네온 불빛 속에서</b><br>도시의 불빛 속에서 길을 잃어요. 우리 사랑은 전기처럼 짜릿하죠. 넌 날 살아 있게 만들어요. <b>7월(여름)은 지나갔지만, 넌 여전히 날 편안하게 해줘</b> — 이 네온 불빛 속에서. 두 번째 학습 문장이 여기 나와요 🏙️</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 계절이 바뀌는 동안</b><br><b>나뭇잎이 물들어 가는 동안, 난 너에게 빠져들어요</b>(세 번째 문장!). 여름이 저물면 할 일이라곤, <b>겨울 햇살의 영광 속에 몸을 맡기는 것</b>뿐. 그리고 조심스러운 결론 — <b>"어쩌면 지금이 사랑의 계절인지도 몰라."</b> 🍂</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 끝없는 밤에</b><br>끝없는 밤 아래 세상은 빙글빙글 돌아가요. 그 자리엔 네가 있고, 내 마음을 편안하게 해주죠. <b>결코 사그라지지 않는 별들처럼</b>, 너와 나는 함께 빛나요 — <b>가장 어두운 시간 속에서도</b>. ⭐</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          🍂 <b>계절의 변화 = 사랑의 깊어짐</b><br><br>
+          이 곡은 <b>계절과 사랑을 나란히 놓아요</b>. 여름(July)은 흔히 뜨거운 사랑의 계절이지만, 화자는 <b>여름이 지나간 뒤</b>에 오히려 진짜 편안함(feel at home)을 찾았다고 말해요.<br><br>
+          그리고 <b>"Maybe this is the season of love"</b>(어쩌면 지금이 사랑의 계절인지도) — <b>maybe</b>라는 조심스러운 단어가 이 곡의 핵심이에요. 확신이 아니라 <b>막 깨달아가는 중</b>인 마음이거든요.<br><br>
+          <b>bask in the glory of the winter sun</b>(겨울 햇살의 영광 속에 몸을 맡기다)도 아름다운 표현이에요. 여름의 뜨거움은 갔지만, 겨울 햇살에는 <b>겨울만의 따스함</b>이 있다는 거죠 ☀️
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① (It) gets me every time</p>
+          <p class="learn-ko">매번 날 설레게 만들죠</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② You make me feel at home</p>
+          <p class="learn-ko">당신은 날 편안하게 느끼게 해주죠</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ I dive into you</p>
+          <p class="learn-ko">난 당신에게 깊이 빠져들어요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Gamma+Skies+Season+of+Love+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Season of Love 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Gamma Skies · Victor Lundberg 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🍂</div>
+      <div><h2>핵심 단어 발음</h2><p>Season of Love · Gamma Skies</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">dive</span>
+        <span class="ref-ipa">[daɪv]</span>
+        <span class="ref-kr"><span class="s">다</span>이브</span>
+        <span class="ref-mean">뛰어들다 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">dived / dove</span>
+        <span class="ref-ipa">[daɪvd] / [doʊv]</span>
+        <span class="ref-kr"><span class="s">다</span>이브드 / <span class="s">도</span>우브</span>
+        <span class="ref-mean">dive의 과거</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">season</span>
+        <span class="ref-ipa">[ˈsiːzən]</span>
+        <span class="ref-kr"><span class="s">씨</span>즌</span>
+        <span class="ref-mean">계절 (s가 "ㅈ"!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">beneath</span>
+        <span class="ref-ipa">[bɪˈniːθ]</span>
+        <span class="ref-kr">비<span class="s">니</span>쓰</span>
+        <span class="ref-mean">~ 아래에</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">bask</span>
+        <span class="ref-ipa">[bæsk]</span>
+        <span class="ref-kr"><span class="s">배</span>스크</span>
+        <span class="ref-mean">햇볕을 쬐다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">glory</span>
+        <span class="ref-ipa">[ˈɡlɔːri]</span>
+        <span class="ref-kr"><span class="s">글로</span>리</span>
+        <span class="ref-mean">영광, 찬란함</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — season (s가 "ㅈ" 소리!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">season</p><p class="word-mean">계절 (제목!)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 두 번째 s는 "ㅈ"</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsiːzən]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">씨</span>즌</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>sea-</b>: "씨" [siː] — 첫 s는 "ㅅ", 긴 이 소리!<br>
+        🔸 <b>-son</b>: "즌" [zən] — 두 번째 <b>s는 "ㅈ"</b> 소리! "씨슨"(✗) → "씨즌"(✓)<br>
+        🔸 <b>모음 사이의 s</b>는 "ㅈ"[z]가 되는 경우가 많아요<br>
+        🔸 같은 패턴: <b>rea</b>son[리즌], <b>mu</b>sic[뮤직], plea<b>s</b>e[플리즈], ea<b>s</b>y[이지]<br>
+        🔸 ⚠️ <b>season</b>[씨즌](계절) vs <b>reason</b>[리즌](이유) — 첫소리만 다르죠!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — dive & 과거형</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">dive</p><p class="word-mean">뛰어들다, 빠져들다</p></div>
+        <span class="word-tag">과거형 두 가지!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[daɪv]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">다</span>이브</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>i</b>: "아이" [aɪ] — 이중모음!<br>
+        🔸 <b>-ve</b>: "브" [v] — 윗니로 아랫입술!<br>
+        🔸 📌 과거형이 <b>두 가지</b>예요: <b>dived</b>[다이브드] / <b>dove</b>[도우브]<br>
+        &nbsp;&nbsp;&nbsp;미국에선 <b>dove</b>를, 영국에선 <b>dived</b>를 더 자주 써요<br>
+        🔸 ⚠️ <b>dove</b>[도우브](뛰어들었다) vs <b>dove</b>[더브](비둘기) — 철자는 같은데 발음이 달라요! 🕊️<br>
+        🔸 <b>dive into you</b>: "다이빈투유" — v + into 연음!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">gets me</p><p class="word-mean">날 사로잡다</p></div>
+        <span class="word-tag">t 탈락</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɡɛts mi]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">겟</span>츠 미</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>gets</b>: "겟츠" [ɡɛts] — ts가 "츠"처럼!<br>
+        🔸 실제 대화에선 <b>"겟스미"</b>처럼 빠르게 뭉개져요<br>
+        🔸 <b>every time</b>: "에브리 타임" — <b>TIME</b>에 힘을 주면 자연스러워요<br>
+        🔸 전체: <b>"겟츠미 에브리 <span class="stress">타</span>임"</b> 🎵
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">feel at home</p><p class="word-mean">편안하게 느끼다</p></div>
+        <span class="word-tag">연음 덩어리</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[fiːl ət hoʊm]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">피</span>럿 <span class="stress">호</span>움</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>feel at</b>: "필 앳"이 아니라 <b>"피럿"</b> — l + at 연음!<br>
+        🔸 <b>at</b>은 약하게 "엇" [ət]<br>
+        🔸 <b>home</b>: "호움" [hoʊm] — o = "오우" 이중모음!<br>
+        🔸 전체: <b>"메이크미 피럿호움"</b> (make me feel at home) 🏡
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">bask</p><p class="word-mean">햇볕을 쬐다, 만끽하다</p></div>
+        <span class="word-tag">a = 애</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[bæsk]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">배</span>스크</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>ba-</b>: "배" [bæ] — 입을 옆으로 크게! "바스크"(✗)<br>
+        🔸 <b>-sk</b>: "스크" [sk]<br>
+        🔸 <b>bask in ~</b> = ~을 만끽하다, ~ 속에서 몸을 녹이다<br>
+        🔸 가사: <b>bask in the glory of the winter sun</b> (겨울 햇살의 영광을 만끽하다) ☀️<br>
+        🔸 ⚠️ <b>bask</b>[배스크] ≠ <b>basket</b>[배스킷] — 헷갈리지 마세요!
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Season of Love</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 get me every time <span>· 매번 날 사로잡다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">Your smile in the morning gets me every time, no matter how tired I am.</p>
+      <p class="listen-ko">아침에 짓는 네 미소는 내가 아무리 피곤해도 매번 날 설레게 해.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Your smile in the morning gets me every time, no matter how tired I am.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Your smile in the morning gets me every time, no matter how tired I am.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Your smile in the morning gets me every time, no matter how tired I am.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">That scene at the end of the movie gets me every time I watch it.</p>
+      <p class="listen-ko">그 영화 마지막 장면은 볼 때마다 매번 날 울려.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'That scene at the end of the movie gets me every time I watch it.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'That scene at the end of the movie gets me every time I watch it.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'That scene at the end of the movie gets me every time I watch it.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">He tells the same joke every year, and somehow it still gets me.</p>
+      <p class="listen-ko">그는 해마다 같은 농담을 하는데, 어째선지 여전히 나한테 먹혀.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'He tells the same joke every year, and somehow it still gets me.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'He tells the same joke every year, and somehow it still gets me.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'He tells the same joke every year, and somehow it still gets me.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 make me feel at home <span>· 편안하게 해주다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">You make me feel at home even when everything else feels unfamiliar.</p>
+      <p class="listen-ko">다른 모든 게 낯설게 느껴질 때도 넌 날 편안하게 해줘.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'You make me feel at home even when everything else feels unfamiliar.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'You make me feel at home even when everything else feels unfamiliar.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'You make me feel at home even when everything else feels unfamiliar.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Please make yourself at home while I finish cooking dinner.</p>
+      <p class="listen-ko">저녁 준비 마칠 동안 편하게 계세요.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Please make yourself at home while I finish cooking dinner.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Please make yourself at home while I finish cooking dinner.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Please make yourself at home while I finish cooking dinner.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Her warm welcome made everyone feel at home right away.</p>
+      <p class="listen-ko">그녀의 따뜻한 환대가 모두를 곧바로 편안하게 만들었어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Her warm welcome made everyone feel at home right away.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Her warm welcome made everyone feel at home right away.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Her warm welcome made everyone feel at home right away.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 dive into ~ <span>· 뛰어들다, 푹 빠지다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">As the leaves change color, I dive into you without a second thought.</p>
+      <p class="listen-ko">나뭇잎이 물들어 가는 동안, 난 망설임 없이 너에게 빠져들어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'As the leaves change color, I dive into you without a second thought.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'As the leaves change color, I dive into you without a second thought.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'As the leaves change color, I dive into you without a second thought.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">She dove into her new project and forgot about everything else.</p>
+      <p class="listen-ko">그녀는 새 프로젝트에 푹 빠져서 다른 건 다 잊어버렸어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'She dove into her new project and forgot about everything else.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'She dove into her new project and forgot about everything else.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'She dove into her new project and forgot about everything else.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Let's dive into the details before we make any decisions.</p>
+      <p class="listen-ko">결정을 내리기 전에 세부 사항을 자세히 들여다보자.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Let's dive into the details before we make any decisions.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Let's dive into the details before we make any decisions.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;Let's dive into the details before we make any decisions.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#FBF2E4;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#6E4410;border:1px solid #E8CFA0">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🍂 [Good Morning Pops] Season of Love
+— Gamma Skies feat. Victor Lundberg
+
+💡 가수명: 감마스 가이 ✗
+          → Gamma Skies (감마 스카이즈) ✓
+   스웨덴 싱어송라이터 Victor Lundberg 피처링
+
+🎵 여름이 저물고 잎이 물드는 계절,
+   네온 불빛 아래에서 사랑에 빠지는 순간
+   별빛·달빛·낙엽·겨울 햇살이 차례로 등장하는
+   계절감이 아름다운 곡 ✨
+
+👏 세 문장 모두 가사와 정확히 일치해요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 get me every time
+   매번 날 사로잡다, 설레게 하다
+   • Your smile in the morning gets me
+     every time, no matter how tired I am.
+     (아침에 짓는 네 미소는 내가 아무리
+      피곤해도 매번 날 설레게 해.)
+   • That scene at the end of the movie
+     gets me every time I watch it.
+     (그 영화 마지막 장면은
+      볼 때마다 매번 날 울려.)
+   • He tells the same joke every year,
+     and somehow it still gets me.
+     (그는 해마다 같은 농담을 하는데,
+      어째선지 여전히 나한테 먹혀.)
+💡 get me = 날 사로잡다, 마음을 움직이다
+   감동·설렘·웃음 모두에 써요!
+   every time = 매번, ~할 때마다
+   It gets me every time = 통째로 외우기!
+   비슷한 표현: It never fails to move me
+              It always hits me
+
+🔹 make me feel at home
+   날 편안하게 해주다
+   • You make me feel at home even when
+     everything else feels unfamiliar.
+     (다른 모든 게 낯설게 느껴질 때도
+      넌 날 편안하게 해줘.)
+   • Please make yourself at home while
+     I finish cooking dinner.
+     (저녁 준비 마칠 동안 편하게 계세요.)
+   • Her warm welcome made everyone
+     feel at home right away.
+     (그녀의 따뜻한 환대가 모두를
+      곧바로 편안하게 만들었어.)
+💡 feel at home = 내 집처럼 편안하다
+   make + 목적어 + 동사원형 (사역동사!)
+   ⚠️ make me feel ✓ / make me to feel ✗
+   Make yourself at home! = 편하게 계세요! 🏡
+
+🔹 dive into ~
+   ~에 뛰어들다, 푹 빠지다
+   • As the leaves change color,
+     I dive into you without a second thought.
+     (나뭇잎이 물들어 가는 동안,
+      난 망설임 없이 너에게 빠져들어.)
+   • She dove into her new project and
+     forgot about everything else.
+     (그녀는 새 프로젝트에 푹 빠져서
+      다른 건 다 잊어버렸어.)
+   • Let's dive into the details before
+     we make any decisions.
+     (결정을 내리기 전에
+      세부 사항을 자세히 들여다보자.)
+💡 dive into = ① 물속으로 뛰어들다
+              ② ~에 몰두하다, 푹 빠지다
+   물에 풍덩 빠지는 이미지! 🏊
+   dive - dove/dived - dived (과거형 두 가지)
+   비슷한 표현: throw yourself into ~
+              fall for ~ (사랑에 빠지다)
+
+🔊 발음 팁
+   • season = [씨]즌 — 두 번째 s는 "ㅈ" 소리!
+     "씨슨" ✗ → "씨즌" ✓
+     같은 패턴: reason[리즌] music[뮤직]
+   • dive 과거형 dove[도우브](뛰어들었다)
+     ≠ dove[더브](비둘기) 🕊️ 철자 같고 발음 달라요!
+   • feel at home = "피럿호움" 연음!
+   • bask = [배]스크 (a는 "애"!)
+
+——————————————————
+#GoodMorningPops #팝송영어 #SeasonOfLove #GammaSkies</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

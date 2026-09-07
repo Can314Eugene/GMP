@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>supernatural — Ariana Grande</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EEF0FA;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #6E74C0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#D6D9F4;border-color:#2E3480;color:#161A4E}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #C0C5EC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#D6D9F4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#D6D9F4;color:#161A4E;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #CDD1EF;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #CDD1EF;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #CDD1EF;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#2E3480}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#D6D9F4;color:#161A4E;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EEF0FA;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #C0C5EC}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #CDD1EF}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#161A4E}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #CDD1EF;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEF0FA;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EEF0FA;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#161A4E;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #CDD1EF;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#D6D9F4;color:#161A4E;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EEF0FA;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#2E3480;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#161A4E;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #CDD1EF;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#D6D9F4;color:#161A4E;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#C0C5EC}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #CDD1EF;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#2E3480;background:#D6D9F4;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#161A4E;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #EEF0FA;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#D6D9F4;color:#161A4E;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#EEF0FA;border-left:3px solid #2E3480;border-radius:10px;padding:12px 14px;font-size:13px;color:#2E3480;line-height:1.8}
+  .twist-box b{color:#161A4E;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#D6D9F4;color:#161A4E;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #6E74C0}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #CDD1EF;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #C0C5EC;background:#EEF0FA;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#D6D9F4;border-color:#6E74C0}
+  .speed-btn.playing{background:#D6D9F4;border-color:#2E3480;box-shadow:0 0 0 2px #D6D9F4}
+  .speed-label{font-size:13px;font-weight:600;color:#161A4E;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#D6D9F4;color:#161A4E;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#C0C5EC}
+  .play-all-btn.playing{background:#2E3480;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#2E3480;background:#D6D9F4;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#4A50A0;font-weight:500}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">👽</div>
+      <div>
+        <h2>supernatural</h2>
+        <p>Ariana Grande · Eternal Sunshine &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EEF0FA;border:1px solid #6E74C0;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#161A4E;line-height:1.7">
+      👽 <b>Ariana Grande (아리아나 그란데)</b> · 앨범 <i>Eternal Sunshine</i> (2024)<br>
+      전설적인 프로듀서 <b>Max Martin</b>, <b>Oscar Görres</b>와 함께 만든 신스팝(synth-pop) 곡이에요. 2025년 9월 4일 프로모션 싱글로 발매됐죠.<br>
+      제목처럼 <b>"이 사랑은 초자연적이야 — 나를 홀리고 사로잡아"</b>라는, 사랑에 완전히 빠진 상태를 <b>초자연 현상</b>에 빗댄 곡이에요 ✨<br>
+      👏 <b>세 문장 모두 가사와 정확히 일치해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">너무나도 분명해요</p>
+          <div class="sent-row">
+            <span class="sent-right">It's crystal clear.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>You're like the only thing that I see / It's crystal clear</b> — 완벽해요! 👏<br>
+            💡 <b>crystal clear</b> = 수정처럼 맑은 → <b>아주 명백한, 너무나 분명한</b><br>
+            &nbsp;&nbsp;<b>crystal</b>(수정)이 <b>clear</b>(맑은)를 강조해주는 구조예요 — 그냥 clear보다 훨씬 강해요!<br>
+            &nbsp;&nbsp;"내 눈에 보이는 건 너뿐이야, 그건 너무나 분명해" 💎
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">뭘 망설이고 있나요?</p>
+          <div class="sent-row">
+            <span class="sent-right">What are you waiting for?</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I want you to come claim it, I do / What are you waiting for?</b> — 완벽해요! 👏<br>
+            💡 <b>What are you waiting for?</b> = 뭘 기다려? 뭘 망설이는 거야? (재촉·독려!)<br>
+            &nbsp;&nbsp;<b>wait for ~</b> = ~을 기다리다 (전치사 <b>for</b>가 문장 끝으로 간 형태!)<br>
+            &nbsp;&nbsp;직역은 "무엇을 기다리고 있니?"지만, 실제론 <b>"어서 해!"</b>라는 뉘앙스예요 🚀
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">그게 날 완전히 장악하고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-right">It's taking over me.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <span class="pill-note">한글 오타: 장학 → 장악</span>
+          <p class="note-text">
+            가사 정확: <b>It's like supernatural / It's taking over me</b> — 완벽해요! 👏<br>
+            💡 <b>take over ~</b> = ~을 장악하다, 지배하다, 넘겨받다<br>
+            &nbsp;&nbsp;<b>take</b>(가지다) + <b>over</b>(위로) → 위에서 덮치듯 <b>차지해버리는</b> 이미지!<br>
+            &nbsp;&nbsp;여기선 사랑이라는 감정이 나를 <b>완전히 점령</b>한 상태를 뜻해요 — 초자연적인 힘처럼요 👻
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">crystal clear</p>
+      <p class="expr-ko">수정처럼 맑은 → 아주 명백한</p>
+      <span class="expr-tag">강조 비유</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>You're the only thing I see, and it's crystal clear to me now.</b><br>→ 내 눈에 보이는 건 너뿐이야, 이젠 그게 너무나 분명해.</p>
+        <p><b>She explained the rules so well that everything became crystal clear.</b><br>→ 그녀가 규칙을 너무 잘 설명해줘서 모든 게 아주 명확해졌어.</p>
+        <p class="ex-note">💡 <b>crystal clear</b> = 수정처럼 맑은 → 아주 명백한, 의심의 여지가 없는<br><b>crystal</b>(수정)이 <b>clear</b>(맑은)를 강조해요 — 그냥 clear보다 훨씬 강한 느낌! 💎<br>📌 비슷한 강조 비유: <b>rock solid</b>(바위처럼 단단한), <b>ice cold</b>(얼음처럼 차가운), <b>pitch black</b>(칠흑같이 어두운)<br>📌 <b>Am I making myself clear?</b> = 내 말 알아들었어? (단호한 표현)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">What are you waiting for?</p>
+      <p class="expr-ko">뭘 망설여? 어서 해!</p>
+      <span class="expr-tag">재촉·독려 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>The door is wide open, so what are you waiting for?</b><br>→ 문은 활짝 열려 있는데, 뭘 망설이고 있어?</p>
+        <p><b>I've been waiting for this moment since I was a little kid.</b><br>→ 난 어릴 때부터 이 순간을 기다려왔어.</p>
+        <p class="ex-note">💡 <b>What are you waiting for?</b> = 뭘 기다려? → <b>어서 해!</b>라는 재촉·독려<br><b>wait for ~</b> = ~을 기다리다 (전치사 for는 문장 끝으로!)<br>📌 의문사가 앞으로 나가면 전치사만 뒤에 남아요: <b>What</b> are you waiting <b>for</b>? / <b>Who</b> are you talking <b>to</b>?<br>비슷한 표현: <b>Go for it!</b>(어서 해!), <b>Don't hold back!</b>(망설이지 마!)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">take over ~</p>
+      <p class="expr-ko">장악하다, 지배하다, 넘겨받다</p>
+      <span class="expr-tag">구동사</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>This feeling is taking over me, and I don't even want to fight it.</b><br>→ 이 감정이 날 완전히 장악하고 있는데, 난 저항할 마음조차 없어.</p>
+        <p><b>She took over the family business after her father retired.</b><br>→ 그녀는 아버지가 은퇴하신 뒤 가업을 넘겨받았어.</p>
+        <p class="ex-note">💡 <b>take over ~</b> = ① (감정·상황이) 장악하다, 압도하다 ② (일·역할을) 넘겨받다<br><b>take</b>(가지다) + <b>over</b>(위로) → 위에서 덮치듯 차지하는 이미지! 👻<br>📌 명사형 <b>takeover</b> = 인수, 장악 (a company takeover = 기업 인수)<br>비슷한 표현: <b>overwhelm</b>(압도하다), <b>consume</b>(집어삼키다), <b>possess</b>(홀리다 — 이 곡의 가사에도 나와요!)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>It's crystal clear.</span> → 너무나도 분명해요.<br>
+      <span>What are you waiting for?</span> → 뭘 망설이고 있나요?<br>
+      <span>It's taking over me.</span> → 그게 날 완전히 장악하고 있어요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">👽</div>
+      <div><h2>곡 이야기</h2><p>supernatural · Ariana Grande</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Ariana Grande (아리아나 그란데)</b>의 일곱 번째 정규 앨범 <i>Eternal Sunshine</i>(2024) 수록곡이에요. <b>2025년 9월 4일</b> 프로모션 싱글로 정식 발매됐죠.
+        </p>
+        <p class="story-p">
+          작곡·프로듀싱에는 아리아나 본인과 <b>Max Martin</b>, <b>Oscar Görres</b>가 참여했어요. Max Martin은 팝 역사상 가장 많은 히트곡을 만든 프로듀서 중 한 명이에요 🎹
+        </p>
+        <p class="story-p">
+          장르는 <b>신스팝(synth-pop)</b>, 길이는 2분 43초로 짧지만 강렬해요. 앨범 제목 <i>Eternal Sunshine</i>은 영화 <b>「이터널 선샤인」</b>(2004)에서 따온 거예요 ☀️
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 너밖에 안 보여</b><br>내 주변엔 다른 누구도 필요 없어요. 오직 너만 여기 있으면 돼요. 넌 내 눈에 보이는 유일한 존재고, <b>그건 너무나 분명해요</b>. 오늘 배운 <b>It's crystal clear</b>가 바로 여기예요! 💎</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 어서 와서 가져가</b><br>네가 와서 이걸 <b>차지해줬으면</b> 좋겠어요. 정말로요. <b>뭘 망설이고 있어요?</b>(두 번째 문장!) 네가 이름 붙여주고, 네 것으로 만들어줬으면 해요. 관계를 확실히 해달라는 <b>적극적인 요청</b>이에요 🚀</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 초자연적인 사랑</b><br>이건 마치 <b>초자연적(supernatural)</b>이에요. 이 사랑이 날 <b>홀리고(possessing)</b> 있는데, 전혀 개의치 않아요. <b>그게 날 완전히 장악하고 있어요</b>(세 번째 문장!) 그리고 결정적인 한마디 — <b>"이 추락에 저항하고 싶지 않아."</b> 👻</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Verse 2 — 달과 별처럼</b><br>네 손길이 온몸에 필요해요 — <b>달이 별을 필요로 하듯이</b>. 다른 무엇도 내 안에서 이런 느낌을 준 적이 없어요. 그리고 대담한 초대 — <b>"우리 더 멀리 가보자."</b> 🌙</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          👽 <b>사랑 = 초자연 현상</b><br><br>
+          이 곡은 사랑을 <b>귀신 들림(possession)</b>에 비유해요. <b>possess</b>(홀리다), <b>take over</b>(장악하다), <b>supernatural</b>(초자연적) — 전부 <b>공포영화에나 나올 단어들</b>이죠.<br><br>
+          그런데 반전은 화자의 태도예요. 보통 홀리면 <b>벗어나려</b> 발버둥 치는데, 이 화자는 정반대로 말해요 — <b>"But I don't mind at all"</b>(전혀 상관없어), <b>"Don't wanna fight the fall"</b>(이 추락에 저항하고 싶지 않아).<br><br>
+          무서운 단어들로 <b>가장 달콤한 항복</b>을 노래하는 게 이 곡의 재치예요. 뮤직비디오에서도 아리아나가 UFO 빛을 향해 걸어가 <b>공중으로 떠오르며</b> 이 이미지를 완성해요 🛸
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① It's crystal clear</p>
+          <p class="learn-ko">너무나도 분명해요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② What are you waiting for?</p>
+          <p class="learn-ko">뭘 망설이고 있나요?</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ It's taking over me</p>
+          <p class="learn-ko">그게 날 완전히 장악하고 있어요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Ariana+Grande+supernatural+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;supernatural 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Ariana Grande · Max Martin · Oscar Görres 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">👽</div>
+      <div><h2>핵심 단어 발음</h2><p>supernatural · Ariana Grande</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">supernatural</span>
+        <span class="ref-ipa">[ˌsuːpərˈnætʃərəl]</span>
+        <span class="ref-kr">수퍼<span class="s">내</span>추럴</span>
+        <span class="ref-mean">초자연적인 (제목!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">crystal</span>
+        <span class="ref-ipa">[ˈkrɪstəl]</span>
+        <span class="ref-kr"><span class="s">크리</span>스틀</span>
+        <span class="ref-mean">수정</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">clear</span>
+        <span class="ref-ipa">[klɪr]</span>
+        <span class="ref-kr"><span class="s">클리</span>어</span>
+        <span class="ref-mean">맑은, 분명한</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">possessing</span>
+        <span class="ref-ipa">[pəˈzɛsɪŋ]</span>
+        <span class="ref-kr">퍼<span class="s">제</span>싱</span>
+        <span class="ref-mean">홀리는 (ss가 "ㅈ"!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">waiting</span>
+        <span class="ref-ipa">[ˈweɪtɪŋ]</span>
+        <span class="ref-kr"><span class="s">웨</span>이링</span>
+        <span class="ref-mean">기다리는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">natural</span>
+        <span class="ref-ipa">[ˈnætʃərəl]</span>
+        <span class="ref-kr"><span class="s">내</span>추럴</span>
+        <span class="ref-mean">자연스러운</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — supernatural</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">supernatural</p><p class="word-mean">초자연적인 (제목!)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ NAT에 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˌsuːpərˈnætʃərəl]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">수퍼<span class="stress">내</span>추럴</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>su-per-NAT-u-ral</b> — 5음절! <b>NAT</b>에 강세 💥<br>
+        🔸 <b>super-</b>: "수퍼" 약하게 [ˌsuːpər]<br>
+        🔸 <b>-nat-</b>: "내" [næt] — a가 <b>"애"</b> 소리! "나추럴"(✗)<br>
+        🔸 <b>-tu-</b>: "추" [tʃə] — t + u가 만나 <b>"츄"</b> 소리가 나요!<br>
+        🔸 같은 패턴: na<b>tu</b>re[네이처], pic<b>tu</b>re[픽처], fu<b>tu</b>re[퓨처]
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — possess (ss가 "ㅈ"!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">possessing</p><p class="word-mean">홀리는, 사로잡는</p></div>
+        <span class="word-tag">s 소리 두 가지!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[pəˈzɛsɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">퍼<span class="stress">제</span>싱</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>po-</b>: "퍼" 약하게 [pə] — "포"(✗)<br>
+        🔸 <b>-sse-</b>: 첫 ss는 <b>"ㅈ"</b> [z] 소리! "퍼<b>제</b>싱" — <b>ZE</b>에 강세<br>
+        🔸 <b>-ssing</b>: 두 번째 ss는 <b>"ㅅ"</b> [s] 소리!<br>
+        🔸 한 단어 안에서 ss가 <b>"ㅈ" → "ㅅ"</b> 순서로 바뀌는 특이한 단어예요 😲<br>
+        🔸 <b>possess</b>(소유하다/홀리다) → <b>possession</b>[퍼<b>제</b>션](소유, 빙의)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">crystal clear</p><p class="word-mean">아주 명백한</p></div>
+        <span class="word-tag">덩어리 표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈkrɪstəl klɪr]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">크리</span>스틀 <span class="stress">클리</span>어</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>cry-</b>: "크리" [krɪ] — 짧은 이!<br>
+        🔸 <b>-stal</b>: "스틀" [stəl] — 모음이 아주 약해요<br>
+        🔸 <b>clear</b>: "클리어" [klɪr] — l 발음 주의! (crear ✗)<br>
+        🔸 ⚠️ <b>crystal</b>의 r vs <b>clear</b>의 l — 두 소리가 나란히 나와서 좋은 연습이 돼요 💪
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">taking over</p><p class="word-mean">장악하는</p></div>
+        <span class="word-tag">연음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈteɪkɪŋ ˈoʊvər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">테</span>이킹 <span class="stress">오</span>우버</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>taking</b>: "테이킹" [ˈteɪkɪŋ] — a = "에이"!<br>
+        🔸 <b>over</b>: "오우버" [ˈoʊvər] — o = "오우" 이중모음!<br>
+        🔸 연음: <b>"테이킹오우버미"</b> — ng + over가 부드럽게 이어져요<br>
+        🔸 <b>It's taking over me</b>: "잇츠 테이킹오우버미" 🎵
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">waiting for</p><p class="word-mean">~을 기다리는</p></div>
+        <span class="word-tag">미국식 t = "ㄹ"</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈweɪtɪŋ fər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">웨</span>이링 퍼</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wai-</b>: "웨이" [weɪ] — 이중모음!<br>
+        🔸 <b>-ting</b>: 미국식에선 t가 <b>"ㄹ"</b> 소리! "웨이<b>링</b>" 🇺🇸<br>
+        🔸 <b>for</b>: 문장 끝에서도 약하게 "퍼" [fər]<br>
+        🔸 전체: <b>"왓아유 웨이링퍼?"</b> (What are you waiting for?)
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · supernatural</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 crystal clear <span>· 아주 명백한</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">You're the only thing I see, and it's crystal clear to me now.</p>
+      <p class="listen-ko">내 눈에 보이는 건 너뿐이야, 이젠 그게 너무나 분명해.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;You're the only thing I see, and it's crystal clear to me now.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;You're the only thing I see, and it's crystal clear to me now.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;You're the only thing I see, and it's crystal clear to me now.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">She explained the rules so well that everything became crystal clear.</p>
+      <p class="listen-ko">그녀가 규칙을 너무 잘 설명해줘서 모든 게 아주 명확해졌어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'She explained the rules so well that everything became crystal clear.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'She explained the rules so well that everything became crystal clear.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'She explained the rules so well that everything became crystal clear.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 What are you waiting for? <span>· 뭘 망설여?</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">The door is wide open, so what are you waiting for?</p>
+      <p class="listen-ko">문은 활짝 열려 있는데, 뭘 망설이고 있어?</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'The door is wide open, so what are you waiting for?',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'The door is wide open, so what are you waiting for?',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'The door is wide open, so what are you waiting for?')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">I've been waiting for this moment since I was a little kid.</p>
+      <p class="listen-ko">난 어릴 때부터 이 순간을 기다려왔어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I've been waiting for this moment since I was a little kid.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I've been waiting for this moment since I was a little kid.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I've been waiting for this moment since I was a little kid.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 take over ~ <span>· 장악하다, 넘겨받다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">This feeling is taking over me, and I don't even want to fight it.</p>
+      <p class="listen-ko">이 감정이 날 완전히 장악하고 있는데, 난 저항할 마음조차 없어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;This feeling is taking over me, and I don't even want to fight it.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;This feeling is taking over me, and I don't even want to fight it.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;This feeling is taking over me, and I don't even want to fight it.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">She took over the family business after her father retired.</p>
+      <p class="listen-ko">그녀는 아버지가 은퇴하신 뒤 가업을 넘겨받았어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'She took over the family business after her father retired.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'She took over the family business after her father retired.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'She took over the family business after her father retired.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#EEF0FA;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#2E3480;border:1px solid #C0C5EC">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">👽 [Good Morning Pops] supernatural
+— Ariana Grande · Eternal Sunshine
+
+🎵 Max Martin, Oscar Görres와 함께 만든 신스팝
+   2025년 9월 4일 프로모션 싱글 발매
+   "이 사랑은 초자연적이야 — 나를 홀리고 사로잡아"
+   사랑에 빠진 상태를 초자연 현상에 빗댄 곡 ✨
+
+👏 세 문장 모두 가사와 정확히 일치해요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 crystal clear
+   수정처럼 맑은 → 아주 명백한
+   • You're the only thing I see,
+     and it's crystal clear to me now.
+     (내 눈에 보이는 건 너뿐이야,
+      이젠 그게 너무나 분명해.)
+   • She explained the rules so well
+     that everything became crystal clear.
+     (그녀가 규칙을 너무 잘 설명해줘서
+      모든 게 아주 명확해졌어.)
+💡 crystal(수정)이 clear(맑은)를 강조!
+   그냥 clear보다 훨씬 강한 느낌 💎
+   같은 강조 비유: rock solid (바위처럼 단단한)
+                  ice cold (얼음처럼 차가운)
+                  pitch black (칠흑같이 어두운)
+
+🔹 What are you waiting for?
+   뭘 망설여? 어서 해!
+   • The door is wide open,
+     so what are you waiting for?
+     (문은 활짝 열려 있는데,
+      뭘 망설이고 있어?)
+   • I've been waiting for this moment
+     since I was a little kid.
+     (난 어릴 때부터 이 순간을 기다려왔어.)
+💡 직역 "뭘 기다려?" → 실제론 "어서 해!" 재촉
+   wait for ~ = ~을 기다리다
+   의문사가 앞으로 가면 전치사만 뒤에 남아요
+   What are you waiting for?
+   Who are you talking to?
+   비슷한 표현: Go for it! / Don't hold back!
+
+🔹 take over ~
+   장악하다, 지배하다, 넘겨받다
+   • This feeling is taking over me,
+     and I don't even want to fight it.
+     (이 감정이 날 완전히 장악하고 있는데,
+      난 저항할 마음조차 없어.)
+   • She took over the family business
+     after her father retired.
+     (그녀는 아버지가 은퇴하신 뒤
+      가업을 넘겨받았어.)
+💡 take(가지다) + over(위로)
+   → 위에서 덮치듯 차지하는 이미지! 👻
+   ① 감정·상황이 장악하다 ② 일·역할을 넘겨받다
+   명사형 takeover = 인수, 장악
+   비슷한 표현: overwhelm / consume / possess
+
+🔊 발음 팁
+   • supernatural = 수퍼[내]추럴
+     su-per-NAT-u-ral, NAT에 강세!
+     -tu-는 "츄" 소리 (nature, picture, future)
+   • possessing = 퍼[제]싱
+     첫 ss는 "ㅈ", 두 번째 ss는 "ㅅ"! 😲
+   • waiting for = "웨이링 퍼"
+     미국식 t는 "ㄹ" 소리!
+
+——————————————————
+#GoodMorningPops #팝송영어 #supernatural #ArianaGrande</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

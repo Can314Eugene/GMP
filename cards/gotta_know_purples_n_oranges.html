@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gotta Know — Purples n' Oranges</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EAEAF0;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #46485E;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C9CAD9;border-color:#1E1F2E;color:#111220}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #B2B4C9}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C9CAD9;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C9CAD9;color:#111220;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C0C2D5;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C0C2D5;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C0C2D5;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#1E1F2E}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C9CAD9;color:#111220;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EAEAF0;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #B2B4C9}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C0C2D5}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#111220}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C0C2D5;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EAEAF0;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EAEAF0;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#111220;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C9CAD9;color:#111220;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EAEAF0;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#1E1F2E;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#111220;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C9CAD9;color:#111220;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#B2B4C9}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#1E1F2E;background:#C9CAD9;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#111220;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #EAEAF0;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#C9CAD9;color:#111220;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#EAEAF0;border-left:3px solid #1E1F2E;border-radius:10px;padding:12px 14px;font-size:13px;color:#1E1F2E;line-height:1.8}
+  .twist-box b{color:#111220;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#C9CAD9;color:#111220;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #46485E}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #B2B4C9;background:#EAEAF0;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#C9CAD9;border-color:#46485E}
+  .speed-btn.playing{background:#C9CAD9;border-color:#1E1F2E;box-shadow:0 0 0 2px #C9CAD9}
+  .speed-label{font-size:13px;font-weight:600;color:#111220;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#C9CAD9;color:#111220;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#B2B4C9}
+  .play-all-btn.playing{background:#1E1F2E;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#1E1F2E;background:#C9CAD9;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#33344A;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #B2B4C9;background:#fff;color:#33344A;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#C9CAD9;border-color:#1E1F2E;color:#111220}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#46485E;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#1E1F2E;background:#C9CAD9;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#111220;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#AAA;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1A1A2E;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #46485E;background:#EAEAF0;font-size:15px;font-family:inherit;font-weight:600;color:#1E1F2E;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#C9CAD9;border-bottom-color:#1E1F2E}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#C9CAD9;color:#111220;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#B2B4C9}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #B2B4C9;background:#fff;color:#33344A;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#EAEAF0}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#AAA;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #B2B4C9;background:#EAEAF0;color:#111220;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#C9CAD9;border-color:#46485E}
+  .quiz-say.playing{background:#C9CAD9;border-color:#1E1F2E;box-shadow:0 0 0 2px #C9CAD9}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #C0C2D5;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#1E1F2E}
+  .score-label{font-size:12px;color:#888;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#1E1F2E;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#111220}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+
+  /* ===== 원어민 연음 안내 ===== */
+  .link-line{background:#FFF8F0;border:1px solid #F0C48A;border-radius:10px;padding:10px 12px;margin:10px 0 14px;font-size:11.5px;color:#854F0B;line-height:1.75}
+  .link-line b{display:inline-block;margin-top:3px;font-size:13.5px;color:#6B3F08;font-weight:700;letter-spacing:.01em}
+  .link-line span{display:block;margin-top:5px;font-size:10.5px;color:#A9793A;line-height:1.7}
+  /* ===== 복습 탭 ===== */
+  .chip-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+  .chip{padding:8px 13px;border-radius:20px;border:1px solid #B2B4C9;background:#fff;color:#33344A;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+  .chip:hover{background:#EAEAF0;border-color:#46485E}
+  .chip.active{background:#1E1F2E;border-color:#1E1F2E;color:#fff}
+  .chip.wrong-chip{border-color:#E5484D;color:#791F1F}
+  .chip.wrong-chip.active{background:#E5484D;border-color:#E5484D;color:#fff}
+  .rv-stats{display:flex;gap:8px;margin-bottom:8px}
+  .rv-stat{flex:1;background:#fff;border:1px solid #C0C2D5;border-radius:14px;padding:14px 8px;text-align:center}
+  .rv-num{font-size:20px;font-weight:700;color:#1E1F2E;line-height:1.3}
+  .rv-lab{font-size:10.5px;color:#888;margin-top:3px}
+  .rv-msg{font-size:12px;color:#46485E;text-align:center;background:#EAEAF0;border-radius:10px;padding:10px 12px;margin-bottom:16px;line-height:1.6}
+  .rv-btn-row{display:flex;gap:8px;margin-top:9px}
+  .rv-sub-btn{flex:1;padding:11px 6px;border-radius:12px;border:1px solid #B2B4C9;background:#fff;color:#33344A;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+  .rv-sub-btn:hover{background:#EAEAF0;border-color:#46485E}
+  .rv-song-tag{font-size:10.5px;color:#888;font-weight:600;margin-bottom:7px;letter-spacing:.02em}
+  .rv-empty{background:#E1F5EE;border:1px solid #B8EDD9;border-radius:14px;padding:22px 18px;text-align:center;font-size:13px;color:#085041;line-height:1.8;font-weight:600}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('review',this)">🔁 복습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🍊</div>
+      <div>
+        <h2>Gotta Know</h2>
+        <p>Purples n' Oranges (2022) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EAEAF0;border:1px solid #46485E;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#111220;line-height:1.7">
+      🍊 <b>Purples n' Oranges</b> · 필리핀 <b>마닐라</b> 출신 팝 밴드 (2017년 결성)<br>
+      <b>"Gotta Know"</b>는 <b>2022년 10월 19일</b> 싱글로 발매됐어요 (3분 49초).<br>
+      연인에 대한 <b>소문(rumors)</b>을 듣고 흔들리는 마음 — 남의 말 말고 <b>네 입으로 직접 듣고 싶다</b>는 절박함을 담은 곡이에요 🍊<br>
+      ✏️ 첫 문장에 문법 오류가 있어요 — 아래에서 함께 고쳐봐요!
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">내가 알아야 하는 게 있어?</p>
+          <div class="sent-row">
+            <span class="sent-wrong">It's there are something that I should know.</span>
+            <span class="sent-right">Is there something that I should know?</span>
+          </div>
+          <span class="pill-fix">문법 수정: It's there are → Is there</span>
+          <p class="note-text">
+            가사 정확: <b>But is there something that I should know / Are you waiting for me to find out first</b> 👏<br>
+            ✏️ 세 가지를 함께 고쳐요 —<br>
+            &nbsp;&nbsp;① <b>It's</b>가 불필요해요. <b>Is there ~?</b> 자체가 완결된 문장이에요<br>
+            &nbsp;&nbsp;② <b>there are</b>(✗) → <b>there is</b>(✓). <b>something</b>은 <b>단수</b>니까요!<br>
+            &nbsp;&nbsp;③ 이건 <b>의문문</b>이라 <b>Is</b>가 앞으로 나가고 끝에 <b>물음표</b>가 붙어요<br>
+            💡 <b>There is something.</b>(평서문) → <b>Is there something?</b>(의문문) — 순서만 바꾸면 돼요 🔄
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">난 꼭 알아야 해</p>
+          <div class="sent-row">
+            <span class="sent-right">I just gotta know.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I just gotta know / Just gotta know</b> — 이 곡의 제목이자 후렴이에요! 👏<br>
+            💡 <b>gotta</b> = <b>(have) got to</b>의 축약형 — "꼭 ~해야 한다"<br>
+            &nbsp;&nbsp;<b>just</b>가 붙어 <b>"그냥 꼭 알아야만 하겠어"</b>라는 <b>간절함</b>이 강조돼요<br>
+            ⚠️ 글로 쓸 때는 <b>I've got to know</b> 또는 <b>I have to know</b>로! <b>gotta</b>는 <b>구어체 전용</b>이에요 🗣️
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">천천히 가자</p>
+          <div class="sent-row">
+            <span class="sent-right">Take it slow.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <span class="pill-note">문맥 참고</span>
+          <p class="note-text">
+            가사 정확: <b>If I could relax / Take it slow / Knowing nowhere's where you're gonna go</b> — 완벽해요! 👏<br>
+            💡 <b>take it slow</b> = 천천히 하다, 서두르지 않다, <b>여유를 갖다</b><br>
+            &nbsp;&nbsp;<b>slow</b>가 형용사인데 부사처럼 쓰인 <b>관용 표현</b>이에요 (slowly가 아니에요!)<br>
+            📌 문맥 참고: 여기서는 <b>"천천히 가자"</b>는 상대에게 하는 <b>제안</b>이 아니라, <b>"긴장을 풀고 여유를 가질 수 있다면"</b>이라는 <b>화자 자신의 바람</b>이에요 — 앞의 <b>If I could relax</b>와 이어지거든요 🍊
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">Is there something I should know?</p>
+      <p class="expr-ko">내가 알아야 할 게 있어?</p>
+      <span class="expr-tag">⭐ there is 의문문</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>But is there something that I should know, are you waiting for me to find out first?</b><br>→ 그런데 내가 알아야 할 게 있어? 내가 먼저 알아채길 기다리고 있는 거야?</p>
+        <p><b>Is there something I should know before the meeting starts tomorrow?</b><br>→ 내일 회의 시작 전에 제가 알아둬야 할 게 있을까요?</p>
+        <p class="ex-note">⭐ <b>There is something.</b>(있다) → <b>Is there something?</b>(있어?) — <b>be동사만 앞으로</b>!<br>⚠️ <b>something</b>은 단수 취급 — <b>there is</b>(✓) / <s>there are</s>(✗)<br>📌 <b>that</b>은 생략 가능: Is there something I should know?<br>비슷한 표현: <b>Is there anything I'm missing?</b>(내가 놓친 게 있어?), <b>What am I not seeing?</b></p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">gotta know</p>
+      <p class="expr-ko">꼭 알아야 하다</p>
+      <span class="expr-tag">got to → gotta</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I won't believe it's true unless I hear it straight from you, I just gotta know.</b><br>→ 당신에게 직접 듣기 전까지는 믿지 않을 거예요, 난 꼭 알아야 해요.</p>
+        <p><b>I gotta know if you're coming, so I can book the table tonight.</b><br>→ 오늘 밤 자리를 예약하려면 네가 오는지 꼭 알아야 해.</p>
+        <p class="ex-note">💡 <b>gotta</b> = (have) got to = have to — "꼭 ~해야 한다"<br>📌 <b>hear it straight from you</b> = 너에게 직접 듣다 (straight = 곧장, 직접)<br>⚠️ <b>gotta</b>는 말할 때만! 이메일·보고서에는 <b>have to</b>를 쓰세요<br>비슷한 축약형: <b>wanna</b>(want to), <b>gonna</b>(going to), <b>hafta</b>(have to)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">take it slow</p>
+      <p class="expr-ko">천천히 하다, 여유를 갖다</p>
+      <span class="expr-tag">slowly ✗</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>If I could relax and take it slow, knowing you're not going anywhere.</b><br>→ 당신이 어디로도 가지 않는다는 걸 알고 마음 놓고 여유를 가질 수 있다면.</p>
+        <p><b>You've been sick all week, so take it slow for a few days.</b><br>→ 일주일 내내 아팠으니, 며칠은 무리하지 말고 천천히 해.</p>
+        <p class="ex-note">💡 <b>take it slow</b> = 서두르지 않다, 무리하지 않다 — 관계·일·회복 모두에 써요<br>⚠️ <b>slowly</b>가 아니라 <b>slow</b>! 이런 관용구에서는 형용사가 부사처럼 쓰여요<br>📌 <b>Let's take it slow</b>는 연애에서 <b>"천천히 알아가자"</b>는 뜻으로 아주 자주 쓰여요<br>비슷한 표현: <b>take your time</b>(천천히 해), <b>there's no rush</b>(서두를 것 없어), <b>take it easy</b></p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Is there something that I should know?</span> → 내가 알아야 하는 게 있어?<br>
+      <span>I just gotta know.</span> → 난 꼭 알아야 해.<br>
+      <span>Take it slow.</span> → 천천히 가자.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🍊</div>
+      <div><h2>곡 이야기</h2><p>Gotta Know · Purples n' Oranges</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Purples n' Oranges</b>는 필리핀 <b>마닐라</b>를 거점으로 <b>2017년</b>부터 활동해 온 팝 아티스트예요. <b>Moao</b>(2019), <b>The One</b>(2020), <b>Go Back</b>(2021), <b>Break My Heart Again</b>(2023), <b>HSP</b>(2025) 등 꾸준히 싱글을 발표해 왔어요.
+        </p>
+        <p class="story-p">
+          <b>"Gotta Know"</b>는 <b>2022년 10월 19일</b> 싱글로 발매됐고, 러닝타임은 <b>3분 49초</b>예요.
+        </p>
+        <p class="story-p">
+          연인에 대한 <b>소문</b>을 전해 듣고 흔들리는 마음을 그린 곡이에요. 핵심은 <b>"남의 말이 아니라 네 입으로 직접 듣고 싶다"</b>는 것 — 의심보다는 <b>확인하고 싶은 간절함</b>에 가까워요 🍊
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 소문을 듣다</b><br>계속 소문을 듣고 있어요. 나에게는 그저 <b>"이 사람이 이랬대, 저 사람이 저랬대"</b> 식의 헛소리일 뿐이지만, 그게 우리 둘을 집어삼키게 두진 않을 거예요. 그런데 — <b>내가 알아야 할 게 있어?</b>(오늘 첫 문장!) 내가 먼저 알아채길 기다리는 거야? 날 놓아주기 전에? 🗣️</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 그렇다면 말해줘</b><br>만약 그렇다면, 제발 말해줘요 — 사실이냐고. <b>당신에게 직접 듣기 전까지는</b> 난 그게 사실이라고 믿지 않을 거예요 💬</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 난 꼭 알아야 해</b><br>당신에 대해 퍼진 그 소문들이 맞나요? 밤새 당신을 잠 못 들게 하는 다른 사람이 있나요? <b>난 꼭 알아야 해요</b>(두 번째 문장!) — 이 구절이 후렴 내내 반복돼요 🍊</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 마음 놓고 싶어요</b><br>내가 긴장을 풀고 <b>여유를 가질 수 있다면</b>(세 번째 문장!) — 당신이 어디로도 가지 않는다는 걸 알면서요. <b>당신을 믿을 수 있다는 걸 알고 싶어요</b> 🌙</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          🍊 <b>의심하는 노래가 아니라, 믿고 싶은 노래</b><br><br>
+          이 곡의 화자는 소문을 듣고도 <b>바로 믿지 않아요</b>. 오히려 소문을 <b>he said she said</b>(이 사람이 이랬대, 저 사람이 저랬대) — 그저 뜬소문일 뿐이라고 잘라 말하죠.<br><br>
+          그리고 이렇게 덧붙여요:<br>
+          🗣️ <b>I won't believe it's true unless I hear it straight from you</b><br>
+          (당신에게 직접 듣기 전까지는 믿지 않을 거예요)<br><br>
+          그래서 후렴의 <b>I just gotta know</b>는 <b>추궁</b>이 아니에요. <b>"네 입으로 말해줘, 그래야 내가 마음을 놓을 수 있어"</b>라는 <b>부탁</b>에 가깝죠.<br><br>
+          마지막 <b>take it slow</b>도 마찬가지예요 — 상대를 재촉하는 말이 아니라, <b>불안을 내려놓고 편해지고 싶다</b>는 자기 고백이에요. 제목만 보면 다그치는 노래 같지만, 사실은 <b>안심하고 싶은 마음</b>에 대한 노래랍니다 ✨
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① Is there something that I should know?</p>
+          <p class="learn-ko">내가 알아야 하는 게 있어?</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I just gotta know</p>
+          <p class="learn-ko">난 꼭 알아야 해</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ Take it slow</p>
+          <p class="learn-ko">천천히 가자</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Purples+n%27+Oranges+Gotta+Know+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Gotta Know 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Purples n' Oranges 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🍊</div>
+      <div><h2>핵심 단어 발음</h2><p>Gotta Know · Purples n' Oranges</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">gotta</span>
+        <span class="ref-ipa">[ˈɡɑːɾə]</span>
+        <span class="ref-kr"><span class="s">가</span>라</span>
+        <span class="ref-mean">꼭 ~해야 한다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">rumors</span>
+        <span class="ref-ipa">[ˈruːmərz]</span>
+        <span class="ref-kr"><span class="s">루</span>머즈</span>
+        <span class="ref-mean">소문 (-s = z!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">straight</span>
+        <span class="ref-ipa">[streɪt]</span>
+        <span class="ref-kr"><span class="s">스트레</span>잇</span>
+        <span class="ref-mean">곧장, 직접</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">unless</span>
+        <span class="ref-ipa">[ənˈles]</span>
+        <span class="ref-kr">언<span class="s">레</span>스</span>
+        <span class="ref-mean">~하지 않는 한</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">relax</span>
+        <span class="ref-ipa">[rɪˈlæks]</span>
+        <span class="ref-kr">릴<span class="s">랙</span>스</span>
+        <span class="ref-mean">긴장을 풀다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">something</span>
+        <span class="ref-ipa">[ˈsʌmθɪŋ]</span>
+        <span class="ref-kr"><span class="s">썸</span>씽</span>
+        <span class="ref-mean">무언가 (단수!)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — gotta (제목의 그 단어!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">gotta</p><p class="word-mean">꼭 ~해야 한다 (got to)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ t가 ㄹ소리로</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɡɑːɾə]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">가</span>라</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>got to</b>의 t 두 개가 하나로 뭉치고, <b>[ɾ] ㄹ소리</b>로 바뀌어요<br>
+        🔸 "갓타"(✗) → <b>"가라"</b>(✓) — <b>GO</b>에 강세!<br>
+        🔸 <b>I just gotta know</b>: <b>"아이 저스 가라 노우"</b> — just의 t도 사라져요<br>
+        🔸 📌 같은 계열: <b>wanna</b>(want to), <b>gonna</b>(going to), <b>hafta</b>(have to) 🗣️
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — rumors (-s를 [z]로!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">rumors</p><p class="word-mean">소문, 루머</p></div>
+        <span class="word-tag">RU에 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈruːmərz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">루</span>머즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>ru-</b>: "루-" [ruː] — <b>길게</b>! <b>RU</b>에 강세<br>
+        🔸 <b>-mors</b>: 유성음 뒤라 <b>[z]</b>! "루머<b>스</b>"(✗) → <b>"루머즈"</b>(✓)<br>
+        🔸 📌 -s가 [z]가 되는 경우: 앞이 <b>모음이나 유성자음</b>일 때 (rumors, dreams, things)<br>
+        🔸 <b>Hearing rumors</b>: "히어링 루머즈" — 곡의 첫 소절이에요 🗣️
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">straight</p><p class="word-mean">곧장, 직접</p></div>
+        <span class="word-tag">str- 연속자음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[streɪt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">스트레</span>잇</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>str-</b>: s+t+r 세 자음 연속 — 한 번에 <b>"스트"</b>로 붙여서!<br>
+        🔸 <b>-aight</b>: "에잇" [eɪt] — <b>gh는 묵음</b>이에요<br>
+        🔸 📌 같은 -aight/-eight: <b>eight</b> 에잇, <b>weight</b> 웨잇<br>
+        🔸 <b>hear it straight from you</b>: "히어릿 스트레잇 프럼 유" 💬
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">unless</p><p class="word-mean">~하지 않는 한</p></div>
+        <span class="word-tag">LESS에 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ənˈles]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">언<span class="stress">레</span>스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>un-</b>: 아주 약하게 "언" [ən] — 강세 없음!<br>
+        🔸 <b>-less</b>: <b>LESS</b>에 강세 — "레스"<br>
+        🔸 📌 <b>unless</b> = if ~ not (~하지 않는다면) — 뒤에 <b>부정어를 또 쓰지 않도록</b> 주의!<br>
+        🔸 <b>unless I hear it from you</b> = 너에게서 듣지 않는 한 💬
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">something</p><p class="word-mean">무언가 (단수 취급!)</p></div>
+        <span class="word-tag">th 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsʌmθɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">썸</span>씽</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>some-</b>: "썸" [sʌm] — o를 <b>"어"</b>로! <b>SOME</b>에 강세<br>
+        🔸 <b>-thing</b>: [θɪŋ] — <b>혀끝을 이 사이에</b>! "띵"(✗)<br>
+        🔸 ⭐ <b>something</b>은 <b>단수</b>! → <b>Is there something?</b>(✓) / <s>Are there something?</s>(✗)<br>
+        🔸 실제로는 <b>"썸핑"</b>처럼 들리기도 해요 (미국식 구어) 💭
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>원어민 속도 · 연음까지 · Gotta Know</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>3단계 속도</b>로 원어민 발음에 가까워져요!<br>
+      🐢 <b>천천히</b>(0.7배) — 단어 하나하나 정확히 확인<br>
+      🗣 <b>자연스럽게</b>(0.95배) — 대화할 때의 실제 속도<br>
+      🔥 <b>원어민</b>(1.15배) — <b>연음·축약이 반영된 실제 발음</b>으로 재생돼요<br>
+      💡 각 문장 아래 <b>🔗 실제로는 이렇게 들려요</b>를 보면서 따라 하면 훨씬 빨리 늘어요!<br>
+      🎙️ 여성 음성 · 크롬(Chrome) 브라우저 권장
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 Is there something ~? <span>· 알아야 할 게 있어?</span></div>
+
+    <div class="listen-card" id="L1" data-en="Is there something that I should know, are you waiting for me to find out first?" data-native="Izzer something thut I should know — are ya waiting fer me da find out first?">
+      <p class="listen-en">Is there something that I should know, are you waiting for me to find out first?</p>
+      <p class="listen-ko">내가 알아야 할 게 있어? 내가 먼저 알아채길 기다리고 있는 거야?</p>
+      <p class="link-line">🔗 실제로는 이렇게 들려요<br><b>이저 썸씽 대라이 슈드 노우, 아 유 웨이링 포미 더 파인다웃 퍼스트</b><br><span>Is there → 이저 · that I → 대라이 · waiting → 웨이링 (t가 ㄹ로) · find out → 파인다웃</span></p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="sayCard(this,'L1',0.7,false)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L1',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L1',1.15,true)"><span class="speed-label">🔥 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="sayCard3(this,'L1')">▶ 3단계 연속 듣기 (천천히 → 자연 → 원어민)</button>
+    </div>
+
+    <div class="listen-card" id="L2" data-en="Is there something I should know before the meeting starts tomorrow?" data-native="Izzer something I should know before the meeding starts tomorrow?">
+      <p class="listen-en">Is there something I should know before the meeting starts tomorrow?</p>
+      <p class="listen-ko">내일 회의 시작 전에 제가 알아둬야 할 게 있을까요?</p>
+      <p class="link-line">🔗 실제로는 이렇게 들려요<br><b>이저 썸씽 아이 슈드 노우 비포 더 미링 스타츠 터마로우</b><br><span>Is there → 이저 · meeting → 미링 · starts → 스타츠 · something은 "썸씽/썸핑"</span></p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="sayCard(this,'L2',0.7,false)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L2',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L2',1.15,true)"><span class="speed-label">🔥 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="sayCard3(this,'L2')">▶ 3단계 연속 듣기 (천천히 → 자연 → 원어민)</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 gotta know <span>· 꼭 알아야 하다</span></div>
+
+    <div class="listen-card" id="L3" data-en="I won't believe it's true unless I hear it straight from you, I just gotta know." data-native="I won' believe it's true unless I hear it straight from you — I jus' gotta know.">
+      <p class="listen-en">I won't believe it's true unless I hear it straight from you, I just gotta know.</p>
+      <p class="listen-ko">당신에게 직접 듣기 전까지는 믿지 않을 거예요, 난 꼭 알아야 해요.</p>
+      <p class="link-line">🔗 실제로는 이렇게 들려요<br><b>아이 원 빌리브 잇츠 트루 언레스 아이 히어릿 스트레잇 프럼 유, 아이 저스 가라 노우</b><br><span>won't believe → 원 빌리브 (t 탈락) · hear it → 히어릿 · just gotta → 저스 가라</span></p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="sayCard(this,'L3',0.7,false)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L3',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L3',1.15,true)"><span class="speed-label">🔥 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="sayCard3(this,'L3')">▶ 3단계 연속 듣기 (천천히 → 자연 → 원어민)</button>
+    </div>
+
+    <div class="listen-card" id="L4" data-en="I gotta know if you're coming, so I can book the table tonight." data-native="I gotta know if yer coming, so I can book the table tonight.">
+      <p class="listen-en">I gotta know if you're coming, so I can book the table tonight.</p>
+      <p class="listen-ko">오늘 밤 자리를 예약하려면 네가 오는지 꼭 알아야 해.</p>
+      <p class="link-line">🔗 실제로는 이렇게 들려요<br><b>아이 가라 노우 이퓨어 커밍, 소 아이 캔 북 더 테이블 터나잇</b><br><span>gotta → 가라 · if you're → 이퓨어 · can은 약하게 "큰" · tonight → 터나잇</span></p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="sayCard(this,'L4',0.7,false)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L4',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L4',1.15,true)"><span class="speed-label">🔥 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="sayCard3(this,'L4')">▶ 3단계 연속 듣기 (천천히 → 자연 → 원어민)</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 take it slow <span>· 여유를 갖다</span></div>
+
+    <div class="listen-card" id="L5" data-en="If I could relax and take it slow, knowing you're not going anywhere." data-native="If I could relax 'n take it slow, knowing yer not going anywhere.">
+      <p class="listen-en">If I could relax and take it slow, knowing you're not going anywhere.</p>
+      <p class="listen-ko">당신이 어디로도 가지 않는다는 걸 알고 마음 놓고 여유를 가질 수 있다면.</p>
+      <p class="link-line">🔗 실제로는 이렇게 들려요<br><b>이파이 쿠드 릴랙슨 테이킷 슬로우, 노잉 유어 낫 고잉 애니웨어</b><br><span>If I → 이파이 · relax and → 릴랙슨 · take it → 테이킷 · slow는 "슬로우"</span></p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="sayCard(this,'L5',0.7,false)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L5',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L5',1.15,true)"><span class="speed-label">🔥 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="sayCard3(this,'L5')">▶ 3단계 연속 듣기 (천천히 → 자연 → 원어민)</button>
+    </div>
+
+    <div class="listen-card" id="L6" data-en="You've been sick all week, so take it slow for a few days." data-native="You've been sick all week, so take it slow fora few days.">
+      <p class="listen-en">You've been sick all week, so take it slow for a few days.</p>
+      <p class="listen-ko">일주일 내내 아팠으니, 며칠은 무리하지 말고 천천히 해.</p>
+      <p class="link-line">🔗 실제로는 이렇게 들려요<br><b>유브 빈 씩 올 윅, 소 테이킷 슬로우 포러 퓨 데이즈</b><br><span>take it → 테이킷 · for a → 포러 · days는 [z] "데이즈"</span></p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="sayCard(this,'L6',0.7,false)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L6',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></div>
+        <div class="speed-btn" onclick="sayCard(this,'L6',1.15,true)"><span class="speed-label">🔥 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="sayCard3(this,'L6')">▶ 3단계 연속 듣기 (천천히 → 자연 → 원어민)</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#EAEAF0;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#1E1F2E;border:1px solid #B2B4C9">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 음성으로 재생됩니다 · 🔥 원어민 버튼은 연음/축약형 텍스트로 읽어요<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div><h2>문장 암기</h2><p>빈칸 채우기 + 발음 연습 · Gotta Know</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      ✏️ <b>빈칸에 알맞은 영어 단어를 직접 입력</b>해서 오늘 배운 문장을 통째로 외워봐요!<br>
+      <b>오늘의 세 문장 + 표현별 예문</b>까지 전부 연습할 수 있어요.<br>
+      난이도를 골라 도전하세요 — <b>Level 1</b>(쉬움) → <b>Level 2</b>(보통) → <b>Level 3</b>(어려움)<br>
+      💡 각 칸을 채우고 <b>"정답 확인"</b>(또는 Enter)을 누르면 채점돼요.<br>
+      🔊 문장마다 <b>🐢 천천히 / 🗣 자연 / 🔥 원어민</b> 발음 버튼이 있어요!
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" id="lv1" onclick="setLevel(1,this)">Level 1<span>핵심 단어</span></button>
+      <button class="level-btn" id="lv2" onclick="setLevel(2,this)">Level 2<span>표현 위주</span></button>
+      <button class="level-btn" id="lv3" onclick="setLevel(3,this)">Level 3<span>거의 전체</span></button>
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">정답 확인을 누르면 점수가 표시돼요</div>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+
+    <div class="quiz-card" style="background:#EAEAF0;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#1E1F2E;border:1px solid #B2B4C9;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- REVIEW -->
+  <div id="panel-review" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔁</div>
+      <div><h2>복습</h2><p>지금까지 배운 9곡 · 점수 + 오답 노트</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      🔁 <b>지금까지 GMP에서 학습한 문장</b>을 한자리에서 복습해요!<br>
+      곡을 선택하거나 <b>전체</b>로 도전해 보세요.<br>
+      📊 <b>점수와 누적 기록</b>이 자동으로 저장돼요 (같은 브라우저에서 유지)<br>
+      ❌ <b>틀린 문장은 오답 노트에 자동 저장</b>돼요 — <b>오답만 다시 풀기</b>로 반복 학습!<br>
+      ✅ 오답 노트의 문장을 맞히면 자동으로 노트에서 사라져요.
+    </div>
+
+    <div class="chip-row" id="rv-chips"></div>
+
+    <div class="rv-stats">
+      <div class="rv-stat"><div class="rv-num" id="rv-score">— / —</div><div class="rv-lab">이번 점수</div></div>
+      <div class="rv-stat"><div class="rv-num" id="rv-rate">—</div><div class="rv-lab">누적 정답률</div></div>
+      <div class="rv-stat"><div class="rv-num" id="rv-wrong">0</div><div class="rv-lab">오답 노트</div></div>
+    </div>
+    <p class="rv-msg" id="rv-msg">문제를 풀고 <b>전체 채점</b>을 눌러보세요!</p>
+
+    <div id="review-body"></div>
+
+    <button class="quiz-allcheck" onclick="rvCheckAll()">📊 전체 채점하기</button>
+    <div class="rv-btn-row">
+      <button class="rv-sub-btn" onclick="rvRender('wrong')">❌ 오답만 다시 풀기</button>
+      <button class="rv-sub-btn" onclick="rvReset()">🗑 기록 초기화</button>
+    </div>
+
+    <div class="quiz-card" style="background:#EAEAF0;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#1E1F2E;border:1px solid #B2B4C9;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🍊 [Good Morning Pops] Gotta Know
+— Purples n' Oranges
+
+📌 오늘의 표현
+
+① Is there something that I should know?
+→ 내가 알아야 하는 게 있어?
+
+② I just gotta know.
+→ 난 꼭 알아야 해.
+
+③ Take it slow.
+→ 천천히 가자.
+
+——————————————————
+
+🔹 Is there something I should know? ⭐
+내가 알아야 할 게 있어?
+
+• But is there something that I should know, are you waiting for me to find out first?
+(그런데 내가 알아야 할 게 있어? 내가 먼저 알아채길 기다리고 있는 거야?)
+
+• Is there something I should know before the meeting starts tomorrow?
+(내일 회의 시작 전에 제가 알아둬야 할 게 있을까요?)
+
+⭐ There is something.(있다)
+→ Is there something?(있어?)
+be동사만 앞으로 보내면 의문문이 돼요!
+⚠️ something은 단수라서 there is (there are ✗)
+
+——————————————————
+
+🔹 gotta know
+꼭 알아야 하다
+
+• I won't believe it's true unless I hear it straight from you, I just gotta know.
+(당신에게 직접 듣기 전까지는 믿지 않을 거예요, 난 꼭 알아야 해요.)
+
+• I gotta know if you're coming, so I can book the table tonight.
+(오늘 밤 자리를 예약하려면 네가 오는지 꼭 알아야 해.)
+
+💡 gotta = (have) got to = have to
+⚠️ 구어체 전용! 이메일·보고서에는 have to를 쓰세요.
+같은 계열: wanna, gonna, hafta
+
+——————————————————
+
+🔹 take it slow
+천천히 하다, 여유를 갖다
+
+• If I could relax and take it slow, knowing you're not going anywhere.
+(당신이 어디로도 가지 않는다는 걸 알고 마음 놓고 여유를 가질 수 있다면.)
+
+• You've been sick all week, so take it slow for a few days.
+(일주일 내내 아팠으니, 며칠은 무리하지 말고 천천히 해.)
+
+💡 slowly가 아니라 slow! 형용사가 부사처럼 쓰인 관용구예요.
+비슷한 표현: take your time, there's no rush, take it easy
+
+——————————————————
+
+🔊 발음 팁
+
+• gotta = [가]라 (got to의 t가 ㄹ소리로!)
+• rumors = [루]머즈 (-s를 [z]로!)
+• straight = [스트레]잇 (gh는 묵음)
+• unless = 언[레]스 (뒤에 강세)
+
+🔗 원어민 연음
+• Is there → 이저
+• just gotta → 저스 가라
+• hear it → 히어릿
+• take it → 테이킷
+• If I → 이파이
+
+——————————————————
+#GoodMorningPops #팝송영어 #GottaKnow #PurplesnOranges</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "\uD83D\uDCDD \uC624\uB298\uC758 \uC138 \uBB38\uC7A5",
+    items: [
+      { ko:"내가 알아야 하는 게 있어?", en:"Is there something that I should know?", key:["there","something","should"] },
+      { ko:"난 꼭 알아야 해.", en:"I just gotta know.", key:["just","gotta","know"] },
+      { ko:"천천히 가자.", en:"Take it slow.", key:["Take","slow"] }
+    ]
+  },
+  {
+    title: "\uD83D\uDD39 Is there something ~?",
+    items: [
+      { ko:"내가 알아야 할 게 있어? 내가 먼저 알아채길 기다리고 있는 거야?", en:"Is there something that I should know, are you waiting for me to find out first?", key:["there","something","waiting","find"] },
+      { ko:"내일 회의 시작 전에 제가 알아둬야 할 게 있을까요?", en:"Is there something I should know before the meeting starts tomorrow?", key:["there","something","meeting","tomorrow"] }
+    ]
+  },
+  {
+    title: "\uD83D\uDD39 gotta know",
+    items: [
+      { ko:"당신에게 직접 듣기 전까지는 믿지 않을 거예요, 난 꼭 알아야 해요.", en:"I won't believe it's true unless I hear it straight from you, I just gotta know.", key:["believe","unless","straight","gotta"] },
+      { ko:"오늘 밤 자리를 예약하려면 네가 오는지 꼭 알아야 해.", en:"I gotta know if you're coming, so I can book the table tonight.", key:["gotta","coming","book","tonight"] }
+    ]
+  },
+  {
+    title: "\uD83D\uDD39 take it slow",
+    items: [
+      { ko:"당신이 어디로도 가지 않는다는 걸 알고 마음 놓고 여유를 가질 수 있다면.", en:"If I could relax and take it slow, knowing you're not going anywhere.", key:["relax","take","slow","anywhere"] },
+      { ko:"일주일 내내 아팠으니, 며칠은 무리하지 말고 천천히 해.", en:"You've been sick all week, so take it slow for a few days.", key:["sick","week","take","slow"] }
+    ]
+  }
+];
+
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return s.toLowerCase().replace(/[.,!?'"\u2014\u2013\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level===1) target = Math.max(1, Math.round(n*0.20));
+  else if(level===2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">'+ item.ko +'</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blankIdx.length +'칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blankIdx.indexOf(wi) >= 0){
+          var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+          var pre = m ? m[1] : '';
+          var core = m && m[2] ? m[2] : w;
+          var post = m ? m[3] : '';
+          var size = Math.max(core.length, 4);
+          if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+          html += '<input class="quiz-blank" data-q="'+qi+'" data-w="'+wi+'" data-ans="'+encodeURIComponent(core)+'" size="'+size+'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkOne('+qi+')">';
+          if(post) html += '<span class="quiz-word">'+ post +'</span>';
+        } else {
+          html += '<span class="quiz-word">'+ w +'</span>';
+        }
+        html += ' ';
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne('+qi+')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne('+qi+')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.75)">🐢 천천히</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.95)">🗣 자연</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',1.15)">🔥 원어민</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr'+qi+'"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="'+qi+'"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayQuiz2(btn, qi){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.05];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr'+qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr'+qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">'+ getQuizText(qi) +'</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi=0; qi<total; qi++){
+    if(checkOne(qi)) correct++;
+  }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1){
+    label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  } else if(ratio >= 0.7){
+    label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  } else if(ratio >= 0.4){
+    label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  } else {
+    label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderQuiz);
+if(document.readyState !== 'loading') renderQuiz();
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.05];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+
+/* ===== 원어민 속도 재생 (발음 연습 탭) ===== */
+function sayCard(btn, cardId, rate, useNative){
+  var card = document.getElementById(cardId);
+  if(!card) return;
+  var text = useNative ? (card.getAttribute('data-native') || card.getAttribute('data-en'))
+                       : card.getAttribute('data-en');
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayCard3(btn, cardId){
+  var card = document.getElementById(cardId);
+  if(!card) return;
+  var en = card.getAttribute('data-en');
+  var na = card.getAttribute('data-native') || en;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var steps = [[en,0.7],[en,0.95],[na,1.15]];
+  var i = 0;
+  function next(){
+    if(i >= steps.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(steps[i][0], steps[i][1]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+/* ===== 복습 데이터 (지금까지 학습한 곡) ===== */
+var REVIEW_BANK = [
+  { song:"Undressed", artist:"sombr", icon:"\uD83D\uDD6F\uFE0F", items:[
+    { id:"und1", ko:"당신은 나에게 의지했죠.", en:"You looked to me.", key:["looked"] },
+    { id:"und2", ko:"당신의 눈빛은 나에게 다른 걸 말하고 있네요.", en:"The glimmer in your eyes is telling me other things.", key:["glimmer","telling","things"] },
+    { id:"und3", ko:"옷을 벗고 싶지 않아요.", en:"I don't wanna get undressed.", key:["wanna","undressed"] },
+    { id:"und4", ko:"작별을 고하는 순간에도 그녀의 눈빛엔 희미한 희망이 있었어.", en:"There was a glimmer of hope in her eyes even as she said goodbye.", key:["glimmer","hope","goodbye"] }
+  ]},
+  { song:"Memories We'll Never Make", artist:"Michael Minelli", icon:"\uD83E\uDD43", items:[
+    { id:"mem1", ko:"난 다시 허공에 이야기 하고 있네요.", en:"I'm talking to the wind again.", key:["talking","wind","again"] },
+    { id:"mem2", ko:"지금 당신 마음속에 누가 있는지 궁금하네요.", en:"I wonder who's in your heart now.", key:["wonder","heart"] },
+    { id:"mem3", ko:"이번 생에 내가 기회를 놓쳤네요.", en:"I dropped the ball this lifetime.", key:["dropped","ball","lifetime"] },
+    { id:"mem4", ko:"계속 조언해 주는데, 난 그냥 벽에 대고 말하는 거야.", en:"I keep giving him advice, but I'm just talking to the wind.", key:["advice","talking","wind"] }
+  ]},
+  { song:"Every Summertime", artist:"NIKI", icon:"\uD83C\uDF38", items:[
+    { id:"sum1", ko:"우리는 수업에 가지도 못했어요.", en:"We never made it to class.", key:["never","made","class"] },
+    { id:"sum2", ko:"맹세컨대 목련들이 살짝 미소를 보냈어요.", en:"I swear the magnolias flashed a smile.", key:["swear","magnolias","flashed"] },
+    { id:"sum3", ko:"우리는 큰 길을 거닐죠.", en:"We're strolling down the boulevard.", key:["strolling","boulevard"] },
+    { id:"sum4", ko:"그녀는 나를 향해 살짝 웃어 보이고는 걸어갔어.", en:"She flashed a smile at me before walking away.", key:["flashed","smile","walking"] }
+  ]},
+  { song:"The Drum", artist:"Alan Walker", icon:"\uD83E\uDD41", items:[
+    { id:"drm1", ko:"정신이 없네요.", en:"My head's in a spin.", key:["head","spin"] },
+    { id:"drm2", ko:"기분이 너무 좋아서 날아갈 거 같아요.", en:"The ceiling can't hold us.", key:["ceiling","hold"] },
+    { id:"drm3", ko:"당신은 오랫동안 나를 사로잡았죠.", en:"You got me for days.", key:["got","days"] },
+    { id:"drm4", ko:"그 소식을 듣고, 하루 종일 정신이 하나도 없었어.", en:"After hearing the news, my head was in a spin all day.", key:["hearing","head","spin"] }
+  ]},
+  { song:"Gorilla Grip", artist:"Greg Shilling", icon:"\uD83E\uDD8D", items:[
+    { id:"gor1", ko:"내가 잘못을 저지른 것 같아요.", en:"I think that I did a bad thing.", key:["think","did","bad","thing"] },
+    { id:"gor2", ko:"난 평정을 잃죠.", en:"I lose composure.", key:["lose","composure"] },
+    { id:"gor3", ko:"당신은 내 진심을 다 받을 자격이 있어요.", en:"You deserve my heart on the table.", key:["deserve","heart","table"] },
+    { id:"gor4", ko:"그는 인터뷰 도중 평정심을 잃고 소리치기 시작했다.", en:"He lost his composure during the interview and started shouting.", key:["lost","composure","interview","shouting"] }
+  ]},
+  { song:"On My Mind", artist:"Common Jack", icon:"\uD83C\uDF09", items:[
+    { id:"omm1", ko:"이제 가 볼게요.", en:"I've got to go.", key:["got","go"] },
+    { id:"omm2", ko:"나는 지금 제정신이 아니에요.", en:"I'm losing my head now.", key:["losing","head"] },
+    { id:"omm3", ko:"귀가 윙윙거려요.", en:"Ears are ringing like a bell.", key:["Ears","ringing","bell"] },
+    { id:"omm4", ko:"미안하지만 이제 가 봐야 해요, 아침에 회의가 있거든요.", en:"I'm sorry, but I've got to go now, I have a meeting in the morning.", key:["sorry","got","meeting","morning"] }
+  ]},
+  { song:"Gato", artist:"Maya Delilah", icon:"\uD83D\uDC08", items:[
+    { id:"gat1", ko:"모든 게 나에게서 달아나는 것 같아요.", en:"Everything seems to run away from me.", key:["Everything","seems","run","away"] },
+    { id:"gat2", ko:"난 그냥 누워야겠어요.", en:"I should just lie down.", key:["should","lie","down"] },
+    { id:"gat3", ko:"이걸 쉽게 만들어 볼게요, 원래 그래야 하는 대로.", en:"Let me make this easy how it's meant to be.", key:["make","easy","meant"] },
+    { id:"gat4", ko:"자정이 넘도록 깨어 거리를 헤매고 다녀요.", en:"I stay up past midnight wandering round the streets.", key:["stay","midnight","wandering","streets"] }
+  ]},
+  { song:"Things We Left Unsaid", artist:"Young Gun Silver Fox", icon:"\uD83C\uDF04", items:[
+    { id:"twl1", ko:"살다 보면 다시 돌아가고 싶은 순간들이 있죠.", en:"In life there are times you wanna go back.", key:["times","wanna","back"] },
+    { id:"twl2", ko:"당신 생각에 잠을 이루지 못했죠.", en:"I lay awake thinking of you.", key:["lay","awake","thinking"] },
+    { id:"twl3", ko:"그 말들이 내 머릿속에서 계속 맴도네요.", en:"They go round and round inside my head.", key:["round","inside","head"] },
+    { id:"twl4", ko:"우리가 끝내 하지 못한 말들이 아직도 마음에 걸려요.", en:"All the things we left unsaid still weigh on my mind.", key:["unsaid","weigh","mind"] }
+  ]},
+  { song:"Gotta Know", artist:"Purples n' Oranges", icon:"\uD83C\uDF4A", items:[
+    { id:"gtk1", ko:"내가 알아야 하는 게 있어?", en:"Is there something that I should know?", key:["there","something","should"] },
+    { id:"gtk2", ko:"난 꼭 알아야 해.", en:"I just gotta know.", key:["just","gotta","know"] },
+    { id:"gtk3", ko:"천천히 가자.", en:"Take it slow.", key:["Take","slow"] },
+    { id:"gtk4", ko:"당신에게 직접 듣기 전까지는 믿지 않을 거예요.", en:"I won't believe it's true unless I hear it straight from you.", key:["believe","unless","straight"] }
+  ]}
+];
+
+/* ===== 저장소 (localStorage + 메모리 대체) ===== */
+var RV_KEY = 'gmp_review_v1';
+var __rvMem = null;
+
+function rvLoad(){
+  var data = null;
+  try {
+    var raw = window.localStorage.getItem(RV_KEY);
+    if(raw) data = JSON.parse(raw);
+  } catch(e){ data = null; }
+  if(!data && __rvMem) data = __rvMem;
+  if(!data) data = { wrong:{}, attempts:0, correct:0 };
+  if(!data.wrong) data.wrong = {};
+  return data;
+}
+
+function rvSave(data){
+  __rvMem = data;
+  try { window.localStorage.setItem(RV_KEY, JSON.stringify(data)); } catch(e){}
+}
+
+function rvAllItems(){
+  var out = [];
+  REVIEW_BANK.forEach(function(g){
+    g.items.forEach(function(it){
+      out.push({ id:it.id, ko:it.ko, en:it.en, key:it.key, song:g.song, artist:g.artist, icon:g.icon });
+    });
+  });
+  return out;
+}
+
+function rvFindItem(id){
+  var all = rvAllItems();
+  for(var i=0;i<all.length;i++){ if(all[i].id===id) return all[i]; }
+  return null;
+}
+
+/* ===== 복습 렌더링 ===== */
+var rvFilter = 'all';
+
+function rvChips(){
+  var row = document.getElementById('rv-chips');
+  if(!row) return;
+  var data = rvLoad();
+  var wrongCount = Object.keys(data.wrong).length;
+  var html = '<button class="chip' + (rvFilter==='all'?' active':'') + '" onclick="rvRender(\'all\')">\uD83D\uDCDA 전체</button>';
+  REVIEW_BANK.forEach(function(g, gi){
+    var f = 'g'+gi;
+    html += '<button class="chip' + (rvFilter===f?' active':'') + '" onclick="rvRender(\''+f+'\')">'+ g.icon +' '+ g.song +'</button>';
+  });
+  html += '<button class="chip wrong-chip' + (rvFilter==='wrong'?' active':'') + '" onclick="rvRender(\'wrong\')">\u274C 오답 노트 ('+ wrongCount +')</button>';
+  row.innerHTML = html;
+}
+
+function rvItemsFor(filter){
+  var data = rvLoad();
+  if(filter === 'all') return rvAllItems();
+  if(filter === 'wrong'){
+    return rvAllItems().filter(function(it){ return !!data.wrong[it.id]; });
+  }
+  var gi = parseInt(filter.replace('g',''), 10);
+  var g = REVIEW_BANK[gi];
+  if(!g) return rvAllItems();
+  return g.items.map(function(it){
+    return { id:it.id, ko:it.ko, en:it.en, key:it.key, song:g.song, artist:g.artist, icon:g.icon };
+  });
+}
+
+function rvBlankIdx(words, keyWords){
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+  var idx = [];
+  words.forEach(function(w, i){ if(keySet[norm(w)]) idx.push(i); });
+  if(!idx.length) idx = computeBlanks(words, keyWords, 1);
+  return idx;
+}
+
+function rvRender(filter){
+  if(filter) rvFilter = filter;
+  var body = document.getElementById('review-body');
+  if(!body) return;
+  var items = rvItemsFor(rvFilter);
+  rvChips();
+  rvStats();
+  document.getElementById('rv-score').textContent = '— / —';
+
+  if(!items.length){
+    if(rvFilter === 'wrong'){
+      body.innerHTML = '<div class="rv-empty">\uD83C\uDF89 오답 노트가 비어 있어요!<br>모든 문장을 다 맞히셨네요. 훌륭해요!</div>';
+    } else {
+      body.innerHTML = '<div class="rv-empty">문제가 없어요.</div>';
+    }
+    document.getElementById('rv-msg').innerHTML = '오답 노트가 비어 있어요. <b>전체</b>로 다시 도전해 보세요!';
+    window.__rvItems = [];
+    return;
+  }
+
+  var html = '';
+  var lastSong = '';
+  items.forEach(function(item){
+    if(item.song !== lastSong){
+      html += '<div class="quiz-group">'+ item.icon +' '+ item.song +' <span style="font-size:11px;font-weight:500">· '+ item.artist +'</span></div>';
+      lastSong = item.song;
+    }
+    var words = item.en.split(' ');
+    var blanks = rvBlankIdx(words, item.key);
+    html += '<div class="quiz-card" data-rid="'+ item.id +'" data-rfull="'+ item.en.replace(/"/g,'&quot;') +'">';
+    html += '<p class="quiz-ko">'+ item.ko +'</p>';
+    html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blanks.length +'칸)</p>';
+    html += '<p class="quiz-sentence">';
+    words.forEach(function(w, wi){
+      if(blanks.indexOf(wi) >= 0){
+        var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+        var pre = m ? m[1] : '';
+        var core = m && m[2] ? m[2] : w;
+        var post = m ? m[3] : '';
+        var size = Math.max(core.length, 4);
+        if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+        html += '<input class="quiz-blank" data-r="'+ item.id +'" data-ans="'+ encodeURIComponent(core) +'" size="'+ size +'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')rvCheck(\''+ item.id +'\')">';
+        if(post) html += '<span class="quiz-word">'+ post +'</span>';
+      } else {
+        html += '<span class="quiz-word">'+ w +'</span>';
+      }
+      html += ' ';
+    });
+    html += '</p>';
+    html += '<div class="quiz-btns">';
+    html += '<button class="quiz-check" onclick="rvCheck(\''+ item.id +'\')">\u2713 정답 확인</button>';
+    html += '<button class="quiz-reveal" onclick="rvReveal(\''+ item.id +'\')">\uD83D\uDC41 정답 보기</button>';
+    html += '</div>';
+    html += '<div class="quiz-say-row">';
+    html += '<span class="quiz-say-label">\uD83D\uDD0A 발음</span>';
+    html += '<button class="quiz-say" onclick="rvSay(this,\''+ item.id +'\',0.75)">\uD83D\uDC22 천천히</button>';
+    html += '<button class="quiz-say" onclick="rvSay(this,\''+ item.id +'\',0.95)">\uD83D\uDDE3 자연</button>';
+    html += '<button class="quiz-say" onclick="rvSay(this,\''+ item.id +'\',1.15)">\uD83D\uDD25 원어민</button>';
+    html += '</div>';
+    html += '<div class="quiz-result" id="rvr-'+ item.id +'"></div>';
+    html += '</div>';
+  });
+  body.innerHTML = html;
+  window.__rvItems = items.map(function(x){ return x.id; });
+  document.getElementById('rv-msg').innerHTML = '총 <b>'+ items.length +'문장</b>이에요. 다 풀고 <b>전체 채점하기</b>를 눌러보세요!';
+}
+
+function rvFullText(id){
+  var card = document.querySelector('.quiz-card[data-rid="'+ id +'"]');
+  return card ? card.getAttribute('data-rfull') : '';
+}
+
+function rvSay(btn, id, rate){
+  var text = rvFullText(id);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function rvCheck(id, silent){
+  var inputs = document.querySelectorAll('.quiz-blank[data-r="'+ id +'"]');
+  if(!inputs.length) return true;
+  var ok = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      ok = false;
+    }
+  });
+
+  var data = rvLoad();
+  if(ok){ delete data.wrong[id]; }
+  else { data.wrong[id] = true; }
+  rvSave(data);
+
+  var res = document.getElementById('rvr-'+ id);
+  if(res){
+    if(ok){
+      res.className = 'quiz-result ok';
+      res.innerHTML = '\uD83C\uDF89 정답이에요! 오답 노트에서 지웠어요.';
+    } else {
+      res.className = 'quiz-result no';
+      res.innerHTML = '\u274C 오답 노트에 저장했어요. 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+    }
+  }
+  if(!silent){ rvStats(); rvChips(); }
+  return ok;
+}
+
+function rvReveal(id){
+  var inputs = document.querySelectorAll('.quiz-blank[data-r="'+ id +'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var data = rvLoad();
+  data.wrong[id] = true;
+  rvSave(data);
+  var res = document.getElementById('rvr-'+ id);
+  if(res){
+    res.className = 'quiz-result no';
+    res.innerHTML = '\uD83D\uDC41 정답: <span class="quiz-answer">'+ rvFullText(id) +'</span><br>오답 노트에 남겨뒀어요 — 나중에 다시 풀어봐요!';
+  }
+  rvStats(); rvChips();
+}
+
+function rvCheckAll(){
+  var ids = window.__rvItems || [];
+  if(!ids.length) return;
+  var correct = 0;
+  ids.forEach(function(id){ if(rvCheck(id, true)) correct++; });
+
+  var data = rvLoad();
+  data.attempts = (data.attempts || 0) + ids.length;
+  data.correct = (data.correct || 0) + correct;
+  rvSave(data);
+
+  document.getElementById('rv-score').textContent = correct + ' / ' + ids.length;
+  var ratio = ids.length ? correct/ids.length : 0;
+  var msg;
+  if(ratio === 1) msg = '\uD83C\uDFC6 만점이에요! 완벽하게 외우셨네요!';
+  else if(ratio >= 0.8) msg = '\uD83D\uDC4D 훌륭해요! 조금만 더 하면 만점이에요!';
+  else if(ratio >= 0.5) msg = '\uD83D\uDCAA 잘하고 있어요! 오답 노트로 복습해 봐요!';
+  else msg = '\uD83C\uDF31 괜찮아요! <b>오답만 다시 풀기</b>로 반복하면 금방 외워져요!';
+  document.getElementById('rv-msg').innerHTML = msg;
+  rvStats(); rvChips();
+}
+
+function rvStats(){
+  var data = rvLoad();
+  var wrongCount = Object.keys(data.wrong).length;
+  var el = document.getElementById('rv-wrong');
+  if(el) el.textContent = wrongCount;
+  var rate = document.getElementById('rv-rate');
+  if(rate){
+    if(data.attempts){
+      rate.textContent = Math.round((data.correct / data.attempts) * 100) + '%';
+    } else {
+      rate.textContent = '—';
+    }
+  }
+}
+
+function rvReset(){
+  if(!window.confirm('누적 점수와 오답 노트를 모두 지울까요?')) return;
+  rvSave({ wrong:{}, attempts:0, correct:0 });
+  rvRender('all');
+  document.getElementById('rv-msg').innerHTML = '기록을 초기화했어요. 처음부터 다시 도전해 봐요!';
+}
+
+function rvInit(){
+  if(document.getElementById('review-body')) rvRender('all');
+}
+document.addEventListener('DOMContentLoaded', rvInit);
+if(document.readyState !== 'loading') rvInit();
+</script>
+</body>
+</html>

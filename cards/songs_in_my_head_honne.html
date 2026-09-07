@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Songs in My Head — HONNE</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F2FF;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #C0A8F0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#E8DEFF;border-color:#7040D0;color:#2D0878}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #D8C8F5}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#E8DEFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#E8DEFF;color:#2D0878;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E0D0F8;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E0D0F8;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E0D0F8;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#7040D0}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#E8DEFF;color:#2D0878;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F5F2FF;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #D8C8F5}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E0D0F8}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#2D0878}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E0D0F8;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F2EEFF;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F5F2FF;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#2D0878;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E0D0F8;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#E8DEFF;color:#2D0878;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F5F2FF;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#7040D0;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#2D0878;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #E0D0F8;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#E8DEFF;color:#2D0878;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#D0C0FF}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🎵</div>
+      <div>
+        <h2>Songs in My Head</h2>
+        <p>HONNE · 2024 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#F5F2FF;border:1px solid #C0A8F0;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#2D0878;line-height:1.6">
+      🎵 <b>HONNE</b> = 영국 인디 R&B 듀오 (Andy Clutterbuck + James Hatcher). "Songs in My Head"는 사랑하는 마음을 말로 전하지 못하고 머릿속으로만 노래를 쓰는 이야기예요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">일어나면 할 말이 다 사라지죠</p>
+          <div class="sent-row">
+            <span class="sent-right">When I wake up, the words are all gone.</span>
+          </div>
+          <span class="pill-ok">가사와 일치 ✓</span>
+          <span class="pill-note">일러나면 → 일어나면 (한국어 맞춤법)</span>
+          <p class="note-text">가사 흐름: <b>When I wake up, the words are all gone</b> — 잠들면 할 말이 생기지만, 일어나면 사라지는 감정을 표현해요. HONNE 보컬 Andy가 실제로 잠결에 쓴 노래예요!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">내 감정을 잘 안 털어놓죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I don't share my feelings.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I don't open up about my feelings.</span>
+          </div>
+          <span class="pill-fix">share → open up about</span>
+          <p class="note-text">
+            가사 정확: <b>I don't open up about my feelings</b><br>
+            💡 <b>share my feelings</b>도 자연스럽지만, 가사는 <b>open up about</b>을 써요.<br>
+            <b>털어놓다</b>의 뉘앙스가 담긴 표현: "open up" = 마음을 열다, 속을 털어놓다<br>
+            <b>share</b>(나누다)보다 <b>open up</b>(마음을 여는 것)이 "털어놓다"에 더 가깝아요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신 때문이에요</p>
+          <div class="sent-row">
+            <span class="sent-right">You're to blame.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사: <b>You're to blame</b> — "당신 때문이야"라는 다소 달콤한 탓하기 표현이에요.<br>
+          💡 사랑하는 마음이 생긴 게 "당신 때문"이라고 은근히 고백하는 뉘앙스!</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">the words are all gone</p>
+      <p class="expr-ko">할 말이 다 사라지다 / 말문이 막히다</p>
+      <span class="expr-tag">감정 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>When I wake up, the words are all gone.</b> → 일어나면 할 말이 다 사라져.</p>
+        <p><b>Every time I see you, the words are gone.</b> → 네가 보이면 매번 말문이 막혀.</p>
+        <p><b>I had so much to say, but the words were all gone.</b> → 할 말이 많았는데, 다 사라져버렸어.</p>
+        <p class="ex-note">💡 <b>the words are gone</b> = 할 말이 사라지다, 말문이 막히다.<br><b>lost for words</b>와 비슷한 표현! "I'm lost for words." = 할 말을 잃었어.</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">open up about my feelings</p>
+      <p class="expr-ko">감정을 털어놓다 / 마음을 열어 감정을 나누다</p>
+      <span class="expr-tag">관계 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I don't open up about my feelings.</b> → 내 감정을 잘 안 털어놓아요.</p>
+        <p><b>It's hard for me to open up about how I feel.</b> → 내 감정을 털어놓는 게 어려워.</p>
+        <p><b>He finally opened up about his struggles.</b> → 그는 드디어 자신의 어려움을 털어놓았어.</p>
+        <p><b>Can you open up a little more?</b> → 조금 더 마음을 열어줄 수 있어?</p>
+        <p class="ex-note">💡 <b>open up</b> = 마음을 열다, 속을 털어놓다<br><b>open up about ~</b> = ~에 대해 털어놓다<br>= <b>share my feelings</b>보다 더 "마음을 여는" 뉘앙스!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">You're to blame.</p>
+      <p class="expr-ko">당신 때문이에요 / 네 탓이야</p>
+      <span class="expr-tag">책임·원인 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>You're to blame.</b> → 당신 때문이에요. / 네 탓이야.</p>
+        <p><b>You're to blame for making me feel this way.</b> → 내가 이런 감정을 느끼게 한 건 네 탓이야.</p>
+        <p><b>Don't worry — no one is to blame.</b> → 걱정하지 마, 아무도 잘못이 없어.</p>
+        <p><b>Who is to blame for this?</b> → 이게 누구 탓이야?</p>
+        <p class="ex-note">💡 <b>be to blame</b> = ~의 탓이다, ~때문이다<br><b>You're to blame</b> = 네 탓이야 / <b>I'm to blame</b> = 내 탓이야<br>가사에서는 "사랑이 생긴 게 당신 때문"이라는 달콤한 탓하기!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>When I wake up, the words are all gone.</span> → 일어나면 할 말이 다 사라지죠.<br>
+      <span>I don't open up about my feelings.</span> → 내 감정을 잘 안 털어놓죠.<br>
+      <span>You're to blame.</span> → 당신 때문이에요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎵</div>
+      <div><h2>핵심 단어 발음</h2><p>Songs in My Head · HONNE</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">words</span>
+        <span class="ref-ipa">[wɜːrdz]</span>
+        <span class="ref-kr"><span class="s">워</span>즈</span>
+        <span class="ref-mean">말, 단어들</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">open up</span>
+        <span class="ref-ipa">[ˈoʊpən ʌp]</span>
+        <span class="ref-kr"><span class="s">오</span>픈 업</span>
+        <span class="ref-mean">마음을 열다 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">feelings</span>
+        <span class="ref-ipa">[ˈfiːlɪŋz]</span>
+        <span class="ref-kr"><span class="s">피</span>일링즈</span>
+        <span class="ref-mean">감정들</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">blame</span>
+        <span class="ref-ipa">[bleɪm]</span>
+        <span class="ref-kr"><span class="s">블레</span>임</span>
+        <span class="ref-mean">탓하다, 탓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wake up</span>
+        <span class="ref-ipa">[weɪk ʌp]</span>
+        <span class="ref-kr"><span class="s">웨</span>이크 업</span>
+        <span class="ref-mean">일어나다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">gone</span>
+        <span class="ref-ipa">[ɡɒn]</span>
+        <span class="ref-kr"><span class="s">곤</span></span>
+        <span class="ref-mean">사라진, 없어진</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — open up vs share</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">open up</p><p class="word-mean">마음을 열다, 털어놓다</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈoʊpən ʌp]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">오</span>픈 업</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>O-</b>에 강세: "오픈" [oʊpən]<br>
+        🔸 <b>up</b>: "업" — 구동사의 up은 약하게<br>
+        🔸 <b>open up about ~</b> = ~에 대해 털어놓다<br>
+        🔸 "털어놓다"에 가장 가까운 영어 표현! (share보다 감정적으로 더 깊은 표현)
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">share</p><p class="word-mean">나누다, 공유하다</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 덜 정확한 표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ʃɛr]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쉐</span>어</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>share</b>: "쉐어" [ʃɛr] — sh + "에어"<br>
+        🔸 "I share my feelings" = 자연스럽지만 단순히 "나누다"의 느낌<br>
+        🔸 "I open up about my feelings" = "마음을 열어 털어놓다"의 뉘앙스 — 한국어 "털어놓다"에 딱!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">blame</p><p class="word-mean">탓, 책임</p></div>
+        <span class="word-tag">bl- 연결 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[bleɪm]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">블레</span>임</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>bl-</b>: b + l 연결 — "블"을 자연스럽게!<br>
+        🔸 <b>-ame</b>: "에임" [eɪm] 이중모음<br>
+        🔸 <b>You're to blame</b>: "유아 투 블레임" — to 약하게!<br>
+        🔸 <b>be to blame</b> = 탓이다, 책임이 있다 (관용표현!)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">gone</p><p class="word-mean">사라진, 없어진</p></div>
+        <span class="word-tag">go의 과거분사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɡɒn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">곤</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>o</b>: 짧게 "오" [ɒ] — "고운"이 아니라 "곤" 한 음절!<br>
+        🔸 <b>go → went → gone</b> (불규칙 동사)<br>
+        🔸 <b>all gone</b>: "올 곤" — 완전히 사라진<br>
+        🔸 <b>Good, it's all gone!</b> = (음식 등이) 다 없어졌다! / (감정이) 다 사라졌다!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">words are all gone</p><p class="word-mean">할 말이 다 사라지다</p></div>
+        <span class="word-tag">문장 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[wɜːrdz ɑːr ɔːl ɡɒn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">워</span>즈 아 올 <span class="stress">곤</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>words</b>: "워즈" [wɜːrdz] — r 살짝 굴려서!<br>
+        🔸 <b>are all</b>: "아 럴"처럼 연음<br>
+        🔸 <b>gone</b>: "곤" 짧게 강하게<br>
+        🔸 빠르게: "더워즈아럴곤" — the words are all gone
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🎵 [Good Morning Pops] Songs in My Head
+— HONNE (혼, 2024)
+
+🎸 HONNE = 영국 인디 R&B 듀오
+   "사랑하는 마음을 말로 전하지 못하고
+    머릿속으로만 노래를 쓰는 이야기"
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 일어나면 할 말이 다 사라지죠
+→ When I wake up, the words are all gone. ✓
+   발음: 웬 아이 웨이크 업 더 워즈 아 올 곤
+※ 한국어도 "일러나면" ✗ → "일어나면" ✓
+💡 잠결에 쓴 노래처럼, 할 말이 생겼다가 사라지는 감정!
+
+2️⃣ 내 감정을 잘 안 털어놓죠
+✗ I don't share my feelings.
+→ I don't open up about my feelings. ✓
+   발음: 아이 돈트 오픈 업 어바웃 마이 피일링즈
+⚠️ share → open up about
+💡 share = 나누다 (단순)
+   open up = 마음을 열다, 털어놓다 ✓
+   한국어 "털어놓다"에 딱 맞는 표현!
+
+3️⃣ 당신 때문이에요
+→ You're to blame. ✓
+   발음: 유아 투 블레임
+💡 be to blame = 탓이다, 책임이 있다
+   "사랑이 생긴 게 당신 때문"이라는 달콤한 고백!
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 words are all gone [워즈 아 올 곤]
+  words = "워즈" (r 굴려서!)
+  gone = 짧고 강하게 "곤" (1음절)
+
+🔹 open up [오픈 업]
+  O-에 강세. up은 약하게
+  open up about ~ = ~에 대해 털어놓다
+
+🔹 blame [블레임]
+  bl- 연결 발음 + 이중모음 "에임"
+
+🔹 You're to blame [유아 투 블레임]
+  to 약하게, blame에 강세!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 the words are all gone
+   할 말이 다 사라지다
+   • Every time I see you, the words are gone.
+     (네가 보이면 매번 말문이 막혀.)
+💡 = be lost for words (말문이 막히다)
+
+🔹 open up about my feelings
+   감정을 털어놓다, 마음을 열다
+   • It's hard for me to open up.
+     (마음을 여는 게 어려워.)
+   • He finally opened up about his struggles.
+     (그는 드디어 고민을 털어놓았어.)
+💡 open up > share — 더 깊이 마음을 여는 표현!
+
+🔹 You're to blame.
+   당신 때문이에요
+   • No one is to blame.
+     (아무도 잘못이 없어.)
+   • I'm to blame for this.
+     (이건 내 탓이야.)
+💡 be to blame = 탓이다, 원인이 되다
+
+——————————————————
+
+📝 한 번에 정리
+
+When I wake up, the words are all gone.
+→ 일어나면 할 말이 다 사라지죠.
+
+I don't open up about my feelings.
+→ 내 감정을 잘 안 털어놓죠.
+
+You're to blame.
+→ 당신 때문이에요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #SongsInMyHead #HONNE</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

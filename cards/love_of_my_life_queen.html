@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love of My Life — Queen</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FBF6EE;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #C8A858;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#F0E2C0;border-color:#9A7820;color:#4E3A00}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #E2D0A8}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#F0E2C0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#F0E2C0;color:#4E3A00;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E8DCC0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E8DCC0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E8DCC0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#9A7820}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#F0E2C0;color:#4E3A00;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FBF6EE;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #E2D0A8}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E8DCC0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#4E3A00}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E8DCC0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FBF6EE;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FBF6EE;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#4E3A00;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E8DCC0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#F0E2C0;color:#4E3A00;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FBF6EE;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#9A7820;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#4E3A00;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #E8DCC0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#F0E2C0;color:#4E3A00;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#E8D098}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">👑</div>
+      <div>
+        <h2>Love of My Life</h2>
+        <p>Queen · A Night at the Opera (1975) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FBF6EE;border:1px solid #C8A858;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#4E3A00;line-height:1.6">
+      👑 <b>Queen (퀸)</b> — Freddie Mercury가 작곡한 발라드 명곡! 1975년 발매 후 라이브에서 관객 떼창으로 전설이 됐어요. 특히 남미 투어의 합창이 유명하죠.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 내 마음을 아프게 했죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">You broken my heart.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">You've broken my heart.</span>
+          </div>
+          <span class="pill-fix">You broken → You've broken (현재완료)</span>
+          <p class="note-text">
+            가사 정확: <b>Love of my life, you've hurt me / You've broken my heart, and now you leave me</b><br>
+            ⚠️ <b>You broken</b>(✗) → <b>You've broken</b>(✓) — <b>have</b>(축약형 've)가 빠졌어요!<br>
+            💡 <b>have + 과거분사(broken)</b> = 현재완료. "마음을 아프게 <b>해버렸다</b>"는 완료된 결과를 강조해요.<br>
+            &nbsp;&nbsp;<b>break → broke → broken</b> (불규칙 동사)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">그걸 나에게서 빼앗지 말아요</p>
+          <div class="sent-row">
+            <span class="sent-right">Don't take it away from me.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사 정확: <b>Bring it back, bring it back / Don't take it away from me</b> — 완벽해요! 👏 <b>take away from ~</b> = ~에게서 빼앗다, 앗아가다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">내가 나이를 먹더라도 당신 곁에 있을 거예요</p>
+          <div class="sent-row">
+            <span class="sent-right">I'll be there at your side.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>When I grow older, I will be there at your side / To remind you how I still love you</b> — 완벽해요! 👏<br>
+            💡 <b>at your side</b> = 당신 곁에 (= by your side). 가사 앞엔 <b>When I grow older</b>(나이가 들면)가 와요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">You've broken my heart.</p>
+      <p class="expr-ko">당신은 내 마음을 아프게 했어요</p>
+      <span class="expr-tag">현재완료 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>You've broken my heart.</b> → 당신은 내 마음을 아프게 했어요.</p>
+        <p><b>You've hurt me.</b> → 당신은 날 상처 입혔어요.</p>
+        <p><b>She's broken her promise again.</b> → 그녀가 또 약속을 어겼어.</p>
+        <p><b>Don't go breaking my heart.</b> → 내 마음을 아프게 하지 마. (Elton John 명곡!)</p>
+        <p class="ex-note">💡 <b>break one's heart</b> = ~의 마음을 아프게 하다. <b>have + broken</b> = 현재완료 (해버렸다)<br><b>break → broke → broken</b> 불규칙 변화!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">take it away from me</p>
+      <p class="expr-ko">그걸 나에게서 빼앗다 / 앗아가다</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Don't take it away from me.</b> → 그걸 나에게서 빼앗지 마.</p>
+        <p><b>No one can take that away from me.</b> → 아무도 그걸 나에게서 빼앗을 수 없어.</p>
+        <p><b>They took everything away from him.</b> → 그들은 그에게서 모든 걸 앗아갔어.</p>
+        <p><b>You can't take away my memories.</b> → 내 추억을 앗아갈 순 없어.</p>
+        <p class="ex-note">💡 <b>take ~ away from someone</b> = ~을 누군가에게서 빼앗다. <b>away</b>(멀리)가 "분리, 제거"의 의미를 더해요!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">be there at your side</p>
+      <p class="expr-ko">당신 곁에 있다 / 당신 편이 되다</p>
+      <span class="expr-tag">사랑·헌신 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>When I grow older, I will be there at your side.</b> → 나이가 들어도 당신 곁에 있을 거예요.</p>
+        <p><b>I'll always be by your side.</b> → 항상 당신 곁에 있을게요.</p>
+        <p><b>She stood by my side through everything.</b> → 그녀는 모든 일을 함께 견디며 내 곁을 지켰어.</p>
+        <p><b>I'm here for you, always.</b> → 난 언제나 당신을 위해 여기 있어요.</p>
+        <p class="ex-note">💡 <b>at/by your side</b> = 당신 곁에. <b>be there</b> = 곁에 있어주다, 의지가 되어주다<br><b>grow older</b> = 나이가 들다, 늙어가다 (get older와 같은 의미!)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>You've broken my heart.</span> → 당신은 내 마음을 아프게 했죠.<br>
+      <span>Don't take it away from me.</span> → 그걸 나에게서 빼앗지 말아요.<br>
+      <span>I'll be there at your side.</span> → (나이를 먹더라도) 당신 곁에 있을 거예요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">👑</div>
+      <div><h2>핵심 단어 발음</h2><p>Love of My Life · Queen</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">you've</span>
+        <span class="ref-ipa">[juːv]</span>
+        <span class="ref-kr"><span class="s">유</span>브</span>
+        <span class="ref-mean">you have (축약형)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">broken</span>
+        <span class="ref-ipa">[ˈbroʊkən]</span>
+        <span class="ref-kr"><span class="s">브로</span>큰</span>
+        <span class="ref-mean">부서진 (과거분사)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">away</span>
+        <span class="ref-ipa">[əˈweɪ]</span>
+        <span class="ref-kr">어<span class="s">웨</span>이</span>
+        <span class="ref-mean">멀리, 떨어져</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">heart</span>
+        <span class="ref-ipa">[hɑːrt]</span>
+        <span class="ref-kr"><span class="s">하</span>트</span>
+        <span class="ref-mean">마음, 심장</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">side</span>
+        <span class="ref-ipa">[saɪd]</span>
+        <span class="ref-kr"><span class="s">사</span>이드</span>
+        <span class="ref-mean">곁, 옆</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">grow older</span>
+        <span class="ref-ipa">[ɡroʊ ˈoʊldər]</span>
+        <span class="ref-kr"><span class="s">그로</span>우 <span class="s">올</span>더</span>
+        <span class="ref-mean">나이가 들다</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — You've broken (현재완료)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">You've broken</p><p class="word-mean">당신은 ~해버렸다 (현재완료)</p></div>
+        <span class="word-tag">have + 과거분사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[juːv ˈbroʊkən]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">유</span>브 <span class="stress">브로</span>큰</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>you've</b>: you + have → "유브" (빠르게!)<br>
+        🔸 <b>broken</b>: "브로큰" [ˈbroʊkən] — BRO에 강세, 이중모음!<br>
+        🔸 ⚠️ <b>You broken</b>(✗) → <b>You've broken</b>(✓) — 've 절대 빠지면 안 돼요!<br>
+        🔸 <b>break → broke → broken</b> 불규칙 변화
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">heart</p><p class="word-mean">마음, 심장</p></div>
+        <span class="word-tag">r 발음 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[hɑːrt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">하</span>트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>hea-</b>: "하" [hɑː] — 긴 "아"!<br>
+        🔸 <b>-rt</b>: "ㄹ트" — r 살짝 굴리고 t!<br>
+        🔸 <b>heart</b>(하트, 마음) vs <b>hurt</b>(허트, 다치다) — 모음 차이!<br>
+        🔸 가사 첫 줄: "you've hurt me" + "broken my heart" 둘 다 나와요!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">take it away</p><p class="word-mean">빼앗아 가다</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[teɪk ɪt əˈweɪ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">테</span>이킷 어<span class="stress">웨</span>이</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>take it</b>: "테이킷" — 연음으로 이어서!<br>
+        🔸 <b>away</b>: "어웨이" [əˈweɪ] — WAY에 강세<br>
+        🔸 빠르게: "take it away" → "테이키터웨이"<br>
+        🔸 <b>Don't take it away from me</b>: "돈트 테이키터웨이 프롬 미"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">grow older</p><p class="word-mean">나이가 들다, 늙어가다</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɡroʊ ˈoʊldər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">그로</span>우 <span class="stress">올</span>더</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>grow</b>: "그로우" [ɡroʊ] — gr 연결 + 이중모음<br>
+        🔸 <b>older</b>: "올더" [ˈoʊldər] — OL에 강세<br>
+        🔸 <b>grow older</b> = 나이가 들다 (= get older)<br>
+        🔸 가사: "When I grow older" = 내가 나이가 들면
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">👑 [Good Morning Pops] Love of My Life
+— Queen · A Night at the Opera (1975)
+
+🎸 Freddie Mercury 작곡 발라드 명곡!
+   라이브 관객 떼창으로 전설이 된 곡
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 당신은 내 마음을 아프게 했죠
+✗ You broken my heart.
+→ You've broken my heart. ✓
+   발음: 유브 브로큰 마이 하트
+⚠️ You broken → You've broken (have 빠짐!)
+💡 have + 과거분사(broken) = 현재완료
+   "아프게 해버렸다"는 완료된 결과 강조
+   break → broke → broken (불규칙!)
+※ 가사: Love of my life, you've hurt me /
+   You've broken my heart, and now you leave me
+
+2️⃣ 그걸 나에게서 빼앗지 말아요
+→ Don't take it away from me. ✓
+   발음: 돈트 테이키터웨이 프롬 미
+※ 가사: Bring it back, bring it back /
+   Don't take it away from me
+💡 take ~ away from = ~에게서 빼앗다
+
+3️⃣ 내가 나이를 먹더라도 당신 곁에 있을 거예요
+→ I'll be there at your side. ✓
+   발음: 아일 비 데어 앳 유어 사이드
+※ 가사: When I grow older, I will be there at your side /
+   To remind you how I still love you
+💡 at your side = 당신 곁에 (= by your side)
+   grow older = 나이가 들다
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 You've broken [유브 브로큰]
+  you've = you + have (축약!)
+  broken = BRO-에 강세, 이중모음
+  break → broke → broken
+
+🔹 heart [하트] vs hurt [허트]
+  heart = 마음 (긴 "아")
+  hurt = 다치다 (짧은 "어")
+  가사에 둘 다 나와요!
+
+🔹 take it away [테이키터웨이]
+  연음으로 이어서!
+
+🔹 grow older [그로우 올더]
+  나이가 들다 (= get older)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 You've broken my heart.
+   당신은 내 마음을 아프게 했어요
+   • You've hurt me.
+     (당신은 날 상처 입혔어요.)
+💡 have + broken = 현재완료 (해버렸다)
+
+🔹 take it away from me
+   그걸 나에게서 빼앗다
+   • No one can take that away from me.
+     (아무도 그걸 나에게서 빼앗을 수 없어.)
+💡 take ~ away from someone = 빼앗다
+
+🔹 be there at your side
+   당신 곁에 있다
+   • I'll always be by your side.
+     (항상 당신 곁에 있을게요.)
+💡 at/by your side = 곁에. grow older = 나이 들다
+
+——————————————————
+
+📝 한 번에 정리
+
+You've broken my heart.
+→ 당신은 내 마음을 아프게 했죠.
+
+Don't take it away from me.
+→ 그걸 나에게서 빼앗지 말아요.
+
+I'll be there at your side.
+→ 당신 곁에 있을 거예요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #LoveOfMyLife #Queen</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

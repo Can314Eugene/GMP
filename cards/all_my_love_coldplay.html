@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALL MY LOVE — Coldplay</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0F5FF;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #B8CAEC;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#E4ECFC;border-color:#6A94D8;color:#1A3E7A}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #D8E4F5}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#E4ECFC;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#E4ECFC;color:#1A3E7A;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E0E8F5;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E0E8F5;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E0E8F5;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#6A94D8}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#E4ECFC;color:#1A3E7A;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F5F8FE;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #D8E4F5}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E0E8F5}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#1A3E7A}
+  /* Pronunciation */
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E0E8F5;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.2fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEF3FB;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F5F8FE;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#1A3E7A;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E0E8F5;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#E4ECFC;color:#1A3E7A;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F5F8FE;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#6A94D8;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#1A3E7A;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  /* Kakao */
+  .kakao-wrap{background:#fff;border:1px solid #E0E8F5;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#E4ECFC;color:#1A3E7A;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#C8D9F5}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13" stroke="#2D5FA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="#2D5FA8" stroke-width="1.5"/><circle cx="18" cy="16" r="3" stroke="#2D5FA8" stroke-width="1.5"/></svg>
+      </div>
+      <div>
+        <h2>ALL MY LOVE</h2>
+        <p>Coldplay · Moon Music (2024) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">우린 힘든 시간을 함께 겪었지</p>
+          <div class="sent-row">
+            <span class="sent-wrong">We've been throw low.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">We've been through low.</span>
+          </div>
+          <span class="pill-fix">throw → through (발음 혼동!)</span>
+          <p class="note-text">
+            가사 전체: <b>We've been through low / Been through sunshine, been through snow</b><br>
+            ⚠️ <b>throw</b> [쓰로우] = 던지다 ← 전혀 다른 단어!<br>
+            ✓ <b>through</b> [쓰루] = ~을 통해, ~을 겪으며<br>
+            💡 <b>been through ~</b> = ~을 겪었다 (경험 표현)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">넌 내 사랑 전부를 가지고 있어</p>
+          <div class="sent-row">
+            <span class="sent-right">You've got all my love.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <span class="pill-note">You got / You've got 둘 다 가사에 등장!</span>
+          <p class="note-text">가사에서 <b>You got all my love</b>와 <b>You've got all my love</b>가 번갈아 등장해요. 둘 다 맞는 표현! <b>You've got</b>이 조금 더 격식 있는 표현이에요.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">네가 울면 내가 안아줄게</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Let me hold you if you cry.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">(And) 'til I die, let me hold you if you cry.</span>
+          </div>
+          <span class="pill-fix">앞 구절 누락</span>
+          <p class="note-text">
+            영어 문장 자체는 완벽해요! 👏<br>
+            다만 가사는 앞에 <b>'Til I die</b>가 붙어요:<br>
+            <b>'Til I die / Let me hold you if you cry</b><br>
+            = "내가 죽을 때까지, 네가 울면 안아줄게" — 더 깊은 헌신의 의미!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">been through ~</p>
+      <p class="expr-ko">~을 함께 겪다 / ~을 헤쳐나가다</p>
+      <span class="expr-tag">경험 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>We've been through low.</b> → 우리 함께 힘든 시간을 겪었어.</p>
+        <p><b>We've been through a lot together.</b> → 우리 함께 많은 걸 겪었어.</p>
+        <p><b>She's been through so much this year.</b> → 그녀는 올해 정말 많은 일을 겪었어.</p>
+        <p><b>I've been through hard times, but I made it.</b> → 힘든 시간을 겪었지만 해냈어.</p>
+        <p class="ex-note">💡 <b>go through</b> = 지금 겪고 있는 중 / <b>been through</b> = 이미 겪어낸 경험. 과거의 어려움을 이겨냈다는 뉘앙스!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">You've got all my love.</p>
+      <p class="expr-ko">넌 내 사랑 전부를 가지고 있어</p>
+      <span class="expr-tag">사랑 고백 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>You've got all my love.</b> → 넌 내 사랑의 전부야.</p>
+        <p><b>You've got my full support.</b> → 내 모든 지지는 네 거야.</p>
+        <p><b>You've got all my attention.</b> → 내 모든 관심은 네 거야.</p>
+        <p class="ex-note">💡 <b>You've got all my ___</b> 패턴으로 확장 가능! love 자리에 support / trust / heart 등을 넣어 보세요.</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">let me hold you if you cry</p>
+      <p class="expr-ko">네가 울면 내가 안아줄게</p>
+      <span class="expr-tag">위로·헌신 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Let me hold you if you cry.</b> → 네가 울면 내가 꼭 안아줄게.</p>
+        <p><b>Let me know if you need anything.</b> → 필요한 게 있으면 말해.</p>
+        <p><b>Let me help you with that.</b> → 내가 도와줄게.</p>
+        <p><b>Let me be there for you.</b> → 네 곁에 있어줄게.</p>
+        <p class="ex-note">💡 <b>Let me + 동사원형</b> = "내가 ~해줄게" — 상대방을 위해 무언가를 해주겠다는 따뜻한 제안 표현!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>We've been through low.</span> → 우린 힘든 시간을 함께 겪었지.<br>
+      <span>You've got all my love.</span> → 넌 내 사랑 전부를 가지고 있어.<br>
+      <span>'Til I die, let me hold you if you cry.</span> → 내가 죽을 때까지, 네가 울면 안아줄게.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13" stroke="#2D5FA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="#2D5FA8" stroke-width="1.5"/><circle cx="18" cy="16" r="3" stroke="#2D5FA8" stroke-width="1.5"/></svg>
+      </div>
+      <div><h2>핵심 단어 발음</h2><p>ALL MY LOVE · Coldplay</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">through</span>
+        <span class="ref-ipa">[θruː]</span>
+        <span class="ref-kr"><span class="s">쓰</span>루</span>
+        <span class="ref-mean">~을 통해/겪으며</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">throw</span>
+        <span class="ref-ipa">[θroʊ]</span>
+        <span class="ref-kr"><span class="s">쓰</span>로우</span>
+        <span class="ref-mean">던지다 (≠ through!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">hold</span>
+        <span class="ref-ipa">[hoʊld]</span>
+        <span class="ref-kr"><span class="s">호</span>울드</span>
+        <span class="ref-mean">안다, 잡다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">cry</span>
+        <span class="ref-ipa">[kraɪ]</span>
+        <span class="ref-kr"><span class="s">크</span>라이</span>
+        <span class="ref-mean">울다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">'til I die</span>
+        <span class="ref-ipa">[tɪl aɪ daɪ]</span>
+        <span class="ref-kr">틸 아이 <span class="s">다</span>이</span>
+        <span class="ref-mean">내가 죽을 때까지</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">forever</span>
+        <span class="ref-ipa">[fərˈɛvər]</span>
+        <span class="ref-kr">퍼<span class="s">레</span>버</span>
+        <span class="ref-mean">영원히</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 핵심 혼동 — throw vs through</p>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">throw</p><p class="word-mean">던지다</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 이번 교정 포인트</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[θroʊ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쓰</span>로우</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>th-</b>: 혀끝을 이 사이에 살짝 끼우고 바람을 내보내요.<br>
+        🔸 <b>-ow</b>: "오우" 이중모음 — "쓰로<b>우</b>"처럼 끝을 살짝 올려요.<br>
+        🔸 의미: 물건을 <b>던지다</b>. "throw a ball" = 공을 던지다
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">through</p><p class="word-mean">~을 통해, ~을 겪으며</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[θruː]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쓰</span>루</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>th-</b>: throw와 같은 시작 — 혀끝을 이 사이에!<br>
+        🔸 <b>-ough</b>: 발음은 "루" [ruː] — 길게! 철자와 발음이 완전히 달라요.<br>
+        🔸 <b>throw vs through</b>: 끝 모음이 핵심! "로우" vs "루"
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">hold</p><p class="word-mean">안다, 잡다, 붙들다</p></div>
+        <span class="word-tag">이중모음 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[hoʊld]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">호</span>울드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>-ol-</b>: "올"이 아니라 <b>"오울"</b> 이중모음 [oʊ]<br>
+        🔸 끝 <b>-ld</b>: l + d 연결해서 "울드" — 두 자음 모두 발음!<br>
+        🔸 연습: "호울드" → 빠르게 → "홀드"처럼도 들려요
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">'til I die</p><p class="word-mean">내가 죽을 때까지</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[tɪl aɪ daɪ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">틸 아이 <span class="stress">다</span>이</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>'til</b> = until의 줄임말. "틸"로 짧게.<br>
+        🔸 <b>til I</b>: 연음으로 "틸라이"처럼 이어져요.<br>
+        🔸 <b>die</b>: "다이" — d를 부드럽게 시작, "아이" 이중모음으로 끝.
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">forever</p><p class="word-mean">영원히</p></div>
+        <span class="word-tag">강세 위치</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[fərˈɛvər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">퍼<span class="stress">레</span>버</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>for-</b>: 약하게 "퍼" [fər] — 강세 없음!<br>
+        🔸 <b>-EV-</b>에 강세: "퍼<b>레</b>버"<br>
+        🔸 끝 <b>-er</b>: 미국식은 "버" [ər] — 혀를 살짝 말아요.
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">💙 [Good Morning Pops] ALL MY LOVE
+— Coldplay (Moon Music, 2024)
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 우린 힘든 시간을 함께 겪었지
+✗ We've been throw low.
+→ We've been through low. ✓
+   발음: 위브 빈 쓰루 로우
+⚠️ throw(던지다) → through(겪으며)
+   throw [쓰로우] vs through [쓰루] — 끝 모음이 달라요!
+💡 been through ~ = ~을 겪어왔다
+
+2️⃣ 넌 내 사랑 전부를 가지고 있어
+→ You've got all my love. ✓
+   발음: 유브 갓 올 마이 러브
+※ 가사에 You got / You've got 둘 다 등장!
+
+3️⃣ 네가 울면 내가 안아줄게
+→ Let me hold you if you cry. ✓
+   발음: 렛 미 호울드 유 이퓨 크라이
+※ 가사 전체: 'Til I die / Let me hold you if you cry
+   (내가 죽을 때까지, 네가 울면 안아줄게)
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 throw [쓰로우] vs through [쓰루]
+  throw = 던지다 / through = ~을 겪으며
+  끝 모음 차이: -ow(오우) vs -ough(루)
+
+🔹 hold [호울드]
+  "홀드" 아니라 "호울드" — 이중모음!
+
+🔹 'til I die [틸 아이 다이]
+  'til = until의 줄임말
+  연음: "틸라이다이"처럼!
+
+🔹 forever [퍼레버]
+  for- 약하게, -EV-에 강세!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 been through ~
+   ~을 함께 겪다
+   • We've been through a lot together.
+     (우리 함께 정말 많은 걸 겪었어.)
+   • She's been through so much this year.
+     (그녀는 올해 정말 많은 일을 겪었어.)
+💡 go through = 지금 겪는 중
+   been through = 이미 겪어낸 경험
+
+🔹 You've got all my love.
+   넌 내 사랑 전부를 가지고 있어
+   • You've got all my support.
+     (내 모든 지지는 네 거야.)
+💡 You've got all my ___ 패턴으로 확장 가능!
+
+🔹 Let me hold you if you cry.
+   네가 울면 내가 안아줄게
+   • Let me know if you need anything.
+     (필요한 게 있으면 말해.)
+   • Let me be there for you.
+     (네 곁에 있어줄게.)
+💡 Let me + 동사원형 = "내가 ~해줄게"
+   따뜻한 제안·헌신 표현!
+
+——————————————————
+
+📝 한 번에 정리
+
+We've been through low.
+→ 우린 힘든 시간을 함께 겪었지.
+
+You've got all my love.
+→ 넌 내 사랑 전부를 가지고 있어.
+
+'Til I die, let me hold you if you cry.
+→ 내가 죽을 때까지, 네가 울면 안아줄게.
+
+——————————————————
+#GoodMorningPops #팝송영어 #AllMyLove #Coldplay</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

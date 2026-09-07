@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golden — Cory Wong feat. Cody Fry</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5FFF8;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #70D0A0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C0F0D8;border-color:#108050;color:#043820}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #A0E0C0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C0F0D8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C0F0D8;color:#043820;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #B0E8D0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 4px 3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #B0E8D0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #B0E8D0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#108050}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C0F0D8;color:#043820;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F5FFF8;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #A0E0C0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #B0E8D0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#043820}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #B0E8D0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEFFF5;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F5FFF8;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#043820;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #B0E8D0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C0F0D8;color:#043820;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F5FFF8;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#108050;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#043820;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #B0E8D0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C0F0D8;color:#043820;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#90DDB8}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">✨</div>
+      <div>
+        <h2>Golden</h2>
+        <p>Cory Wong feat. Cody Fry · 2020 · Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>포인트:</b> 이번 문장은 1, 2번은 거의 정확하고, 3번만 <b>running after</b> 구조로 고치면 됩니다.<br>
+      <b>Golden</b>은 "빛나는 무언가, 반짝이는 목표" 느낌으로 자주 쓰여요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">다들 꿈같은 삶을 사네요</p>
+          <div class="sent-row">
+            <span class="sent-right">Everybody's living the dream.</span>
+          </div>
+          <span class="pill-ok">정확해요 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Everybody's living the dream.</b><br>
+            💡 <b>live the dream</b> = 꿈같은 삶을 살다 / 바라던 삶을 살다<br>
+            회화에서는 때로 진심으로, 때로는 살짝 비꼬는 느낌으로도 써요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">어쩌면 저게 나일 수 있죠</p>
+          <div class="sent-row">
+            <span class="sent-right">Hey, maybe that could be me.</span>
+          </div>
+          <span class="pill-ok">거의 맞았어요 ✓</span>
+          <span class="pill-note">원문엔 Hey, 가 붙어요</span>
+          <p class="note-text">
+            가사 정확: <b>Hey, maybe that could be me.</b><br>
+            사용하신 <b>Maybe that could be me.</b>도 문법상 자연스럽지만,<br>
+            원문에서는 앞에 <b>Hey,</b>가 붙어서 더 리듬감 있게 들려요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">다들 빛나는 무언가를 쫓고 있죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Everybody's running something golden.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Everybody's running after something golden.</span>
+          </div>
+          <span class="pill-fix">running after 필요</span>
+          <p class="note-text">
+            가사 흐름: <b>Everybody's running / Running after something / Golden</b><br>
+            ⚠️ <b>run something</b>은 "~을 운영하다" 뜻이 되기 쉬워요.<br>
+            여기서는 <b>run after ~</b> = "~을 쫓다, 뒤쫓다" 구조가 핵심이에요.<br>
+            그래서 뜻은 "다들 반짝이는 어떤 것을 좇고 있다"가 됩니다.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">live the dream</p>
+      <p class="expr-ko">꿈같은 삶을 살다</p>
+      <span class="expr-tag">자주 쓰는 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Everybody's living the dream.</b> → 다들 꿈같은 삶을 사네요.</p>
+        <p><b>He moved to the beach and now he's living the dream.</b> → 그는 해변으로 이사 가서 지금 꿈같은 삶을 살고 있어요.</p>
+        <p><b>You're really living the dream.</b> → 너 진짜 꿈꾸던 삶을 살고 있네.</p>
+        <p class="ex-note">💡 <b>the dream</b>은 "내가 바라던 이상적인 삶" 느낌이에요. 맥락에 따라 진심 칭찬 또는 가벼운 농담으로도 써요.</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">that could be me</p>
+      <p class="expr-ko">저게 나일 수도 있어 / 나도 저럴 수 있어</p>
+      <span class="expr-tag">가능성 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Hey, maybe that could be me.</b> → 어쩌면 저게 나일 수도 있죠.</p>
+        <p><b>One day, that could be me.</b> → 언젠가 저게 내 모습일 수도 있어.</p>
+        <p><b>I saw her on stage and thought, "That could be me."</b> → 무대 위의 그녀를 보고 "저게 내 모습일 수도 있겠다"라고 생각했어.</p>
+        <p class="ex-note">💡 <b>could be</b>는 가능성을 부드럽게 말할 때 좋아요. 너무 확정적이지 않고 "그럴 수도 있다" 느낌입니다.</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">run after something</p>
+      <p class="expr-ko">무언가를 좇다, 쫓아가다</p>
+      <span class="expr-tag">핵심 교정</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Everybody's running after something golden.</b> → 다들 빛나는 무언가를 좇고 있죠.</p>
+        <p><b>He's always running after success.</b> → 그는 늘 성공을 좇고 있어요.</p>
+        <p><b>Don't spend your whole life running after other people's dreams.</b> → 다른 사람의 꿈을 좇느라 인생을 다 쓰지 마.</p>
+        <p class="ex-note">💡 <b>run after</b> = 뒤쫓다, 좇다. 이번 곡에서는 물리적으로 뛰어가는 게 아니라 목표·성공·반짝이는 것을 좇는 비유예요.</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Everybody's living the dream.</span> → 다들 꿈같은 삶을 사네요.<br>
+      <span>Hey, maybe that could be me.</span> → 어쩌면 저게 나일 수 있죠.<br>
+      <span>Everybody's running after something golden.</span> → 다들 빛나는 무언가를 쫓고 있죠.
+    </div>
+  </div>
+
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✨</div>
+      <div><h2>핵심 단어 발음</h2><p>Golden · Cory Wong feat. Cody Fry</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">golden</span>
+        <span class="ref-ipa">[ˈɡoʊldən]</span>
+        <span class="ref-kr"><span class="s">고울</span>든</span>
+        <span class="ref-mean">황금빛의, 반짝이는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">dream</span>
+        <span class="ref-ipa">[driːm]</span>
+        <span class="ref-kr"><span class="s">드림</span></span>
+        <span class="ref-mean">꿈</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">maybe</span>
+        <span class="ref-ipa">[ˈmeɪbi]</span>
+        <span class="ref-kr"><span class="s">메</span>이비</span>
+        <span class="ref-mean">어쩌면</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">running after</span>
+        <span class="ref-ipa">[ˈrʌnɪŋ ˈæftər]</span>
+        <span class="ref-kr"><span class="s">러</span>닝 애프터</span>
+        <span class="ref-mean">좇고 있는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">Cory Wong</span>
+        <span class="ref-ipa">[ˈkɔːri wɔːŋ]</span>
+        <span class="ref-kr"><span class="s">코</span>리 웡</span>
+        <span class="ref-mean">가수 이름</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">Cody Fry</span>
+        <span class="ref-ipa">[ˈkoʊdi fraɪ]</span>
+        <span class="ref-kr"><span class="s">코</span>디 프라이</span>
+        <span class="ref-mean">피처링 아티스트</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">핵심 1 — golden</p>
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">golden</p><p class="word-mean">황금빛의, 아주 소중한</p></div>
+        <span class="word-tag">곡 핵심 단어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɡoʊldən]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">고울</span>든</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>gold</b> 부분이 "고울"처럼 들려요.<br>
+        🔸 뒤의 <b>-en</b>은 강하지 않게 "든" 느낌으로 가볍게.<br>
+        🔸 <b>golden opportunity</b>, <b>golden time</b>처럼 좋은 기회나 빛나는 대상을 말할 때도 자주 써요.
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">핵심 2 — running after</p>
+    <div class="word-card" style="border-color:#F1C8C8">
+      <div class="word-top">
+        <div><p class="word-en">running after</p><p class="word-mean">무언가를 쫓는 중</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">교정 포인트</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈrʌnɪŋ ˈæftər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">러</span>닝 애프터</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>run after</b>가 한 덩어리예요.<br>
+        🔸 <b>run something</b>은 "운영하다"로 들릴 수 있어서 이번 문맥과 달라요.<br>
+        🔸 <b>Everybody's running after something golden</b> 전체를 붙여서 읽는 연습을 해보세요.
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">living the dream</p><p class="word-mean">꿈같은 삶을 사는</p></div>
+        <span class="word-tag">통표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈlɪvɪŋ ðə driːm]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">리</span>빙 더 드림</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>living</b>은 "리빙", <b>dream</b>은 길게 "드리임" 느낌.<br>
+        🔸 붙여서 읽으면 <b>living the dream</b> → "리빙더드림".<br>
+        🔸 칭찬처럼도, 약간 농담처럼도 쓸 수 있는 표현이에요.
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">maybe that could be me</p><p class="word-mean">어쩌면 저게 나일 수도 있어</p></div>
+        <span class="word-tag">회화 문장</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈmeɪbi ðæt kʊd bi miː]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">메</span>이비 댓 쿧 비 미</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>could</b>는 철자보다 짧게 "쿧"처럼 들어요.<br>
+        🔸 문장 전체는 너무 끊지 말고 자연스럽게 이어 읽는 게 좋아요.<br>
+        🔸 <b>Hey, maybe that could be me.</b>로 통째로 외우면 활용도가 높아요.
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">✨ [Good Morning Pops] Golden
+— Cory Wong feat. Cody Fry
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 다들 꿈같은 삶을 사네요
+Everybody's living the dream. ✓
+💡 live the dream
+= 꿈같은 삶을 살다
+
+2️⃣ 어쩌면 저게 나일 수 있죠
+Hey, maybe that could be me. ✓
+💡 원문에는 앞에 Hey, 가 붙어요
+
+3️⃣ 다들 빛나는 무언가를 쫓고 있죠
+✗ Everybody's running something golden.
+→ Everybody's running after something golden. ✓
+💡 run after ~
+= ~을 쫓다, 좇다
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 live the dream
+   꿈같은 삶을 살다
+   • You're really living the dream.
+     (너 진짜 꿈꾸던 삶을 살고 있네.)
+
+🔹 that could be me
+   저게 나일 수도 있어
+   • One day, that could be me.
+     (언젠가 저게 내 모습일 수도 있어.)
+
+🔹 run after something
+   무언가를 좇다
+   • He's always running after success.
+     (그는 늘 성공을 좇고 있어.)
+
+——————————————————
+
+📝 한 번에 정리
+
+Everybody's living the dream.
+→ 다들 꿈같은 삶을 사네요.
+
+Hey, maybe that could be me.
+→ 어쩌면 저게 나일 수 있죠.
+
+Everybody's running after something golden.
+→ 다들 빛나는 무언가를 쫓고 있죠.
+
+——————————————————
+#GoodMorningPops #Golden #CoryWong #CodyFry</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dude — Litany</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FFF5F0;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #F0B8A0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#FEE8DF;border-color:#E8703A;color:#7A2E0E}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #F5D8CC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#FEE8DF;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#FEE8DF;color:#7A2E0E;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #F5E0D5;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #F5E0D5;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #F5E0D5;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#E8703A}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#FEE8DF;color:#7A2E0E;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FFF8F5;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #F5D8CC}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #F5E0D5}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#7A2E0E}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #F5E0D5;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FFF0EB;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FFF8F5;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#7A2E0E;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #F5E0D5;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#FEE8DF;color:#7A2E0E;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FFF8F5;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#E8703A;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#7A2E0E;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #F5E0D5;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#FEE8DF;color:#7A2E0E;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#F5C9B0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13" stroke="#C0521E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="#C0521E" stroke-width="1.5"/><circle cx="18" cy="16" r="3" stroke="#C0521E" stroke-width="1.5"/></svg>
+      </div>
+      <div>
+        <h2>My Dude</h2>
+        <p>Litany · 2019 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <!-- 가수 이름 교정 -->
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>가수 이름:</b> 리타니 → <b>Litany (리터니)</b>, 본명은 Beth Cornell. 영국 런던 출신 싱어송라이터예요!
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">그녀는 너희 집에서 가까운 곳에 살아</p>
+          <div class="sent-row">
+            <span class="sent-wrong">She lives round corner from your place.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">She lives round the corner from your place.</span>
+          </div>
+          <span class="pill-fix">round corner → round the corner</span>
+          <p class="note-text">
+            가사 정확: <b>She lives round the corner / From your place</b><br>
+            ⚠️ <b>the</b> 하나가 빠졌어요! <b>round the corner</b>는 관용표현이라 반드시 관사 <b>the</b>가 필요해요.<br>
+            💡 <b>round the corner</b> = 코너를 돌면, 바로 근처에 — 영국식 표현! 미국식은 <b>around the corner</b>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">그녀 입장이 되는 건 얼마나 좋을까?</p>
+          <div class="sent-row">
+            <span class="sent-wrong">What a gift in her shoes?</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Oh what a gift to be in her shoes!</span>
+          </div>
+          <span class="pill-fix">in her shoes → to be in her shoes</span>
+          <span class="pill-fix">? → ! (감탄문)</span>
+          <span class="pill-note">Oh 빠짐</span>
+          <p class="note-text">
+            가사 정확: <b>Oh what a gift to be in her shoes</b><br>
+            ① <b>in her shoes</b>(✗) → <b>to be in her shoes</b> — <b>to be</b>가 있어야 "그녀 입장이 되는 것"이라는 뜻이 완성돼요!<br>
+            ② <b>?</b> → <b>!</b> 물음표가 아니라 감탄부호 (감탄문이에요)<br>
+            ③ 앞에 <b>Oh</b>가 빠졌어요 — 감탄을 강조하는 표현<br>
+            💡 <b>be in someone's shoes</b> = 그 사람 입장이 되다 (관용표현!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">내가 너에게 더 잘 어울려</p>
+          <div class="sent-row">
+            <span class="sent-right">I'm a better match for you.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사 정확: <b>Only I'm a better match for you</b> — "내가 너에게 더 잘 어울린다고" 은근히 어필하는 귀여운 가사예요!</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">round the corner (from ~)</p>
+      <p class="expr-ko">바로 근처에 / (~에서) 코너를 돌면 바로</p>
+      <span class="expr-tag">영국식 위치 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>She lives round the corner from your place.</b> → 그녀는 너희 집 바로 근처에 살아.</p>
+        <p><b>The café is just round the corner.</b> → 카페가 바로 코너 돌면 있어.</p>
+        <p><b>Summer is just around the corner.</b> → 여름이 코앞으로 다가왔어.</p>
+        <p><b>Help is right around the corner.</b> → 도움이 바로 곁에 있어.</p>
+        <p class="ex-note">💡 영국식: <b>round the corner</b> / 미국식: <b>around the corner</b>. 둘 다 "바로 근처에, 곧 다가올"이라는 뜻으로 써요!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">Oh what a gift to be in her shoes!</p>
+      <p class="expr-ko">그녀 입장이 되는 건 얼마나 좋을까!</p>
+      <span class="expr-tag">감탄 + 관용표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Oh what a gift to be in her shoes!</b> → 그녀 입장이 되는 건 얼마나 좋을까!</p>
+        <p><b>I wouldn't want to be in his shoes right now.</b> → 지금 그 사람 입장이 되고 싶지 않아.</p>
+        <p><b>Put yourself in my shoes for a moment.</b> → 잠깐 내 입장이 되어봐.</p>
+        <p><b>What would you do if you were in her shoes?</b> → 당신이 그녀 입장이라면 어떻게 하겠어요?</p>
+        <p class="ex-note">💡 <b>be in someone's shoes</b> = 그 사람 입장/처지가 되다 (신발을 신는 것처럼 그 입장에 서는 것!)<br><b>What a + 명사 + to + 동사!</b> = ~하는 것이 얼마나 ~인가! (감탄문 구조)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">a better match for you</p>
+      <p class="expr-ko">너에게 더 잘 어울리다 / 더 맞는 사람이다</p>
+      <span class="expr-tag">관계 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I'm a better match for you.</b> → 내가 너에게 더 잘 어울려.</p>
+        <p><b>They're a perfect match for each other.</b> → 그들은 서로 완벽하게 어울려.</p>
+        <p><b>This job is a great match for your skills.</b> → 이 직업은 당신 능력에 딱 맞아요.</p>
+        <p><b>We're not a good match.</b> → 우리는 잘 안 맞아.</p>
+        <p class="ex-note">💡 <b>match</b> = 잘 맞는 짝, 어울리는 상대. <b>a good/perfect/better match</b>로 쓰이고, 사람뿐 아니라 물건·직업에도 써요!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>She lives round the corner from your place.</span> → 그녀는 너희 집 바로 근처에 살아.<br>
+      <span>Oh what a gift to be in her shoes!</span> → 그녀 입장이 되는 건 얼마나 좋을까!<br>
+      <span>I'm a better match for you.</span> → 내가 너에게 더 잘 어울려.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13" stroke="#C0521E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="#C0521E" stroke-width="1.5"/><circle cx="18" cy="16" r="3" stroke="#C0521E" stroke-width="1.5"/></svg>
+      </div>
+      <div><h2>핵심 단어 발음</h2><p>My Dude · Litany</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">corner</span>
+        <span class="ref-ipa">[ˈkɔːrnər]</span>
+        <span class="ref-kr"><span class="s">코</span>너</span>
+        <span class="ref-mean">모퉁이</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">round</span>
+        <span class="ref-ipa">[raʊnd]</span>
+        <span class="ref-kr"><span class="s">라</span>운드</span>
+        <span class="ref-mean">~을 돌아 (영국식)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">gift</span>
+        <span class="ref-ipa">[ɡɪft]</span>
+        <span class="ref-kr"><span class="s">기</span>프트</span>
+        <span class="ref-mean">선물, 좋은 것</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">shoes</span>
+        <span class="ref-ipa">[ʃuːz]</span>
+        <span class="ref-kr"><span class="s">슈</span>즈</span>
+        <span class="ref-mean">신발 (복수)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">match</span>
+        <span class="ref-ipa">[mætʃ]</span>
+        <span class="ref-kr"><span class="s">매</span>치</span>
+        <span class="ref-mean">잘 맞는 짝</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">dude</span>
+        <span class="ref-ipa">[djuːd]</span>
+        <span class="ref-kr"><span class="s">듀</span>드</span>
+        <span class="ref-mean">친구, 녀석 (구어)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">round the corner</p><p class="word-mean">코너를 돌면 바로, 근처에</p></div>
+        <span class="word-tag">⚠️ 이번 교정 핵심</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[raʊnd ðə ˈkɔːrnər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">라</span>운드 더 <span class="stress">코</span>너</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>the</b>: 자음 앞에서 "더" [ðə] — 약하게!<br>
+        🔸 연음: "round the" → "라운더" 처럼 이어져요.<br>
+        🔸 ⚠️ <b>round corner</b> (✗) → <b>round <u>the</u> corner</b> (✓) — the 절대 빠지면 안 돼요!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">in her shoes</p><p class="word-mean">그녀 입장이 되어</p></div>
+        <span class="word-tag">관용표현 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɪn hər ʃuːz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">인 허 <span class="stress">슈</span>즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>her</b>: 빠르게 말할 때 "허" [hər] → h 거의 안 들려요.<br>
+        🔸 <b>shoes</b>: "쇼즈"가 아니라 <b>"슈즈"</b> [ʃuːz] — sh + 긴 oo!<br>
+        🔸 연음: "in her shoes" → "이너슈즈"처럼 흘러요.
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">gift</p><p class="word-mean">선물; (여기선) 좋은 것, 특권</p></div>
+        <span class="word-tag">짧은 모음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɡɪft]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">기</span>프트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>gi-</b>: 짧은 "기" [ɡɪ] — "기이"가 아니라 빠르게!<br>
+        🔸 <b>-ft</b>: f + t 두 자음 연결 — "프트" 가볍게<br>
+        🔸 가사에서 gift = "선물 같은 것, 특권" — 비유적 표현!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">match</p><p class="word-mean">잘 맞는 짝, 어울리는 상대</p></div>
+        <span class="word-tag">ae 모음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[mætʃ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">매</span>치</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>a</b>: 입을 크게 벌려 <b>"애"</b> [æ] — "메치"가 아니라 <b>"매치"</b>!<br>
+        🔸 <b>-tch</b>: "치" [tʃ] — t+ch가 합쳐진 소리<br>
+        🔸 <b>match</b> vs <b>much</b>: "매치"(match) vs "머치"(much)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">dude</p><p class="word-mean">친구, 녀석 (구어체)</p></div>
+        <span class="word-tag">제목 단어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[djuːd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">듀</span>드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>du-</b>: 영국식은 <b>"듀"</b> [dju] — 미국식은 "두" [duː]<br>
+        🔸 <b>-de</b>: 끝의 e는 묵음, d를 살짝 발음<br>
+        🔸 원래는 남자를 부르는 말이지만 요즘은 성별 무관하게 써요!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🧡 [Good Morning Pops] My Dude
+— Litany (2019)
+
+💡 가수 이름: 리타니 → Litany (리터니), 본명 Beth Cornell (영국)
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 그녀는 너희 집에서 가까운 곳에 살아
+✗ She lives round corner from your place.
+→ She lives round the corner from your place. ✓
+   발음: 쉬 리브즈 라운드 더 코너 프롬 유어 플레이스
+⚠️ round corner → round the corner (the 필수!)
+💡 round the corner = 바로 근처에 (영국식)
+   미국식은 around the corner
+
+2️⃣ 그녀 입장이 되는 건 얼마나 좋을까!
+✗ What a gift in her shoes?
+→ Oh what a gift to be in her shoes! ✓
+   발음: 오 왓 어 기프트 투 비 인 허 슈즈
+⚠️ in her shoes → to be in her shoes (to be 필수!)
+⚠️ ? → ! (감탄문이에요)
+⚠️ Oh 빠짐
+💡 be in someone's shoes = 그 사람 입장이 되다
+
+3️⃣ 내가 너에게 더 잘 어울려
+→ I'm a better match for you. ✓
+   발음: 아임 어 베러 매치 포 유
+※ 가사: Only I'm a better match for you
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 round the corner [라운드 더 코너]
+  연음: "round the" → "라운더"처럼!
+  the corner = 관사 the 절대 빠지면 안 돼요
+
+🔹 shoes [슈즈]
+  "쇼즈" 아니라 "슈즈" — sh + 긴 oo!
+
+🔹 gift [기프트]
+  짧은 "기" + "프트" 가볍게
+
+🔹 match [매치]
+  a = "애" [æ] 입 크게!
+  "메치" 아니라 "매치"
+
+🔹 dude [듀드]
+  영국식 "듀드", 미국식 "두드"
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 round the corner (from ~)
+   바로 근처에 / 코너 돌면 바로
+   • The café is just round the corner.
+     (카페가 바로 코너 돌면 있어.)
+   • Summer is just around the corner.
+     (여름이 코앞으로 다가왔어.)
+💡 영국식 round / 미국식 around — 둘 다 OK!
+
+🔹 be in someone's shoes
+   그 사람 입장이 되다
+   • Put yourself in my shoes.
+     (내 입장이 되어봐.)
+   • I wouldn't want to be in his shoes.
+     (그 사람 입장이 되고 싶지 않아.)
+💡 What a gift to be in her shoes!
+   → to be가 있어야 "되는 것"이라는 의미 완성!
+
+🔹 a better match for you
+   너에게 더 잘 어울리다
+   • They're a perfect match for each other.
+     (그들은 서로 완벽하게 어울려.)
+   • We're not a good match.
+     (우리는 잘 안 맞아.)
+💡 match = 잘 맞는 짝. 사람·직업·색깔 등 모두 사용!
+
+——————————————————
+
+📝 한 번에 정리
+
+She lives round the corner from your place.
+→ 그녀는 너희 집 바로 근처에 살아.
+
+Oh what a gift to be in her shoes!
+→ 그녀 입장이 되는 건 얼마나 좋을까!
+
+I'm a better match for you.
+→ 내가 너에게 더 잘 어울려.
+
+——————————————————
+#GoodMorningPops #팝송영어 #MyDude #Litany</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

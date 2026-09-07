@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maybe? — RADi</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5FDFF;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #80CCE8;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C8EEFA;border-color:#0890C0;color:#04506A}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #A8DFF0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C8EEFA;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C8EEFA;color:#04506A;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C0E8F5;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C0E8F5;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C0E8F5;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#0890C0}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C8EEFA;color:#04506A;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F5FDFF;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #A8DFF0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C0E8F5}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#04506A}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C0E8F5;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEF9FF;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F5FDFF;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#04506A;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C0E8F5;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C8EEFA;color:#04506A;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F5FDFF;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#0890C0;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#04506A;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C0E8F5;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C8EEFA;color:#04506A;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#A0D8F0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">💙</div>
+      <div>
+        <h2>Maybe?</h2>
+        <p>RADi (라디) · Sony Music · 2023 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신에게 마음이 생기고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I've catching feelings over you.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I've been catching feelings over you.</span>
+          </div>
+          <span class="pill-fix">I've → I've been (현재완료진행형)</span>
+          <p class="note-text">
+            가사 정확: <b>I've been catching feelings over you</b><br>
+            ⚠️ <b>I've catching</b>(✗) → <b>I've been catching</b>(✓)<br>
+            <b>I've + 동사-ing</b>는 문법적으로 틀려요! <b>have been + 동사-ing</b>가 현재완료진행형이에요.<br>
+            💡 <b>I've been catching feelings</b> = 계속 마음이 생기고 있어 (점점 더 좋아지고 있는 진행 중인 상태!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">당신을 만난 지 몇 주밖에 안 됐잖아요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I just met you a couple of weeks ago.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I just met you a couple weeks ago.</span>
+          </div>
+          <span class="pill-fix">a couple of weeks → a couple weeks (구어체)</span>
+          <span class="pill-note">of 있어도 자연스럽지만 가사는 없어요</span>
+          <p class="note-text">
+            가사 정확: <b>I just met you a couple weeks ago</b><br>
+            ✏️ 가사에서는 <b>a couple weeks ago</b> — <b>of</b>가 없어요.<br>
+            💡 격식체: <b>a couple <u>of</u> weeks</b> / 구어·가사체: <b>a couple weeks</b> — 둘 다 맞지만 가사에 맞추려면 of를 빼요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신에게 왜 이렇게 끌리는지 모르겠어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I can't let my head around you.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I can't wrap my head around you.</span>
+          </div>
+          <span class="pill-fix">let → wrap (완전히 다른 단어)</span>
+          <p class="note-text">
+            가사 정확: <b>I can't wrap my head around you</b><br>
+            ⚠️ <b>let</b>(허락하다)(✗) → <b>wrap</b>(감싸다)(✓) — 완전히 다른 단어예요!<br>
+            💡 <b>wrap my head around ~</b> = ~을 이해하다, ~에 대해 파악하다<br>
+            → "I can't wrap my head around you" = "당신을 이해할 수가 없어 / 왜 이렇게 끌리는지 모르겠어"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">I've been catching feelings (over you)</p>
+      <p class="expr-ko">마음이 생기고 있어요 / 점점 좋아지고 있어요</p>
+      <span class="expr-tag">현재완료진행형</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I've been catching feelings over you.</b> → 당신에게 마음이 생기고 있어요.</p>
+        <p><b>I didn't mean to, but I've been catching feelings.</b> → 의도한 건 아닌데, 마음이 생기고 있어.</p>
+        <p><b>Have you been catching feelings for him?</b> → 그에게 마음이 생긴 거야?</p>
+        <p class="ex-note">💡 <b>catch feelings</b> = 마음이 생기다, 감정이 생기다 (주로 예상치 못하게!)<br><b>I've been + -ing</b> = 현재완료진행형 — 과거부터 지금까지 계속되는 행동<br>⚠️ <b>I've catching</b>(✗) → <b>I've been catching</b>(✓)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">a couple (of) weeks ago</p>
+      <p class="expr-ko">몇 주 전에 / 몇 주밖에 안 됐어요</p>
+      <span class="expr-tag">시간 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I just met you a couple weeks ago.</b> → 당신을 만난 지 몇 주밖에 안 됐잖아요.</p>
+        <p><b>We started dating a couple of months ago.</b> → 몇 달 전에 사귀기 시작했어.</p>
+        <p><b>I saw him a couple days ago.</b> → 며칠 전에 그를 봤어.</p>
+        <p class="ex-note">💡 <b>a couple of ~</b> = 두세 개의, 몇 개의<br>격식체: a couple <b>of</b> weeks / 구어체·가사체: a couple weeks (of 생략 가능!)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">can't wrap my head around ~</p>
+      <p class="expr-ko">~을 이해할 수가 없다 / ~에 대해 파악이 안 된다</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I can't wrap my head around you.</b> → 당신이 왜 이렇게 끌리는지 모르겠어.</p>
+        <p><b>I can't wrap my head around this math problem.</b> → 이 수학 문제를 도저히 이해할 수가 없어.</p>
+        <p><b>It's hard to wrap your head around how big the universe is.</b> → 우주가 얼마나 큰지 파악하기 어려워.</p>
+        <p><b>I finally wrapped my head around the concept.</b> → 드디어 그 개념을 이해했어.</p>
+        <p class="ex-note">💡 머리(head)를 무언가 주변에 감는(wrap) 이미지 → "머리로 파악하다, 이해하다"<br>⚠️ <b>let my head around</b>(✗) → <b>wrap my head around</b>(✓)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I've been catching feelings over you.</span> → 당신에게 마음이 생기고 있어요.<br>
+      <span>I just met you a couple weeks ago.</span> → 당신을 만난 지 몇 주밖에 안 됐잖아요.<br>
+      <span>I can't wrap my head around you.</span> → 당신에게 왜 이렇게 끌리는지 모르겠어요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💙</div>
+      <div><h2>핵심 단어 발음</h2><p>Maybe? · RADi</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">catching</span>
+        <span class="ref-ipa">[ˈkætʃɪŋ]</span>
+        <span class="ref-kr"><span class="s">캐</span>칭</span>
+        <span class="ref-mean">생기는, 잡는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">feelings</span>
+        <span class="ref-ipa">[ˈfiːlɪŋz]</span>
+        <span class="ref-kr"><span class="s">피</span>일링즈</span>
+        <span class="ref-mean">감정들</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wrap</span>
+        <span class="ref-ipa">[ræp]</span>
+        <span class="ref-kr"><span class="s">랩</span></span>
+        <span class="ref-mean">감싸다 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">let</span>
+        <span class="ref-ipa">[lɛt]</span>
+        <span class="ref-kr"><span class="s">렛</span></span>
+        <span class="ref-mean">허락하다 (혼동 주의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">couple</span>
+        <span class="ref-ipa">[ˈkʌpəl]</span>
+        <span class="ref-kr"><span class="s">커</span>플</span>
+        <span class="ref-mean">두세 개, 몇 개</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">maybe</span>
+        <span class="ref-ipa">[ˈmeɪbi]</span>
+        <span class="ref-kr"><span class="s">메</span>이비</span>
+        <span class="ref-mean">아마도, 어쩌면</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — wrap vs let</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">wrap</p><p class="word-mean">감싸다, 두르다</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ræp]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">랩</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>w</b>: 묵음! "wr-"에서 w는 발음 안 해요 → "랩"<br>
+        🔸 <b>-a-</b>: "애" [æ] — 입 크게 벌려서!<br>
+        🔸 같은 묵음 w 패턴: <b>write</b> [라이트] / <b>wrong</b> [롱] / <b>wrist</b> [리스트]<br>
+        🔸 <b>wrap my head around</b> → "랩 마이 헤드 어라운드"
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">let</p><p class="word-mean">허락하다, 두다</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[lɛt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">렛</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>l-</b>: "렛" [lɛt] — l 분명하게!<br>
+        🔸 🔑 <b>wrap [랩]</b> vs <b>let [렛]</b> — 발음도 의미도 전혀 달라요!<br>
+        🔸 "I can't <b>let</b> my head around you" = 문법적으로 어색한 표현<br>
+        🔸 "I can't <b>wrap</b> my head around you" = 이해할 수가 없어 ✓
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">I've been catching feelings</p><p class="word-mean">마음이 생기고 있어요</p></div>
+        <span class="word-tag">현재완료진행형</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[aɪv bɪn ˈkætʃɪŋ ˈfiːlɪŋz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">아이브 빈 <span class="stress">캐</span>칭 <span class="stress">피</span>일링즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>I've been</b>: "아이브빈" → 빠르게 "아이빈"처럼!<br>
+        🔸 <b>catching</b>: "캐칭" — CAT + ching<br>
+        🔸 <b>feelings</b>: "피일링즈" — 긴 ee + lings<br>
+        🔸 ⚠️ <b>I've catching</b>(✗) → <b>I've BEEN catching</b>(✓) — been 절대 빠지면 안 돼요!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">a couple weeks ago</p><p class="word-mean">몇 주 전에</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ə ˈkʌpəl wiːks əˈɡoʊ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">어 <span class="stress">커</span>플 위이크스 어<span class="stress">고</span>우</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>a</b>: 약하게 "어" [ə]<br>
+        🔸 <b>couple</b>: "커플" [ˈkʌpəl] — COU = "커" [ʌ]<br>
+        🔸 <b>weeks</b>: "위이크스" — 긴 ee!<br>
+        🔸 <b>ago</b>: "어고우" — 2번째 음절에 강세!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">wrap my head around</p><p class="word-mean">이해하다, 파악하다</p></div>
+        <span class="word-tag">관용표현 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ræp maɪ hɛd əˈraʊnd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">랩 마이 헤드 어<span class="stress">라</span>운드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wrap</b>: "랩" — w 묵음!<br>
+        🔸 <b>head</b>: "헤드" — h 분명하게<br>
+        🔸 <b>around</b>: "어라운드" — 2번째 음절 강세<br>
+        🔸 빠르게: "랩마이헤더라운드" 이어서!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">💙 [Good Morning Pops] Maybe?
+— RADi (라디) · Sony Music (2023)
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 당신에게 마음이 생기고 있어요
+✗ I've catching feelings over you.
+→ I've been catching feelings over you. ✓
+   발음: 아이브 빈 캐칭 피일링즈 오버 유
+⚠️ I've → I've been (been 빠지면 문법 오류!)
+💡 have + been + -ing = 현재완료진행형
+   = 과거부터 지금까지 계속되고 있는 상태
+
+2️⃣ 당신을 만난 지 몇 주밖에 안 됐잖아요
+△ I just met you a couple of weeks ago.
+→ I just met you a couple weeks ago. ✓
+   발음: 아이 져스트 멧 유 어 커플 위이크스 어고우
+⚠️ 가사는 "a couple weeks" (of 없음, 구어체)
+💡 a couple of weeks (격식) / a couple weeks (구어)
+   둘 다 맞지만 가사는 of 없이!
+
+3️⃣ 당신에게 왜 이렇게 끌리는지 모르겠어요
+✗ I can't let my head around you.
+→ I can't wrap my head around you. ✓
+   발음: 아이 캔트 랩 마이 헤드 어라운드 유
+⚠️ let(허락하다) ✗ → wrap(감싸다) ✓
+💡 wrap my head around ~ = ~을 이해하다
+   wrap [랩] — w 묵음! (write, wrong처럼)
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 I've been catching [아이브 빈 캐칭]
+  I've + been + -ing = 현재완료진행형!
+  "아이브빈" 빠르게 이어서
+
+🔹 wrap [랩] vs let [렛]
+  wrap: w 묵음! → "랩" (감싸다) ✓
+  let: → "렛" (허락하다) ✗
+
+🔹 a couple weeks ago [어 커플 위이크스 어고우]
+  couple = "커플" (COU = 어[ʌ])
+  weeks = 긴 "위이크스"
+
+🔹 wrap my head around [랩 마이 헤드 어라운드]
+  around = 2번째 음절에 강세!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 I've been catching feelings (over you)
+   당신에게 마음이 생기고 있어요
+   • I didn't mean to, but I've been catching feelings.
+     (의도한 건 아닌데, 마음이 생기고 있어.)
+💡 catch feelings = 마음이 생기다 (예상치 못하게!)
+   I've been + -ing = 과거부터 지금까지 진행 중
+
+🔹 a couple (of) weeks ago
+   몇 주 전에
+   • We started dating a couple of months ago.
+     (몇 달 전에 사귀기 시작했어.)
+💡 a couple of~ (격식) = a couple ~ (구어)
+
+🔹 can't wrap my head around ~
+   ~을 이해할 수가 없다
+   • I can't wrap my head around this concept.
+     (이 개념을 도저히 이해할 수가 없어.)
+   • I finally wrapped my head around it.
+     (드디어 이해했어.)
+💡 wrap → wrapped로 과거형으로도 자주 써요!
+
+——————————————————
+
+📝 한 번에 정리
+
+I've been catching feelings over you.
+→ 당신에게 마음이 생기고 있어요.
+
+I just met you a couple weeks ago.
+→ 당신을 만난 지 몇 주밖에 안 됐잖아요.
+
+I can't wrap my head around you.
+→ 당신에게 왜 이렇게 끌리는지 모르겠어요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #Maybe #RADi</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

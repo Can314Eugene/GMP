@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paradise — DJ Snake & Bipolar Sunshine</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FFF3EC;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #E08850;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#FBD8C0;border-color:#B85818;color:#6A2E08}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #F2C4A4}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#FBD8C0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#FBD8C0;color:#6A2E08;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #F3D2BC;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #F3D2BC;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #F3D2BC;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#B85818}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#FBD8C0;color:#6A2E08;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FFF3EC;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #F2C4A4}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #F3D2BC}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#6A2E08}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #F3D2BC;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FFF3EC;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FFF3EC;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#6A2E08;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #F3D2BC;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#FBD8C0;color:#6A2E08;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FFF3EC;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#B85818;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#6A2E08;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #F3D2BC;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#FBD8C0;color:#6A2E08;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#F5C0A0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #F3D2BC;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#B85818;background:#FBD8C0;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #FCEAE0}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌅</div>
+      <div>
+        <h2>Paradise</h2>
+        <p>DJ Snake & Bipolar Sunshine · Nomad (2025) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7">
+      💡 <b>가수 이름:</b> 디제 스네이크 & 바이포런 선샤인 → <b>DJ Snake & Bipolar Sunshine</b><br>
+      프랑스 DJ/프로듀서 DJ Snake와 영국 보컬 Bipolar Sunshine의 곡! 흥미롭게도 Phil Collins의 명곡 "Another Day in Paradise"를 재해석했어요. 답장 없는 상대를 기다리는 외로운 밤을 그린 곡이에요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">그녀는 연락하지만 답이 없죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">She have carefully call.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">She checks in, but she doesn't hear back.</span>
+          </div>
+          <span class="pill-fix">She have call → She checks in (구조 전면 수정)</span>
+          <p class="note-text">
+            가사 정확: <b>She checks in, but she doesn't hear back</b><br>
+            ⚠️ <b>She have carefully call</b>은 문법이 맞지 않아요. 여러 오류가 있어요!<br>
+            ① <b>She have</b>(✗) → 3인칭 단수는 <b>has</b> 또는 <b>checks</b>(동사에 s)<br>
+            ② <b>call</b>(동사원형)은 주어 뒤에 그냥 못 와요<br>
+            💡 가사 표현: <b>check in</b> = (연락해서) 확인하다, 안부를 묻다<br>
+            &nbsp;&nbsp;<b>hear back</b> = 답장[회신]을 받다. "연락했지만 답이 없다"는 외로운 장면!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">신중히 생각해요</p>
+          <div class="sent-row">
+            <span class="sent-right">Think twice.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Oh, think twice</b> — 완벽해요! 👏<br>
+            💡 <b>think twice</b> = 신중히 생각하다, 다시 한번 생각하다 (직역: 두 번 생각하다)<br>
+            &nbsp;&nbsp;"섣불리 결정하지 말고 한 번 더 고민해"라는 관용표현이에요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">그녀는 휴대폰을 꺼내죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">She takes phone out.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">She takes her phone out.</span>
+          </div>
+          <span class="pill-fix">takes phone → takes her phone (소유격 her)</span>
+          <p class="note-text">
+            가사 정확: <b>Takes her phone out before she can cry</b><br>
+            ⚠️ <b>takes phone out</b>(✗) → <b>takes her phone out</b>(✓) — 소유격 <b>her</b>가 필요해요!<br>
+            💡 영어는 신체·소지품 앞에 <b>소유격</b>을 꼭 써요! (her phone, my hand, his keys)<br>
+            &nbsp;&nbsp;<b>take ~ out</b> = ~을 꺼내다. <b>takes her phone out</b> = 그녀의 폰을 꺼내다<br>
+            &nbsp;&nbsp;동사 <b>takes</b>(s)는 정확히 쓰셨어요! 👍
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">check in / hear back</p>
+      <p class="expr-ko">안부를 묻다 / 답장을 받다</p>
+      <span class="expr-tag">연락 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>She checks in, but she doesn't hear back.</b> → 그녀는 연락하지만 답이 없어.</p>
+        <p><b>Just checking in to see how you're doing.</b> → 어떻게 지내는지 안부차 연락해.</p>
+        <p><b>I haven't heard back from them yet.</b> → 아직 그들에게서 답을 못 받았어.</p>
+        <p><b>Let me know when you hear back.</b> → 답장 받으면 알려줘.</p>
+        <p class="ex-note">💡 <b>check in</b> = (연락해서) 안부를 묻다, 확인하다<br><b>hear back (from ~)</b> = (~에게서) 답장·회신을 받다<br>호텔 체크인 외에도 "안부 연락"의 뜻으로 정말 자주 써요!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">think twice</p>
+      <p class="expr-ko">신중히 생각하다 / 다시 한번 생각하다</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Oh, think twice.</b> → 아, 신중히 생각해.</p>
+        <p><b>Think twice before you speak.</b> → 말하기 전에 한 번 더 생각해.</p>
+        <p><b>I'd think twice about that.</b> → 그건 다시 생각해보는 게 좋겠어.</p>
+        <p><b>She didn't think twice about helping.</b> → 그녀는 망설임 없이 도왔어.</p>
+        <p class="ex-note">💡 <b>think twice</b> = 신중히 생각하다, 재고하다 (직역: 두 번 생각하다)<br><b>think twice before ~ing</b> = ~하기 전에 신중히 생각하다<br><b>not think twice</b> = 망설이지 않다 (반대!)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">take ~ out (소유격 주의!)</p>
+      <p class="expr-ko">~을 꺼내다</p>
+      <span class="expr-tag">소유격 her 핵심!</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>She takes her phone out.</b> → 그녀는 (자기) 폰을 꺼내.</p>
+        <p><b>He took his wallet out.</b> → 그는 (자기) 지갑을 꺼냈어.</p>
+        <p><b>Take out your notebook.</b> → 공책을 꺼내세요.</p>
+        <p><b>I put my hands in my pockets.</b> → 난 (내) 주머니에 손을 넣었어.</p>
+        <p class="ex-note">💡 <b>take ~ out</b> = ~을 꺼내다. 영어는 신체·소지품 앞에 <b>소유격</b> 필수!<br>her phone(그녀의 폰), his wallet(그의 지갑), my hands(내 손)<br>⚠️ 한국어는 "폰을 꺼내"지만 영어는 "her phone"처럼 소유격을 꼭!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>She checks in, but she doesn't hear back.</span><br>→ 그녀는 연락하지만 답이 없죠.<br>
+      <span>Think twice.</span> → 신중히 생각해요.<br>
+      <span>She takes her phone out.</span> → 그녀는 휴대폰을 꺼내죠.
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌅</div>
+      <div><h2>전체 가사</h2><p>Paradise · DJ Snake & Bipolar Sunshine (2025)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1</span>
+        <div class="lyric-line"><span class="lyric-en">She goes out at the end of the week</span><span class="lyric-ko">그녀는 주말에 나가</span></div>
+        <div class="lyric-line"><span class="lyric-en">Full make up in the mirror</span><span class="lyric-ko">거울 앞에서 완벽하게 화장하고</span></div>
+        <div class="lyric-line"><span class="lyric-en">So excited to finally meet</span><span class="lyric-ko">드디어 만난다는 설렘에 가득 차</span></div>
+        <div class="lyric-line"><span class="lyric-en">The man who will see her</span><span class="lyric-ko">그녀를 만나줄 그 남자를</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Pre-Chorus</span>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">She checks in, but she doesn't hear back</span></span><span class="lyric-ko">그녀는 연락하지만 답이 없어 ①</span></div>
+        <div class="lyric-line"><span class="lyric-en">And she's already parking</span><span class="lyric-ko">그녀는 이미 주차하고 있어</span></div>
+        <div class="lyric-line"><span class="lyric-en">Patiently waiting to see</span><span class="lyric-ko">인내심 있게 기다려</span></div>
+        <div class="lyric-line"><span class="lyric-en">If he'll pull up behind her</span><span class="lyric-ko">그가 뒤에 차를 댈지</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Chorus</span>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Oh, think twice</span></span><span class="lyric-ko">아, 신중히 생각해 ②</span></div>
+        <div class="lyric-line"><span class="lyric-en">'Cause it's another day for you and me in paradise</span><span class="lyric-ko">우리에겐 낙원에서의 또 다른 하루니까</span></div>
+        <div class="lyric-line"><span class="lyric-en">Oh, think twice</span><span class="lyric-ko">아, 신중히 생각해</span></div>
+        <div class="lyric-line"><span class="lyric-en">'Cause it's another day for you, you and me in paradise</span><span class="lyric-ko">너에게 또 다른 하루니까, 낙원의 너와 나</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 2</span>
+        <div class="lyric-line"><span class="lyric-en">She comes home at the start of the night</span><span class="lyric-ko">그녀는 밤이 시작될 무렵 집에 와</span></div>
+        <div class="lyric-line"><span class="lyric-en">All her fears turn to anger</span><span class="lyric-ko">그녀의 모든 두려움이 분노로 바뀌어</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Takes her phone out before she can cry</span></span><span class="lyric-ko">울음이 터지기 전에 휴대폰을 꺼내 ③</span></div>
+        <div class="lyric-line"><span class="lyric-en">Just to find someone near her</span><span class="lyric-ko">그저 곁에 있어줄 누군가를 찾으려고</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장 (①②③)<br>※ 가사는 학습 참고용이며 저작권은 아티스트·저작권자(원곡 Phil Collins 포함)에게 있습니다</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌅</div>
+      <div><h2>핵심 단어 발음</h2><p>Paradise · DJ Snake & Bipolar Sunshine</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">check in</span>
+        <span class="ref-ipa">[tʃɛk ɪn]</span>
+        <span class="ref-kr"><span class="s">체</span>크 인</span>
+        <span class="ref-mean">안부를 묻다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">hear back</span>
+        <span class="ref-ipa">[hɪr bæk]</span>
+        <span class="ref-kr"><span class="s">히</span>어 백</span>
+        <span class="ref-mean">답장을 받다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">twice</span>
+        <span class="ref-ipa">[twaɪs]</span>
+        <span class="ref-kr"><span class="s">트와</span>이스</span>
+        <span class="ref-mean">두 번</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">phone</span>
+        <span class="ref-ipa">[foʊn]</span>
+        <span class="ref-kr"><span class="s">포</span>운</span>
+        <span class="ref-mean">전화, 휴대폰</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">paradise</span>
+        <span class="ref-ipa">[ˈpærədaɪs]</span>
+        <span class="ref-kr"><span class="s">패</span>러다이스</span>
+        <span class="ref-mean">낙원, 천국</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">anger</span>
+        <span class="ref-ipa">[ˈæŋɡər]</span>
+        <span class="ref-kr"><span class="s">앵</span>거</span>
+        <span class="ref-mean">분노</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — 소유격 her</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">takes her phone out</p><p class="word-mean">그녀의 폰을 꺼내다</p></div>
+        <span class="word-tag">⚠️ 소유격 필수!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[teɪks hər foʊn aʊt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">테</span>익스 허 <span class="stress">포</span>운 아웃</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>takes</b>: "테익스" — 3인칭 단수 s!<br>
+        🔸 <b>her phone</b>: "허 포운" — 소유격 her 필수!<br>
+        🔸 ⚠️ 영어는 신체·소지품 앞에 소유격: her phone, my hand, his keys<br>
+        🔸 <b>take ~ out</b> = ~을 꺼내다
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">check in</p><p class="word-mean">안부를 묻다, 확인하다</p></div>
+        <span class="word-tag">구동사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[tʃɛk ɪn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">체</span>크 인</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>check</b>: "체크" [tʃɛk] — ch = "치"!<br>
+        🔸 <b>in</b>: "인" — 연음으로 "체킨"<br>
+        🔸 <b>check in</b> = 안부 연락 (호텔 체크인 외에!)<br>
+        🔸 <b>hear back</b> = 답장 받다 (짝꿍 표현!)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">think twice</p><p class="word-mean">신중히 생각하다</p></div>
+        <span class="word-tag">관용표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[θɪŋk twaɪs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">띵크 <span class="stress">트와</span>이스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>think</b>: "띵크" — th 혀끝을 이 사이에!<br>
+        🔸 <b>twice</b>: "트와이스" [twaɪs] — tw + 이중모음!<br>
+        🔸 <b>think twice</b> = 두 번 생각하다 → 신중히!<br>
+        🔸 K-pop 그룹 TWICE와 같은 단어예요!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">paradise</p><p class="word-mean">낙원, 천국 (제목!)</p></div>
+        <span class="word-tag">제목 단어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈpærədaɪs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">패</span>러다이스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>PAR-</b>에 강세: "패" [pær]<br>
+        🔸 <b>-a-</b>: "러" 약하게<br>
+        🔸 <b>-dise</b>: "다이스" [daɪs] — 이중모음!<br>
+        🔸 <b>paradise</b> = 낙원 → 반어적으로 "이게 낙원이냐"는 씁쓸함!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌅 [Good Morning Pops] Paradise
+— DJ Snake & Bipolar Sunshine · 2025
+
+🎵 프랑스 DJ Snake + 영국 보컬 Bipolar Sunshine
+   Phil Collins "Another Day in Paradise" 재해석!
+   답장 없는 상대를 기다리는 외로운 밤
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 check in / hear back
+   안부를 묻다 / 답장을 받다
+   • She checks in, but she doesn't hear back.
+     (그녀는 연락하지만 답이 없어.)
+   • Just checking in to see how you're doing.
+     (어떻게 지내는지 안부차 연락해.)
+   • Let me know when you hear back.
+     (답장 받으면 알려줘.)
+💡 check in = 안부 연락 (호텔 체크인 외에도!)
+   hear back = 답장·회신을 받다 (짝꿍 표현)
+
+🔹 think twice
+   신중히 생각하다 / 다시 한번 생각하다
+   • Oh, think twice.
+     (아, 신중히 생각해.)
+   • Think twice before you speak.
+     (말하기 전에 한 번 더 생각해.)
+   • She didn't think twice about helping.
+     (그녀는 망설임 없이 도왔어.)
+💡 두 번 생각하다 → 신중히!
+   K-pop 그룹 TWICE와 같은 단어!
+
+🔹 take ~ out (소유격 주의!)
+   ~을 꺼내다
+   • She takes her phone out.
+     (그녀는 폰을 꺼내.)
+   • He took his wallet out.
+     (그는 지갑을 꺼냈어.)
+   • Take out your notebook.
+     (공책을 꺼내세요.)
+💡 영어는 신체·소지품 앞에 소유격 필수!
+   her phone, his wallet, my hands
+   ⚠️ takes phone(✗) → takes her phone(✓)
+
+——————————————————
+#GoodMorningPops #팝송영어 #Paradise #DJSnake #BipolarSunshine</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

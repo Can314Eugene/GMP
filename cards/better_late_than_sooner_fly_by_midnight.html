@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Better Late Than Sooner — Fly By Midnight | Good Morning Pops</title>
+<style>
+:root{
+  --bg1:#050C24; --bg2:#0D1A3F; --accent:#E0B14A; --accent2:#4C6FD4;
+  --card:#FFFFFF; --ink:#101A2E; --sub:#4E5D7A; --line:#DDE5F3;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:18px 12px 60px;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 55%,#16244F 100%);
+  background-attachment:fixed; color:var(--ink); -webkit-text-size-adjust:100%;
+}
+.container{max-width:760px;margin:0 auto}
+.tab-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px;-webkit-overflow-scrolling:touch}
+.tab-row::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);
+  color:#DDE6FA;font-size:12.5px;font-weight:700;padding:9px 13px;border-radius:999px;cursor:pointer;
+  font-family:inherit;white-space:nowrap;transition:.15s;
+}
+.tab:hover{background:rgba(255,255,255,.14)}
+.tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(76,111,212,.4)}
+.panel{display:none;background:var(--card);border-radius:18px;padding:20px 18px;box-shadow:0 12px 34px rgba(0,0,0,.32)}
+.panel.active{display:block}
+
+.song-hd{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:2px solid var(--line);margin-bottom:16px}
+.song-icon{font-size:30px;width:50px;height:50px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(135deg,#FBEFD3,#DEE7FB);flex:0 0 auto}
+.song-hd h2{margin:0;font-size:19px;letter-spacing:-.3px}
+.song-hd p{margin:3px 0 0;font-size:11.5px;color:var(--sub)}
+.song-badge{margin-left:auto;font-size:10.5px;font-weight:800;color:#fff;background:var(--accent);padding:5px 10px;border-radius:999px;flex:0 0 auto}
+
+.section-label{font-size:12px;font-weight:800;color:var(--accent2);margin:20px 0 9px;letter-spacing:.4px}
+.section-label:first-of-type{margin-top:0}
+
+.check-card{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:11px;background:#FAFCFF}
+.check-top{display:flex;gap:11px;align-items:flex-start}
+.num-ok,.num-fix{flex:0 0 auto;width:25px;height:25px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;color:#fff}
+.num-ok{background:#12A150}
+.num-fix{background:#E8890C}
+.check-body{flex:1;min-width:0}
+.check-meaning{margin:0 0 7px;font-size:13px;font-weight:700;color:#1F2E4C}
+.sent-row{margin-bottom:7px;line-height:1.7}
+.sent-right{font-size:14.5px;font-weight:700;color:#12A150;word-break:break-word}
+.sent-wrong{font-size:13px;color:#8A99B5;text-decoration:line-through;display:block}
+.pill-ok,.pill-fix,.pill-note{display:inline-block;font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:999px;margin-bottom:7px}
+.pill-ok{background:#E4F6EC;color:#0B7A3D}
+.pill-fix{background:#FDEEDA;color:#9A5A05}
+.pill-note{background:#E9EFF9;color:#3E4E6B}
+.note-text{margin:5px 0 0;font-size:12px;color:#33445F;line-height:1.85}
+
+.expr{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:13px 14px;margin-bottom:10px;background:#fff}
+.expr h4{margin:0 0 5px;font-size:14.5px;color:var(--accent2)}
+.expr .ko{margin:0 0 9px;font-size:12.5px;color:var(--sub);font-weight:600}
+.ex{border-top:1px dashed var(--line);padding-top:9px;margin-top:9px}
+.ex p{margin:0 0 3px;font-size:12.5px;line-height:1.7}
+.ex .en{font-weight:600;color:#16243D}
+.ex .kr{color:var(--sub);font-size:11.5px}
+
+.summary{background:linear-gradient(135deg,#FBF3DF,#E9EFFC);border:1px solid #D5E0F5;border-radius:14px;padding:14px 16px;margin-top:6px}
+.summary p{margin:0 0 7px;font-size:12.5px;line-height:1.8;color:#1B2B49}
+.summary p:last-child{margin-bottom:0}
+
+.story{font-size:13px;line-height:1.95;color:#2A3A56}
+.story h3{font-size:14px;margin:18px 0 7px;color:var(--accent2)}
+.story h3:first-child{margin-top:0}
+.story p{margin:0 0 10px}
+.story b{color:#16243D}
+.fact{background:#F2F6FE;border:1px solid #D5E0F5;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.85;color:#2A3A56;margin-bottom:14px}
+.btn-link{display:inline-block;margin-top:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;font-size:12px;font-weight:700;padding:9px 16px;border-radius:999px}
+
+.pron-card{border:1px solid var(--line);border-radius:13px;padding:13px 14px;margin-bottom:10px;background:#FAFCFF}
+.pron-word{font-size:15px;font-weight:800;color:#16243D;margin:0 0 3px}
+.pron-ipa{font-size:12.5px;color:var(--accent2);margin:0 0 5px;font-weight:600}
+.pron-kr{font-size:13px;font-weight:700;color:#12A150;margin:0 0 6px}
+.pron-tip{font-size:11.5px;color:#33445F;line-height:1.8;margin:0}
+
+.listen-card{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;background:#fff}
+.lc-ko{margin:0 0 4px;font-size:12px;color:var(--sub);font-weight:600}
+.lc-en{margin:0 0 4px;font-size:15px;font-weight:800;color:#16243D;line-height:1.6}
+.lc-ipa{margin:0 0 10px;font-size:11.5px;color:var(--accent2)}
+.lc-btns{display:flex;flex-wrap:wrap;gap:6px}
+.say{border:1px solid var(--line);background:#F2F6FE;color:#2A3A56;font-size:11.5px;font-weight:700;padding:8px 12px;border-radius:999px;cursor:pointer;font-family:inherit;transition:.15s}
+.say:hover{background:#E1EAFB}
+.say.playing{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.lc-link{margin-top:11px;background:#FFFBF0;border:1px dashed #EBCE8C;border-radius:11px;padding:10px 12px;font-size:11.5px;line-height:1.9;color:#5A4718}
+.lc-link b{color:#8A6512}
+
+.level-row{display:flex;gap:6px;margin-bottom:13px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#F2F6FE;color:#2A3A56;font-size:11.5px;font-weight:700;padding:7px 13px;border-radius:999px;cursor:pointer;font-family:inherit}
+.chip.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.chip.wrong-chip{background:#FDECEC;color:#9B2222;border-color:#F3C7C7}
+.chip.wrong-chip.active{background:#E5484D;color:#fff}
+
+.quiz-group{font-size:12.5px;font-weight:800;color:var(--accent2);margin:16px 0 8px}
+.quiz-card{border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:10px;background:#FAFCFF}
+.quiz-ko{margin:0 0 5px;font-size:13px;font-weight:700;color:#16243D}
+.quiz-hint{margin:0 0 8px;font-size:11px;color:var(--sub)}
+.quiz-sentence{margin:0 0 9px;font-size:14px;line-height:2.3;color:#2A3A56}
+.blank{width:96px;border:none;border-bottom:2px solid var(--accent);background:transparent;font-size:13.5px;font-family:inherit;text-align:center;padding:2px 3px;color:#16243D;outline:none}
+.blank.ok{border-color:#12A150;color:#0B7A3D;font-weight:700}
+.blank.no{border-color:#E5484D;color:#B92222}
+.quiz-btns{display:flex;gap:6px;flex-wrap:wrap}
+.qbtn{border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:11.5px;font-weight:700;padding:8px 13px;border-radius:999px;cursor:pointer;font-family:inherit}
+.qbtn.ghost{background:#E9EFF9;color:#3E4E6B}
+.quiz-say{border:1px solid var(--line);background:#F2F6FE;color:#2A3A56;font-size:11px;font-weight:700;padding:7px 11px;border-radius:999px;cursor:pointer;font-family:inherit}
+.quiz-say.playing{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.quiz-res{margin:8px 0 0;font-size:12px;font-weight:700;line-height:1.7}
+
+.rv-stats{display:flex;gap:8px;margin-bottom:12px}
+.rv-box{flex:1;background:#F2F6FE;border:1px solid #D5E0F5;border-radius:12px;padding:10px 8px;text-align:center}
+.rv-box span{display:block;font-size:10px;color:var(--sub);font-weight:700;margin-bottom:4px}
+.rv-box b{font-size:15px;color:var(--accent2)}
+.rv-empty{text-align:center;font-size:13px;color:var(--sub);padding:26px 10px;line-height:1.9}
+.rv-msg{font-size:11.5px;color:var(--sub);margin:12px 0 0;line-height:1.7}
+
+.kakao-wrap pre{background:#FAFCFF;border:1px solid var(--line);border-radius:13px;padding:14px;font-size:12px;line-height:1.85;white-space:pre-wrap;word-break:break-word;font-family:inherit;color:#16243D;margin:0 0 11px}
+
+.hook{background:linear-gradient(135deg,#FBF3DF,#EAF0FD);border:1px solid #E3CE96;border-radius:14px;padding:13px 15px;margin-bottom:16px;font-size:12.5px;line-height:1.9;color:#4A3A18}
+.hook b{color:#7A5A0C}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('review',this)">🔁 복습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- ===== LESSON ===== -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌙</div>
+      <div>
+        <h2>Better Late Than Sooner</h2>
+        <p>Fly By Midnight · The Fastest Time Of Our Lives (2025) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div class="fact">
+      🌙 <b>Fly By Midnight (플라이 바이 미드나이트)</b> · <b>Justin Bryte</b>와 <b>Justin Slaven(Slavo)</b>의 2인조<br>
+      2014년 뉴욕에서 결성됐고 2020년 LA로 옮긴 인디 팝 듀오예요. 이 곡은 2025년 7월 11일, 앨범 <i>The Fastest Time Of Our Lives</i>와 함께 나왔습니다.<br>
+      👏 <b>영어 세 문장 모두 가사와 정확히 일치합니다!</b> 한글은 <b>2번 문장의 띄어쓰기</b>만 손보면 돼요.
+    </div>
+
+    <div class="hook">
+      🎯 <b>제목부터 말장난이에요!</b> 원래 속담은 <b>Better late than never</b>(늦더라도 안 하는 것보다 낫다)인데,
+      이 곡은 never를 <b>sooner</b>로 바꿔 <b>Better late than sooner</b> — <b>"이르게 오는 것보다, 늦게 오는 게 나아"</b>가 됩니다.
+      오래 기다린 사랑이 <b>지금 이 순간</b>에 온 게 오히려 맞다는 뜻이죠 ✨
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">다음엔 어떤 일이 일어날까요</p>
+          <div class="sent-row">
+            <span class="sent-right">So what happens next?</span>
+          </div>
+          <span class="pill-ok">가사·번역 모두 정확 ✓</span>
+          <p class="note-text">
+            1절 마지막 줄이에요. 앞줄에서 <b>love ain't chess</b>(사랑은 체스가 아니야)라고 해 놓고 던지는 질문이라, <b>"그럼 이제 어쩌지?"</b>라는 조바심이 담깁니다.<br>
+            💡 <b>What happens next?</b>는 미래를 묻는데도 <b>현재시제</b>를 씁니다 — 이미 정해진 수순을 묻는 느낌이라 will보다 훨씬 자연스러워요<br>
+            &nbsp;&nbsp;맨 앞의 <b>So</b>는 "그래서"가 아니라 <b>"그래서 말인데, 그럼"</b> 정도의 <b>말 꺼내는 신호</b>예요
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">모든 게 완벽히 맞아떨어질까요?</p>
+          <div class="sent-row">
+            <span class="sent-wrong">모든게 완벽히 맞아 떨어 질까요?</span>
+            <span class="sent-right">Do the stars and moon align?</span>
+          </div>
+          <span class="pill-ok">영어는 가사와 정확히 일치 ✓</span>
+          <span class="pill-fix">한글 띄어쓰기 2곳</span>
+          <p class="note-text">
+            ✏️ <s>모든게</s> → <b>모든 게</b> — '게'는 '것이'의 준말이라 <b>띄어 씁니다</b><br>
+            ✏️ <s>맞아 떨어 질까요</s> → <b>맞아떨어질까요</b> — <b>'맞아떨어지다'는 한 단어</b>라 전부 붙여 써요<br>
+            💡 <b>align</b> = (여러 개가) 일직선으로 늘어서다 → <b>딱 들어맞다</b><br>
+            &nbsp;&nbsp;직역하면 <b>"별과 달이 일렬로 늘어설까요?"</b>인데, 영어권에서 <b>the stars align</b>은 <b>"모든 조건이 기적처럼 딱 맞아떨어진다"</b>는 관용 표현이에요. 뜻으로 옮기신 번역이 정확합니다 👏
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">그 상황이 너무 아이러니해서 웃음이 나오네요</p>
+          <div class="sent-row">
+            <span class="sent-right">And I can't stop laughing at the irony.</span>
+          </div>
+          <span class="pill-ok">가사·번역 모두 정확 ✓</span>
+          <p class="note-text">
+            2절이에요. 앞줄의 <b>all this patience almost took out my soul</b>(이 모든 기다림이 내 영혼을 갉아먹을 뻔했어)과 이어집니다. <b>그렇게 애태웠는데 이제 와 웃고 있다니</b> — 그 얄궂음이 irony예요<br>
+            💡 <b>can't stop -ing</b> = ~하는 걸 멈출 수가 없다 · <b>stop 뒤에는 -ing</b> (can't stop to laugh ✗)<br>
+            &nbsp;&nbsp;<b>laugh at ~</b> = ~을 보고 웃다 · at 없이 laugh the irony ✗<br>
+            &nbsp;&nbsp;<b>irony</b>는 "웃기다"가 아니라 <b>"기대와 정반대로 흘러가는 얄궂음"</b>이에요
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <p class="section-label">오늘의 표현</p>
+
+    <div class="expr">
+      <h4>what happens next</h4>
+      <p class="ko">다음엔 무슨 일이 일어날지, 그다음은 어떻게 될지</p>
+      <div class="ex">
+        <p class="en">Nobody knows what happens next, and honestly that's the exciting part.</p>
+        <p class="kr">다음에 무슨 일이 일어날지 아무도 모르는데, 솔직히 바로 그게 신나는 부분이에요.</p>
+      </div>
+      <div class="ex">
+        <p class="en">I finished my part of the report, so what happens next is up to my manager.</p>
+        <p class="kr">보고서에서 제 몫은 끝냈으니, 그다음에 어떻게 될지는 팀장님께 달려 있어요.</p>
+      </div>
+    </div>
+
+    <div class="expr">
+      <h4>the stars align</h4>
+      <p class="ko">모든 조건이 딱 맞아떨어지다, 기적처럼 때가 맞다</p>
+      <div class="ex">
+        <p class="en">We had been trying to meet for years, and this summer the stars finally aligned.</p>
+        <p class="kr">몇 년째 만나 보려고 애썼는데, 이번 여름에 드디어 모든 게 딱 맞아떨어졌어요.</p>
+      </div>
+      <div class="ex">
+        <p class="en">Everything has to align perfectly for the launch to happen on time.</p>
+        <p class="kr">출시가 제때 이뤄지려면 모든 게 완벽히 맞아떨어져야 해요.</p>
+      </div>
+    </div>
+
+    <div class="expr">
+      <h4>can't stop -ing</h4>
+      <p class="ko">~하는 걸 멈출 수가 없다, 자꾸만 ~하게 되다</p>
+      <div class="ex">
+        <p class="en">I can't stop laughing every time I remember what he said at dinner.</p>
+        <p class="kr">저녁 식사 때 그가 한 말이 떠오를 때마다 웃음을 멈출 수가 없어요.</p>
+      </div>
+      <div class="ex">
+        <p class="en">She couldn't stop thinking about the offer all weekend long.</p>
+        <p class="kr">그녀는 주말 내내 그 제안에 대한 생각을 멈출 수가 없었어요.</p>
+      </div>
+    </div>
+
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary">
+      <p>① <b>what happens next</b> — 다음엔 무슨 일이 일어날지 (미래인데 현재시제!)</p>
+      <p>② <b>the stars align</b> — 모든 조건이 딱 맞아떨어지다 (별·달이 일렬로 서듯)</p>
+      <p>③ <b>can't stop -ing</b> — ~하는 걸 멈출 수가 없다 (stop 뒤엔 -ing)</p>
+    </div>
+  </div>
+
+  <!-- ===== STORY ===== -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🏁</div>
+      <div>
+        <h2>곡 이야기</h2>
+        <p>Better Late Than Sooner · Fly By Midnight</p>
+      </div>
+    </div>
+
+    <div class="story">
+      <h3>🌙 밤을 가르며 나는 두 명의 Justin</h3>
+      <p><b>Fly By Midnight</b>은 <b>Justin Bryte</b>와 <b>Justin Slaven</b>(Slavo)의 2인조입니다. 두 사람 모두 이름이 Justin이라 팬들 사이에선 "두 저스틴"으로 통해요. 2014년 뉴욕의 한 스튜디오에서 각자 음악을 하다 만나 팀을 이뤘고, 2020년 초 LA로 옮겼습니다. 벌써 <b>10년 넘게</b> 함께한 듀오예요.</p>
+
+      <h3>🏁 "우리 인생에서 가장 빠른 시간"</h3>
+      <p>이 곡이 실린 앨범 <i>The Fastest Time Of Our Lives</i>는 <b>2025년 7월 11일</b>에 나왔습니다. 11곡짜리 앨범인데, 만드는 방식이 독특했어요. 두 사람은 앨범을 한꺼번에 내지 않고 <b>지난 1년 동안 EP로 조금씩 쪼개서</b> 공개했습니다. 그 EP들을 <b>The Race</b>(경주), <b>The Laps</b>(랩) 같은 이름으로 부르면서, 팬들과 함께 결승선을 향해 달리는 구성을 만든 거죠. 앨범 전체가 <b>레이싱</b>이라는 큰 그림 위에 얹혀 있습니다.</p>
+
+      <h3>🃏 제목에 숨은 말장난</h3>
+      <p>영어 속담 중에 <b>Better late than never</b>가 있습니다. "안 하는 것보다는 늦게라도 하는 게 낫다"는 뜻이죠. 이 곡은 마지막 단어만 바꿔 <b>Better late than sooner</b>로 만들었어요.</p>
+      <p>직역하면 <b>"더 일찍보다는 늦은 게 낫다"</b>입니다. 보통이라면 이상한 말이지만, 이 곡에서는 <b>"우리가 더 일찍 만났다면 오히려 안 됐을 거야, 지금이라서 맞는 거야"</b>라는 고백이 됩니다. 오래 기다린 게 손해가 아니라 <b>필요했던 시간</b>이었다는 뜻이죠.</p>
+
+      <h3>♟️ 사랑은 체스가 아니야</h3>
+      <p>1절은 <b>가슴에 담아 둔 말이 이제 나갈 준비가 됐다</b>는 고백으로 시작합니다. 그러면서 <b>"나는 기다리는 게임을 좋아하지만, 사랑은 체스가 아니야"</b>라고 해요. 체스는 몇 수 앞을 계산하는 게임이지만 사랑은 계산이 안 된다는 거죠. 그래서 바로 오늘의 첫 문장, <b>So what happens next?</b>가 튀어나옵니다.</p>
+
+      <h3>✨ 별과 달, 그리고 우주</h3>
+      <p>프리코러스의 <b>Do the stars and moon align?</b>은 <b>"때가 맞은 걸까?"</b>를 천문학적으로 물은 겁니다. 이어지는 후렴에서는 <b>우주더러 당신 손을 내 손에 놓아 달라</b>고 부탁하죠. 인연을 사람의 힘이 아니라 <b>우주의 타이밍</b>에 맡기는 그림입니다.</p>
+      <p>2절에서는 분위기가 바뀝니다. 기다림이 영혼을 다 갉아먹을 뻔했다고 해 놓고, 곧바로 <b>웃음을 멈출 수가 없다</b>고 해요. 그리고 마지막에 <b>당신이 드디어 나를 보고 웃고 있다</b>는 장면이 옵니다. 오늘의 세 문장이 <b>조바심 → 기대 → 안도</b>의 순서로 곡 전체를 관통하고 있어요 🌙</p>
+
+      <a class="btn-link" href="https://www.google.com/search?q=Fly+By+Midnight+Better+Late+Than+Sooner+lyrics" target="_blank" rel="noopener">🔎 전체 가사 검색하기</a>
+    </div>
+  </div>
+
+  <!-- ===== PRON GUIDE ===== -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🗣️</div>
+      <div>
+        <h2>발음 가이드</h2>
+        <p>오늘 문장의 발음 함정 6가지</p>
+      </div>
+    </div>
+
+    <div class="pron-card">
+      <p class="pron-word">align</p>
+      <p class="pron-ipa">/əˈlaɪn/</p>
+      <p class="pron-kr">얼라인 (얼라이근 ✗)</p>
+      <p class="pron-tip"><b>끝의 g는 소리가 나지 않습니다.</b> sign(사인), design(디자인), foreign(포린)과 같은 <b>-gn 묵음</b> 식구예요. 강세는 <b>뒤쪽 -LIGN</b>에 있어서 앞의 a는 <b>"어"</b>로 가볍게 뭉개집니다.</p>
+    </div>
+
+    <div class="pron-card">
+      <p class="pron-word">irony</p>
+      <p class="pron-ipa">/ˈaɪ.rə.ni/</p>
+      <p class="pron-kr">아이러니 (이로니 ✗)</p>
+      <p class="pron-tip">첫 글자 i가 <b>"이"가 아니라 "아이"</b>입니다. 강세도 <b>맨 앞</b>이에요 → <b>"아-이러니"</b>. 형용사 <b>ironic</b>은 강세가 가운데로 옮겨가 <b>"아이라-닉"</b>이 되니 함께 외워 두세요.</p>
+    </div>
+
+    <div class="pron-card">
+      <p class="pron-word">the irony</p>
+      <p class="pron-ipa">/ði ˈaɪ.rə.ni/</p>
+      <p class="pron-kr">디 아이러니 (더 아이러니 ✗)</p>
+      <p class="pron-tip"><b>the</b>는 <b>모음 소리 앞</b>에서 <b>"디"</b>로 바뀝니다. irony는 "아이"로 시작하니 <b>디 아이러니</b>. 같은 규칙: <b>the answer</b> → 디 앤서, <b>the end</b> → 디 엔드</p>
+    </div>
+
+    <div class="pron-card">
+      <p class="pron-word">what happens</p>
+      <p class="pron-ipa">/wʌt ˈhæp.ənz/</p>
+      <p class="pron-kr">와래픈즈 (연음 + t의 ㄹ소리)</p>
+      <p class="pron-tip">미국식에서 <b>모음 사이의 t는 ㄹ에 가까운 소리</b>가 됩니다. 게다가 <b>happens의 h는 약해져서</b> what과 그대로 이어져요 → <b>"왓 해픈즈"</b>가 아니라 <b>"와래픈즈"</b>. 같은 예: <b>what about</b> → 와러바웃</p>
+    </div>
+
+    <div class="pron-card">
+      <p class="pron-word">can't stop</p>
+      <p class="pron-ipa">/kænt stɑp/ → /kæn stɑp/</p>
+      <p class="pron-kr">캔스탑 — 끝 t 탈락</p>
+      <p class="pron-tip"><b>can't</b> 뒤에 자음이 오면 <b>t가 사라집니다.</b> 그럼 <b>can</b>과 헷갈리겠죠? 구별 포인트는 <b>모음</b>이에요. 부정의 <b>can't</b>는 <b>[æ]가 길고 세게 "캐앤"</b>, 긍정의 can은 힘이 빠져 <b>"컨"</b>에 가깝습니다.</p>
+    </div>
+
+    <div class="pron-card">
+      <p class="pron-word">laughing</p>
+      <p class="pron-ipa">/ˈlæf.ɪŋ/</p>
+      <p class="pron-kr">래핑 (라우깅 ✗)</p>
+      <p class="pron-tip"><b>gh가 [f] 소리</b>로 납니다. 철자에 속지 마세요! 같은 식구: <b>enough</b>(이너프), <b>cough</b>(코프), <b>tough</b>(터프). 모음도 <b>[æ]</b>라 "라"가 아니라 <b>"래"</b>예요.</p>
+    </div>
+  </div>
+
+  <!-- ===== LISTEN ===== -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div>
+        <h2>발음 연습</h2>
+        <p>🐢 천천히 → 🗣 자연스럽게 → 🔥 원어민</p>
+      </div>
+    </div>
+
+    <div class="fact">
+      🔥 <b>원어민 버튼</b>은 <b>연음·축약이 반영된 별도 텍스트</b>로 읽어 줍니다. 실제 노래에서 들리는 소리에 훨씬 가까워요. 각 문장 아래 <b>🔗 실제로는 이렇게 들려요</b>도 꼭 확인하세요!
+    </div>
+
+    <div class="listen-card" id="lc1" data-en="So what happens next?" data-native="So wharappens neks?">
+      <p class="lc-ko">다음엔 어떤 일이 일어날까요</p>
+      <p class="lc-en">So what happens next?</p>
+      <p class="lc-ipa">/soʊ wʌt ˈhæp.ənz nekst/</p>
+      <div class="lc-btns">
+        <button class="say" onclick="sayCard(this,'lc1',0.7,false)">🐢 천천히</button>
+        <button class="say" onclick="sayCard(this,'lc1',0.95,false)">🗣 자연스럽게</button>
+        <button class="say" onclick="sayCard(this,'lc1',1.15,true)">🔥 원어민</button>
+        <button class="say" onclick="sayCard3(this,'lc1')">▶ 3단계 연속</button>
+      </div>
+      <div class="lc-link">
+        🔗 <b>실제로는 이렇게 들려요</b><br>
+        • what happens → <b>와래픈즈</b> (t가 ㄹ소리 + h 약화)<br>
+        • happens next → <b>해픈즈넥스</b> (next의 끝 t는 거의 안 들림)<br>
+        👉 통째로 <b>"쏘 와래픈즈 넥스"</b>
+      </div>
+    </div>
+
+    <div class="listen-card" id="lc2" data-en="Do the stars and moon align?" data-native="Duh the starzn moonalign?">
+      <p class="lc-ko">모든 게 완벽히 맞아떨어질까요?</p>
+      <p class="lc-en">Do the stars and moon align?</p>
+      <p class="lc-ipa">/du ðə stɑrz ənd mun əˈlaɪn/</p>
+      <div class="lc-btns">
+        <button class="say" onclick="sayCard(this,'lc2',0.7,false)">🐢 천천히</button>
+        <button class="say" onclick="sayCard(this,'lc2',0.95,false)">🗣 자연스럽게</button>
+        <button class="say" onclick="sayCard(this,'lc2',1.15,true)">🔥 원어민</button>
+        <button class="say" onclick="sayCard3(this,'lc2')">▶ 3단계 연속</button>
+      </div>
+      <div class="lc-link">
+        🔗 <b>실제로는 이렇게 들려요</b><br>
+        • stars and → <b>스타-즌</b> (and가 통째로 "은"으로 줄어듦)<br>
+        • moon align → <b>무널라인</b> (n이 a로 넘어가는 연음)<br>
+        • align의 <b>g는 묵음</b><br>
+        👉 통째로 <b>"두 더 스타-즌 무널라인"</b>
+      </div>
+    </div>
+
+    <div class="listen-card" id="lc3" data-en="And I can't stop laughing at the irony." data-native="Anai kanstop laffing atthee irony.">
+      <p class="lc-ko">그 상황이 너무 아이러니해서 웃음이 나오네요</p>
+      <p class="lc-en">And I can't stop laughing at the irony.</p>
+      <p class="lc-ipa">/ənd aɪ kænt stɑp ˈlæf.ɪŋ æt ði ˈaɪ.rə.ni/</p>
+      <div class="lc-btns">
+        <button class="say" onclick="sayCard(this,'lc3',0.7,false)">🐢 천천히</button>
+        <button class="say" onclick="sayCard(this,'lc3',0.95,false)">🗣 자연스럽게</button>
+        <button class="say" onclick="sayCard(this,'lc3',1.15,true)">🔥 원어민</button>
+        <button class="say" onclick="sayCard3(this,'lc3')">▶ 3단계 연속</button>
+      </div>
+      <div class="lc-link">
+        🔗 <b>실제로는 이렇게 들려요</b><br>
+        • And I → <b>애나이</b> (d가 넘어가며 한 덩어리)<br>
+        • can't stop → <b>캔스탑</b> (t 탈락, 대신 <b>캐앤</b>을 세게!)<br>
+        • at the → <b>앳더</b> → 빠르면 <b>애더</b><br>
+        • the irony → <b>디 아이러니</b> (모음 앞 the = 디)<br>
+        👉 통째로 <b>"애나이 캔스탑 래핑 애디 아이러니"</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div>
+        <h2>문장 암기</h2>
+        <p>빈칸을 채워 오늘의 아홉 문장을 완성하세요</p>
+      </div>
+    </div>
+    <div class="level-row">
+      <button class="chip active" onclick="setLevel(1,this)">🟢 쉬움</button>
+      <button class="chip" onclick="setLevel(2,this)">🟡 보통</button>
+      <button class="chip" onclick="setLevel(3,this)">🔴 어려움</button>
+    </div>
+    <div id="quiz-body"></div>
+  </div>
+
+  <!-- ===== REVIEW ===== -->
+  <div id="panel-review" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔁</div>
+      <div>
+        <h2>복습</h2>
+        <p id="rv-sub">지금까지 배운 11곡 44문장을 모아 다시 풀어 보세요</p>
+      </div>
+    </div>
+
+    <div class="rv-stats">
+      <div class="rv-box"><span>이번 점수</span><b id="rv-score">— / —</b></div>
+      <div class="rv-box"><span>누적 정답률</span><b id="rv-rate">—</b></div>
+      <div class="rv-box"><span>오답 노트</span><b id="rv-wrong">0</b></div>
+    </div>
+
+    <div class="level-row" id="rv-chips"></div>
+    <div class="level-row">
+      <button class="qbtn" onclick="rvRender('wrong')">❌ 오답만 다시 풀기</button>
+      <button class="qbtn ghost" onclick="rvReset()">🗑 기록 초기화</button>
+    </div>
+
+    <div id="review-body"></div>
+    <p class="rv-msg" id="rv-msg">기록은 이 브라우저에 저장돼요. 파일을 기기에 내려받아 두시면 다음에 열어도 이어집니다.</p>
+  </div>
+
+  <!-- ===== KAKAO ===== -->
+  <div id="panel-kakao" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💬</div>
+      <div>
+        <h2>카카오 공유</h2>
+        <p>복사해서 그대로 붙여넣으세요</p>
+      </div>
+    </div>
+    <div class="kakao-wrap">
+      <pre id="kakao-text">[Good Morning Pops] Better Late Than Sooner — Fly By Midnight 🌙
+
+① what happens next : 다음엔 무슨 일이 일어날지 (미래인데 현재시제!)
+② the stars align : 모든 조건이 딱 맞아떨어지다
+③ can't stop -ing : ~하는 걸 멈출 수가 없다 (stop 뒤엔 -ing)
+
+📌 오늘의 표현
+
+1. So what happens next?
+다음엔 어떤 일이 일어날까요?
+what happens next = 다음엔 무슨 일이 일어날지
+앞줄이 "love ain't chess"(사랑은 체스가 아니야)라서 조바심이 담긴 질문이에요.
+· Nobody knows what happens next, and honestly that's the exciting part.
+다음에 무슨 일이 일어날지 아무도 모르는데, 솔직히 바로 그게 신나는 부분이에요.
+· I finished my part of the report, so what happens next is up to my manager.
+보고서에서 제 몫은 끝냈으니, 그다음에 어떻게 될지는 팀장님께 달려 있어요.
+
+2. Do the stars and moon align?
+모든 게 완벽히 맞아떨어질까요?
+✏️ 모든게 → 모든 게 / 맞아 떨어 질까요 → 맞아떨어질까요
+'게'는 '것이'의 준말이라 띄고, '맞아떨어지다'는 한 단어라 붙여요!
+the stars align = 모든 조건이 기적처럼 딱 맞아떨어지다
+· We had been trying to meet for years, and this summer the stars finally aligned.
+몇 년째 만나 보려고 애썼는데, 이번 여름에 드디어 모든 게 딱 맞아떨어졌어요.
+· Everything has to align perfectly for the launch to happen on time.
+출시가 제때 이뤄지려면 모든 게 완벽히 맞아떨어져야 해요.
+
+3. And I can't stop laughing at the irony.
+그 상황이 너무 아이러니해서 웃음이 나오네요.
+can't stop -ing = ~하는 걸 멈출 수가 없다 (stop 뒤엔 반드시 -ing)
+laugh at ~ = ~을 보고 웃다 (at 빼면 틀려요)
+· I can't stop laughing every time I remember what he said at dinner.
+저녁 식사 때 그가 한 말이 떠오를 때마다 웃음을 멈출 수가 없어요.
+· She couldn't stop thinking about the offer all weekend long.
+그녀는 주말 내내 그 제안에 대한 생각을 멈출 수가 없었어요.
+
+🔊 발음 포인트
+align = 얼라인 (끝의 g는 묵음! sign, design과 같은 식구)
+irony = 아이러니 (이로니 ✗, 강세는 맨 앞)
+the irony = 디 아이러니 (모음 앞에서 the는 "디")
+what happens = 와래픈즈 (t가 ㄹ소리 + h 약화)
+can't stop = 캔스탑 (t 탈락, 대신 "캐앤"을 세게)
+laughing = 래핑 (gh가 f 소리!)
+
+🎯 제목이 말장난이에요!
+원래 속담은 Better late than never(늦더라도 안 하는 것보다 낫다).
+never를 sooner로 바꿔서 "이르게 오는 것보다 늦게 오는 게 나아" —
+오래 기다린 사랑이 지금 이 순간에 온 게 오히려 맞다는 뜻입니다.
+
+🎵 2025년 7월 11일 발매 · 앨범 The Fastest Time Of Our Lives 수록
+Justin Bryte와 Justin Slaven(Slavo)의 뉴욕 출신 2인조 인디 팝 듀오예요.</pre>
+      <button class="qbtn" onclick="copyKakao(this)">📋 전체 복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 탭 ===== */
+function showTab(name, btn){
+  var panels = document.querySelectorAll('.panel');
+  for(var i=0;i<panels.length;i++) panels[i].classList.remove('active');
+  var p = document.getElementById('panel-'+name);
+  if(p) p.classList.add('active');
+  var tabs = document.querySelectorAll('.tab');
+  for(var j=0;j<tabs.length;j++) tabs[j].classList.remove('active');
+  if(btn) btn.classList.add('active');
+  if(synth) synth.cancel();
+  clearPlaying();
+  if(name === 'review') rvRender();
+  window.scrollTo(0,0);
+}
+
+/* ===== 음성 ===== */
+var synth = window.speechSynthesis;
+var pickedVoice = null;
+
+function pickVoice(){
+  if(!synth) return;
+  var vs = synth.getVoices();
+  if(!vs || !vs.length) return;
+  var en = vs.filter(function(v){ return /^en/i.test(v.lang); });
+  if(!en.length) en = vs;
+  var prefer = ["Samantha","Google US English","Microsoft Aria","Microsoft Jenny","Karen","Moira","Tessa","Victoria","Zira"];
+  for(var i=0;i<prefer.length;i++){
+    for(var j=0;j<en.length;j++){
+      if(en[j].name.indexOf(prefer[i]) >= 0){ pickedVoice = en[j]; return; }
+    }
+  }
+  var us = en.filter(function(v){ return /en[-_]US/i.test(v.lang); });
+  pickedVoice = us.length ? us[0] : en[0];
+}
+if(synth){
+  pickVoice();
+  if(typeof synth.onvoiceschanged !== 'undefined') synth.onvoiceschanged = pickVoice;
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.05;
+  if(pickedVoice) u.voice = pickedVoice;
+  return u;
+}
+
+function clearPlaying(){
+  var a = document.querySelectorAll('.say.playing');
+  for(var i=0;i<a.length;i++) a[i].classList.remove('playing');
+  var b = document.querySelectorAll('.quiz-say.playing');
+  for(var k=0;k<b.length;k++) b[k].classList.remove('playing');
+}
+
+function sayCard(btn, cardId, rate, isNative){
+  var card = document.getElementById(cardId);
+  if(!card || !synth) return;
+  var text = isNative ? (card.getAttribute('data-native') || card.getAttribute('data-en'))
+                      : card.getAttribute('data-en');
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayCard3(btn, cardId){
+  var card = document.getElementById(cardId);
+  if(!card || !synth) return;
+  var en = card.getAttribute('data-en');
+  var na = card.getAttribute('data-native') || en;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var steps = [[en,0.7],[en,0.95],[na,1.15]];
+  var i = 0;
+  function next(){
+    if(i >= steps.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(steps[i][0], steps[i][1]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+/* ===== 공통 유틸 ===== */
+function norm(s){
+  return String(s).toLowerCase().replace(/[^a-z0-9']/g,'').replace(/[\u2018\u2019]/g,"'");
+}
+
+function computeBlanks(words, keyWords, level){
+  var ratio = level === 1 ? 0.3 : (level === 2 ? 0.55 : 0.85);
+  var target = Math.max(1, Math.round(words.length * ratio));
+  var keySet = {};
+  (keyWords || []).forEach(function(k){ keySet[norm(k)] = true; });
+  var scored = words.map(function(w, i){
+    var core = norm(w);
+    var s = core.length;
+    if(keySet[core]) s += 100;
+    return { i:i, s:s, len:core.length };
+  }).filter(function(o){ return o.len > 0; });
+  scored.sort(function(a,b){ return b.s - a.s || a.i - b.i; });
+  var picked = scored.slice(0, Math.min(target, scored.length)).map(function(o){ return o.i; });
+  picked.sort(function(a,b){ return a-b; });
+  return picked;
+}
+
+function splitWord(w){
+  var m = w.match(/^([^A-Za-z0-9'\u2019]*)([\s\S]*?)([^A-Za-z0-9'\u2019]*)$/);
+  if(!m) return ['', w, ''];
+  return [m[1], m[2] || w, m[3]];
+}
+
+/* ===== 문장 암기 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "\uD83D\uDD39 what happens next",
+    items: [
+      { ko:"다음엔 어떤 일이 일어날까요?", en:"So what happens next?", key:["what","happens","next"] },
+      { ko:"다음에 무슨 일이 일어날지 아무도 모르는데, 솔직히 바로 그게 신나는 부분이에요.", en:"Nobody knows what happens next, and honestly that's the exciting part.", key:["Nobody","happens","honestly","exciting"] },
+      { ko:"보고서에서 제 몫은 끝냈으니, 그다음에 어떻게 될지는 팀장님께 달려 있어요.", en:"I finished my part of the report, so what happens next is up to my manager.", key:["finished","report","happens","manager"] }
+    ]
+  },
+  {
+    title: "\uD83D\uDD39 the stars align",
+    items: [
+      { ko:"모든 게 완벽히 맞아떨어질까요?", en:"Do the stars and moon align?", key:["stars","moon","align"] },
+      { ko:"몇 년째 만나 보려고 애썼는데, 이번 여름에 드디어 모든 게 딱 맞아떨어졌어요.", en:"We had been trying to meet for years, and this summer the stars finally aligned.", key:["trying","years","stars","aligned"] },
+      { ko:"출시가 제때 이뤄지려면 모든 게 완벽히 맞아떨어져야 해요.", en:"Everything has to align perfectly for the launch to happen on time.", key:["align","perfectly","launch","time"] }
+    ]
+  },
+  {
+    title: "\uD83D\uDD39 can't stop -ing",
+    items: [
+      { ko:"그 상황이 너무 아이러니해서 웃음이 나오네요.", en:"And I can't stop laughing at the irony.", key:["stop","laughing","irony"] },
+      { ko:"저녁 식사 때 그가 한 말이 떠오를 때마다 웃음을 멈출 수가 없어요.", en:"I can't stop laughing every time I remember what he said at dinner.", key:["stop","laughing","remember","dinner"] },
+      { ko:"그녀는 주말 내내 그 제안에 대한 생각을 멈출 수가 없었어요.", en:"She couldn't stop thinking about the offer all weekend long.", key:["stop","thinking","offer","weekend"] }
+    ]
+  }
+];
+
+var quizLevel = 1;
+
+function setLevel(lv, btn){
+  quizLevel = lv;
+  var chips = document.querySelectorAll('#panel-quiz .chip');
+  for(var i=0;i<chips.length;i++) chips[i].classList.remove('active');
+  if(btn) btn.classList.add('active');
+  renderQuiz();
+}
+
+var QUIZ_FLAT = [];
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  if(!body) return;
+  QUIZ_FLAT = [];
+  var html = '';
+  QUIZ_GROUPS.forEach(function(g){
+    html += '<div class="quiz-group">' + g.title + '</div>';
+    g.items.forEach(function(item){
+      var qi = QUIZ_FLAT.length;
+      QUIZ_FLAT.push(item);
+      var words = item.en.split(' ');
+      var blanks = computeBlanks(words, item.key, quizLevel);
+      html += '<div class="quiz-card" data-qi="' + qi + '">';
+      html += '<p class="quiz-ko">' + item.ko + '</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 (' + blanks.length + '칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blanks.indexOf(wi) >= 0){
+          var parts = splitWord(w);
+          html += parts[0] + '<input class="blank" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-ans="' + parts[1].replace(/"/g,'&quot;') + '">' + parts[2] + ' ';
+        } else {
+          html += w + ' ';
+        }
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="qbtn" onclick="checkQuiz(this)">정답 확인</button>';
+      html += '<button class="qbtn ghost" onclick="showAnswer(this)">정답 보기</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',0.75)">🐢 천천히</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',0.95)">🗣 자연</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',1.15)">🔥 원어민</button>';
+      html += '</div>';
+      html += '<p class="quiz-res"></p>';
+      html += '</div>';
+    });
+  });
+  body.innerHTML = html;
+}
+
+function checkQuiz(btn){
+  var card = btn.closest('.quiz-card');
+  var inputs = card.querySelectorAll('.blank');
+  var ok = 0;
+  for(var i=0;i<inputs.length;i++){
+    var got = norm(inputs[i].value);
+    var want = norm(inputs[i].getAttribute('data-ans'));
+    inputs[i].classList.remove('ok','no');
+    if(got && got === want){ inputs[i].classList.add('ok'); ok++; }
+    else { inputs[i].classList.add('no'); }
+  }
+  var res = card.querySelector('.quiz-res');
+  if(ok === inputs.length){
+    res.style.color = '#0B7A3D';
+    res.textContent = '🎉 완벽해요! ' + ok + ' / ' + inputs.length;
+  } else {
+    res.style.color = '#B92222';
+    res.textContent = '조금만 더! ' + ok + ' / ' + inputs.length;
+  }
+}
+
+function showAnswer(btn){
+  var card = btn.closest('.quiz-card');
+  var inputs = card.querySelectorAll('.blank');
+  for(var i=0;i<inputs.length;i++){
+    inputs[i].value = inputs[i].getAttribute('data-ans');
+    inputs[i].classList.remove('no');
+    inputs[i].classList.add('ok');
+  }
+  var res = card.querySelector('.quiz-res');
+  res.style.color = '#54456B';
+  res.textContent = '정답을 채웠어요. 소리 내어 두 번 읽어 보세요!';
+}
+
+function sayQuiz(btn, qi, rate){
+  if(!synth) return;
+  var item = QUIZ_FLAT[qi];
+  if(!item) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(item.en, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+/* ===== 복습 데이터 (지금까지 학습한 곡) ===== */
+var REVIEW_BANK = [
+  { song:"Undressed", artist:"sombr", icon:"\uD83D\uDD6F\uFE0F", items:[
+    { id:"und1", ko:"당신은 나에게 의지했죠.", en:"You looked to me.", key:["looked"] },
+    { id:"und2", ko:"당신의 눈빛은 나에게 다른 걸 말하고 있네요.", en:"The glimmer in your eyes is telling me other things.", key:["glimmer","telling","things"] },
+    { id:"und3", ko:"옷을 벗고 싶지 않아요.", en:"I don't wanna get undressed.", key:["wanna","undressed"] },
+    { id:"und4", ko:"작별을 고하는 순간에도 그녀의 눈빛엔 희미한 희망이 있었어.", en:"There was a glimmer of hope in her eyes even as she said goodbye.", key:["glimmer","hope","goodbye"] }
+  ]},
+  { song:"Memories We'll Never Make", artist:"Michael Minelli", icon:"\uD83E\uDD43", items:[
+    { id:"mem1", ko:"난 다시 허공에 이야기 하고 있네요.", en:"I'm talking to the wind again.", key:["talking","wind","again"] },
+    { id:"mem2", ko:"지금 당신 마음속에 누가 있는지 궁금하네요.", en:"I wonder who's in your heart now.", key:["wonder","heart"] },
+    { id:"mem3", ko:"이번 생에 내가 기회를 놓쳤네요.", en:"I dropped the ball this lifetime.", key:["dropped","ball","lifetime"] },
+    { id:"mem4", ko:"계속 조언해 주는데, 난 그냥 벽에 대고 말하는 거야.", en:"I keep giving him advice, but I'm just talking to the wind.", key:["advice","talking","wind"] }
+  ]},
+  { song:"Every Summertime", artist:"NIKI", icon:"\uD83C\uDF38", items:[
+    { id:"sum1", ko:"우리는 수업에 가지도 못했어요.", en:"We never made it to class.", key:["never","made","class"] },
+    { id:"sum2", ko:"맹세컨대 목련들이 살짝 미소를 보냈어요.", en:"I swear the magnolias flashed a smile.", key:["swear","magnolias","flashed"] },
+    { id:"sum3", ko:"우리는 큰 길을 거닐죠.", en:"We're strolling down the boulevard.", key:["strolling","boulevard"] },
+    { id:"sum4", ko:"그녀는 나를 향해 살짝 웃어 보이고는 걸어갔어.", en:"She flashed a smile at me before walking away.", key:["flashed","smile","walking"] }
+  ]},
+  { song:"The Drum", artist:"Alan Walker", icon:"\uD83E\uDD41", items:[
+    { id:"drm1", ko:"정신이 없네요.", en:"My head's in a spin.", key:["head","spin"] },
+    { id:"drm2", ko:"기분이 너무 좋아서 날아갈 거 같아요.", en:"The ceiling can't hold us.", key:["ceiling","hold"] },
+    { id:"drm3", ko:"당신은 오랫동안 나를 사로잡았죠.", en:"You got me for days.", key:["got","days"] },
+    { id:"drm4", ko:"그 소식을 듣고, 하루 종일 정신이 하나도 없었어.", en:"After hearing the news, my head was in a spin all day.", key:["hearing","head","spin"] }
+  ]},
+  { song:"Gorilla Grip", artist:"Greg Shilling", icon:"\uD83E\uDD8D", items:[
+    { id:"gor1", ko:"내가 잘못을 저지른 것 같아요.", en:"I think that I did a bad thing.", key:["think","did","bad","thing"] },
+    { id:"gor2", ko:"난 평정을 잃죠.", en:"I lose composure.", key:["lose","composure"] },
+    { id:"gor3", ko:"당신은 내 진심을 다 받을 자격이 있어요.", en:"You deserve my heart on the table.", key:["deserve","heart","table"] },
+    { id:"gor4", ko:"그는 인터뷰 도중 평정심을 잃고 소리치기 시작했다.", en:"He lost his composure during the interview and started shouting.", key:["lost","composure","interview","shouting"] }
+  ]},
+  { song:"On My Mind", artist:"Common Jack", icon:"\uD83C\uDF09", items:[
+    { id:"omm1", ko:"이제 가 볼게요.", en:"I've got to go.", key:["got","go"] },
+    { id:"omm2", ko:"나는 지금 제정신이 아니에요.", en:"I'm losing my head now.", key:["losing","head"] },
+    { id:"omm3", ko:"귀가 윙윙거려요.", en:"Ears are ringing like a bell.", key:["Ears","ringing","bell"] },
+    { id:"omm4", ko:"미안하지만 이제 가 봐야 해요, 아침에 회의가 있거든요.", en:"I'm sorry, but I've got to go now, I have a meeting in the morning.", key:["sorry","got","meeting","morning"] }
+  ]},
+  { song:"Gato", artist:"Maya Delilah", icon:"\uD83D\uDC08", items:[
+    { id:"gat1", ko:"모든 게 나에게서 달아나는 것 같아요.", en:"Everything seems to run away from me.", key:["Everything","run","away"] },
+    { id:"gat2", ko:"그냥 누워 있어야겠어요.", en:"I should just lie down.", key:["just","lie","down"] },
+    { id:"gat3", ko:"우리 이거 쉽게 가요.", en:"Let me make this easy.", key:["make","easy"] },
+    { id:"gat4", ko:"자정이 넘도록 깨어 거리를 헤매고 다녀요.", en:"I stay up past midnight wandering round the streets.", key:["stay","midnight","wandering","streets"] }
+  ]},
+  { song:"Things We Left Unsaid", artist:"Young Gun Silver Fox", icon:"\uD83C\uDF04", items:[
+    { id:"twl1", ko:"살다 보면 다시 돌아가고 싶은 순간들이 있죠.", en:"In life there are times you wanna go back.", key:["times","wanna","back"] },
+    { id:"twl2", ko:"당신 생각에 잠을 이루지 못했죠.", en:"I lay awake thinking of you.", key:["lay","awake","thinking"] },
+    { id:"twl3", ko:"그 말들이 내 머릿속에서 계속 맴도네요.", en:"They go round and round inside my head.", key:["round","inside","head"] },
+    { id:"twl4", ko:"우리가 끝내 하지 못한 말들이 아직도 마음에 걸려요.", en:"All the things we left unsaid still weigh on my mind.", key:["unsaid","weigh","mind"] }
+  ]},
+  { song:"Gotta Know", artist:"Purples n' Oranges", icon:"\uD83C\uDF4A", items:[
+    { id:"gtk1", ko:"내가 알아야 하는 게 있어?", en:"Is there something that I should know?", key:["there","something","should"] },
+    { id:"gtk2", ko:"난 꼭 알아야 해.", en:"I just gotta know.", key:["just","gotta","know"] },
+    { id:"gtk3", ko:"천천히 가자.", en:"Take it slow.", key:["Take","slow"] },
+    { id:"gtk4", ko:"당신에게 직접 듣기 전까지는 믿지 않을 거예요.", en:"I won't believe it's true unless I hear it straight from you.", key:["believe","unless","straight"] }
+  ]},
+  { song:"Abracadabra", artist:"Lady Gaga", icon:"\uD83E\uDE84", items:[
+    { id:"abr1", ko:"이 공허한 싸움에서 날 구해 줘요.", en:"Save me from this empty fight.", key:["Save","empty","fight"] },
+    { id:"abr2", ko:"이제 당신 둘 다 최면에 빠졌죠.", en:"Now you're both in a trance.", key:["both","trance"] },
+    { id:"abr3", ko:"감정에 시간을 낭비하지 말아요.", en:"Don't waste time on a feeling.", key:["waste","time","feeling"] },
+    { id:"abr4", ko:"붉은 조명 아래에서 무용수가 움직이자 관객들은 넋을 잃었어요.", en:"The crowd was in a trance as the dancer moved under the red spotlight.", key:["crowd","trance","dancer","spotlight"] }
+  ]},
+  { song:"Better Late Than Sooner", artist:"Fly By Midnight", icon:"\uD83C\uDF19", items:[
+    { id:"blt1", ko:"다음엔 어떤 일이 일어날까요?", en:"So what happens next?", key:["what","happens","next"] },
+    { id:"blt2", ko:"모든 게 완벽히 맞아떨어질까요?", en:"Do the stars and moon align?", key:["stars","moon","align"] },
+    { id:"blt3", ko:"그 상황이 너무 아이러니해서 웃음이 나오네요.", en:"And I can't stop laughing at the irony.", key:["stop","laughing","irony"] },
+    { id:"blt4", ko:"몇 년째 만나 보려고 애썼는데, 이번 여름에 드디어 모든 게 딱 맞아떨어졌어요.", en:"We had been trying to meet for years, and this summer the stars finally aligned.", key:["trying","years","stars","aligned"] }
+  ]}
+];
+
+/* ===== 저장소 ===== */
+var RV_KEY = 'gmp_review_v1';
+var __rvMem = null;
+
+function rvLoad(){
+  var data = null;
+  try {
+    var raw = window.localStorage.getItem(RV_KEY);
+    if(raw) data = JSON.parse(raw);
+  } catch(e){ data = null; }
+  if(!data && __rvMem) data = __rvMem;
+  if(!data) data = { wrong:{}, attempts:0, correct:0 };
+  if(!data.wrong) data.wrong = {};
+  return data;
+}
+
+function rvSave(data){
+  __rvMem = data;
+  try { window.localStorage.setItem(RV_KEY, JSON.stringify(data)); } catch(e){}
+}
+
+function rvAllItems(){
+  var out = [];
+  REVIEW_BANK.forEach(function(g){
+    g.items.forEach(function(it){
+      out.push({ id:it.id, ko:it.ko, en:it.en, key:it.key, song:g.song, artist:g.artist, icon:g.icon });
+    });
+  });
+  return out;
+}
+
+function rvFindItem(id){
+  var all = rvAllItems();
+  for(var i=0;i<all.length;i++){ if(all[i].id === id) return all[i]; }
+  return null;
+}
+
+/* ===== 복습 렌더링 ===== */
+var rvFilter = 'all';
+
+function rvStats(){
+  var data = rvLoad();
+  var rate = data.attempts ? Math.round(data.correct / data.attempts * 100) + '%' : '—';
+  var r = document.getElementById('rv-rate');
+  var w = document.getElementById('rv-wrong');
+  if(r) r.textContent = rate;
+  if(w) w.textContent = Object.keys(data.wrong).length;
+}
+
+function rvChips(){
+  var row = document.getElementById('rv-chips');
+  if(!row) return;
+  var data = rvLoad();
+  var wrongCount = Object.keys(data.wrong).length;
+  var html = '<button class="chip' + (rvFilter === 'all' ? ' active' : '') + '" onclick="rvRender(\'all\')">\uD83D\uDCDA 전체</button>';
+  REVIEW_BANK.forEach(function(g, gi){
+    var f = 'g' + gi;
+    html += '<button class="chip' + (rvFilter === f ? ' active' : '') + '" onclick="rvRender(\'' + f + '\')">' + g.icon + ' ' + g.song + '</button>';
+  });
+  html += '<button class="chip wrong-chip' + (rvFilter === 'wrong' ? ' active' : '') + '" onclick="rvRender(\'wrong\')">\u274C 오답 노트 (' + wrongCount + ')</button>';
+  row.innerHTML = html;
+}
+
+function rvItemsFor(filter){
+  var data = rvLoad();
+  if(filter === 'all') return rvAllItems();
+  if(filter === 'wrong'){
+    return rvAllItems().filter(function(it){ return !!data.wrong[it.id]; });
+  }
+  var gi = parseInt(filter.replace('g',''), 10);
+  var g = REVIEW_BANK[gi];
+  if(!g) return rvAllItems();
+  return g.items.map(function(it){
+    return { id:it.id, ko:it.ko, en:it.en, key:it.key, song:g.song, artist:g.artist, icon:g.icon };
+  });
+}
+
+function rvBlankIdx(words, keyWords){
+  var keySet = {};
+  (keyWords || []).forEach(function(k){ keySet[norm(k)] = true; });
+  var idx = [];
+  words.forEach(function(w, i){ if(keySet[norm(w)]) idx.push(i); });
+  if(!idx.length) idx = computeBlanks(words, keyWords, 1);
+  return idx;
+}
+
+function rvRender(filter){
+  if(filter) rvFilter = filter;
+  var body = document.getElementById('review-body');
+  if(!body) return;
+  var items = rvItemsFor(rvFilter);
+  rvChips();
+  rvStats();
+  var sc = document.getElementById('rv-score');
+  if(sc) sc.textContent = '— / —';
+
+  if(!items.length){
+    if(rvFilter === 'wrong'){
+      body.innerHTML = '<div class="rv-empty">\uD83C\uDF89 오답 노트가 비어 있어요!<br>모든 문장을 다 맞히셨네요. 훌륭해요!</div>';
+      document.getElementById('rv-msg').innerHTML = '오답 노트가 비어 있어요. <b>전체</b>로 다시 도전해 보세요!';
+    } else {
+      body.innerHTML = '<div class="rv-empty">문제가 없어요.</div>';
+    }
+    window.__rvItems = [];
+    return;
+  }
+
+  var html = '';
+  var lastSong = '';
+  items.forEach(function(item){
+    if(item.song !== lastSong){
+      html += '<div class="quiz-group">' + item.icon + ' ' + item.song + ' <span style="font-size:11px;font-weight:500">· ' + item.artist + '</span></div>';
+      lastSong = item.song;
+    }
+    var words = item.en.split(' ');
+    var blanks = rvBlankIdx(words, item.key);
+    html += '<div class="quiz-card" data-rid="' + item.id + '">';
+    html += '<p class="quiz-ko">' + item.ko + '</p>';
+    html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 (' + blanks.length + '칸)</p>';
+    html += '<p class="quiz-sentence">';
+    words.forEach(function(w, wi){
+      if(blanks.indexOf(wi) >= 0){
+        var parts = splitWord(w);
+        html += parts[0] + '<input class="blank" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-ans="' + parts[1].replace(/"/g,'&quot;') + '">' + parts[2] + ' ';
+      } else {
+        html += w + ' ';
+      }
+    });
+    html += '</p>';
+    html += '<div class="quiz-btns">';
+    html += '<button class="qbtn" onclick="rvCheck(this)">정답 확인</button>';
+    html += '<button class="qbtn ghost" onclick="rvShow(this)">정답 보기</button>';
+    html += '<button class="quiz-say" onclick="rvSay(this,0.95)">🗣 듣기</button>';
+    html += '</div>';
+    html += '<p class="quiz-res"></p>';
+    html += '</div>';
+  });
+  html += '<div style="margin-top:14px"><button class="qbtn" onclick="rvScoreAll()">\uD83D\uDCCA 이번 점수 계산</button></div>';
+  body.innerHTML = html;
+  window.__rvItems = items;
+  document.getElementById('rv-msg').innerHTML = '기록은 이 브라우저에 저장돼요. 파일을 기기에 내려받아 두시면 다음에 열어도 이어집니다.';
+}
+
+function rvCheck(btn){
+  var card = btn.closest('.quiz-card');
+  var id = card.getAttribute('data-rid');
+  var inputs = card.querySelectorAll('.blank');
+  var ok = 0;
+  for(var i=0;i<inputs.length;i++){
+    var got = norm(inputs[i].value);
+    var want = norm(inputs[i].getAttribute('data-ans'));
+    inputs[i].classList.remove('ok','no');
+    if(got && got === want){ inputs[i].classList.add('ok'); ok++; }
+    else { inputs[i].classList.add('no'); }
+  }
+  var allRight = (ok === inputs.length);
+  var data = rvLoad();
+  if(!card.getAttribute('data-counted')){
+    data.attempts = (data.attempts || 0) + 1;
+    if(allRight) data.correct = (data.correct || 0) + 1;
+    card.setAttribute('data-counted','1');
+  }
+  if(allRight){ delete data.wrong[id]; }
+  else { data.wrong[id] = 1; }
+  rvSave(data);
+  rvStats();
+  rvChips();
+
+  var res = card.querySelector('.quiz-res');
+  if(allRight){
+    res.style.color = '#0B7A3D';
+    res.textContent = '🎉 정답! ' + ok + ' / ' + inputs.length + ' (오답 노트에서 지웠어요)';
+  } else {
+    res.style.color = '#B92222';
+    res.textContent = '아쉬워요 ' + ok + ' / ' + inputs.length + ' (오답 노트에 저장했어요)';
+  }
+  card.setAttribute('data-result', allRight ? '1' : '0');
+}
+
+function rvShow(btn){
+  var card = btn.closest('.quiz-card');
+  var id = card.getAttribute('data-rid');
+  var inputs = card.querySelectorAll('.blank');
+  for(var i=0;i<inputs.length;i++){
+    inputs[i].value = inputs[i].getAttribute('data-ans');
+    inputs[i].classList.remove('no');
+    inputs[i].classList.add('ok');
+  }
+  var data = rvLoad();
+  data.wrong[id] = 1;
+  rvSave(data);
+  rvStats();
+  rvChips();
+  var res = card.querySelector('.quiz-res');
+  res.style.color = '#54456B';
+  res.textContent = '정답을 채웠어요. 오답 노트에 남겨 두었으니 다시 도전해 보세요!';
+  card.setAttribute('data-result','0');
+}
+
+function rvSay(btn, rate){
+  if(!synth) return;
+  var card = btn.closest('.quiz-card');
+  var id = card.getAttribute('data-rid');
+  var item = rvFindItem(id);
+  if(!item) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(item.en, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function rvScoreAll(){
+  var cards = document.querySelectorAll('#review-body .quiz-card');
+  var done = 0, right = 0;
+  for(var i=0;i<cards.length;i++){
+    var r = cards[i].getAttribute('data-result');
+    if(r !== null){ done++; if(r === '1') right++; }
+  }
+  var sc = document.getElementById('rv-score');
+  if(sc) sc.textContent = done ? (right + ' / ' + done) : '— / —';
+  var msg = document.getElementById('rv-msg');
+  if(!done){
+    msg.innerHTML = '아직 채점한 문장이 없어요. 각 문장의 <b>정답 확인</b>을 눌러 주세요!';
+  } else if(right === done){
+    msg.innerHTML = '🎉 채점한 ' + done + '문장을 모두 맞혔어요! 훌륭합니다.';
+  } else {
+    msg.innerHTML = done + '문장 중 ' + right + '개 정답. <b>❌ 오답만 다시 풀기</b>로 복습해 보세요!';
+  }
+}
+
+function rvReset(){
+  if(!window.confirm('누적 점수와 오답 노트를 모두 지울까요?')) return;
+  var empty = { wrong:{}, attempts:0, correct:0 };
+  rvSave(empty);
+  try { window.localStorage.removeItem(RV_KEY); } catch(e){}
+  __rvMem = null;
+  rvFilter = 'all';
+  rvRender('all');
+}
+
+/* ===== 카카오 복사 ===== */
+function copyKakao(btn){
+  var text = document.getElementById('kakao-text').innerText;
+  function done(){
+    var old = btn.textContent;
+    btn.textContent = '✅ 복사 완료!';
+    setTimeout(function(){ btn.textContent = old; }, 1600);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, fallback);
+  } else {
+    fallback();
+  }
+  function fallback(){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch(e){ window.alert('복사에 실패했어요. 직접 선택해서 복사해 주세요.'); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ===== 초기화 ===== */
+renderQuiz();
+rvRender('all');
+</script>
+</body>
+</html>

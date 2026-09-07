@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sweet Delusion — Bella Poarch</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F8F4FB;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #B898D0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#E8DCF5;border-color:#6838A0;color:#321858}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #DCC8EC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#E8DCF5;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#E8DCF5;color:#321858;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E4D4F0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E4D4F0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E4D4F0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#6838A0}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#E8DCF5;color:#321858;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F8F4FB;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #DCC8EC}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E4D4F0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#321858}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E4D4F0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F8F4FB;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F8F4FB;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#321858;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E4D4F0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#E8DCF5;color:#321858;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F8F4FB;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#6838A0;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#321858;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #E4D4F0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#E8DCF5;color:#321858;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#DCC8F0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #E4D4F0;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#6838A0;background:#E8DCF5;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #F4EEFA}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌫️</div>
+      <div>
+        <h2>Sweet Delusion</h2>
+        <p>Bella Poarch · 2024 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7">
+      💡 <b>Bella Poarch (벨라 포치)</b> · 필리핀계 미국 가수·틱톡 스타<br>
+      "Sweet Delusion(달콤한 환상)"은 외로움을 피하려 사랑에 매달리는, 경고 신호를 알면서도 환상에 빠지는 마음을 그린 alt-pop 곡이에요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">시야가 좁아진 상태죠</p>
+          <div class="sent-row">
+            <span class="sent-right">It's tunnel vision.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사 정확: <b>It's love, it's love, it's tunnel vision</b> — 완벽해요! 👏 <b>tunnel vision</b> = 사랑에 눈이 멀어 주변을 못 보는 좁은 시야!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">현실은 피할 수 없어요</p>
+          <div class="sent-row">
+            <span class="sent-right">Reality is inevitable.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사 정확: <b>'Cause reality is inevitable</b> — 완벽해요! 👏 지난번 교정을 완벽히 반영하셨네요! <b>inevitable</b> = 피할 수 없는, 필연적인</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">그건 너무 숨 막힐 수 있어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">It can be so sufercating.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">It can be so suffocating.</span>
+          </div>
+          <span class="pill-fix">sufercating → suffocating (철자 오류)</span>
+          <p class="note-text">
+            가사 정확: <b>But some nights, it can be so suffocating</b><br>
+            ⚠️ <b>sufercating</b>(✗) → <b>suffocating</b>(✓) — 철자 주의! <b>suf-fo-cat-ing</b><br>
+            💡 <b>suffocating</b> = 숨 막히는, 질식할 것 같은. 동사 <b>suffocate</b>(질식시키다)의 -ing형!<br>
+            &nbsp;&nbsp;f가 두 개(su<b>ff</b>), 그리고 <b>o</b>cating (sufer가 아니라 suffo!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">tunnel vision</p>
+      <p class="expr-ko">시야가 좁아진 상태 / 한 가지에만 몰두함</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>It's love, it's love, it's tunnel vision.</b> → 사랑이야, 사랑이야, 시야가 좁아진 거야.</p>
+        <p><b>He had tunnel vision about winning.</b> → 그는 이기는 것에만 몰두했어.</p>
+        <p><b>Don't get tunnel vision — look at the bigger picture.</b> → 한 가지에만 빠지지 마 — 전체를 봐.</p>
+        <p class="ex-note">💡 <b>tunnel vision</b> = 터널 속을 보듯 좁은 시야. 한 가지에만 집중해 다른 걸 못 보는 상태!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">Reality is inevitable.</p>
+      <p class="expr-ko">현실은 피할 수 없다</p>
+      <span class="expr-tag">inevitable 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>'Cause reality is inevitable.</b> → 현실은 피할 수 없으니까.</p>
+        <p><b>Change is inevitable.</b> → 변화는 피할 수 없어.</p>
+        <p><b>The outcome was inevitable.</b> → 그 결과는 불가피했어.</p>
+        <p><b>Death and taxes are inevitable.</b> → 죽음과 세금은 피할 수 없어. (영어 속담!)</p>
+        <p class="ex-note">💡 <b>inevitable</b> = 피할 수 없는, 필연적인. in-ev-i-ta-ble (5음절)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">It can be so suffocating.</p>
+      <p class="expr-ko">너무 숨 막힐 수 있어요</p>
+      <span class="expr-tag">감정 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>But some nights, it can be so suffocating.</b> → 하지만 어떤 밤은 너무 숨 막혀.</p>
+        <p><b>The silence was suffocating.</b> → 그 침묵이 숨 막혔어.</p>
+        <p><b>I feel suffocated in this relationship.</b> → 이 관계에서 숨이 막혀.</p>
+        <p><b>The summer heat is suffocating.</b> → 여름 더위가 숨 막혀.</p>
+        <p class="ex-note">💡 <b>suffocating</b> = 숨 막히는, 질식할 것 같은. 동사 <b>suffocate</b>(질식하다)의 -ing형!<br>물리적 숨막힘 + 정서적 답답함 둘 다 표현!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>It's tunnel vision.</span> → 시야가 좁아진 상태죠.<br>
+      <span>Reality is inevitable.</span> → 현실은 피할 수 없어요.<br>
+      <span>It can be so suffocating.</span> → 그건 너무 숨 막힐 수 있어요.
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌫️</div>
+      <div><h2>전체 가사</h2><p>Sweet Delusion · Bella Poarch (2024)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1</span>
+        <div class="lyric-line"><span class="lyric-en">It's the way you say you're "such a gentleman"</span><span class="lyric-ko">당신이 "난 정말 신사야"라고 말하는 그 방식</span></div>
+        <div class="lyric-line"><span class="lyric-en">It's the time you take to give me compliments</span><span class="lyric-ko">나에게 칭찬을 건네려 시간을 들이는 모습</span></div>
+        <div class="lyric-line"><span class="lyric-en">It's love, it's love, it's the beginning</span><span class="lyric-ko">사랑이야, 사랑이야, 시작이야</span></div>
+        <div class="lyric-line"><span class="lyric-en">When the sun comes up, I hear their dissonance</span><span class="lyric-ko">해가 뜨면, 난 그 불협화음을 들어</span></div>
+        <div class="lyric-line"><span class="lyric-en">Red alert, alarm, but I'm not listenin'</span><span class="lyric-ko">빨간 경고, 경보, 하지만 난 안 들어</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">It's love, it's love, it's tunnel vision</span></span><span class="lyric-ko">사랑이야, 사랑이야, 시야가 좁아졌어 ① </span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Pre-Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">Sweet delusion</span><span class="lyric-ko">달콤한 환상</span></div>
+        <div class="lyric-line"><span class="lyric-en">Forever all-consuming</span><span class="lyric-ko">영원히 모든 걸 집어삼키는</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">It's a fantasy, better than bein' alone</span><span class="lyric-ko">이건 환상이야, 혼자인 것보단 나아</span></div>
+        <div class="lyric-line"><span class="lyric-en">Keep me company, don't you ever let go</span><span class="lyric-ko">내 곁에 있어줘, 절대 놓지 마</span></div>
+        <div class="lyric-line"><span class="lyric-en">Lose my sanity and get lost in the smoke</span><span class="lyric-ko">제정신을 잃고 연기 속에 빠져들어</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">'Cause reality is inevitable</span></span><span class="lyric-ko">현실은 피할 수 없으니까 ② </span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 2</span>
+        <div class="lyric-line"><span class="lyric-en">I'll admit that silence is my favorite</span><span class="lyric-ko">인정해, 난 침묵을 가장 좋아해</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">But some nights, it can be so suffocating</span></span><span class="lyric-ko">하지만 어떤 밤은 너무 숨 막혀 ③ </span></div>
+        <div class="lyric-line"><span class="lyric-en">Can you die from hyperventilation?</span><span class="lyric-ko">과호흡으로 죽을 수도 있을까?</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">Sweet delusion</span><span class="lyric-ko">달콤한 환상</span></div>
+        <div class="lyric-line"><span class="lyric-en">It's a fantasy, better than bein' alone</span><span class="lyric-ko">이건 환상이야, 혼자인 것보단 나아</span></div>
+        <div class="lyric-line"><span class="lyric-en">Keep me company, don't you ever let go</span><span class="lyric-ko">내 곁에 있어줘, 절대 놓지 마</span></div>
+        <div class="lyric-line"><span class="lyric-en">Lose my sanity and get lost in the smoke</span><span class="lyric-ko">제정신을 잃고 연기 속에 빠져들어</span></div>
+        <div class="lyric-line"><span class="lyric-en">'Cause reality is inevitable</span><span class="lyric-ko">현실은 피할 수 없으니까</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장<br>※ 가사는 학습 참고용이며 저작권은 아티스트·저작권자에게 있습니다</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌫️</div>
+      <div><h2>핵심 단어 발음</h2><p>Sweet Delusion · Bella Poarch</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">suffocating</span>
+        <span class="ref-ipa">[ˈsʌfəkeɪtɪŋ]</span>
+        <span class="ref-kr"><span class="s">써</span>퍼케이팅</span>
+        <span class="ref-mean">숨 막히는 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">tunnel vision</span>
+        <span class="ref-ipa">[ˈtʌnəl ˈvɪʒən]</span>
+        <span class="ref-kr"><span class="s">터</span>널 <span class="s">비</span>전</span>
+        <span class="ref-mean">좁은 시야</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">inevitable</span>
+        <span class="ref-ipa">[ɪnˈɛvɪtəbəl]</span>
+        <span class="ref-kr">인<span class="s">에</span>비터블</span>
+        <span class="ref-mean">피할 수 없는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">delusion</span>
+        <span class="ref-ipa">[dɪˈluːʒən]</span>
+        <span class="ref-kr">딜<span class="s">루</span>전</span>
+        <span class="ref-mean">망상, 환상</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">sanity</span>
+        <span class="ref-ipa">[ˈsænəti]</span>
+        <span class="ref-kr"><span class="s">새</span>너티</span>
+        <span class="ref-mean">제정신</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">dissonance</span>
+        <span class="ref-ipa">[ˈdɪsənəns]</span>
+        <span class="ref-kr"><span class="s">디</span>서넌스</span>
+        <span class="ref-mean">불협화음</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — suffocating</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">suffocating</p><p class="word-mean">숨 막히는, 질식할 것 같은</p></div>
+        <span class="word-tag">⚠️ 철자 주의!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsʌfəkeɪtɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">써</span>퍼케이팅</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>SUF-</b>에 강세: "써" [sʌ]<br>
+        🔸 <b>-fo-cat-ing</b>: "퍼케이팅"<br>
+        🔸 ⚠️ 철자: <b>suf-fo-cat-ing</b> — f가 두 개(suff), o가 있어요!<br>
+        &nbsp;&nbsp;sufer<b>cating</b>(✗) → su<b>ff</b><b>o</b>cating(✓)<br>
+        🔸 동사: <b>suffocate</b> [써퍼케이트] = 질식시키다
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">tunnel vision</p><p class="word-mean">좁은 시야</p></div>
+        <span class="word-tag">관용표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈtʌnəl ˈvɪʒən]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">터</span>널 <span class="stress">비</span>전</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>tunnel</b>: "터널" — TUN에 강세, u="어"!<br>
+        🔸 <b>vision</b>: "비전" — VI에 강세, -sion="전"<br>
+        🔸 한국어 "비전"과 비슷하게 발음돼요!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">inevitable</p><p class="word-mean">피할 수 없는</p></div>
+        <span class="word-tag">5음절!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɪnˈɛvɪtəbəl]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">인<span class="stress">에</span>비터블</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>in-EV-i-ta-ble</b> 5음절! EV에 강세<br>
+        🔸 "인에비터블" — 천천히 끊어서!<br>
+        🔸 ⚠️ unavailable(이용 불가)과 혼동 금지!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">delusion</p><p class="word-mean">망상, 환상 (제목!)</p></div>
+        <span class="word-tag">제목 단어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[dɪˈluːʒən]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">딜<span class="stress">루</span>전</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>de-</b>: 약하게 "딜" [dɪ]<br>
+        🔸 <b>-LU-</b>에 강세: "루" [luː] 길게!<br>
+        🔸 <b>-sion</b>: "전" [ʒən]<br>
+        🔸 <b>Sweet Delusion</b> = 달콤한 환상!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌫️ [Good Morning Pops] Sweet Delusion
+— Bella Poarch (벨라 포치) · 2024
+
+🎵 필리핀계 미국 가수·틱톡 스타
+   "달콤한 환상" — 외로움을 피하려 사랑에 매달리는,
+   경고 신호를 알면서도 환상에 빠지는 마음
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 시야가 좁아진 상태죠
+→ It's tunnel vision. ✓
+   발음: 잇츠 터널 비전
+※ 가사: It's love, it's love, it's tunnel vision
+💡 tunnel vision = 사랑에 눈이 멀어 좁아진 시야
+
+2️⃣ 현실은 피할 수 없어요
+→ Reality is inevitable. ✓
+   발음: 리앨러티 이즈 인에비터블
+※ 가사: 'Cause reality is inevitable
+💡 지난번 교정 완벽 반영! 👏
+   inevitable = 피할 수 없는, 필연적인
+
+3️⃣ 그건 너무 숨 막힐 수 있어요
+✗ It can be so sufercating.
+→ It can be so suffocating. ✓
+   발음: 잇 캔 비 쏘 써퍼케이팅
+⚠️ sufercating → suffocating (철자!)
+💡 suf-fo-cat-ing
+   f가 두 개(suff), o가 있어요! (suffo, sufer 아님)
+   suffocate = 질식시키다 → suffocating(숨 막히는)
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 suffocating [써퍼케이팅]
+  SUF-에 강세
+  철자: su-ff-o-cat-ing (f 두 개, o!)
+
+🔹 tunnel vision [터널 비전]
+  tunnel = "터널" (u = 어)
+  vision = "비전"
+
+🔹 inevitable [인에비터블]
+  in-EV-i-ta-ble 5음절! EV에 강세
+
+🔹 delusion [딜루전]
+  -LU-에 강세, 긴 "루"
+  Sweet Delusion = 달콤한 환상!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 tunnel vision
+   시야가 좁아진 상태
+   • Don't get tunnel vision — look at the bigger picture.
+     (한 가지에만 빠지지 마 — 전체를 봐.)
+💡 사랑·목표에 눈이 멀어 다른 걸 못 보는 상태!
+
+🔹 Reality is inevitable.
+   현실은 피할 수 없다
+   • Change is inevitable.
+     (변화는 피할 수 없어.)
+💡 inevitable = 피할 수 없는, 필연적인
+
+🔹 It can be so suffocating.
+   너무 숨 막힐 수 있다
+   • The silence was suffocating.
+     (그 침묵이 숨 막혔어.)
+   • I feel suffocated in this relationship.
+     (이 관계에서 숨이 막혀.)
+💡 물리적 숨막힘 + 정서적 답답함 둘 다!
+
+——————————————————
+
+📝 한 번에 정리
+
+It's tunnel vision.
+→ 시야가 좁아진 상태죠.
+
+Reality is inevitable.
+→ 현실은 피할 수 없어요.
+
+It can be so suffocating.
+→ 그건 너무 숨 막힐 수 있어요.
+
+——————————————————
+
+🎶 전체 가사 흐름
+환상에 빠진 사랑 (Verse1) →
+달콤한 환상 (Pre) →
+혼자보단 나은 환상이지만... (Chorus) →
+침묵이 좋지만 숨 막히는 밤 (Verse2) →
+현실은 피할 수 없어 (반복)
+
+——————————————————
+#GoodMorningPops #팝송영어 #SweetDelusion #BellaPoarch</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

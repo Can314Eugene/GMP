@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family — Makana</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FDF1EC;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #C4703C;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#F5D8C4;border-color:#7A3410;color:#4A2008}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #E9BF9F}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#F5D8C4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#F5D8C4;color:#4A2008;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #EDCBAC;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #EDCBAC;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #EDCBAC;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#7A3410}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#F5D8C4;color:#4A2008;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FDF1EC;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #E9BF9F}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #EDCBAC}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#4A2008}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EDCBAC;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FDF1EC;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FDF1EC;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#4A2008;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #EDCBAC;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#F5D8C4;color:#4A2008;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FDF1EC;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#7A3410;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#4A2008;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #EDCBAC;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#F5D8C4;color:#4A2008;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#E9BF9F}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #EDCBAC;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#7A3410;background:#F5D8C4;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#4A2008;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FDF1EC;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#F5D8C4;color:#4A2008;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#FDF1EC;border-left:3px solid #7A3410;border-radius:10px;padding:12px 14px;font-size:13px;color:#7A3410;line-height:1.8}
+  .twist-box b{color:#4A2008;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#F5D8C4;color:#4A2008;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #C4703C}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #EDCBAC;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #E9BF9F;background:#FDF1EC;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#F5D8C4;border-color:#C4703C}
+  .speed-btn.playing{background:#F5D8C4;border-color:#7A3410;box-shadow:0 0 0 2px #F5D8C4}
+  .speed-label{font-size:13px;font-weight:600;color:#4A2008;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#F5D8C4;color:#4A2008;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#E9BF9F}
+  .play-all-btn.playing{background:#7A3410;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#7A3410;background:#F5D8C4;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#9C5220;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #E9BF9F;background:#fff;color:#9C5220;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#F5D8C4;border-color:#7A3410;color:#4A2008}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#C4703C;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#7A3410;background:#F5D8C4;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #EDCBAC;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#4A2008;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#AAA;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1A1A2E;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #C4703C;background:#FDF1EC;font-size:15px;font-family:inherit;font-weight:600;color:#7A3410;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#F5D8C4;border-bottom-color:#7A3410}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#F5D8C4;color:#4A2008;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#E9BF9F}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #E9BF9F;background:#fff;color:#9C5220;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#FDF1EC}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#AAA;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #E9BF9F;background:#FDF1EC;color:#4A2008;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#F5D8C4;border-color:#C4703C}
+  .quiz-say.playing{background:#F5D8C4;border-color:#7A3410;box-shadow:0 0 0 2px #F5D8C4}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #EDCBAC;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#7A3410}
+  .score-label{font-size:12px;color:#888;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#7A3410;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#4A2008}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">👨‍👩‍👧‍👦</div>
+      <div>
+        <h2>Family</h2>
+        <p>Makana &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FDF1EC;border:1px solid #C4703C;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#4A2008;line-height:1.7">
+      👨‍👩‍👧‍👦 <b>Makana (마카나)</b> · 2020년 6월 19일 발매<br>
+      작곡은 <b>Matthew Swalinkavich</b>가 맡았어요. Makana는 하와이 출신의 <b>국제적으로 인정받는 슬랙키 기타리스트</b>이자 싱어송라이터, 작곡가, 활동가예요 🎸<br>
+      <b>"Family"</b>는 가족이 곁에 있어준 것에 대한 <b>감사와 사랑</b>을 담은 따뜻한 어쿠스틱 곡이에요 💛<br>
+      👏 <b>세 문장 모두 가사와 정확히 일치해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">그들은 나를 아껴주죠</p>
+          <div class="sent-row">
+            <span class="sent-right">They care for me.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>They're always there for me / Showing they care for me</b> — 완벽해요! 👏<br>
+            💡 <b>care for ~</b> = ~을 아끼다, 보살피다, 마음 쓰다<br>
+            &nbsp;&nbsp;<b>care about ~</b>(신경 쓰다)보다 <b>care for ~</b>가 조금 더 <b>돌봄·애정</b>의 느낌이 강해요!<br>
+            &nbsp;&nbsp;바로 앞줄의 <b>there for me</b>(내 곁에 있어주다)와 짝을 이뤄서, "곁에 있어주고 아껴준다"는 이중의 애정을 표현해요 💛
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">나는 인생에서 정말 운이 좋았어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I've been so lucky in my life.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I've been so lucky in my life / Even through the times of strife</b> — 완벽해요! 👏<br>
+            💡 <b>have been so lucky</b> = (지금까지 계속) 정말 운이 좋았다<br>
+            &nbsp;&nbsp;<b>현재완료(have been)</b>라서 <b>과거부터 지금까지 이어진 감사한 마음</b>을 담아요!<br>
+            &nbsp;&nbsp;바로 뒤에 <b>even through the times of strife</b>(힘든 시절을 겪으면서도)가 이어져서, <b>고난 속에서도 느끼는 감사</b>라는 게 더 뭉클해져요 🙏
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">아무것도 보장되지 않아요</p>
+          <div class="sent-row">
+            <span class="sent-right">Nothing is guaranteed.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Well nothing is guaranteed / But love is a mighty seed</b> — 완벽해요! 👏<br>
+            💡 <b>guarantee</b> = 보장하다 (동사) → <b>be guaranteed</b> = 보장되다 (수동태)<br>
+            &nbsp;&nbsp;<b>nothing is ~</b> = 아무것도 ~하지 않다 (not이 없어도 이미 부정!)<br>
+            &nbsp;&nbsp;바로 뒤에 <b>but love is a mighty seed</b>(하지만 사랑은 강력한 씨앗이다)가 이어져서, <b>불확실한 인생에서도 사랑만은 자란다</b>는 희망적인 메시지가 완성돼요 🌱
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">care for ~</p>
+      <p class="expr-ko">~을 아끼다, 보살피다</p>
+      <span class="expr-tag">애정·돌봄 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>They're always there for me, showing they truly care for me.</b><br>→ 그들은 늘 내 곁에 있어주고, 진심으로 날 아낀다는 걸 보여줘.</p>
+        <p><b>She spent years caring for her grandmother before she passed away.</b><br>→ 그녀는 할머니가 돌아가시기 전 몇 년간 할머니를 보살폈어.</p>
+        <p class="ex-note">💡 <b>care for ~</b> = ~을 아끼다, 보살피다, 정성껏 돌보다<br><b>care about ~</b>(신경 쓰다)보다 <b>돌봄·애정</b>의 느낌이 더 강해요 💛<br>📌 <b>care for</b>는 "~을 좋아하다"(격식체, 주로 부정문)라는 뜻도 있어요: I don't care for spicy food<br>비슷한 표현: <b>look after ~</b>(돌보다), <b>take care of ~</b>(챙기다)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">have been so lucky</p>
+      <p class="expr-ko">정말 운이 좋았다 (지금까지 쭉)</p>
+      <span class="expr-tag">현재완료</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I've been so lucky in my life, even through the times of strife.</b><br>→ 난 힘든 시절을 겪으면서도, 인생에서 정말 운이 좋았어.</p>
+        <p><b>We've been so lucky to have such supportive friends around us.</b><br>→ 우린 이렇게 힘이 되어주는 친구들이 곁에 있어서 정말 운이 좋았어.</p>
+        <p class="ex-note">💡 <b>have been so lucky</b> = 현재완료 — 과거부터 <b>지금까지 이어진</b> 운/감사함!<br>단순과거 was lucky보다 <b>더 깊고 지속적인</b> 느낌이에요<br>📌 <b>even through ~</b> = ~을 겪으면서도 (역경 속에서도!)<br>비슷한 표현: <b>I've been blessed</b>(축복받았어), <b>count my blessings</b>(감사할 것들을 헤아리다)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">nothing is guaranteed</p>
+      <p class="expr-ko">아무것도 보장되지 않는다</p>
+      <span class="expr-tag">수동태 + 부정</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Well, nothing is guaranteed, but love is a mighty seed that always grows.</b><br>→ 그래, 아무것도 보장되진 않지만, 사랑은 늘 자라나는 강력한 씨앗이야.</p>
+        <p><b>Nothing is guaranteed in life, so we should cherish every moment we have.</b><br>→ 인생에서 보장되는 건 아무것도 없으니, 우리가 가진 매 순간을 소중히 여겨야 해.</p>
+        <p class="ex-note">💡 <b>be guaranteed</b> = 보장되다 (동사 guarantee의 수동태)<br><b>nothing is ~</b> = 아무것도 ~하지 않다 (not 없이도 이미 부정!)<br>📌 발음 주의: guarantee는 <b>[개런티]</b>, 세 번째 음절에 강세!<br>비슷한 표현: <b>there are no guarantees</b>(보장되는 건 없다), <b>nothing is certain</b>(확실한 건 없다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>They care for me.</span> → 그들은 나를 아껴주죠.<br>
+      <span>I've been so lucky in my life.</span> → 나는 인생에서 정말 운이 좋았어요.<br>
+      <span>Nothing is guaranteed.</span> → 아무것도 보장되지 않아요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">👨‍👩‍👧‍👦</div>
+      <div><h2>곡 이야기</h2><p>Family · Makana</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Makana (마카나)</b>는 하와이 출신의 <b>국제적으로 인정받는 슬랙키 기타리스트</b>이자 싱어송라이터, 작곡가, 활동가예요. "Makana"는 하와이어로 <b>"선물(gift)"</b>이라는 뜻이에요 🌺
+        </p>
+        <p class="story-p">
+          <b>"Family"</b>는 2020년 6월 19일 발매됐고, 작곡은 <b>Matthew Swalinkavich</b>가 맡았어요. 기타 반주가 중심이 된 <b>따뜻한 어쿠스틱 곡</b>이에요.
+        </p>
+        <p class="story-p">
+          제목 그대로, 이 곡은 <b>가족에게 바치는 감사의 노래</b>예요 — 곁에 있어주고, 믿어주고, 사랑해준 사람들에 대한 이야기죠 💛
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 가족이 없었다면</b><br>가족이 아니었다면 <b>내가 어디에 있을지 모르겠어요</b>. 그들은 항상 내 곁에 있어주고, <b>날 아껴준다는 걸 보여줘요</b>(오늘 첫 문장!). 어떤 사람들은 서로 잘 지내지 못하고 자기 고집만 부리는데, 왜 그런지 모르겠어요. 👨‍👩‍👧‍👦</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — 힘든 시절 속에서도</b><br><b>난 인생에서 정말 운이 좋았어요</b>(두 번째 문장!) — <b>힘든 시절을 겪으면서도요</b>. 내 마음을 들여다보면, 당신이 준 사랑이 여전히 그 안에 남아있다는 걸 발견할 거예요. 🙏</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Verse 2 — 날 믿어준 사람</b><br>당신이 <b>날 믿어주지 않았다면</b> 내가 어디에 있을지 모르겠어요. 어떻게든 당신은 항상 <b>내가 어떤 사람이 되어야 할지</b>를 알아봐 줬어요. 무조건적인 신뢰가 얼마나 큰 힘이 되는지를 노래해요 ✨</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 사랑이라는 씨앗</b><br>왜 어떤 사람들은 <b>필요한 사랑을 받지 못하는지</b> 모르겠어요. <b>아무것도 보장되지 않아요</b>(세 번째 문장!) — <b>하지만 사랑은 강력한 씨앗이에요</b>. 불확실한 인생 속에서도, 사랑만은 심고 가꾸면 자라난다는 희망의 메시지예요 🌱</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          👨‍👩‍👧‍👦 <b>"보장되지 않기에" 더 소중한 사랑</b><br><br>
+          이 곡의 진짜 힘은 <b>Nothing is guaranteed, but love is a mighty seed</b>라는 한 줄에 있어요. 인생에서 확실한 건 아무것도 없다는 걸 인정하면서도, 그 불확실함 속에서 <b>사랑만은 심으면 자란다</b>고 말하죠.<br><br>
+          <b>seed(씨앗)</b>라는 단어 선택이 절묘해요. 씨앗은 <b>당장 결과가 보이지 않아요</b> — 시간과 정성을 들여야 자라나죠. 가족의 사랑도 그런 것 아닐까요? 하루아침에 만들어지는 게 아니라, <b>오랜 시간 함께하며 쌓이는 것</b>이라는 은유예요.<br><br>
+          <b>Even through the times of strife</b>(힘든 시절을 겪으면서도)라는 구절도 중요해요 — 이 곡은 <b>모든 게 완벽했다</b>고 말하지 않아요. 힘든 순간들이 있었지만, <b>그럼에도 운이 좋았다</b>는 게 더 진솔하고 뭉클하게 다가와요 💛
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① They care for me</p>
+          <p class="learn-ko">그들은 나를 아껴주죠</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I've been so lucky in my life</p>
+          <p class="learn-ko">나는 인생에서 정말 운이 좋았어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ Nothing is guaranteed</p>
+          <p class="learn-ko">아무것도 보장되지 않아요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Makana+Family+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Family 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Makana · Matthew Swalinkavich 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">👨‍👩‍👧‍👦</div>
+      <div><h2>핵심 단어 발음</h2><p>Family · Makana</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">guaranteed</span>
+        <span class="ref-ipa">[ˌɡærənˈtiːd]</span>
+        <span class="ref-kr">개런<span class="s">티</span>드</span>
+        <span class="ref-mean">보장된 (끝 강세!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">lucky</span>
+        <span class="ref-ipa">[ˈlʌki]</span>
+        <span class="ref-kr"><span class="s">러</span>키</span>
+        <span class="ref-mean">운이 좋은</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">strife</span>
+        <span class="ref-ipa">[straɪf]</span>
+        <span class="ref-kr">스트<span class="s">라</span>이프</span>
+        <span class="ref-mean">고난, 갈등</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">family</span>
+        <span class="ref-ipa">[ˈfæməli]</span>
+        <span class="ref-kr"><span class="s">패</span>믈리</span>
+        <span class="ref-mean">가족 (3음절!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">mighty</span>
+        <span class="ref-ipa">[ˈmaɪti]</span>
+        <span class="ref-kr"><span class="s">마</span>이티</span>
+        <span class="ref-mean">강력한</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">seed</span>
+        <span class="ref-ipa">[siːd]</span>
+        <span class="ref-kr"><span class="s">씨</span>드</span>
+        <span class="ref-mean">씨앗</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — guaranteed (끝 음절 강세!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">guaranteed</p><p class="word-mean">보장된</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ TEED에 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˌɡærənˈtiːd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">개런<span class="stress">티</span>드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>gua-ran-TEED</b> — 3음절! 마지막 <b>TEED</b>에 강세 💥<br>
+        🔸 <b>gua-</b>: "개" [ɡæ] — g 뒤 u는 소리 안 남!<br>
+        🔸 <b>-ran-</b>: "런" [rən] — 약하게<br>
+        🔸 <b>-teed</b>: "티드" [tiːd] — 가장 세게, 길게!<br>
+        🔸 📌 명사형 <b>guarantee</b>[개런<b>티</b>](보증, 약속)도 같은 강세 패턴이에요
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — family (3음절 조심!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">family</p><p class="word-mean">가족</p></div>
+        <span class="word-tag">패-믈-리</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈfæməli]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">패</span>믈리</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>fam-</b>: "패" [fæ] — a가 "애"! FAM에 강세<br>
+        🔸 <b>-i-</b>: 거의 안 들려요 — "패미리"(✗) → <b>"패믈리"</b>(✓)<br>
+        🔸 <b>-ly</b>: "리" [li]<br>
+        🔸 ⚠️ 한국어로 "패밀리"라고 4음절처럼 읽기 쉬운데, 실제론 <b>3음절</b>에 가까워요!<br>
+        🔸 <b>my family</b>: "마이 패믈리" 👨‍👩‍👧‍👦
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">care for me</p><p class="word-mean">날 아껴주다</p></div>
+        <span class="word-tag">연음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[kɛr fɔːr mi]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">케</span>어 포r미</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>care</b>: "케어" [kɛr] — r 소리를 살짝 굴려요<br>
+        🔸 <b>for</b>: 문장 중간에선 약하게 "퍼r" [fər]<br>
+        🔸 <b>for me</b>: "퍼r미" — 자연스럽게 이어져요<br>
+        🔸 <b>showing they care for me</b>: "쇼윙데이 케어퍼r미" 💛
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">strife</p><p class="word-mean">고난, 갈등</p></div>
+        <span class="word-tag">str 연속자음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[straɪf]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">스트<span class="stress">라</span>이프</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>str-</b>: s+t+r 세 자음이 연속! 한국어엔 없는 소리 조합<br>
+        🔸 <b>-ife</b>: "아이프" [aɪf] — i가 "아이"!<br>
+        🔸 <b>even through the times of strife</b> = 힘든 시절을 겪으면서도<br>
+        🔸 같은 str- 단어: <b>str</b>eet[스트리트], <b>str</b>ong[스트롱], <b>str</b>etch[스트레치]
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">mighty seed</p><p class="word-mean">강력한 씨앗</p></div>
+        <span class="word-tag">igh = 아이</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈmaɪti siːd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">마</span>이티 <span class="stress">씨</span>드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>migh-</b>: "마이" [maɪ] — <b>igh는 "아이"</b> 소리! (묵음 gh)<br>
+        🔸 같은 igh 패턴: h<b>igh</b>[하이], l<b>igh</b>t[라이트], n<b>igh</b>t[나이트]<br>
+        🔸 <b>seed</b>: "씨드" [siːd] — 긴 이 소리!<br>
+        🔸 <b>love is a mighty seed</b> = 사랑은 강력한 씨앗이다 🌱
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Family</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 care for ~ <span>· 아끼다, 보살피다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">They're always there for me, showing they truly care for me.</p>
+      <p class="listen-ko">그들은 늘 내 곁에 있어주고, 진심으로 날 아낀다는 걸 보여줘.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;They're always there for me, showing they truly care for me.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;They're always there for me, showing they truly care for me.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;They're always there for me, showing they truly care for me.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">She spent years caring for her grandmother before she passed away.</p>
+      <p class="listen-ko">그녀는 할머니가 돌아가시기 전 몇 년간 할머니를 보살폈어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'She spent years caring for her grandmother before she passed away.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'She spent years caring for her grandmother before she passed away.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'She spent years caring for her grandmother before she passed away.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 have been so lucky <span>· 정말 운이 좋았다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I've been so lucky in my life, even through the times of strife.</p>
+      <p class="listen-ko">난 힘든 시절을 겪으면서도, 인생에서 정말 운이 좋았어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I've been so lucky in my life, even through the times of strife.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I've been so lucky in my life, even through the times of strife.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I've been so lucky in my life, even through the times of strife.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">We've been so lucky to have such supportive friends around us.</p>
+      <p class="listen-ko">우린 이렇게 힘이 되어주는 친구들이 곁에 있어서 정말 운이 좋았어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;We've been so lucky to have such supportive friends around us.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;We've been so lucky to have such supportive friends around us.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;We've been so lucky to have such supportive friends around us.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 nothing is guaranteed <span>· 아무것도 보장되지 않는다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">Well, nothing is guaranteed, but love is a mighty seed that always grows.</p>
+      <p class="listen-ko">그래, 아무것도 보장되진 않지만, 사랑은 늘 자라나는 강력한 씨앗이야.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Well, nothing is guaranteed, but love is a mighty seed that always grows.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Well, nothing is guaranteed, but love is a mighty seed that always grows.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Well, nothing is guaranteed, but love is a mighty seed that always grows.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Nothing is guaranteed in life, so we should cherish every moment we have.</p>
+      <p class="listen-ko">인생에서 보장되는 건 아무것도 없으니, 우리가 가진 매 순간을 소중히 여겨야 해.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Nothing is guaranteed in life, so we should cherish every moment we have.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Nothing is guaranteed in life, so we should cherish every moment we have.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Nothing is guaranteed in life, so we should cherish every moment we have.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#FDF1EC;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#7A3410;border:1px solid #E9BF9F">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div><h2>문장 암기</h2><p>빈칸 채우기 + 발음 연습 · Family</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      ✏️ <b>빈칸에 알맞은 영어 단어를 직접 입력</b>해서 오늘 배운 문장을 통째로 외워봐요!<br>
+      <b>오늘의 세 문장 + 표현별 예문</b>까지 전부 연습할 수 있어요.<br>
+      난이도를 골라 도전하세요 — <b>Level 1</b>(쉬움) → <b>Level 2</b>(보통) → <b>Level 3</b>(어려움)<br>
+      💡 각 칸을 채우고 <b>"정답 확인"</b>(또는 Enter)을 누르면 채점돼요.<br>
+      🔊 문장마다 <b>발음 듣기 버튼</b>이 있어요 — 듣고 따라 하면 더 빨리 외워져요!
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" id="lv1" onclick="setLevel(1,this)">Level 1<span>핵심 단어</span></button>
+      <button class="level-btn" id="lv2" onclick="setLevel(2,this)">Level 2<span>표현 위주</span></button>
+      <button class="level-btn" id="lv3" onclick="setLevel(3,this)">Level 3<span>거의 전체</span></button>
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">정답 확인을 누르면 점수가 표시돼요</div>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+
+    <div class="quiz-card" style="background:#FDF1EC;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#7A3410;border:1px solid #E9BF9F;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">👨‍👩‍👧‍👦 [Good Morning Pops] Family
+— Makana
+
+🎵 2020년 6월 19일 발매
+   작곡: Matthew Swalinkavich
+   Makana는 하와이 출신의 국제적으로
+   인정받는 슬랙키 기타리스트예요
+
+   가족이 곁에 있어준 것에 대한
+   감사와 사랑을 담은 따뜻한 어쿠스틱 곡 💛
+
+👏 세 문장 모두 가사와 정확히 일치해요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 care for ~
+   ~을 아끼다, 보살피다
+   • They're always there for me,
+     showing they truly care for me.
+     (그들은 늘 내 곁에 있어주고,
+      진심으로 날 아낀다는 걸 보여줘.)
+   • She spent years caring for her
+     grandmother before she passed away.
+     (그녀는 할머니가 돌아가시기 전
+      몇 년간 할머니를 보살폈어.)
+💡 care about(신경 쓰다)보다
+   care for가 돌봄·애정의 느낌이 더 강해요 💛
+   비슷한 표현: look after ~ / take care of ~
+
+🔹 have been so lucky
+   정말 운이 좋았다 (지금까지 쭉)
+   • I've been so lucky in my life,
+     even through the times of strife.
+     (난 힘든 시절을 겪으면서도,
+      인생에서 정말 운이 좋았어.)
+   • We've been so lucky to have such
+     supportive friends around us.
+     (우린 이렇게 힘이 되어주는 친구들이
+      곁에 있어서 정말 운이 좋았어.)
+💡 현재완료라서 과거부터 지금까지
+   이어진 운/감사함을 담아요!
+   even through ~ = ~을 겪으면서도
+   비슷한 표현: I've been blessed
+
+🔹 nothing is guaranteed
+   아무것도 보장되지 않는다
+   • Well, nothing is guaranteed, but love
+     is a mighty seed that always grows.
+     (그래, 아무것도 보장되진 않지만,
+      사랑은 늘 자라나는 강력한 씨앗이야.)
+   • Nothing is guaranteed in life, so we
+     should cherish every moment we have.
+     (인생에서 보장되는 건 아무것도 없으니,
+      우리가 가진 매 순간을 소중히 여겨야 해.)
+💡 be guaranteed = 보장되다 (수동태)
+   nothing is ~ = 아무것도 ~하지 않다
+   비슷한 표현: there are no guarantees
+
+🔊 발음 팁
+   • guaranteed = 개런[티]드 (끝 강세!)
+     gua-ran-TEED, 마지막 음절이 강해요
+   • family = [패]믈리 (3음절!)
+     "패밀리" ✗ → "패믈리" ✓
+   • mighty = [마]이티 (igh는 "아이"!)
+     같은 패턴: high, light, night
+   • strife = 스트[라]이프 (str 연속자음)
+
+——————————————————
+#GoodMorningPops #팝송영어 #Family #Makana</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "📝 오늘의 세 문장",
+    items: [
+      { ko:"그들은 나를 아껴주죠.", en:"They care for me.", key:["care"] },
+      { ko:"나는 인생에서 정말 운이 좋았어요.", en:"I've been so lucky in my life.", key:["lucky","life"] },
+      { ko:"아무것도 보장되지 않아요.", en:"Nothing is guaranteed.", key:["Nothing","guaranteed"] }
+    ]
+  },
+  {
+    title: "🔹 care for ~",
+    items: [
+      { ko:"그들은 늘 내 곁에 있어주고, 진심으로 날 아낀다는 걸 보여줘.", en:"They're always there for me, showing they truly care for me.", key:["always","showing","care"] },
+      { ko:"그녀는 할머니가 돌아가시기 전 몇 년간 할머니를 보살폈어.", en:"She spent years caring for her grandmother before she passed away.", key:["caring","grandmother","passed"] }
+    ]
+  },
+  {
+    title: "🔹 have been so lucky",
+    items: [
+      { ko:"난 힘든 시절을 겪으면서도, 인생에서 정말 운이 좋았어.", en:"I've been so lucky in my life, even through the times of strife.", key:["lucky","strife"] },
+      { ko:"우린 이렇게 힘이 되어주는 친구들이 곁에 있어서 정말 운이 좋았어.", en:"We've been so lucky to have such supportive friends around us.", key:["lucky","supportive","friends"] }
+    ]
+  },
+  {
+    title: "🔹 nothing is guaranteed",
+    items: [
+      { ko:"그래, 아무것도 보장되진 않지만, 사랑은 늘 자라나는 강력한 씨앗이야.", en:"Well, nothing is guaranteed, but love is a mighty seed that always grows.", key:["guaranteed","mighty","seed"] },
+      { ko:"인생에서 보장되는 건 아무것도 없으니, 우리가 가진 매 순간을 소중히 여겨야 해.", en:"Nothing is guaranteed in life, so we should cherish every moment we have.", key:["guaranteed","cherish","moment"] }
+    ]
+  }
+];
+
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return s.toLowerCase().replace(/[.,!?'"\u2014\u2013\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level===1) target = Math.max(1, Math.round(n*0.20));
+  else if(level===2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">'+ item.ko +'</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blankIdx.length +'칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blankIdx.indexOf(wi) >= 0){
+          var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+          var pre = m ? m[1] : '';
+          var core = m && m[2] ? m[2] : w;
+          var post = m ? m[3] : '';
+          var size = Math.max(core.length, 4);
+          if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+          html += '<input class="quiz-blank" data-q="'+qi+'" data-w="'+wi+'" data-ans="'+encodeURIComponent(core)+'" size="'+size+'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkOne('+qi+')">';
+          if(post) html += '<span class="quiz-word">'+ post +'</span>';
+        } else {
+          html += '<span class="quiz-word">'+ w +'</span>';
+        }
+        html += ' ';
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne('+qi+')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne('+qi+')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.8)">🚶 보통</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',1.0)">🏃 원어민</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz2(this,'+qi+')">▶ 2회 반복</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr'+qi+'"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="'+qi+'"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayQuiz2(btn, qi){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr'+qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr'+qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">'+ getQuizText(qi) +'</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi=0; qi<total; qi++){
+    if(checkOne(qi)) correct++;
+  }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1){
+    label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  } else if(ratio >= 0.7){
+    label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  } else if(ratio >= 0.4){
+    label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  } else {
+    label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderQuiz);
+if(document.readyState !== 'loading') renderQuiz();
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Folded — Kehlani</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F4F1EE;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #A88C70;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#E8DCC8;border-color:#6A4E28;color:#3A2A10}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #DAC9B0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#E8DCC8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#E8DCC8;color:#3A2A10;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E2D6C0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E2D6C0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E2D6C0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#6A4E28}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#E8DCC8;color:#3A2A10;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F4F1EE;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #DAC9B0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E2D6C0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#3A2A10}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E2D6C0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F4F1EE;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F4F1EE;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#3A2A10;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E2D6C0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#E8DCC8;color:#3A2A10;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F4F1EE;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#6A4E28;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#3A2A10;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #E2D6C0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#E8DCC8;color:#3A2A10;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#DAC9B0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #E2D6C0;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#6A4E28;background:#E8DCC8;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #F2EDE6}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🧺</div>
+      <div>
+        <h2>Folded</h2>
+        <p>Kehlani · 2025 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7">
+      💡 <b>곡 정보 교정:</b> 하울링 "Fold" (✗) → <b>Kehlani (켈라니) "Folded"</b> (✓)<br>
+      캘리포니아 오클랜드 출신 R&B 싱어예요! "Folded"는 헤어진 연인의 옷을 개어(fold) 놓고 돌아오길 기다리는 애틋함과, 빈 약속엔 지쳤다는 복잡한 마음을 그린 곡이에요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">그냥 나에게 시간을 좀 달라고만 했으면 됐었죠</p>
+          <div class="sent-row">
+            <span class="sent-right">All I had to do was ask for space.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I know I didn't have to walk away, all I had to do was ask for space</b> — 완벽해요! 👏<br>
+            💡 <b>All I had to do was ~</b> = 내가 해야 했던 건 오직 ~뿐이었다<br>
+            &nbsp;&nbsp;<b>ask for space</b> = 시간[공간]을 좀 달라고 하다. "떠날 필요 없이 그냥 시간을 달라고만 하면 됐었는데"라는 후회!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">(그 사람 옷을) 내가 다 개어 놨어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I have them fold it.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I have them folded.</span>
+          </div>
+          <span class="pill-fix">fold it → folded (과거분사)</span>
+          <p class="note-text">
+            가사 정확: <b>So can you come pick up your clothes? I have them folded</b><br>
+            ⚠️ <b>fold it</b>(그것을 개다)(✗) → <b>folded</b>(개어 놓은)(✓)<br>
+            💡 <b>have + 목적어 + 과거분사</b> = ~을 …된 상태로 두다/해놓다<br>
+            &nbsp;&nbsp;<b>I have them folded</b> = 그것들(옷)을 <b>개어 놓은 상태다</b> → "옷 다 개놨어"<br>
+            &nbsp;&nbsp;💥 한국어 "게어 났어요"(개어 놨어요)는 옷을 fold(개다)한 거예요! 헤어진 연인 옷을 개어 두고 가지러 오라는 애틋한 장면!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">난 더 이상 빈 약속은 필요 없어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I don't need no more empty promise.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I don't need no more empty promises.</span>
+          </div>
+          <span class="pill-fix">promise → promises (복수)</span>
+          <p class="note-text">
+            가사 정확: <b>I don't need no more empty promises</b><br>
+            ⚠️ <b>promise</b>(단수)(✗) → <b>promises</b>(복수)(✓) — 여러 개의 빈 약속이니 복수!<br>
+            💡 <b>empty promises</b> = 빈 약속들, 공약(空約). <b>empty</b> = 텅 빈 → 지키지 않는 약속<br>
+            &nbsp;&nbsp;📌 <b>don't need no</b>는 이중부정이지만, R&B·구어에서 "전혀 필요 없다"는 강조로 자주 써요! (문법상 표준은 don't need any)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">All I had to do was ~</p>
+      <p class="expr-ko">내가 해야 했던 건 오직 ~뿐이었다</p>
+      <span class="expr-tag">후회 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>All I had to do was ask for space.</b> → 그냥 시간을 달라고만 하면 됐었어.</p>
+        <p><b>All I had to do was say sorry.</b> → 그냥 미안하다고만 하면 됐었는데.</p>
+        <p><b>All you have to do is try.</b> → 넌 그냥 노력하기만 하면 돼.</p>
+        <p><b>All I need is you.</b> → 내게 필요한 건 너뿐이야.</p>
+        <p class="ex-note">💡 <b>All I had to do was + 동사원형</b> = 내가 해야 했던 건 ~뿐이었다<br>뒤에 오는 동사는 원형! (was ask, was say) — 지나간 일에 대한 후회를 담아요<br><b>ask for space</b> = 시간·거리를 좀 달라고 하다</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">have + 목적어 + 과거분사</p>
+      <p class="expr-ko">~을 …된 상태로 해놓다</p>
+      <span class="expr-tag">have them folded 구조!</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I have them folded.</b> → 그것들을 개어 놨어.</p>
+        <p><b>I have my hair cut.</b> → 나 머리 잘랐어.</p>
+        <p><b>I had my car washed.</b> → 나 세차했어.</p>
+        <p><b>I want it done by tomorrow.</b> → 내일까지 끝내 놓고 싶어.</p>
+        <p class="ex-note">💡 <b>have/get + 목적어 + 과거분사</b> = ~을 …된 상태로 만들다/해놓다<br>have them folded(개어 놓다), have my hair cut(머리 자르다), have it done(끝내 놓다)<br>⚠️ <b>fold it</b>(그걸 개다, 동사)와 <b>folded</b>(개어진, 과거분사)는 구조가 달라요!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">empty promises</p>
+      <p class="expr-ko">빈 약속들, 공약(空約)</p>
+      <span class="expr-tag">복수형 핵심!</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I don't need no more empty promises.</b> → 더 이상 빈 약속은 필요 없어.</p>
+        <p><b>He's full of empty promises.</b> → 그는 빈 약속만 가득해.</p>
+        <p><b>Stop making empty promises.</b> → 지키지도 못할 약속 그만해.</p>
+        <p><b>Actions speak louder than words.</b> → 말보다 행동이 중요해. (속담!)</p>
+        <p class="ex-note">💡 <b>empty promises</b> = 빈 약속들 (empty = 텅 빈, 지켜지지 않는)<br>보통 여러 개라 <b>복수 promises</b>로 써요! <b>keep a promise</b>(약속을 지키다) ↔ <b>break a promise</b>(약속을 어기다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>All I had to do was ask for space.</span><br>→ 그냥 나에게 시간을 좀 달라고만 했으면 됐었죠.<br>
+      <span>I have them folded.</span> → (그 사람 옷을) 내가 다 개어 놨어요.<br>
+      <span>I don't need no more empty promises.</span> → 난 더 이상 빈 약속은 필요 없어요.
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🧺</div>
+      <div><h2>전체 가사</h2><p>Folded · Kehlani (2025)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1</span>
+        <div class="lyric-line"><span class="lyric-en">It's so silly of me to act like I don't need you bad</span><span class="lyric-ko">널 간절히 원하지 않는 척하는 게 참 바보 같아</span></div>
+        <div class="lyric-line"><span class="lyric-en">When all I can think about is us since I seen you last</span><span class="lyric-ko">마지막으로 본 이후로 온통 우리 생각뿐인데</span></div>
+        <div class="lyric-line"><span class="lyric-en">I know I didn't have to walk away</span><span class="lyric-ko">떠날 필요 없었다는 걸 알아</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">All I had to do was ask for space</span></span><span class="lyric-ko">그냥 시간을 좀 달라고만 하면 됐었는데 ①</span></div>
+        <div class="lyric-line"><span class="lyric-en">I'm telling you, "Be on your way," when I told you to fall back</span><span class="lyric-ko">"네 갈 길 가"라고 했지, 물러나라고 했을 때</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">So can you come pick up your clothes?</span><span class="lyric-ko">그러니 와서 네 옷 좀 가져갈래?</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">I have them folded</span></span><span class="lyric-ko">내가 다 개어 놨어 ②</span></div>
+        <div class="lyric-line"><span class="lyric-en">Meet me at the door while it's still open</span><span class="lyric-ko">아직 문이 열려 있을 때 문 앞에서 만나</span></div>
+        <div class="lyric-line"><span class="lyric-en">I know it's getting cold out, but it's not frozen</span><span class="lyric-ko">밖이 추워지고 있지만, 아직 얼진 않았어</span></div>
+        <div class="lyric-line"><span class="lyric-en">So come pick up your clothes, I have them folded</span><span class="lyric-ko">그러니 와서 옷 가져가, 내가 개어 놨어</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Post-Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">I'll let your body decide if this is good enough for ya</span><span class="lyric-ko">이게 충분한지 네 마음이 정하게 할게</span></div>
+        <div class="lyric-line"><span class="lyric-en">Already folding it for ya, already folding up for ya</span><span class="lyric-ko">이미 널 위해 개고 있어, 이미 널 위해</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Bridge</span>
+        <div class="lyric-line"><span class="lyric-en">No matter what you do to switch the story up</span><span class="lyric-ko">네가 어떻게 이야기를 바꾸려 해도</span></div>
+        <div class="lyric-line"><span class="lyric-en">I know I made my mark, and I would still choose you through it all</span><span class="lyric-ko">난 내 흔적을 남겼고, 그래도 널 선택할 거야</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">I don't need no more empty promises</span></span><span class="lyric-ko">난 더 이상 빈 약속은 필요 없어 ③</span></div>
+        <div class="lyric-line"><span class="lyric-en">I don't need roses, just need some flowers from my garden</span><span class="lyric-ko">장미는 필요 없어, 그저 내 정원의 꽃이면 돼</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장 (①②③)<br>※ 가사는 학습 참고용이며 저작권은 아티스트·저작권자에게 있습니다</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🧺</div>
+      <div><h2>핵심 단어 발음</h2><p>Folded · Kehlani</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">folded</span>
+        <span class="ref-ipa">[ˈfoʊldɪd]</span>
+        <span class="ref-kr"><span class="s">폴</span>디드</span>
+        <span class="ref-mean">개어진 (과거분사) ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">fold</span>
+        <span class="ref-ipa">[foʊld]</span>
+        <span class="ref-kr"><span class="s">폴</span>드</span>
+        <span class="ref-mean">개다, 접다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">promises</span>
+        <span class="ref-ipa">[ˈprɑːmɪsɪz]</span>
+        <span class="ref-kr"><span class="s">프라</span>미시즈</span>
+        <span class="ref-mean">약속들 (복수) ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">empty</span>
+        <span class="ref-ipa">[ˈɛmpti]</span>
+        <span class="ref-kr"><span class="s">엠</span>티</span>
+        <span class="ref-mean">텅 빈</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">space</span>
+        <span class="ref-ipa">[speɪs]</span>
+        <span class="ref-kr"><span class="s">스페</span>이스</span>
+        <span class="ref-mean">공간, 시간적 여유</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">clothes</span>
+        <span class="ref-ipa">[kloʊðz]</span>
+        <span class="ref-kr"><span class="s">클로</span>우즈</span>
+        <span class="ref-mean">옷 (발음 주의!)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — have them folded</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">have them folded</p><p class="word-mean">그것들을 개어 놓은 상태다</p></div>
+        <span class="word-tag">⚠️ have + 과거분사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[hæv ðəm ˈfoʊldɪd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">해브 뎀 <span class="stress">폴</span>디드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>folded</b>: "폴디드" [ˈfoʊldɪd] — fold + ed<br>
+        🔸 <b>have them folded</b> = 그것들을 개어 놓다 (완료된 상태)<br>
+        🔸 ⚠️ <b>fold it</b>[폴딧](그걸 개다) ≠ <b>folded</b>[폴디드](개어진)<br>
+        🔸 have + 목적어 + 과거분사 = ~을 …된 채로 해놓다
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">empty promises</p><p class="word-mean">빈 약속들 (복수!)</p></div>
+        <span class="word-tag">복수 -es</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɛmpti ˈprɑːmɪsɪz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">엠</span>티 <span class="stress">프라</span>미시즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>empty</b>: "엠티" [ˈɛmpti] — EMP에 강세!<br>
+        🔸 <b>promises</b>: "프라미시즈" — -se로 끝나 <b>-es</b>(이즈) 붙어요!<br>
+        🔸 promise[프라미스] → promises[프라미시즈]<br>
+        🔸 여러 개의 약속 → 복수형!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">clothes</p><p class="word-mean">옷 (까다로운 발음!)</p></div>
+        <span class="word-tag">발음 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[kloʊðz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">클로</span>우즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>clothes</b>: "클로우즈" — th+s가 합쳐져 "즈"!<br>
+        🔸 ⚠️ close(닫다)[클로즈]와 헷갈리지 마세요!<br>
+        🔸 실제론 [클로즈]처럼 들리기도 해요 (th 거의 생략)<br>
+        🔸 <b>pick up your clothes</b> = 네 옷 가져가
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">ask for space</p><p class="word-mean">시간[여유]을 좀 달라고 하다</p></div>
+        <span class="word-tag">관용표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[æsk fɔːr speɪs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">애스크 포 <span class="stress">스페</span>이스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>ask</b>: "애스크" [æsk] — a = "애"!<br>
+        🔸 <b>space</b>: "스페이스" [speɪs] — 공간 + 시간적 여유!<br>
+        🔸 <b>ask for space</b> = (관계에서) 거리·시간을 좀 달라고 하다<br>
+        🔸 "need space" = 혼자만의 시간이 필요해
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">Kehlani</p><p class="word-mean">가수 이름 발음</p></div>
+        <span class="word-tag">가수명</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[kɛˈlɑːni]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">켈<span class="stress">라</span>니</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>Keh-LA-ni</b>: "켈라니" — LA에 강세!<br>
+        🔸 캘리포니아 오클랜드 출신 R&B 싱어<br>
+        🔸 부드러운 R&B 보컬로 유명해요<br>
+        🔸 "Folded"는 2025년 발매곡이에요!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🧺 [Good Morning Pops] Folded
+— Kehlani (켈라니) · 2025
+
+💡 곡 정보: 하울링 "Fold" ✗
+   → Kehlani "Folded" ✓
+   오클랜드 출신 R&B 싱어!
+   헤어진 연인 옷을 개어(fold) 놓고
+   돌아오길 기다리는 애틋한 마음의 곡
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 All I had to do was ~
+   내가 해야 했던 건 오직 ~뿐이었다
+   • All I had to do was ask for space.
+     (그냥 시간을 달라고만 하면 됐었어.)
+   • All I had to do was say sorry.
+     (그냥 미안하다고만 하면 됐었는데.)
+   • All you have to do is try.
+     (넌 그냥 노력하기만 하면 돼.)
+💡 All I had to do was + 동사원형
+   지나간 일에 대한 후회를 담아요
+   ask for space = 시간·거리를 좀 달라고 하다
+
+🔹 have + 목적어 + 과거분사
+   ~을 …된 상태로 해놓다
+   • I have them folded.
+     (그것들을 개어 놨어.)
+   • I have my hair cut.
+     (나 머리 잘랐어.)
+   • I want it done by tomorrow.
+     (내일까지 끝내 놓고 싶어.)
+💡 have them folded = 개어 놓은 상태다
+   ⚠️ fold it(그걸 개다) ≠ folded(개어진)!
+
+🔹 empty promises
+   빈 약속들, 공약(空約)
+   • I don't need no more empty promises.
+     (더 이상 빈 약속은 필요 없어.)
+   • He's full of empty promises.
+     (그는 빈 약속만 가득해.)
+   • Stop making empty promises.
+     (지키지도 못할 약속 그만해.)
+💡 empty = 텅 빈, 지켜지지 않는
+   여러 개라 복수 promises!
+   keep a promise(지키다) ↔ break a promise(어기다)
+
+——————————————————
+#GoodMorningPops #팝송영어 #Folded #Kehlani</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

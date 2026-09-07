@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Laugh Love — Sasha Alex Sloan</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0EFF4;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #7C7898;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#DAD6E8;border-color:#3A3458;color:#211C38}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #C6C0DC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#DAD6E8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#DAD6E8;color:#211C38;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #D8D2E6;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #D8D2E6;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #D8D2E6;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#3A3458}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#DAD6E8;color:#211C38;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F0EFF4;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #C6C0DC}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #D8D2E6}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#211C38}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #D8D2E6;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F0EFF4;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F0EFF4;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#211C38;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #D8D2E6;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#DAD6E8;color:#211C38;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F0EFF4;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#3A3458;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#211C38;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #D8D2E6;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#DAD6E8;color:#211C38;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#C6BEDC}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #D8D2E6;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#3A3458;background:#DAD6E8;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#211C38;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F0EFF4;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#DAD6E8;color:#211C38;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#F0EFF4;border-left:3px solid #3A3458;border-radius:10px;padding:12px 14px;font-size:13px;color:#3A3458;line-height:1.8}
+  .twist-box b{color:#211C38;font-weight:600}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🛋️</div>
+      <div>
+        <h2>Live Laugh Love</h2>
+        <p>Sasha Alex Sloan · 2022 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#F0EFF4;border:1px solid #7C7898;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#211C38;line-height:1.7">
+      🛋️ <b>Sasha Alex Sloan (사샤 알렉스 슬론)</b> · 2022년 발매<br>
+      보스턴 출신 싱어송라이터로, 솔직하고 씁쓸한 감정을 담담하게 노래하는 걸로 유명해요. <b>"Live Laugh Love"</b>는 인테리어 문구로 흔한 그 밝은 말을 <b>반어적으로 뒤집어</b>, 아무것도 하기 싫은 번아웃의 날을 유머러스하게 그린 곡이에요!<br>
+      👏 <b>세 문장 모두 훌륭하게 쓰셨어요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">난 여전히 TV 화면만 바라보고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I'm still staring at the TV screen.</span>
+          </div>
+          <span class="pill-ok">문법·구조 정확 ✓</span>
+          <span class="pill-note">가사는 "Staring at the TV screen"</span>
+          <p class="note-text">
+            문장 완벽해요! 👏 (가사는 주어 없이 <b>Staring at the TV screen</b>이지만, <b>I'm still</b>을 붙여 완전한 문장으로 만드신 게 정확해요!)<br>
+            💡 <b>stare at ~</b> = ~을 빤히[멍하니] 바라보다 (전치사 <b>at</b> 필수!)<br>
+            &nbsp;&nbsp;지난번 Olivia Rodrigo <i>staring at the ceiling</i>에서 배운 그 표현이에요! 👍<br>
+            &nbsp;&nbsp;<b>still</b> = 여전히, 아직도 (변화 없이 계속되는 상태 강조)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">난 감정적으로 마비된 기분이에요</p>
+          <div class="sent-row">
+            <span class="sent-right">I feel emotionally paralyzed.</span>
+          </div>
+          <span class="pill-ok">문법·구조 정확 ✓</span>
+          <span class="pill-note">가사는 "Emotionally paralyzed"</span>
+          <p class="note-text">
+            완벽해요! 👏 (가사는 <b>Emotionally paralyzed</b>만 있지만, <b>I feel</b>을 붙여 완전한 문장으로!)<br>
+            💡 <b>emotionally paralyzed</b> = 감정적으로 마비된 → 아무 감정도 느낄 수 없는 상태<br>
+            &nbsp;&nbsp;<b>paralyzed</b> = 마비된 (paralyze 마비시키다). <b>emotionally</b> = 감정적으로 (부사)<br>
+            &nbsp;&nbsp;슬픈 영화(The Notebook)를 봐도 눈물조차 안 나는, 무감각한 번아웃 상태를 표현해요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">난 내 최고의 삶을 살고 싶지 않아요</p>
+          <div class="sent-row">
+            <span class="sent-right">I don't wanna live my best life.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Don't wanna live my best life</b> — 완벽해요! 👏<br>
+            💡 <b>live my best life</b> = 내 최고의 삶을 살다 (SNS에서 유행한 긍정 문구!)<br>
+            &nbsp;&nbsp;<b>wanna</b> = want to (구어체). <b>don't wanna</b> = ~하고 싶지 않다<br>
+            &nbsp;&nbsp;💥 반전! 보통 "live your best life"는 응원의 말인데, 이 곡은 <b>"난 그런 거 하기 싫어"</b>라고 뒤집어요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">stare at ~</p>
+      <p class="expr-ko">~을 빤히[멍하니] 바라보다</p>
+      <span class="expr-tag">전치사 at 필수</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I'm still staring at the TV screen.</b> → 난 여전히 TV 화면만 바라보고 있어.</p>
+        <p><b>She stared at the ceiling all night.</b> → 그녀는 밤새 천장을 바라봤어.</p>
+        <p><b>Stop staring at your phone.</b> → 폰 그만 들여다봐.</p>
+        <p><b>He stared blankly into space.</b> → 그는 멍하니 허공을 응시했어.</p>
+        <p class="ex-note">💡 <b>stare at ~</b> = ~을 빤히 응시하다 (look보다 강한, 오래 보는 느낌)<br>전치사 <b>at</b>이 꼭 필요해요! stare at the screen(화면을), stare at the ceiling(천장을)<br>멍하니 무기력하게 바라보는 상황에 잘 어울려요</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">emotionally paralyzed</p>
+      <p class="expr-ko">감정적으로 마비된</p>
+      <span class="expr-tag">부사 + 형용사</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I feel emotionally paralyzed.</b> → 난 감정적으로 마비된 기분이야.</p>
+        <p><b>I was paralyzed with fear.</b> → 난 두려움에 얼어붙었어.</p>
+        <p><b>She's mentally exhausted.</b> → 그녀는 정신적으로 지쳤어.</p>
+        <p><b>He's physically drained.</b> → 그는 육체적으로 진이 빠졌어.</p>
+        <p class="ex-note">💡 <b>paralyzed</b> = 마비된 (몸이 굳거나 감정이 무감각한)<br><b>부사 + 형용사</b> 조합: emotionally(감정적으로), mentally(정신적으로), physically(육체적으로)<br><b>be paralyzed with ~</b> = ~로 얼어붙다 (fear 두려움, shock 충격)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">live my best life</p>
+      <p class="expr-ko">내 최고의 삶을 살다</p>
+      <span class="expr-tag">SNS 유행 문구</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I don't wanna live my best life.</b> → 난 내 최고의 삶을 살고 싶지 않아. (반어!)</p>
+        <p><b>She's living her best life.</b> → 그녀는 최고의 삶을 살고 있어.</p>
+        <p><b>Just live your best life!</b> → 그냥 네 인생 멋지게 즐겨!</p>
+        <p><b>I wanna live, laugh, love.</b> → 난 살고, 웃고, 사랑하고 싶어.</p>
+        <p class="ex-note">💡 <b>live one's best life</b> = 최고의 삶을 살다 (SNS 긍정 유행어!)<br><b>wanna</b> = want to (구어체 축약)<br>이 곡은 그 밝은 문구를 <b>"난 그런 거 하기 싫어"</b>라고 반어적으로 비틀어요!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I'm still staring at the TV screen.</span> → 난 여전히 TV 화면만 바라보고 있어요.<br>
+      <span>I feel emotionally paralyzed.</span> → 난 감정적으로 마비된 기분이에요.<br>
+      <span>I don't wanna live my best life.</span> → 난 내 최고의 삶을 살고 싶지 않아요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🛋️</div>
+      <div><h2>곡 이야기</h2><p>Live Laugh Love · Sasha Alex Sloan (2022)</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Sasha Alex Sloan (사샤 알렉스 슬론)</b>은 보스턴 출신 싱어송라이터예요. 솔직하고 씁쓸한 감정을 담담하고 유머러스하게 풀어내는 걸로 유명하죠. <b>"Live Laugh Love"</b>는 2022년에 발매됐고, King Henry와 함께 만들었어요.
+        </p>
+        <p class="story-p">
+          제목 <b>"Live, Laugh, Love"</b>는 서양 인테리어에서 벽에 걸어두는 흔한 긍정 문구예요("살고, 웃고, 사랑하라"). 이 곡은 그 밝은 문구를 <b>반어적으로 뒤집어서</b>, 아무것도 하기 싫고 방에만 틀어박히고 싶은 <b>번아웃과 무기력의 날</b>을 솔직하게 그려요 🛋️
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 방 안의 풍경</b><br>문틈엔 수건, 바닥엔 패스트푸드 포장지. TV 화면만 멍하니 보며 정신없이 술을 마셔요. 슬픈 영화(The Notebook)를 봐도 눈물조차 안 나요 — 감정이 마비됐거든요. 어질러진 침대에 파묻혀 친구들 연락도 다 무시해요.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 아무도 안 보고 싶어</b><br>네 파티엔 가고 싶지 않아. 아니, 아무도 보고 싶지 않아.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 반전의 후렴</b><br>난 살고 싶지도, 웃고 싶지도, 사랑하고 싶지도 않아. 그냥 방에서 술이나 마시고 싶어. 최고의 삶 따위 살고 싶지 않아, 그냥 밤새 여기 누워 있고 싶어.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Verse 2 — 더 솔직한 일상</b><br>눅눅해진 과자를 먹고, 속옷을 겉옷처럼 입고, 전자레인지에 저녁을 데워요. 새벽 4시까지 다른 사람이 되고 싶다 상상하고, 지구온난화까지 걱정하며 잠 못 들어요.</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          🛋️ <b>"Live, Laugh, Love"</b>는 원래 벽에 걸어두는 <b>밝고 긍정적인 인테리어 문구</b>예요.<br><br>
+          하지만 이 곡은 그걸 <b>"I don't wanna live, wanna laugh, wanna love"</b>(살고, 웃고, 사랑하기 싫어)로 뒤집어요. 완벽해 보여야 한다는 압박에 지친 사람의 <b>솔직한 번아웃 고백</b>이죠.<br><br>
+          우울한 내용을 <b>경쾌한 멜로디와 유머</b>로 풀어내서, 오히려 위로가 되는 곡이에요. "나만 이런 게 아니구나" 하는 공감을 주거든요 💜
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① (I'm still) staring at the TV screen</p>
+          <p class="learn-ko">난 여전히 TV 화면만 바라보고 있어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② (I feel) emotionally paralyzed</p>
+          <p class="learn-ko">난 감정적으로 마비된 기분이에요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ (I) don't wanna live my best life</p>
+          <p class="learn-ko">난 내 최고의 삶을 살고 싶지 않아요</p>
+        </div>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 Melon · 지니 · Spotify · Apple Music 등<br>정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Sasha Alex Sloan · King Henry 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🛋️</div>
+      <div><h2>핵심 단어 발음</h2><p>Live Laugh Love · Sasha Alex Sloan</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">staring</span>
+        <span class="ref-ipa">[ˈstɛrɪŋ]</span>
+        <span class="ref-kr"><span class="s">스테</span>어링</span>
+        <span class="ref-mean">빤히 보는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">paralyzed</span>
+        <span class="ref-ipa">[ˈpærəlaɪzd]</span>
+        <span class="ref-kr"><span class="s">패</span>럴라이즈드</span>
+        <span class="ref-mean">마비된</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">emotionally</span>
+        <span class="ref-ipa">[ɪˈmoʊʃənəli]</span>
+        <span class="ref-kr">이<span class="s">모</span>셔널리</span>
+        <span class="ref-mean">감정적으로</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wanna</span>
+        <span class="ref-ipa">[ˈwɑːnə]</span>
+        <span class="ref-kr"><span class="s">워</span>너</span>
+        <span class="ref-mean">want to (구어)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">laugh</span>
+        <span class="ref-ipa">[læf]</span>
+        <span class="ref-kr"><span class="s">래</span>프</span>
+        <span class="ref-mean">웃다 (gh=f!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">live</span>
+        <span class="ref-ipa">[lɪv]</span>
+        <span class="ref-kr"><span class="s">리</span>브</span>
+        <span class="ref-mean">살다 (동사)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 — laugh (gh = f 소리!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">laugh</p><p class="word-mean">웃다 (gh가 "f" 소리!)</p></div>
+        <span class="word-tag">⚠️ gh 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[læf]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">래</span>프</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>au</b>: "애" [æ] — 입을 옆으로!<br>
+        🔸 <b>gh</b>: "f" 소리! "래프"(✓), "래그"(✗)<br>
+        🔸 같은 gh=f: <b>enough</b>[이너프], <b>cough</b>[커프], <b>tough</b>[터프]<br>
+        🔸 <b>laughter</b>[래프터](웃음)도 같은 발음!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">paralyzed</p><p class="word-mean">마비된</p></div>
+        <span class="word-tag">긴 단어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈpærəlaɪzd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">패</span>럴라이즈드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>pa-</b>: "패" [pæ] — PA에 강세!<br>
+        🔸 <b>-ra-</b>: "러" 약하게<br>
+        🔸 <b>-lyzed</b>: "라이즈드" [laɪzd]<br>
+        🔸 <b>paralyze</b>(마비시키다) → <b>paralyzed</b>(마비된)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">wanna</p><p class="word-mean">want to (구어체)</p></div>
+        <span class="word-tag">구어 축약</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈwɑːnə]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">워</span>너</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wanna</b> = want to 축약! "워너"<br>
+        🔸 <b>don't wanna</b> = "돈워너" (~하기 싫어)<br>
+        🔸 노래·회화에서 정말 자주 써요!<br>
+        🔸 비슷한 축약: gonna(going to), gotta(got to)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">live</p><p class="word-mean">살다 (동사) / 생방송의 (형용사)</p></div>
+        <span class="word-tag">발음 두 가지!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[lɪv] / [laɪv]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">리</span>브 / <span class="stress">라</span>이브</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>동사</b> "살다": "리브" [lɪv] — 짧은 이!<br>
+        🔸 <b>형용사</b> "생방송의": "라이브" [laɪv]<br>
+        🔸 이 곡의 live(살다)는 <b>"리브"</b>로 발음!<br>
+        🔸 live music(라이브 음악) vs live here(여기 살다)
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🛋️ [Good Morning Pops] Live Laugh Love
+— Sasha Alex Sloan · 2022
+
+🎵 "Live, Laugh, Love"는 벽에 걸어두는
+   흔한 긍정 인테리어 문구!
+   이 곡은 그걸 반어적으로 뒤집어
+   아무것도 하기 싫은 번아웃의 날을
+   유머러스하게 그려요 🛋️
+
+👏 세 문장 모두 훌륭하게 쓰셨어요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 stare at ~
+   ~을 빤히[멍하니] 바라보다
+   • I'm still staring at the TV screen.
+     (난 여전히 TV 화면만 바라보고 있어.)
+   • She stared at the ceiling all night.
+     (그녀는 밤새 천장을 바라봤어.)
+   • Stop staring at your phone.
+     (폰 그만 들여다봐.)
+💡 stare at ~ = 빤히 응시하다 (전치사 at 필수!)
+   멍하니 무기력하게 볼 때 딱!
+
+🔹 emotionally paralyzed
+   감정적으로 마비된
+   • I feel emotionally paralyzed.
+     (난 감정적으로 마비된 기분이야.)
+   • I was paralyzed with fear.
+     (난 두려움에 얼어붙었어.)
+   • She's mentally exhausted.
+     (그녀는 정신적으로 지쳤어.)
+💡 paralyzed = 마비된
+   부사+형용사: emotionally, mentally, physically
+
+🔹 live my best life
+   내 최고의 삶을 살다
+   • I don't wanna live my best life.
+     (난 최고의 삶을 살고 싶지 않아. — 반어!)
+   • She's living her best life.
+     (그녀는 최고의 삶을 살고 있어.)
+   • Just live your best life!
+     (그냥 네 인생 멋지게 즐겨!)
+💡 SNS 긍정 유행어!
+   wanna = want to (구어 축약)
+   이 곡은 그걸 "하기 싫어"로 비틀어요!
+
+——————————————————
+#GoodMorningPops #팝송영어 #LiveLaughLove #SashaAlexSloan</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salt Water — María Isabel</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EEF8FC;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #58A8C8;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C0E6F2;border-color:#0A6890;color:#043850}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #A0DAEC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C0E6F2;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C0E6F2;color:#043850;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C0E4EE;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C0E4EE;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C0E4EE;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#0A6890}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C0E6F2;color:#043850;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EEF8FC;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #A0DAEC}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C0E4EE}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#043850}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C0E4EE;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEF8FC;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EEF8FC;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#043850;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C0E4EE;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C0E6F2;color:#043850;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EEF8FC;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#0A6890;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#043850;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C0E4EE;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C0E6F2;color:#043850;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#98D6E8}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #C0E4EE;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#0A6890;background:#C0E6F2;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #EFF8FC}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌊</div>
+      <div>
+        <h2>Salt Water</h2>
+        <p>María Isabel · Stuck in the Sky (2020) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EEF8FC;border:1px solid #58A8C8;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#043850;line-height:1.7">
+      🌊 <b>María Isabel (마리아 이사벨)</b> · 뉴욕 퀸즈 출신, NYU 음대 졸업 싱어송라이터<br>
+      "Salt Water(소금물=눈물)"는 사랑하는 사람을 떠나보낸 슬픔을 그린 곡이에요. Kelly Clarkson이 커버할 만큼 사랑받았죠!
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">심하게 싸우고 싶지 않아요</p>
+          <div class="sent-row">
+            <span class="sent-right">I don't wanna go to war.</span>
+          </div>
+          <span class="pill-ok">가사와 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I don't wanna go to war, I don't wanna fight</b><br>
+            완벽해요! 👏 지난번 교정을 잘 반영하셨어요.<br>
+            💡 <b>go to war</b> = (비유적으로) 심하게 다투다, 전면전을 벌이다. 가사에서는 뒤에 <b>I don't wanna fight</b>가 이어져요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">우리에게 시간이 더 있을 줄 알았어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I thought we had more time.</span>
+          </div>
+          <span class="pill-ok">가사와 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Thought we had more time</b> (가사는 주어 I 생략)<br>
+            완벽해요! 👏 <b>I thought we had ~</b> = "~이 있을 줄 알았어"라는 아쉬움의 표현!<br>
+            💡 think → thought (과거형)을 정확히 쓰셨어요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">어떤 일은 인생에서 두 번 일어나요</p>
+          <div class="sent-row">
+            <span class="sent-right">Some things happen twice in a lifetime.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Some things happen twice in a lifetime</b><br>
+            완벽해요! 👏 <b>Some things</b>(복수)와 <b>happen</b>(s 없이)을 정확히 맞추셨어요!<br>
+            💡 <b>Something</b>(단수) → happens / <b>Some things</b>(복수) → happen
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#E1F5EE;border-radius:12px;padding:13px 15px;margin-top:14px;font-size:13px;color:#085041;line-height:1.6">
+      🎉 <b>세 문장 모두 완벽했어요!</b> 지난번 교정 포인트(go to war, thought we had, some things)를 전부 정확히 반영하셨네요. 정말 잘하셨어요! 👏
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">go to war / don't wanna fight</p>
+      <p class="expr-ko">심하게 다투다 / 싸우고 싶지 않다</p>
+      <span class="expr-tag">감정 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I don't wanna go to war, I don't wanna fight.</b> → 심하게 다투고 싶지 않아, 싸우고 싶지 않아.</p>
+        <p><b>Let's not go to war over this.</b> → 이 일로 심하게 다투지 말자.</p>
+        <p><b>I'm too tired to fight.</b> → 싸우기엔 너무 지쳤어.</p>
+        <p class="ex-note">💡 <b>go to war</b> = (비유적으로) 심하게 다투다. <b>wanna</b> = want to의 구어체!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">I thought we had more time.</p>
+      <p class="expr-ko">시간이 더 있을 줄 알았어요</p>
+      <span class="expr-tag">아쉬움 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I thought we had more time.</b> → 시간이 더 있을 줄 알았어.</p>
+        <p><b>I thought you loved me.</b> → 날 사랑하는 줄 알았어.</p>
+        <p><b>We thought we'd be together forever.</b> → 우린 영원히 함께할 줄 알았어.</p>
+        <p class="ex-note">💡 <b>thought (that) we had ~</b> = "~이 있을 줄 알았다" (그런데 아니었다). 기대가 어긋난 아쉬움!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">Some things happen twice in a lifetime.</p>
+      <p class="expr-ko">어떤 일은 인생에서 두 번 일어나요</p>
+      <span class="expr-tag">Some things vs Something</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Some things happen twice in a lifetime.</b> → 어떤 일은 인생에서 두 번 일어나.</p>
+        <p><b>Some things never change.</b> → 어떤 것들은 절대 안 변해.</p>
+        <p><b>Something happened last night.</b> → 어젯밤 무슨 일이 있었어. (단수!)</p>
+        <p class="ex-note">💡 <b>Something</b>(한 단어, 단수) → happens / <b>Some things</b>(두 단어, 복수) → happen<br>once/twice in a lifetime = 일생에 한 번/두 번!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I don't wanna go to war.</span> → 심하게 싸우고 싶지 않아요.<br>
+      <span>I thought we had more time.</span> → 시간이 더 있을 줄 알았어요.<br>
+      <span>Some things happen twice in a lifetime.</span> → 어떤 일은 인생에서 두 번 일어나요.
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌊</div>
+      <div><h2>전체 가사</h2><p>Salt Water · María Isabel (2020)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1</span>
+        <div class="lyric-line"><span class="lyric-en">Salt water tears, fallin' from my eyes</span><span class="lyric-ko">소금물 눈물이 내 눈에서 흘러내려</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">I don't wanna go to war, I don't wanna fight</span></span><span class="lyric-ko">심하게 다투고 싶지 않아, 싸우고 싶지 않아 ① </span></div>
+        <div class="lyric-line"><span class="lyric-en">You keep me warm, ain't know that you could burn me</span><span class="lyric-ko">넌 날 따뜻하게 해줬는데, 날 태울 수 있는 줄 몰랐어</span></div>
+        <div class="lyric-line"><span class="lyric-en">With the same light</span><span class="lyric-ko">그 같은 빛으로</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Pre-Chorus</span>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Thought we had more time</span></span><span class="lyric-ko">시간이 더 있을 줄 알았어 ② </span></div>
+        <div class="lyric-line"><span class="lyric-en">Thought we were more than a moment</span><span class="lyric-ko">우린 한순간 이상일 줄 알았어</span></div>
+        <div class="lyric-line"><span class="lyric-en">Thought we'd be two stars in the universe</span><span class="lyric-ko">우린 우주의 두 별이 될 줄 알았어</span></div>
+        <div class="lyric-line"><span class="lyric-en">Following the same orbit</span><span class="lyric-ko">같은 궤도를 따라 도는</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">There's love in letting go</span><span class="lyric-ko">놓아주는 데에도 사랑이 있어</span></div>
+        <div class="lyric-line"><span class="lyric-en">Sometimes lost things come back</span><span class="lyric-ko">때로는 잃은 것들이 돌아오기도 해</span></div>
+        <div class="lyric-line"><span class="lyric-en">In ways you'd never know</span><span class="lyric-ko">네가 결코 알 수 없는 방식으로</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Some things happen twice in a lifetime</span></span><span class="lyric-ko">어떤 일은 인생에서 두 번 일어나 ③ </span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 2 / Outro</span>
+        <div class="lyric-line"><span class="lyric-en">Salt water tears, dryin' on my face</span><span class="lyric-ko">소금물 눈물이 내 얼굴에서 말라가</span></div>
+        <div class="lyric-line"><span class="lyric-en">Maybe in another life, another time and place</span><span class="lyric-ko">어쩌면 다른 삶에서, 다른 시간과 장소에서</span></div>
+        <div class="lyric-line"><span class="lyric-en">We'll find our way back, somehow</span><span class="lyric-ko">우린 어떻게든 다시 길을 찾을 거야</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장<br>※ 가사는 학습 참고용이며 저작권은 아티스트·저작권자에게 있습니다</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌊</div>
+      <div><h2>핵심 단어 발음</h2><p>Salt Water · María Isabel</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">some things</span>
+        <span class="ref-ipa">[sʌm θɪŋz]</span>
+        <span class="ref-kr"><span class="s">썸</span> 띵즈</span>
+        <span class="ref-mean">어떤 것들 (복수) ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">something</span>
+        <span class="ref-ipa">[ˈsʌmθɪŋ]</span>
+        <span class="ref-kr"><span class="s">썸</span>띵</span>
+        <span class="ref-mean">무언가 (단수)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">thought</span>
+        <span class="ref-ipa">[θɔːt]</span>
+        <span class="ref-kr"><span class="s">쏘</span>트</span>
+        <span class="ref-mean">생각했다 (과거)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">war</span>
+        <span class="ref-ipa">[wɔːr]</span>
+        <span class="ref-kr"><span class="s">워</span></span>
+        <span class="ref-mean">전쟁, 다툼</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">lifetime</span>
+        <span class="ref-ipa">[ˈlaɪftaɪm]</span>
+        <span class="ref-kr"><span class="s">라</span>이프타임</span>
+        <span class="ref-mean">일생, 평생</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">salt water</span>
+        <span class="ref-ipa">[sɔːlt ˈwɔːtər]</span>
+        <span class="ref-kr"><span class="s">솔</span>트 <span class="s">워</span>러</span>
+        <span class="ref-mean">소금물 (= 눈물)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 핵심 비교 — something vs some things</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">some things</p><p class="word-mean">어떤 것들 (두 단어, 복수)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[sʌm θɪŋz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">썸</span> 띵즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>some + things</b> = 두 단어, 복수!<br>
+        🔸 <b>-s</b>: "띵즈" — 복수형 z 소리<br>
+        🔸 복수 주어라 동사도 <b>happen</b>(s 없이)!<br>
+        🔸 some things happen / some things never change
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">something</p><p class="word-mean">무언가 (한 단어, 단수)</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">철자 비교</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsʌmθɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">썸</span>띵</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>something</b>: 한 단어, 단수!<br>
+        🔸 단수라 동사에 s: <b>Something happens</b><br>
+        🔸 🔑 띄어쓰기 하나로 단/복수가 바뀌어요!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">thought</p><p class="word-mean">생각했다 (think의 과거)</p></div>
+        <span class="word-tag">묵음 gh</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[θɔːt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쏘</span>트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>th</b>: "쏘" [θ] — 혀끝을 이 사이에! (무성음)<br>
+        🔸 <b>ough</b>: "오" [ɔː] — gh는 묵음!<br>
+        🔸 <b>think → thought → thought</b> (불규칙!)<br>
+        🔸 같은 ough 묵음: <b>bought</b>[보트] / <b>brought</b>[브로트]
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">salt water</p><p class="word-mean">소금물 (= 눈물, 제목!)</p></div>
+        <span class="word-tag">제목 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[sɔːlt ˈwɔːtər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">솔</span>트 <span class="stress">워</span>러</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>salt</b>: "솔트" [sɔːlt] — al = "오"!<br>
+        🔸 <b>water</b>: "워러" [ˈwɔːtər] — 미국식 t가 "러"!<br>
+        🔸 <b>salt water</b> = 소금물 → 가사에선 "눈물"의 은유!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">in a lifetime</p><p class="word-mean">일생에, 평생에</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɪn ə ˈlaɪftaɪm]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">인 어 <span class="stress">라</span>이프타임</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>lifetime</b>: "라이프타임" — life + time 합성어<br>
+        🔸 <b>LIFE-</b>에 강세: "라이프"<br>
+        🔸 <b>once in a lifetime</b> = 일생에 한 번 (자주 쓰는 표현!)<br>
+        🔸 <b>twice in a lifetime</b> = 일생에 두 번
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌊 [Good Morning Pops] Salt Water
+— María Isabel (마리아 이사벨) · 2020
+
+🎵 뉴욕 퀸즈 출신 NYU 음대 졸업 싱어송라이터
+   "Salt Water(소금물=눈물)" — 사랑하는 사람을
+   떠나보낸 슬픔. Kelly Clarkson도 커버한 곡!
+
+——————————————————
+
+✅ 가사 체크 — 세 문장 모두 완벽! 🎉
+
+1️⃣ 심하게 싸우고 싶지 않아요
+→ I don't wanna go to war. ✓
+   발음: 아이 돈트 워너 고 투 워
+※ 가사: I don't wanna go to war, I don't wanna fight
+💡 go to war = 심하게 다투다 (비유적)
+
+2️⃣ 우리에게 시간이 더 있을 줄 알았어요
+→ I thought we had more time. ✓
+   발음: 아이 쏘트 위 해드 모어 타임
+※ 가사: Thought we had more time
+💡 thought we had ~ = ~이 있을 줄 알았어 (아쉬움)
+
+3️⃣ 어떤 일은 인생에서 두 번 일어나요
+→ Some things happen twice in a lifetime. ✓
+   발음: 썸 띵즈 해픈 트와이스 인 어 라이프타임
+💡 Some things(복수) → happen
+   Something(단수) → happens
+
+✨ 지난번 교정 포인트를 전부 완벽히 반영!
+   go to war / thought we had / some things 👏
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 some things [썸 띵즈] vs something [썸띵]
+  some things = 복수 → happen (s 없이)
+  something = 단수 → happens (s!)
+
+🔹 thought [쏘트]
+  th = 혀끝을 이 사이에!
+  ough = "오" (gh 묵음)
+
+🔹 salt water [솔트 워러]
+  salt = "솔트" (al = 오)
+  water = "워러" (미국식 t = 러)
+
+🔹 in a lifetime [인 어 라이프타임]
+  once/twice in a lifetime = 일생에 한 번/두 번
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 go to war / don't wanna fight
+   심하게 다투다 / 싸우고 싶지 않다
+   • Let's not go to war over this.
+     (이 일로 심하게 다투지 말자.)
+
+🔹 I thought we had more time.
+   시간이 더 있을 줄 알았어요
+   • I thought you loved me.
+     (날 사랑하는 줄 알았어.)
+
+🔹 Some things happen twice in a lifetime.
+   어떤 일은 인생에서 두 번 일어나요
+   • Some things never change.
+     (어떤 것들은 절대 안 변해.)
+
+——————————————————
+
+📝 한 번에 정리
+
+I don't wanna go to war.
+→ 심하게 싸우고 싶지 않아요.
+
+I thought we had more time.
+→ 시간이 더 있을 줄 알았어요.
+
+Some things happen twice in a lifetime.
+→ 어떤 일은 인생에서 두 번 일어나요.
+
+——————————————————
+
+🎶 전체 가사 흐름
+소금물 눈물, 싸우고 싶지 않아 (V1) →
+시간이 더 있을 줄 알았어 (Pre) →
+놓아주는 데에도 사랑이 있어,
+어떤 일은 두 번 일어나 (Chorus) →
+다른 삶에서 다시 만나길 (Outro)
+
+——————————————————
+#GoodMorningPops #팝송영어 #SaltWater #MariaIsabel</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>We Gotta Let Go — Astels</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5FFF8;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #70D0A0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C0F0D8;border-color:#108050;color:#043820}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #A0E0C0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C0F0D8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C0F0D8;color:#043820;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #B0E8D0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #B0E8D0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #B0E8D0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#108050}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C0F0D8;color:#043820;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F5FFF8;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #A0E0C0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #B0E8D0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#043820}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #B0E8D0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEFFF5;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F5FFF8;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#043820;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #B0E8D0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C0F0D8;color:#043820;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F5FFF8;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#108050;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#043820;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #B0E8D0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C0F0D8;color:#043820;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#90DDB8}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🎷</div>
+      <div>
+        <h2>We Gotta Let Go</h2>
+        <p>Astels ft. Renaud Palisseaux · 2023 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>가수 이름 교정:</b> 아스텔 (✗) → <b>Astels (아스텔스)</b> (✓)<br>
+      프랑스 출신 전자 펑크·재즈·소울 듀오! feat. Renaud Palisseaux
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">우린 내려놓아야 해요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">We got a let go.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">We gotta let go.</span>
+          </div>
+          <span class="pill-fix">got a → gotta</span>
+          <p class="note-text">
+            가사 정확: <b>We gotta let go</b><br>
+            ⚠️ <b>got a</b>(두 단어)(✗) → <b>gotta</b>(한 단어 축약형)(✓)<br>
+            💡 <b>gotta</b> = <b>got to</b> = <b>have to</b> 의 구어체 — "~해야 해"<br>
+            &nbsp;&nbsp;We gotta = We have got to = We have to (우리는 ~해야 해)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">뭔가 분위기가 다르네요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">There're something in the air.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">There's something in the air.</span>
+          </div>
+          <span class="pill-fix">There're → There's (주어-동사 일치)</span>
+          <p class="note-text">
+            가사 정확: <b>There's something in the air when he comes around</b><br>
+            ⚠️ <b>There're</b>(복수)(✗) → <b>There's</b>(단수)(✓)<br>
+            💡 <b>something</b>은 항상 단수 → <b>there is (there's)</b>!<br>
+            &nbsp;&nbsp;There are + 복수명사 (예: There are flowers)<br>
+            &nbsp;&nbsp;There is + 단수명사 (예: There's something) ✓
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">그게 당신이 늘 나아지는 방법이죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">This is get better than method for you.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">'Cause it's how you always get better.</span>
+          </div>
+          <span class="pill-fix">문장 구조 전면 수정</span>
+          <p class="note-text">
+            가사 정확: <b>'cause it's how you always get better</b><br>
+            (전체 문맥: <b>Always too much rehearsal / 'cause it's how you always get better</b>)<br>
+            ① <b>This is</b> → <b>'cause it's</b> — 이유를 설명하는 절이에요<br>
+            ② <b>get better than method for you</b>(✗) → <b>how you always get better</b>(✓)<br>
+            💡 <b>how you get better</b> = 나아지는 방법 — <b>how</b>가 핵심!<br>
+            &nbsp;&nbsp;"This is get better than method" 같은 구조는 영어에 없어요
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">gotta let go</p>
+      <p class="expr-ko">내려놓아야 해 / 버려야 해</p>
+      <span class="expr-tag">구어체 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>We gotta let go.</b> → 우리 내려놓아야 해.</p>
+        <p><b>I gotta let go of the past.</b> → 과거를 내려놓아야 해.</p>
+        <p><b>Sometimes you gotta let things go.</b> → 때로는 그냥 내려놓아야 해.</p>
+        <p><b>You gotta stop worrying.</b> → 걱정하는 거 그만해야 해.</p>
+        <p class="ex-note">💡 <b>gotta</b> = got to = have to의 구어체 축약형<br>팝송·일상 회화에서 정말 자주 나와요!<br>⚠️ "got a" (두 단어) → "gotta" (한 단어)로 써야 해요.</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">There's something in the air.</p>
+      <p class="expr-ko">뭔가 분위기가 다르다 / 공기 중에 뭔가가 있다</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>There's something in the air when he comes around.</b> → 그가 오면 뭔가 분위기가 달라져요.</p>
+        <p><b>There's something special in the air tonight.</b> → 오늘 밤 뭔가 특별한 분위기가 있어.</p>
+        <p><b>There's love in the air!</b> → 사랑의 기운이 감도네요!</p>
+        <p class="ex-note">💡 <b>something in the air</b> = 공기 중에 뭔가 감돌다 — 분위기나 기운이 달라졌음을 표현<br>⚠️ <b>There's</b>(= there is, 단수) / <b>There are</b>(복수) — something은 항상 단수!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">'cause it's how you always get better</p>
+      <p class="expr-ko">그게 당신이 늘 나아지는 방법이니까요</p>
+      <span class="expr-tag">방법·이유 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>'Cause it's how you always get better.</b> → 그게 항상 나아지는 방법이니까요.</p>
+        <p><b>Practice is how you get better.</b> → 연습이 나아지는 방법이야.</p>
+        <p><b>That's how I got better at English.</b> → 그게 내가 영어가 늘게 된 방법이야.</p>
+        <p><b>Failure is how you learn and get better.</b> → 실패는 배우고 성장하는 방법이야.</p>
+        <p class="ex-note">💡 <b>how you get better</b> = 나아지는 방법 (how + 주어 + 동사)<br><b>get better</b> = 나아지다, 발전하다 — "become better"와 같은 의미!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>We gotta let go.</span> → 우린 내려놓아야 해요.<br>
+      <span>There's something in the air.</span> → 뭔가 분위기가 다르네요.<br>
+      <span>'Cause it's how you always get better.</span> → 그게 당신이 늘 나아지는 방법이죠.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎷</div>
+      <div><h2>핵심 단어 발음</h2><p>We Gotta Let Go · Astels</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">gotta</span>
+        <span class="ref-ipa">[ˈɡɒtə]</span>
+        <span class="ref-kr"><span class="s">가</span>러</span>
+        <span class="ref-mean">have to (구어체)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">let go</span>
+        <span class="ref-ipa">[lɛt ɡoʊ]</span>
+        <span class="ref-kr"><span class="s">렛</span> 고우</span>
+        <span class="ref-mean">내려놓다, 놓아주다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">there's</span>
+        <span class="ref-ipa">[ðɛrz]</span>
+        <span class="ref-kr"><span class="s">데</span>어즈</span>
+        <span class="ref-mean">there is (단수)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">something</span>
+        <span class="ref-ipa">[ˈsʌmθɪŋ]</span>
+        <span class="ref-kr"><span class="s">썸</span>띵</span>
+        <span class="ref-mean">뭔가 (항상 단수!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">rehearsal</span>
+        <span class="ref-ipa">[rɪˈhɜːrsəl]</span>
+        <span class="ref-kr">리<span class="s">허</span>설</span>
+        <span class="ref-mean">리허설, 연습</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">'cause</span>
+        <span class="ref-ipa">[kɒz]</span>
+        <span class="ref-kr"><span class="s">코</span>즈</span>
+        <span class="ref-mean">because (축약형)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 1 — gotta 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">gotta</p><p class="word-mean">= got to = have to (구어체)</p></div>
+        <span class="word-tag">구어체 축약형</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɡɒtə]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">가</span>러</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>got</b>: "가트" → 미국식 연음에서 "가러"처럼!<br>
+        🔸 <b>-ta</b>: 약하게 "러" [tə]<br>
+        🔸 ⚠️ <b>got a</b>(두 단어 ✗) → <b>gotta</b>(한 단어 ✓)<br>
+        🔸 비슷한 패턴: <b>wanna</b> [워너] / <b>gonna</b> [가너] / <b>gotta</b> [가러]
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 2 — there's vs there're</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">There's</p><p class="word-mean">= there is (단수 주어 앞)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ something 앞에!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ðɛrz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">데</span>어즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>There's + 단수명사</b>: There's something / There's a cat<br>
+        🔸 <b>There are + 복수명사</b>: There are flowers / There are people<br>
+        🔸 <b>something, anything, nothing, everything</b> → 모두 단수 → <b>There's</b>!<br>
+        🔸 연음: "There's something" → "데어즈썸띵" 이어서!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">let go</p><p class="word-mean">내려놓다, 놓아주다</p></div>
+        <span class="word-tag">구동사 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[lɛt ɡoʊ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">렛</span> <span class="stress">고</span>우</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>let</b>: "렛" [lɛt] — e는 "에" 소리<br>
+        🔸 <b>go</b>: "고우" [ɡoʊ] — 이중모음!<br>
+        🔸 빠르게: "let go" → "렛고우" 이어서!<br>
+        🔸 <b>We gotta let go</b> → "위가러렛고우"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">get better</p><p class="word-mean">나아지다, 발전하다</p></div>
+        <span class="word-tag">성장 표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɡɛt ˈbɛtər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">겟</span> <span class="stress">베</span>러</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>get</b>: "겟" [ɡɛt] — 짧게!<br>
+        🔸 <b>better</b>: "베러" [bɛtər] — 미국식으로 t가 "러"처럼!<br>
+        🔸 <b>get better</b> → "겟베러" 연음<br>
+        🔸 "how you always get better" → "하우유올웨이즈겟베러"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">Astels</p><p class="word-mean">가수 이름 발음</p></div>
+        <span class="word-tag">이름 교정!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈæstəlz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">애</span>스텔즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>As-</b>: "애스" [æs] — a는 "애"!<br>
+        🔸 <b>-tels</b>: "텔즈" [tɛlz]<br>
+        🔸 ⚠️ 아스텔(✗) → <b>아스텔스</b>(✓) — 끝에 s가 있어요!<br>
+        🔸 프랑스 출신 듀오로 Camille Nguyen Van Dau (보컬)와 Théo Palisseaux (프로듀서)
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🎷 [Good Morning Pops] We Gotta Let Go
+— Astels ft. Renaud Palisseaux (2023)
+
+💡 가수 이름: 아스텔 ✗ → Astels (아스텔스) ✓
+   프랑스 출신 전자 펑크·재즈·소울 듀오!
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 우린 내려놓아야 해요
+✗ We got a let go.
+→ We gotta let go. ✓
+   발음: 위 가러 렛 고우
+⚠️ got a(두 단어) → gotta(한 단어!)
+💡 gotta = got to = have to (구어체)
+   = "~해야 해"
+   wanna / gonna / gotta — 모두 구어체 패턴!
+
+2️⃣ 뭔가 분위기가 다르네요
+✗ There're something in the air.
+→ There's something in the air. ✓
+   발음: 데어즈 썸띵 인 더 에어
+⚠️ There're → There's (단수!)
+💡 something = 항상 단수 → There is (there's)
+   There are = 복수 명사 앞에만!
+
+3️⃣ 그게 당신이 늘 나아지는 방법이죠
+✗ This is get better than method for you.
+→ 'Cause it's how you always get better. ✓
+   발음: 코즈 잇츠 하우 유 올웨이즈 겟 베러
+⚠️ 문장 구조 전면 수정 필요!
+💡 가사 전체: Always too much rehearsal /
+   'cause it's how you always get better
+   how you get better = 나아지는 방법
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 gotta [가러]
+  = got to → 구어체 "가러"
+  got a(두 단어 ✗) → gotta(한 단어 ✓)
+
+🔹 there's [데어즈]
+  = there is → 단수 주어 앞!
+  something / anything / nothing → 모두 단수 → there's!
+
+🔹 let go [렛 고우]
+  "고우" — 이중모음으로!
+
+🔹 get better [겟 베러]
+  미국식 t → "러"처럼 발음!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 gotta let go
+   내려놓아야 해
+   • I gotta let go of the past.
+     (과거를 내려놓아야 해.)
+💡 gotta = have to 구어체. 팝송에서 자주!
+
+🔹 There's something in the air.
+   뭔가 분위기가 다르다
+   • There's something special tonight.
+     (오늘 밤 뭔가 특별해.)
+💡 something → 단수 → there's (there is)!
+
+🔹 how you always get better
+   항상 나아지는 방법
+   • Practice is how you get better.
+     (연습이 나아지는 방법이야.)
+💡 how you + 동사 = ~하는 방법
+
+——————————————————
+
+📝 한 번에 정리
+
+We gotta let go.
+→ 우린 내려놓아야 해요.
+
+There's something in the air.
+→ 뭔가 분위기가 다르네요.
+
+'Cause it's how you always get better.
+→ 그게 당신이 늘 나아지는 방법이죠.
+
+——————————————————
+#GoodMorningPops #팝송영어 #WeGottaLetGo #Astels</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

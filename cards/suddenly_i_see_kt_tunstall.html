@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suddenly I See — KT Tunstall</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FDFAF0;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #D8C040;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#FAF0B0;border-color:#A08000;color:#504000}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #EDE090}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#FAF0B0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#FAF0B0;color:#504000;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #EDE8C0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #EDE8C0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #EDE8C0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#A08000}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#FAF0B0;color:#504000;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FDFAF0;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #EDE090}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #EDE8C0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#504000}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EDE8C0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.2fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FDFAF0;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FDFAF0;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#504000;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #EDE8C0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#FAF0B0;color:#504000;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FDFAF0;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#A08000;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#504000;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #EDE8C0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#FAF0B0;color:#504000;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#F0E080}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">✨</div>
+      <div>
+        <h2>Suddenly I See</h2>
+        <p>KT Tunstall · Eye to the Telescope (2004) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>가수 이름 교정:</b> 캐희티 턴스필 (✗) → <b>KT Tunstall (케이티 턴스틸)</b> (✓)<br>
+      스코틀랜드 출신 싱어송라이터! 2005년 발매 후 영화 "악마는 프라다를 입는다"의 오프닝 곡으로 유명해졌어요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">그녀 주변의 모든 것은 은빛 빛의 웅덩이 같죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Everything around her is a sliver pool of light.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Everything around her is a silver pool of light.</span>
+          </div>
+          <span class="pill-fix">sliver → silver (철자 오류)</span>
+          <p class="note-text">
+            가사 정확: <b>Everything around her is a silver pool of light</b><br>
+            ⚠️ <b>sliver</b>(가늘고 긴 조각)(✗) → <b>silver</b>(은색)(✓) — 알파벳 순서만 다른 철자 오류예요!<br>
+            &nbsp;&nbsp;s-l-<b>i-v</b>-e-r (sliver) vs s-<b>i-l</b>-v-e-r (silver)<br>
+            💡 <b>a silver pool of light</b> = 은빛 빛의 웅덩이 — 아름다운 시적 표현!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">갑자기 깨달았어요</p>
+          <div class="sent-row">
+            <span class="sent-right">Suddenly I see.</span>
+          </div>
+          <span class="pill-ok">가사 제목이자 핵심 가사 ✓</span>
+          <p class="note-text">이 곡의 제목이자 반복되는 핵심 가사! <b>Suddenly I see</b> — "갑자기 보인다, 갑자기 깨달았다"는 강렬한 깨달음의 표현이에요.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">그녀는 모든 공간을 가득 채워요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">She feels up every corner.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">She fills up every corner.</span>
+          </div>
+          <span class="pill-fix">feels → fills (완전히 다른 단어!)</span>
+          <p class="note-text">
+            가사 정확: <b>She fills up every corner</b><br>
+            ⚠️ <b>feels</b>(느끼다)(✗) → <b>fills</b>(채우다)(✓) — 발음이 매우 비슷하지만 완전히 다른 뜻!<br>
+            &nbsp;&nbsp;<b>feels</b> [피일즈] = 느끼다 / <b>fills</b> [필즈] = 채우다<br>
+            💡 <b>fill up</b> = 가득 채우다. "She fills up every corner" = 그녀는 모든 구석구석을 가득 채워요 — 존재감 넘치는 묘사!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">a silver pool of light</p>
+      <p class="expr-ko">은빛 빛의 웅덩이 / 은빛 후광</p>
+      <span class="expr-tag">시적 묘사 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Everything around her is a silver pool of light.</b> → 그녀 주변의 모든 건 은빛 빛의 웅덩이 같아요.</p>
+        <p><b>The moon cast a silver pool of light on the water.</b> → 달이 물 위에 은빛 빛을 드리웠어.</p>
+        <p><b>She walked into a silver pool of moonlight.</b> → 그녀는 달빛의 은빛 빛 속으로 걸어 들어갔어.</p>
+        <p class="ex-note">💡 <b>silver</b> = 은색, 은빛 (명사/형용사). <b>sliver</b> = 가늘고 긴 조각 — 철자 순서만 달라요! (s-i-l vs s-l-i)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">Suddenly I see.</p>
+      <p class="expr-ko">갑자기 깨달았어요 / 갑자기 보여요</p>
+      <span class="expr-tag">깨달음 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Suddenly I see — this is what I want to be.</b> → 갑자기 깨달았어 — 이게 내가 되고 싶은 모습이야.</p>
+        <p><b>Suddenly I realized what mattered most.</b> → 갑자기 무엇이 가장 중요한지 깨달았어.</p>
+        <p><b>Then suddenly, everything made sense.</b> → 그러다 갑자기 모든 게 이해됐어.</p>
+        <p class="ex-note">💡 <b>suddenly</b> = 갑자기, 순식간에. <b>I see</b> = 보인다, 알겠다 → 영어에서 "I see"는 "이해한다/깨닫는다"는 뜻으로도 자주 써요!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">fill up every corner</p>
+      <p class="expr-ko">모든 구석구석을 채우다 / 공간을 가득 채우다</p>
+      <span class="expr-tag">존재감 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>She fills up every corner.</b> → 그녀는 모든 공간을 가득 채워요.</p>
+        <p><b>His laughter fills up every room.</b> → 그의 웃음이 모든 방을 가득 채워.</p>
+        <p><b>Her presence fills up the whole stage.</b> → 그녀의 존재감이 무대 전체를 채워.</p>
+        <p><b>Music fills up the empty silence.</b> → 음악이 텅 빈 침묵을 가득 채워.</p>
+        <p class="ex-note">💡 <b>fill up</b> = 가득 채우다. ⚠️ <b>feels</b>(느끼다)와 혼동 주의!<br>feels [피일즈] vs fills [필즈] — 모음 길이가 달라요!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Everything around her is a silver pool of light.</span><br>→ 그녀 주변의 모든 것은 은빛 아우라가 있죠.<br>
+      <span>Suddenly I see.</span> → 갑자기 깨달았어요.<br>
+      <span>She fills up every corner.</span> → 그녀는 모든 공간을 가득 채워요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✨</div>
+      <div><h2>핵심 단어 발음</h2><p>Suddenly I See · KT Tunstall</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">silver</span>
+        <span class="ref-ipa">[ˈsɪlvər]</span>
+        <span class="ref-kr"><span class="s">실</span>버</span>
+        <span class="ref-mean">은색 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">sliver</span>
+        <span class="ref-ipa">[ˈslɪvər]</span>
+        <span class="ref-kr"><span class="s">슬리</span>버</span>
+        <span class="ref-mean">조각 (혼동 주의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">fills</span>
+        <span class="ref-ipa">[fɪlz]</span>
+        <span class="ref-kr"><span class="s">필</span>즈</span>
+        <span class="ref-mean">채우다 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">feels</span>
+        <span class="ref-ipa">[fiːlz]</span>
+        <span class="ref-kr"><span class="s">피</span>일즈</span>
+        <span class="ref-mean">느끼다 (혼동 주의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">suddenly</span>
+        <span class="ref-ipa">[ˈsʌdənli]</span>
+        <span class="ref-kr"><span class="s">써</span>든리</span>
+        <span class="ref-mean">갑자기</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">corner</span>
+        <span class="ref-ipa">[ˈkɔːrnər]</span>
+        <span class="ref-kr"><span class="s">코</span>너</span>
+        <span class="ref-mean">구석, 모퉁이</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 1 — silver vs sliver</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">silver</p><p class="word-mean">은색, 은빛</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsɪlvər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">실</span>버</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 s-<b>i-l</b>-v-e-r — i가 l보다 먼저!<br>
+        🔸 <b>SIL-</b>에 강세: "실버"<br>
+        🔸 연습: <b>sil</b>(먼저) → v → er = "실-버"
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">sliver</p><p class="word-mean">가늘고 긴 조각</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 철자 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈslɪvər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">슬리</span>버</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 s-<b>l-i</b>-v-e-r — l이 i보다 먼저!<br>
+        🔸 <b>sl-</b>로 시작: "슬리버" (sl 연결)<br>
+        🔸 🔑 핵심: <b>silver [실버]</b> vs <b>sliver [슬리버]</b><br>
+        l과 i의 순서만 다른데 뜻이 완전히 달라요!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 2 — fills vs feels</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">fills</p><p class="word-mean">채우다 (fill의 3인칭)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[fɪlz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">필</span>즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>i</b>: 짧고 빠른 "이" [ɪ] → <b>"필"</b><br>
+        🔸 <b>fill → fills</b>: "필" → "필즈"<br>
+        🔸 연습: bit / fill / pill — 모두 짧은 [ɪ]!
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">feels</p><p class="word-mean">느끼다 (feel의 3인칭)</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[fiːlz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">피</span>일즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>iː</b>: 길고 부드러운 "이이" → <b>"피일"</b><br>
+        🔸 🔑 차이: <b>fills [필즈]</b>(짧은 i) vs <b>feels [피일즈]</b>(긴 iː)<br>
+        🔸 연습: fill/feel — bit/beat — ship/sheep
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">suddenly</p><p class="word-mean">갑자기, 불현듯</p></div>
+        <span class="word-tag">3음절</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsʌdənli]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">써</span>든리</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>SUD-</b>에 강세: "써" [sʌd] — u = "어"!<br>
+        🔸 <b>-den-</b>: "든" 약하게<br>
+        🔸 <b>-ly</b>: "리" 가볍게<br>
+        🔸 "써-든-리" 3박자로 연습!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">KT Tunstall</p><p class="word-mean">가수 이름 발음</p></div>
+        <span class="word-tag">이름 교정!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˌkeɪˈtiː ˈtʌnstəl]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">케</span>이티 <span class="stress">턴</span>스틸</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>KT</b>: "케이티" — K [케이] + T [티]<br>
+        🔸 <b>Tun-</b>: "턴" [tʌn] — u = "어"!<br>
+        🔸 <b>-stall</b>: "스틸" [stəl]<br>
+        🔸 ⚠️ 캐희티 턴스필(✗) → <b>케이티 턴스틸</b>(✓)
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">✨ [Good Morning Pops] Suddenly I See
+— KT Tunstall (케이티 턴스틸) · Eye to the Telescope (2004)
+
+💡 가수 이름: 캐희티 턴스필 ✗ → KT Tunstall (케이티 턴스틸) ✓
+   스코틀랜드 출신 싱어송라이터
+   "악마는 프라다를 입는다" 오프닝 곡으로도 유명!
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 그녀 주변의 모든 것은 은빛 아우라가 있죠
+✗ Everything around her is a sliver pool of light.
+→ Everything around her is a silver pool of light. ✓
+   발음: 에브리띵 어라운드 허 이즈 어 실버 풀 어브 라이트
+⚠️ sliver → silver (철자 순서 오류!)
+   sliver = s-l-i-v-e-r (조각)
+   silver = s-i-l-v-e-r (은색) ✓
+   l과 i 순서만 다른데 뜻이 완전히 달라요!
+
+2️⃣ 갑자기 깨달았어요
+→ Suddenly I see. ✓
+   발음: 써든리 아이 씨이
+※ 이 곡의 제목이자 핵심 가사!
+
+3️⃣ 그녀는 모든 공간을 가득 채워요
+✗ She feels up every corner.
+→ She fills up every corner. ✓
+   발음: 쉬 필즈 업 에브리 코너
+⚠️ feels(느끼다) ✗ → fills(채우다) ✓
+💡 fills [필즈] — 짧은 i (ɪ)
+   feels [피일즈] — 긴 iː
+   모음 길이 하나가 의미를 바꿔요!
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 silver [실버] vs sliver [슬리버]
+  silver = s-i-l (i가 먼저!) = 은색 ✓
+  sliver = s-l-i (l이 먼저) = 조각 ✗
+  철자 순서가 핵심!
+
+🔹 fills [필즈] vs feels [피일즈]
+  fills = 짧은 i → 채우다 ✓
+  feels = 긴 iː → 느끼다 ✗
+  모음 길이로 구분!
+
+🔹 suddenly [써든리]
+  SUD-에 강세. u = "어" [ʌ]!
+
+🔹 KT Tunstall [케이티 턴스틸]
+  KT = 케이티 / Tun = 턴 (u = 어)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 a silver pool of light
+   은빛 빛의 웅덩이, 은빛 후광
+   • The moon cast a silver pool of light on the water.
+     (달이 물 위에 은빛 빛을 드리웠어.)
+💡 silver (은색) ≠ sliver (조각) — 철자 순서 주의!
+
+🔹 Suddenly I see.
+   갑자기 깨달았어요
+   • Suddenly I realized what mattered most.
+     (갑자기 무엇이 가장 중요한지 깨달았어.)
+💡 I see = 보다 + "이해하다/깨닫다"의 뜻!
+
+🔹 fill up every corner
+   모든 구석구석을 가득 채우다
+   • His laughter fills up every room.
+     (그의 웃음이 모든 방을 가득 채워.)
+💡 fill up = 가득 채우다. feels와 절대 혼동 금지!
+
+——————————————————
+
+📝 한 번에 정리
+
+Everything around her is a silver pool of light.
+→ 그녀 주변의 모든 것은 은빛 아우라가 있죠.
+
+Suddenly I see.
+→ 갑자기 깨달았어요.
+
+She fills up every corner.
+→ 그녀는 모든 공간을 가득 채워요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #SuddenlyISee #KTTunstall</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

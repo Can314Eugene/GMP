@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lonely with You — Caleb</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FFF2F8;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #F0A0C8;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#FCD8ED;border-color:#C8306A;color:#6A0838}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #F5C0DC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#FCD8ED;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#FCD8ED;color:#6A0838;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #F5D8EC;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #F5D8EC;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #F5D8EC;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#C8306A}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#FCD8ED;color:#6A0838;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FFF2F8;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #F5C0DC}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #F5D8EC}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#6A0838}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #F5D8EC;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FFF0F6;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FFF2F8;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#6A0838;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #F5D8EC;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#FCD8ED;color:#6A0838;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FFF2F8;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#C8306A;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#6A0838;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #F5D8EC;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#FCD8ED;color:#6A0838;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#F5B8D8}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">💔</div>
+      <div>
+        <h2>Lonely with You</h2>
+        <p>Caleb (캘럽) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">난 그거 돌려받고 싶지 않아요</p>
+          <div class="sent-row">
+            <span class="sent-right">I don't need it back.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text"><b>I don't need it back</b> — "그것을 돌려받을 필요 없어"라는 단호한 이별 표현이에요. 여기서 <b>it</b>은 마음, 시간, 선물 등 무엇이든 될 수 있어요.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">둘 다 그렇네요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">That makes the two of us.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">That makes two of us.</span>
+          </div>
+          <span class="pill-fix">the two → two (관사 the 불필요)</span>
+          <p class="note-text">
+            가사 정확: <b>That makes two of us</b><br>
+            ⚠️ <b>the</b>가 들어가면 어색해요! <b>That makes two of us</b>가 고정된 관용표현이에요.<br>
+            💡 <b>That makes two of us</b> = "나도 같아, 둘 다 그래" — 상대방의 말에 "나도 마찬가지야"라고 공감할 때 쓰는 표현!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">난 진지한 관계는 좀 어려워요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I've commitment of issue.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I've got commitment issues.</span>
+          </div>
+          <span class="pill-fix">commitment of issue → commitment issues</span>
+          <span class="pill-fix">I've → I've got</span>
+          <p class="note-text">
+            가사 정확: <b>I've got commitment issues</b><br>
+            ① 단어 순서가 완전히 틀렸어요: <b>commitment of issue</b>(✗) → <b>commitment issues</b>(✓)<br>
+            ② <b>I've</b>만으론 어색 — <b>I've got</b> 또는 <b>I have</b>가 필요해요<br>
+            💡 <b>commitment issues</b> = 관계에 헌신하기 어려운 상태 (진지한 연애를 두려워하는 것!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">I don't need it back.</p>
+      <p class="expr-ko">돌려받을 필요 없어요 / 그걸 돌려줄 필요 없어</p>
+      <span class="expr-tag">단호한 이별 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I don't need it back.</b> → 돌려받을 필요 없어.</p>
+        <p><b>Keep it — I don't need it back.</b> → 가져, 돌려받을 필요 없으니까.</p>
+        <p><b>You can have it — I don't want it back.</b> → 가져도 돼 — 다시 원하지 않아.</p>
+        <p><b>I gave it to you. I don't need it back.</b> → 준 거야. 돌려받을 필요 없어.</p>
+        <p class="ex-note">💡 <b>need it back</b> = 그것을 되돌려받다. 이별 후 선물이나 마음을 돌려받지 않겠다는 감정적 표현으로도 자주 써요!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">That makes two of us.</p>
+      <p class="expr-ko">나도 마찬가지야 / 둘 다 그렇네</p>
+      <span class="expr-tag">공감 관용표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>"I'm exhausted." "That makes two of us."</b> → "나 너무 피곤해." "나도 마찬가지야."</p>
+        <p><b>"I have no idea what's going on." "That makes two of us."</b> → "무슨 상황인지 모르겠어." "나도 마찬가지야."</p>
+        <p><b>"I'm lonely." "That makes two of us."</b> → "나 외로워." "나도 그래."</p>
+        <p class="ex-note">💡 <b>That makes two of us</b> = "나도 같은 상황이야, 우리 둘 다 그래" — 상대방이 말한 것에 "나도 마찬가지야"라고 공감할 때 쓰는 고정 표현!<br>⚠️ <b>That makes <u>the</u> two of us</b>(✗) — the 빼야 해요!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">I've got commitment issues.</p>
+      <p class="expr-ko">진지한 관계가 어려워요 / 헌신을 두려워해요</p>
+      <span class="expr-tag">감정·관계 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I've got commitment issues.</b> → 진지한 관계가 어려워요.</p>
+        <p><b>He's great, but he has serious commitment issues.</b> → 그는 좋은 사람인데, 진지한 관계를 너무 두려워해.</p>
+        <p><b>I'm working through my commitment issues in therapy.</b> → 상담에서 내 관계 두려움을 극복하려고 노력 중이야.</p>
+        <p><b>Commitment issues don't mean you're broken — just scared.</b> → 관계가 두렵다는 게 문제가 있는 게 아니야 — 그냥 무서운 거야.</p>
+        <p class="ex-note">💡 <b>commitment issues</b> = 진지한 관계나 헌신을 두려워하는 것. <b>issues</b>는 복수로 써요!<br>= <b>fear of commitment</b>와 같은 뜻. 팝송에서 정말 자주 나오는 표현이에요!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I don't need it back.</span> → 난 그거 돌려받고 싶지 않아요.<br>
+      <span>That makes two of us.</span> → 둘 다 그렇네요.<br>
+      <span>I've got commitment issues.</span> → 난 진지한 관계는 좀 어려워요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💔</div>
+      <div><h2>핵심 단어 발음</h2><p>Lonely with You · Caleb</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">commitment</span>
+        <span class="ref-ipa">[kəˈmɪtmənt]</span>
+        <span class="ref-kr">커<span class="s">밋</span>먼트</span>
+        <span class="ref-mean">헌신, 약속</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">issues</span>
+        <span class="ref-ipa">[ˈɪʃuːz]</span>
+        <span class="ref-kr"><span class="s">이</span>슈즈</span>
+        <span class="ref-mean">문제들, 어려움들</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">lonely</span>
+        <span class="ref-ipa">[ˈloʊnli]</span>
+        <span class="ref-kr"><span class="s">로</span>운리</span>
+        <span class="ref-mean">외로운</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">two of us</span>
+        <span class="ref-ipa">[tuː əv ʌs]</span>
+        <span class="ref-kr"><span class="s">투</span> 어브 어스</span>
+        <span class="ref-mean">우리 둘</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">I've got</span>
+        <span class="ref-ipa">[aɪv ɡɒt]</span>
+        <span class="ref-kr"><span class="s">아</span>이브 갓</span>
+        <span class="ref-mean">나는 ~을 가지고 있다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">back</span>
+        <span class="ref-ipa">[bæk]</span>
+        <span class="ref-kr"><span class="s">배</span>크</span>
+        <span class="ref-mean">돌아, 다시</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — commitment issues 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">commitment</p><p class="word-mean">헌신, 약속, 전념</p></div>
+        <span class="word-tag">강세 위치!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[kəˈmɪtmənt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">커<span class="stress">밋</span>먼트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>com-</b>: 약하게 "커" [kə]<br>
+        🔸 <b>-MIT-</b>에 강세: "커<b>밋</b>먼트"<br>
+        🔸 <b>-ment</b>: "먼트" — m+ent 연결<br>
+        🔸 4음절: com-<b>MIT</b>-ment → "커밋먼트"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">issues</p><p class="word-mean">문제들 (복수형 필수!)</p></div>
+        <span class="word-tag">복수형 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɪʃuːz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">이</span>슈즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>IS-</b>에 강세: "이슈"<br>
+        🔸 <b>-s</b>: "즈" [z] — 목 울려서!<br>
+        🔸 ⚠️ <b>commitment issue</b>(단수, ✗) → <b>commitment issues</b>(복수, ✓)<br>
+        🔸 "issue"는 하나의 문제, "issues"는 복합적인 문제들 → commitment issues는 항상 복수!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">That makes two of us.</p><p class="word-mean">나도 마찬가지야</p></div>
+        <span class="word-tag">관용표현 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ðæt meɪks tuː əv ʌs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">댓 메이크스 <span class="stress">투</span> 어브 어스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>That</b>: "댓" — th = 혀끝을 이 사이에!<br>
+        🔸 <b>makes</b>: "메이크스" — 이중모음<br>
+        🔸 <b>of us</b>: "어브어스" 연음으로 빠르게!<br>
+        🔸 빠르게: "댓메이크스투어버스"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">lonely</p><p class="word-mean">외로운</p></div>
+        <span class="word-tag">제목 단어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈloʊnli]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">로</span>운리</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>LO-</b>에 강세: "로운" [loʊn] — 이중모음!<br>
+        🔸 <b>-ly</b>: "리" 가볍게<br>
+        🔸 <b>alone</b> [어론] vs <b>lonely</b> [로운리] — 둘 다 "외로움"이지만:<br>
+        &nbsp;&nbsp;alone = 혼자 있는 (상태) / lonely = 외로운 (감정)
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">💔 [Good Morning Pops] Lonely with You
+— Caleb (캘럽)
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 난 그거 돌려받고 싶지 않아요
+→ I don't need it back. ✓
+   발음: 아이 돈트 니드 잇 배크
+💡 need it back = 그것을 돌려받다
+   이별 후 단호한 표현으로 자주 써요!
+
+2️⃣ 둘 다 그렇네요
+✗ That makes the two of us.
+→ That makes two of us. ✓
+   발음: 댓 메이크스 투 어버스
+⚠️ the two → two (the 빼야 해요!)
+💡 That makes two of us = 나도 마찬가지야
+   (고정 관용표현 — the 들어가면 틀림!)
+
+3️⃣ 난 진지한 관계는 좀 어려워요
+✗ I've commitment of issue.
+→ I've got commitment issues. ✓
+   발음: 아이브 갓 커밋먼트 이슈즈
+⚠️ commitment of issue → commitment issues
+   (단어 순서 완전히 틀림 + 복수형!)
+⚠️ I've → I've got (have/got 필요)
+💡 commitment issues = 진지한 연애를 두려워하는 것
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 commitment [커밋먼트]
+  com-MIT-ment — 두 번째 음절 MIT에 강세!
+
+🔹 issues [이슈즈]
+  IS-에 강세. -s는 "즈" 소리
+  commitment issues (항상 복수!)
+
+🔹 That makes two of us [댓 메이크스 투 어버스]
+  연음: "of us" → "어버스"
+  the 절대 넣지 마세요!
+
+🔹 lonely [로운리]
+  LO- 이중모음으로 "로운" + 리
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 I don't need it back.
+   돌려받을 필요 없어요
+   • Keep it — I don't need it back.
+     (가져, 돌려받을 필요 없으니까.)
+💡 이별 후 단호한 표현으로 자주 등장!
+
+🔹 That makes two of us.
+   나도 마찬가지야 / 우리 둘 다 그래
+   • "I'm exhausted." "That makes two of us."
+     ("나 피곤해." "나도 마찬가지야.")
+💡 고정 관용표현 — the 없이!
+
+🔹 I've got commitment issues.
+   진지한 관계가 어려워요
+   • He has serious commitment issues.
+     (그는 진지한 관계를 너무 두려워해.)
+💡 commitment issues = 헌신·진지한 연애에 대한 두려움
+   항상 복수형(issues)으로 써요!
+
+——————————————————
+
+📝 한 번에 정리
+
+I don't need it back.
+→ 난 그거 돌려받고 싶지 않아요.
+
+That makes two of us.
+→ 둘 다 그렇네요.
+
+I've got commitment issues.
+→ 난 진지한 관계는 좀 어려워요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #LonelywithYou #Caleb</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

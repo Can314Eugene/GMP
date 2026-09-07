@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Shirt — Chelsea Cutler</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EDEEF7;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #5C5FA8;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#D2D3EE;border-color:#2C2E66;color:#1B1C40}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #BCBDE3}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#D2D3EE;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#D2D3EE;color:#1B1C40;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #CACBE9;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #CACBE9;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #CACBE9;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#2C2E66}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#D2D3EE;color:#1B1C40;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EDEEF7;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #BCBDE3}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #CACBE9}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#1B1C40}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #CACBE9;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EDEEF7;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EDEEF7;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#1B1C40;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #CACBE9;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#D2D3EE;color:#1B1C40;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EDEEF7;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#2C2E66;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#1B1C40;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #CACBE9;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#D2D3EE;color:#1B1C40;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#BCBDE3}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #CACBE9;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#2C2E66;background:#D2D3EE;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#1B1C40;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #EDEEF7;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#D2D3EE;color:#1B1C40;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#EDEEF7;border-left:3px solid #2C2E66;border-radius:10px;padding:12px 14px;font-size:13px;color:#2C2E66;line-height:1.8}
+  .twist-box b{color:#1B1C40;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#D2D3EE;color:#1B1C40;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #5C5FA8}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #CACBE9;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #BCBDE3;background:#EDEEF7;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#D2D3EE;border-color:#5C5FA8}
+  .speed-btn.playing{background:#D2D3EE;border-color:#2C2E66;box-shadow:0 0 0 2px #D2D3EE}
+  .speed-label{font-size:13px;font-weight:600;color:#1B1C40;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#D2D3EE;color:#1B1C40;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#BCBDE3}
+  .play-all-btn.playing{background:#2C2E66;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#2C2E66;background:#D2D3EE;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#44468A;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #BCBDE3;background:#fff;color:#44468A;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#D2D3EE;border-color:#2C2E66;color:#1B1C40}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#5C5FA8;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#2C2E66;background:#D2D3EE;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #CACBE9;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#1B1C40;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#AAA;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1A1A2E;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #5C5FA8;background:#EDEEF7;font-size:15px;font-family:inherit;font-weight:600;color:#2C2E66;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#D2D3EE;border-bottom-color:#2C2E66}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#D2D3EE;color:#1B1C40;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#BCBDE3}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #BCBDE3;background:#fff;color:#44468A;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#EDEEF7}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#AAA;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #BCBDE3;background:#EDEEF7;color:#1B1C40;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#D2D3EE;border-color:#5C5FA8}
+  .quiz-say.playing{background:#D2D3EE;border-color:#2C2E66;box-shadow:0 0 0 2px #D2D3EE}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #CACBE9;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#2C2E66}
+  .score-label{font-size:12px;color:#888;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#2C2E66;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#1B1C40}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">💔</div>
+      <div>
+        <h2>Your Shirt</h2>
+        <p>Chelsea Cutler · Snow in October &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EDEEF7;border:1px solid #5C5FA8;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#1B1C40;line-height:1.7">
+      💔 <b>Chelsea Cutler (첼시 커틀러)</b> · 2017 · EP <i>Snow in October</i><br>
+      <b>RIAA 골드 인증</b>을 받은 그녀의 대표곡이자 SoundCloud 시절 그녀를 유명하게 만든 곡이에요.<br>
+      <b>"Your Shirt"</b>는 헤어진 연인이 남기고 간 <b>셔츠 한 장</b>에 담긴 그리움을 노래해요 👕<br>
+      👏 <b>문법 포인트 두 개만 짚으면 완벽해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">내가 뭔가 잘못했나요</p>
+          <div class="sent-row">
+            <span class="sent-right">Did I do something wrong?</span>
+          </div>
+          <span class="pill-ok">가사와 일치 ✓</span>
+          <span class="pill-note">가사는 뒤에 "to make you go?"가 이어져요</span>
+          <p class="note-text">
+            가사: <b>This time it don't feel like you want it all / Did I do something wrong to make you go?</b><br>
+            💡 <b>Did I do something wrong?</b>만으로도 완전한 문장이라 정확해요! 👏<br>
+            &nbsp;&nbsp;가사에선 <b>to make you go</b>(당신을 떠나게 만들) 부분이 이어져서, "내가 뭘 잘못해서 당신이 떠난 걸까요?"라는 더 구체적인 질문이 돼요<br>
+            &nbsp;&nbsp;<b>Did I do ~?</b> = 내가 ~을 했나요? (과거 행동에 대한 자책 섞인 질문) 😔
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">이 도시는 정말 외롭게 느껴지네요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">The city feel so lonely.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">The city feels so lonely.</span>
+          </div>
+          <span class="pill-fix">feel → feels</span>
+          <p class="note-text">
+            가사: <b>I don't wanna miss somebody who's not missing me / But the city feels so lonely when you leave</b><br>
+            ⚠️ <b>the city</b>는 3인칭 <b>단수</b> 주어! → 동사에 <b>-s</b>를 붙여야 해요 (feel → <b>feels</b>)<br>
+            &nbsp;&nbsp;💡 주어-동사 수 일치: he/she/it, 그리고 <b>단수명사</b>(the city)는 동사에 -s!<br>
+            &nbsp;&nbsp;도시라는 거대한 공간을 <b>외로움을 느끼는 존재</b>처럼 표현한 게 이 문장의 매력이에요 — 사실은 화자 자신이 외로운 거죠 🌆
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">이제 우리는 어떻게 되어가고 있나요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">What is coming of us now?</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">What are we becoming of it now?</span>
+          </div>
+          <span class="pill-fix">coming → becoming</span>
+          <p class="note-text">
+            가사: <b>This time you said you're playing games again / What are we becoming of it now?</b><br>
+            ⚠️ <b>coming</b> → <b>becoming</b>이 맞아요! <b>be동사 + becoming</b> = ~되어가고 있다<br>
+            &nbsp;&nbsp;💡 <b>become</b>(~가 되다)의 진행형 <b>becoming</b>이 "지금 변해가는 중"이라는 뉘앙스를 만들어요<br>
+            &nbsp;&nbsp;참고로 <b>"What's becoming of us?"</b>(우리 사이가 어떻게 되어가는 거지?)는 흔히 쓰는 관용 표현이기도 해요 💭
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">Did I do something wrong?</p>
+      <p class="expr-ko">내가 뭔가 잘못했나요?</p>
+      <span class="expr-tag">자책성 질문</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Did I do something wrong to make you go, or is it just me overthinking?</b><br>→ 내가 뭘 잘못해서 당신을 떠나게 한 건가요, 아니면 그냥 내가 과하게 생각하는 걸까요?</p>
+        <p><b>She kept asking herself, "Did I do something wrong?" after he stopped replying.</b><br>→ 그가 답장을 그만둔 뒤, 그녀는 "내가 뭘 잘못했나?"라고 계속 자문했어.</p>
+        <p class="ex-note">💡 <b>Did I do something wrong?</b> = 관계가 틀어졌을 때 자신을 돌아보는 질문<br><b>make + 목적어 + 동사원형</b> = ~가 …하게 만들다 (사역동사, make you go)<br>📌 비슷한 자책성 질문: <b>What did I do wrong?</b>(내가 뭘 잘못한 거지?), <b>Is it my fault?</b>(내 잘못인가?)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">the city feels so lonely</p>
+      <p class="expr-ko">도시가 정말 외롭게 느껴진다</p>
+      <span class="expr-tag">주어-동사 수 일치</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I don't wanna miss somebody who's not missing me, but the city feels so lonely when you leave.</b><br>→ 날 그리워하지 않는 사람을 그리워하고 싶진 않은데, 당신이 떠나면 이 도시가 정말 외롭게 느껴져.</p>
+        <p><b>This apartment feels so empty without all your stuff around.</b><br>→ 네 물건들이 다 없어지니 이 아파트가 정말 텅 빈 것처럼 느껴져.</p>
+        <p class="ex-note">💡 <b>단수 주어(it, the city, this room 등) + 동사-s</b> = 주어-동사 수 일치!<br>공간·장소를 <b>감정을 느끼는 존재</b>처럼 표현하는 <b>의인화(personification)</b> 기법이에요 🌆<br>📌 <b>feel + 형용사</b> = ~하게 느껴지다 (feel의 대표 5형식 패턴!)<br>비슷한 표현: <b>this place feels different</b>(이곳이 다르게 느껴진다)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">What are we becoming of it now?</p>
+      <p class="expr-ko">이제 우리는 어떻게 되어가고 있나요?</p>
+      <span class="expr-tag">become = 진행형</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>You said you're playing games again — what are we becoming of it now?</b><br>→ 당신은 다시 게임하듯 대한다고 말했는데 — 이제 우리는 어떻게 되어가고 있는 걸까요?</p>
+        <p><b>After months of silence, I started to wonder what we were becoming.</b><br>→ 몇 달간의 침묵 끝에, 난 우리가 어떻게 되어가고 있는 건지 궁금해지기 시작했어.</p>
+        <p class="ex-note">💡 <b>be + becoming</b> = (지금) ~되어가고 있다 — become의 진행형!<br>관계가 <b>서서히 변해가는 중</b>이라는 불안한 뉘앙스를 담아요 💭<br>📌 흔히 쓰는 관용구: <b>What's becoming of us?</b>(우리 관계가 어떻게 되고 있는 거지?)<br>비슷한 표현: <b>Where is this going?</b>(이게 어디로 향하는 거지?)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Did I do something wrong?</span> → 내가 뭔가 잘못했나요.<br>
+      <span>The city feels so lonely.</span> → 이 도시는 정말 외롭게 느껴지네요.<br>
+      <span>What are we becoming of it now?</span> → 이제 우리는 어떻게 되어가고 있나요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💔</div>
+      <div><h2>곡 이야기</h2><p>Your Shirt · Chelsea Cutler</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Chelsea Cutler (첼시 커틀러)</b>의 곡으로, 2017년 EP <i>Snow in October</i>에 수록됐어요. <b>RIAA 골드 인증</b>을 받았고, SoundCloud 커버 활동을 하던 그녀를 단숨에 주목받게 만든 곡이에요.
+        </p>
+        <p class="story-p">
+          이 곡의 성공을 발판으로 <b>Ultra Records</b>와 계약했고, 이후 Jeremy Zucker와 함께한 <i>Brent</i> 시리즈 등 다양한 협업으로 이어졌어요 🎶
+        </p>
+        <p class="story-p">
+          <b>"Your Shirt"</b>는 헤어진 연인이 남기고 간 <b>셔츠 한 장</b>을 붙잡고, 그 사람을 여전히 그리워하는 마음을 노래해요 👕
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 예전 같지 않은 느낌</b><br>이번엔 당신이 모든 걸 원하는 것 같지 않아요. <b>내가 뭔가 잘못해서 당신을 떠나게 만든 걸까요?</b>(오늘 첫 문장!) 넘어져도 괜찮을 때를 알 거라고 했었죠. 이제 그저 당신이 여기서 날 꼭 안아주길 바라요. 😔</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 도시가 외로워요</b><br>날 그리워하지 않는 사람을 그리워하고 싶진 않아요. 그런데 <b>당신이 떠나면 이 도시가 정말 외롭게 느껴져요</b>(두 번째 문장!). 당신이 이불 속에 남긴 그 빈자리를 다른 사람으로 채우고 싶지 않아요. 🌆</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 당신이 준 셔츠</b><br>내 방, 당신이 있었으면 하는 곳. 이불 속에 뒤엉킨 채로. <b>당신에게 사준 셔츠</b>를 입고, 반쯤 잠든 채로 날 꼭 안고 있었죠. 당신이 남기고 간 내 침대, 뒤엉킨 채로 이제 정오가 됐어요. <b>당신이 준 셔츠</b>를 입고, 반쯤 잠든 채로 당신을 여전히 그리워해요. 👕</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Verse 2 — 다시 게임하듯</b><br>이번엔 당신이 다시 게임을 하는 것 같다고 말했어요. <b>이제 우리는 어떻게 되어가고 있는 걸까요?</b>(세 번째 문장!) 당신이 내 머릿속에 있는 거라면 괜찮다고 말했지만, 사실 어떻게 당신을 지워야 할지 모르겠어요. 💭</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          👕 <b>"셔츠"라는 작은 물건의 힘</b><br><br>
+          이 곡의 제목이자 핵심 이미지는 <b>your shirt(당신의 셔츠)</b>예요. 큰 사건이나 극적인 장면이 아니라, <b>남겨진 옷 한 벌</b>이라는 아주 작고 일상적인 물건에 그리움을 담았어요.<br><br>
+          가사 속 셔츠는 두 번 등장해요 — <b>the shirt that I got you</b>(내가 당신에게 사준 셔츠)와 <b>the shirt that you gave me</b>(당신이 나에게 준 셔츠). <b>서로 주고받았던 옷</b>이라는 설정이 관계의 다정했던 시절을 은은하게 보여줘요.<br><br>
+          그리고 <b>the city feels so lonely</b>(도시가 외롭게 느껴진다)처럼, 이 곡은 자신의 감정을 <b>공간에 투영</b>하는 방식을 자주 써요. 실제로 외로운 건 도시가 아니라 화자 자신이지만, 그렇게 표현함으로써 감정이 <b>훨씬 더 크고 무겁게</b> 다가와요 🌆
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① Did I do something wrong?</p>
+          <p class="learn-ko">내가 뭔가 잘못했나요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② The city feels so lonely</p>
+          <p class="learn-ko">이 도시는 정말 외롭게 느껴지네요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ What are we becoming of it now?</p>
+          <p class="learn-ko">이제 우리는 어떻게 되어가고 있나요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Chelsea+Cutler+Your+Shirt+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Your Shirt 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Chelsea Cutler · Ultra Records 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💔</div>
+      <div><h2>핵심 단어 발음</h2><p>Your Shirt · Chelsea Cutler</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">shirt</span>
+        <span class="ref-ipa">[ʃɜːrt]</span>
+        <span class="ref-kr"><span class="s">셔</span>ㄹ트</span>
+        <span class="ref-mean">셔츠 (제목!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">lonely</span>
+        <span class="ref-ipa">[ˈloʊnli]</span>
+        <span class="ref-kr"><span class="s">로</span>운리</span>
+        <span class="ref-mean">외로운</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">becoming</span>
+        <span class="ref-ipa">[bɪˈkʌmɪŋ]</span>
+        <span class="ref-kr">비<span class="s">커</span>밍</span>
+        <span class="ref-mean">되어가는 중인</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">tangled</span>
+        <span class="ref-ipa">[ˈtæŋɡəld]</span>
+        <span class="ref-kr"><span class="s">탱</span>글드</span>
+        <span class="ref-mean">뒤엉킨</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">sheets</span>
+        <span class="ref-ipa">[ʃiːts]</span>
+        <span class="ref-kr"><span class="s">시</span>츠</span>
+        <span class="ref-mean">이불, 침대 시트</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wrong</span>
+        <span class="ref-ipa">[rɔːŋ]</span>
+        <span class="ref-kr"><span class="s">렁</span></span>
+        <span class="ref-mean">잘못된 (w 묵음!)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — shirt (r 다음 t는 살짝!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">shirt</p><p class="word-mean">셔츠 (제목!)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ er = "어"</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ʃɜːrt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">셔</span>ㄹ트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>sh-</b>: "쉬" [ʃ] — 입술을 동그랗게!<br>
+        🔸 <b>-ir-</b>: "어ㄹ" [ɜːr] — 혀를 살짝 굴리며!<br>
+        🔸 <b>-t</b>: 살짝 끊듯이<br>
+        🔸 ⚠️ <b>shirt</b>[셔ㄹ트] vs <b>shirt</b> 발음이 <b>shit</b>과 비슷하게 들리지 않게 <b>r 소리를 확실히</b>! 발음에 주의하세요<br>
+        🔸 <b>your shirt</b>: "유어 셔ㄹ트" 👕
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — becoming (강세 위치!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">becoming</p><p class="word-mean">되어가는 중인</p></div>
+        <span class="word-tag">COM에 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[bɪˈkʌmɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">비<span class="stress">커</span>밍</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>be-</b>: "비" 약하게 [bɪ]<br>
+        🔸 <b>-com-</b>: "커" [kʌm] — <b>COM</b>에 강세! u가 "어" 소리<br>
+        🔸 <b>-ing</b>: "밍" [mɪŋ]<br>
+        🔸 <b>what are we becoming of it now</b>: "왓아위 비커밍 어빗나우" 💭
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">lonely</p><p class="word-mean">외로운</p></div>
+        <span class="word-tag">o = 오우</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈloʊnli]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">로</span>운리</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>lo-</b>: "로우" [loʊ] — o가 "오우" 이중모음!<br>
+        🔸 <b>-nely</b>: "운리" [nli]<br>
+        🔸 <b>the city feels so lonely</b>: "더 시티 필즈 소 로운리" 🌆<br>
+        🔸 같은 o=오우: <b>ho</b>me[호움], <b>ro</b>ad[로우드]
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">tangled</p><p class="word-mean">뒤엉킨</p></div>
+        <span class="word-tag">a = 애</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈtæŋɡəld]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">탱</span>글드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>tan-</b>: "탱" [tæŋ] — a가 "애"!<br>
+        🔸 <b>-gled</b>: "글드" [ɡəld]<br>
+        🔸 <b>tangled ease in my sheets</b> = 이불 속에 편안하게 뒤엉킨 채 🛏️<br>
+        🔸 몸이 이불에 뒤엉켜 있는 나른한 이미지를 그려요
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">wrong</p><p class="word-mean">잘못된</p></div>
+        <span class="word-tag">w 묵음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[rɔːŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">렁</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wr-</b>: <b>w는 묵음</b>! r만 발음 — "우롱"(✗) → "렁"(✓)<br>
+        🔸 <b>-ong</b>: "옹" [ɔːŋ] — 콧소리로 끝나요<br>
+        🔸 <b>did I do something wrong</b>: "디다이두 썸씽 렁" 😔<br>
+        🔸 같은 wr-: write[라이트], wrap[랩], wrist[리스트]
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Your Shirt</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 Did I do something wrong? <span>· 내가 뭔가 잘못했나요?</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">Did I do something wrong to make you go, or is it just me overthinking?</p>
+      <p class="listen-ko">내가 뭘 잘못해서 당신을 떠나게 한 건가요, 아니면 그냥 내가 과하게 생각하는 걸까요?</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Did I do something wrong to make you go, or is it just me overthinking?',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Did I do something wrong to make you go, or is it just me overthinking?',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Did I do something wrong to make you go, or is it just me overthinking?')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">She kept asking herself, "Did I do something wrong?" after he stopped replying.</p>
+      <p class="listen-ko">그가 답장을 그만둔 뒤, 그녀는 "내가 뭘 잘못했나?"라고 계속 자문했어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;She kept asking herself, 'Did I do something wrong?' after he stopped replying.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;She kept asking herself, 'Did I do something wrong?' after he stopped replying.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;She kept asking herself, 'Did I do something wrong?' after he stopped replying.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 the city feels so lonely <span>· 도시가 외롭게 느껴지다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I don't wanna miss somebody who's not missing me, but the city feels so lonely when you leave.</p>
+      <p class="listen-ko">날 그리워하지 않는 사람을 그리워하고 싶진 않은데, 당신이 떠나면 이 도시가 정말 외롭게 느껴져.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I don't wanna miss somebody who's not missing me, but the city feels so lonely when you leave.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I don't wanna miss somebody who's not missing me, but the city feels so lonely when you leave.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I don't wanna miss somebody who's not missing me, but the city feels so lonely when you leave.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">This apartment feels so empty without all your stuff around.</p>
+      <p class="listen-ko">네 물건들이 다 없어지니 이 아파트가 정말 텅 빈 것처럼 느껴져.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'This apartment feels so empty without all your stuff around.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'This apartment feels so empty without all your stuff around.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'This apartment feels so empty without all your stuff around.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 What are we becoming of it now? <span>· 어떻게 되어가고 있나요?</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">You said you're playing games again — what are we becoming of it now?</p>
+      <p class="listen-ko">당신은 다시 게임하듯 대한다고 말했는데 — 이제 우리는 어떻게 되어가고 있는 걸까요?</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;You said you're playing games again — what are we becoming of it now?&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;You said you're playing games again — what are we becoming of it now?&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;You said you're playing games again — what are we becoming of it now?&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">After months of silence, I started to wonder what we were becoming.</p>
+      <p class="listen-ko">몇 달간의 침묵 끝에, 난 우리가 어떻게 되어가고 있는 건지 궁금해지기 시작했어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'After months of silence, I started to wonder what we were becoming.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'After months of silence, I started to wonder what we were becoming.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'After months of silence, I started to wonder what we were becoming.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#EDEEF7;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#2C2E66;border:1px solid #BCBDE3">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div><h2>문장 암기</h2><p>빈칸 채우기 + 발음 연습 · Your Shirt</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      ✏️ <b>빈칸에 알맞은 영어 단어를 직접 입력</b>해서 오늘 배운 문장을 통째로 외워봐요!<br>
+      <b>오늘의 세 문장 + 표현별 예문</b>까지 전부 연습할 수 있어요.<br>
+      난이도를 골라 도전하세요 — <b>Level 1</b>(쉬움) → <b>Level 2</b>(보통) → <b>Level 3</b>(어려움)<br>
+      💡 각 칸을 채우고 <b>"정답 확인"</b>(또는 Enter)을 누르면 채점돼요.<br>
+      🔊 문장마다 <b>발음 듣기 버튼</b>이 있어요 — 듣고 따라 하면 더 빨리 외워져요!
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" id="lv1" onclick="setLevel(1,this)">Level 1<span>핵심 단어</span></button>
+      <button class="level-btn" id="lv2" onclick="setLevel(2,this)">Level 2<span>표현 위주</span></button>
+      <button class="level-btn" id="lv3" onclick="setLevel(3,this)">Level 3<span>거의 전체</span></button>
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">정답 확인을 누르면 점수가 표시돼요</div>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+
+    <div class="quiz-card" style="background:#EDEEF7;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#2C2E66;border:1px solid #BCBDE3;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">💔 [Good Morning Pops] Your Shirt
+— Chelsea Cutler
+
+🎵 2017년 EP Snow in October 수록
+   RIAA 골드 인증, SoundCloud 시절
+   그녀를 주목받게 만든 대표곡
+
+   헤어진 연인이 남기고 간 셔츠 한 장에
+   담긴 그리움을 노래한 곡 👕
+
+👏 문법 포인트 두 개만 짚으면 완벽해요!
+   feel → feels (city는 단수 주어!)
+   coming → becoming (become의 진행형)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 Did I do something wrong?
+   내가 뭔가 잘못했나요?
+   • Did I do something wrong to make you
+     go, or is it just me overthinking?
+     (내가 뭘 잘못해서 당신을 떠나게 한
+      건가요, 아니면 그냥 내가 과하게
+      생각하는 걸까요?)
+   • She kept asking herself, "Did I do
+     something wrong?" after he stopped
+     replying.
+     (그가 답장을 그만둔 뒤, 그녀는
+      "내가 뭘 잘못했나?"라고 계속 자문했어.)
+💡 관계가 틀어졌을 때 자신을 돌아보는 질문
+   make + 목적어 + 동사원형 (사역동사)
+   비슷한 표현: What did I do wrong?
+
+🔹 the city feels so lonely
+   도시가 정말 외롭게 느껴진다
+   • I don't wanna miss somebody who's not
+     missing me, but the city feels so
+     lonely when you leave.
+     (날 그리워하지 않는 사람을 그리워하고
+      싶진 않은데, 당신이 떠나면 이 도시가
+      정말 외롭게 느껴져.)
+   • This apartment feels so empty without
+     all your stuff around.
+     (네 물건들이 다 없어지니 이 아파트가
+      정말 텅 빈 것처럼 느껴져.)
+💡 단수 주어(city, apartment) + 동사-s!
+   공간을 감정을 느끼는 존재처럼 표현
+   (의인화) 🌆
+
+🔹 What are we becoming of it now?
+   이제 우리는 어떻게 되어가고 있나요?
+   • You said you're playing games again —
+     what are we becoming of it now?
+     (당신은 다시 게임하듯 대한다고
+      말했는데 — 이제 우리는 어떻게
+      되어가고 있는 걸까요?)
+   • After months of silence, I started to
+     wonder what we were becoming.
+     (몇 달간의 침묵 끝에, 난 우리가
+      어떻게 되어가고 있는 건지 궁금해지기
+      시작했어.)
+💡 be + becoming = 지금 ~되어가고 있다
+   관용구: What's becoming of us?
+
+🔊 발음 팁
+   • shirt = [셔]ㄹ트 (r 소리 확실히!)
+   • becoming = 비[커]밍 (COM에 강세!)
+   • lonely = [로]운리 (o는 "오우"!)
+   • wrong = [렁] (w는 묵음! "우롱" ✗)
+
+——————————————————
+#GoodMorningPops #팝송영어 #YourShirt #ChelseaCutler</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "📝 오늘의 세 문장",
+    items: [
+      { ko:"내가 뭔가 잘못했나요.", en:"Did I do something wrong?", key:["Did","something","wrong"] },
+      { ko:"이 도시는 정말 외롭게 느껴지네요.", en:"The city feels so lonely.", key:["city","feels","lonely"] },
+      { ko:"이제 우리는 어떻게 되어가고 있나요.", en:"What are we becoming of it now?", key:["becoming","now"] }
+    ]
+  },
+  {
+    title: "🔹 Did I do something wrong?",
+    items: [
+      { ko:"내가 뭘 잘못해서 당신을 떠나게 한 건가요, 아니면 그냥 내가 과하게 생각하는 걸까요?", en:"Did I do something wrong to make you go, or is it just me overthinking?", key:["something","wrong","overthinking"] },
+      { ko:"그가 답장을 그만둔 뒤, 그녀는 \"내가 뭘 잘못했나?\"라고 계속 자문했어.", en:"She kept asking herself, Did I do something wrong, after he stopped replying.", key:["asking","wrong","replying"] }
+    ]
+  },
+  {
+    title: "🔹 the city feels so lonely",
+    items: [
+      { ko:"날 그리워하지 않는 사람을 그리워하고 싶진 않은데, 당신이 떠나면 이 도시가 정말 외롭게 느껴져.", en:"I don't wanna miss somebody who's not missing me, but the city feels so lonely when you leave.", key:["miss","city","feels","lonely"] },
+      { ko:"네 물건들이 다 없어지니 이 아파트가 정말 텅 빈 것처럼 느껴져.", en:"This apartment feels so empty without all your stuff around.", key:["apartment","feels","empty"] }
+    ]
+  },
+  {
+    title: "🔹 What are we becoming of it now?",
+    items: [
+      { ko:"당신은 다시 게임하듯 대한다고 말했는데 — 이제 우리는 어떻게 되어가고 있는 걸까요?", en:"You said you're playing games again, what are we becoming of it now?", key:["playing","games","becoming"] },
+      { ko:"몇 달간의 침묵 끝에, 난 우리가 어떻게 되어가고 있는 건지 궁금해지기 시작했어.", en:"After months of silence, I started to wonder what we were becoming.", key:["silence","wonder","becoming"] }
+    ]
+  }
+];
+
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return s.toLowerCase().replace(/[.,!?'"\u2014\u2013\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level===1) target = Math.max(1, Math.round(n*0.20));
+  else if(level===2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">'+ item.ko +'</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blankIdx.length +'칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blankIdx.indexOf(wi) >= 0){
+          var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+          var pre = m ? m[1] : '';
+          var core = m && m[2] ? m[2] : w;
+          var post = m ? m[3] : '';
+          var size = Math.max(core.length, 4);
+          if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+          html += '<input class="quiz-blank" data-q="'+qi+'" data-w="'+wi+'" data-ans="'+encodeURIComponent(core)+'" size="'+size+'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkOne('+qi+')">';
+          if(post) html += '<span class="quiz-word">'+ post +'</span>';
+        } else {
+          html += '<span class="quiz-word">'+ w +'</span>';
+        }
+        html += ' ';
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne('+qi+')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne('+qi+')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.8)">🚶 보통</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',1.0)">🏃 원어민</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz2(this,'+qi+')">▶ 2회 반복</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr'+qi+'"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="'+qi+'"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayQuiz2(btn, qi){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr'+qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr'+qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">'+ getQuizText(qi) +'</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi=0; qi<total; qi++){
+    if(checkOne(qi)) correct++;
+  }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1){
+    label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  } else if(ratio >= 0.7){
+    label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  } else if(ratio >= 0.4){
+    label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  } else {
+    label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderQuiz);
+if(document.readyState !== 'loading') renderQuiz();
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ostra — Yumi Zouma</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F2F8FF;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #90B8E8;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#CCE4FF;border-color:#2060C0;color:#082050}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #B0D0F5}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#CCE4FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#CCE4FF;color:#082050;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C0D8F0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C0D8F0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C0D8F0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#2060C0}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#CCE4FF;color:#082050;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F2F8FF;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #B0D0F5}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C0D8F0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#082050}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C0D8F0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEF6FF;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F2F8FF;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#082050;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C0D8F0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#CCE4FF;color:#082050;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F2F8FF;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#2060C0;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#082050;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C0D8F0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#CCE4FF;color:#082050;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#A8CCFF}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌊</div>
+      <div>
+        <h2>Ostra</h2>
+        <p>Yumi Zouma · Willowbank (2017) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>가수 이름 교정:</b> 유미조마 (✗) → <b>Yumi Zouma (유미 주마)</b> (✓)<br>
+      뉴질랜드 크라이스트처치 출신 인디 드림팝 밴드 — Christie Simpson, Josh Burgess, Charlie Ryder, Olivia Campion
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">난 그걸 깨뜨릴 수가 없었어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I can never break it.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I could never break it.</span>
+          </div>
+          <span class="pill-fix">can → could (과거 가능/불가능)</span>
+          <p class="note-text">
+            가사 정확: <b>I could never break it</b><br>
+            ⚠️ <b>can</b>(현재, 할 수 없다) → <b>could</b>(과거, 할 수 없었다)<br>
+            💡 한국어 번역이 "없었어요" (과거)이니 <b>could</b>가 맞아요!<br>
+            <b>can never</b> = 지금/앞으로도 못 함 / <b>could never</b> = 과거에도 못 했음
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">확실해지면 연락해요</p>
+          <div class="sent-row">
+            <span class="sent-right">Call me when you know.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사 정확: <b>Closer, pulling over / Call me when you know</b> — 짧지만 강한 표현! "알게 되면 / 확실해지면 전화해"라는 기다림의 표현이에요.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신의 진짜 의도를 말해줘요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Tell me what your really meaning.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Tell me what you're really meaning.</span>
+          </div>
+          <span class="pill-fix">your → you're (소유격 vs 축약형)</span>
+          <p class="note-text">
+            가사 정확: <b>Tell me what you're really meaning</b><br>
+            ⚠️ <b>your</b>(당신의, 소유격)(✗) → <b>you're</b>(you are의 축약형)(✓)<br>
+            💡 <b>you're meaning</b> = 당신이 의미하는 바 (what you mean/what you're meaning)<br>
+            <b>your meaning</b>은 "당신의 의미" — 뜻이 달라져요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">could never ~</p>
+      <p class="expr-ko">~할 수가 없었다 / 아무리 해도 ~하지 못했다</p>
+      <span class="expr-tag">과거 불가능 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I could never break it.</b> → 난 그걸 깨뜨릴 수가 없었어요.</p>
+        <p><b>She could never lie to him.</b> → 그녀는 그에게 절대 거짓말할 수 없었어.</p>
+        <p><b>I could never stay mad at you.</b> → 나는 당신한테 화를 낼 수가 없었어.</p>
+        <p><b>He could never understand what she meant.</b> → 그는 그녀가 의미하는 바를 절대 이해할 수 없었어.</p>
+        <p class="ex-note">💡 <b>could never</b> = 과거에 아무리 해도 ~할 수 없었다<br><b>can never</b> = 지금/앞으로도 ~할 수 없다<br>"난 그걸 깨뜨릴 수 없었어요"라는 과거 이야기 → could!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">Call me when you know.</p>
+      <p class="expr-ko">알게 되면 / 확실해지면 연락해요</p>
+      <span class="expr-tag">간결한 요청 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Call me when you know.</b> → 알게 되면 전화해.</p>
+        <p><b>Let me know when you're ready.</b> → 준비됐으면 알려줘.</p>
+        <p><b>Text me when you decide.</b> → 결정되면 문자해줘.</p>
+        <p><b>Tell me when you know for sure.</b> → 확실히 알게 되면 말해줘.</p>
+        <p class="ex-note">💡 <b>when you know</b> = 알게 될 때, 확실해질 때<br>짧지만 상대방이 아직 확신이 없다는 걸 전제로 한 기다림의 표현이에요!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">what you're really meaning</p>
+      <p class="expr-ko">당신이 진짜로 의미하는 바 / 진짜 의도</p>
+      <span class="expr-tag">you're vs your 핵심!</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Tell me what you're really meaning.</b> → 진짜 하고 싶은 말이 뭔지 말해줘요.</p>
+        <p><b>I don't understand what you're saying.</b> → 무슨 말인지 모르겠어.</p>
+        <p><b>What do you mean by that?</b> → 그게 무슨 뜻이야?</p>
+        <p><b>Tell me what you really mean.</b> → 진짜 뜻이 뭔지 말해줘. (= 가사와 같은 뜻)</p>
+        <p class="ex-note">💡 <b>you're</b> [유아] = you are (축약형) ← 동사!<br><b>your</b> [유어] = 당신의 (소유격) ← 형용사!<br>발음이 비슷하지만 역할이 완전히 달라요!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I could never break it.</span> → 난 그걸 깨뜨릴 수가 없었어요.<br>
+      <span>Call me when you know.</span> → 확실해지면 연락해요.<br>
+      <span>Tell me what you're really meaning.</span> → 당신의 진짜 의도를 말해줘요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌊</div>
+      <div><h2>핵심 단어 발음</h2><p>Ostra · Yumi Zouma</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">you're</span>
+        <span class="ref-ipa">[jʊər]</span>
+        <span class="ref-kr"><span class="s">유</span>어</span>
+        <span class="ref-mean">you are (축약형) ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">your</span>
+        <span class="ref-ipa">[jʊər]</span>
+        <span class="ref-kr"><span class="s">유</span>어</span>
+        <span class="ref-mean">당신의 (소유격)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">could</span>
+        <span class="ref-ipa">[kʊd]</span>
+        <span class="ref-kr"><span class="s">쿠</span>드</span>
+        <span class="ref-mean">~할 수 있었다 (과거)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">meaning</span>
+        <span class="ref-ipa">[ˈmiːnɪŋ]</span>
+        <span class="ref-kr"><span class="s">미</span>이닝</span>
+        <span class="ref-mean">의미하는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">really</span>
+        <span class="ref-ipa">[ˈriːli]</span>
+        <span class="ref-kr"><span class="s">리</span>이리</span>
+        <span class="ref-mean">진짜로, 정말</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">Ostra</span>
+        <span class="ref-ipa">[ˈɒstrə]</span>
+        <span class="ref-kr"><span class="s">오</span>스트라</span>
+        <span class="ref-mean">굴 (포르투갈어)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — you're vs your</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">you're</p><p class="word-mean">you are의 축약형 — 동사!</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[jʊər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">유</span>어</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>you're</b> = you + are → "유어"<br>
+        🔸 문장 속: <b>you're meaning</b> = "당신이 의미하는"<br>
+        🔸 ⚠️ 발음은 your와 거의 같지만 역할이 달라요!<br>
+        🔸 구분법: 빈칸에 "you are"를 넣어봐서 말이 되면 → you're!
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">your</p><p class="word-mean">당신의 — 소유격!</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[jʊər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">유</span>어</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>your</b> = "당신의" — 명사 앞에 써요<br>
+        🔸 예: your name / your book / your meaning<br>
+        🔸 🔑 발음은 you're와 같지만 뜻이 달라요:<br>
+        &nbsp;&nbsp;<b>your meaning</b> = "당신의 의미"(명사)<br>
+        &nbsp;&nbsp;<b>you're meaning</b> = "당신이 의미하는"(동사)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">could</p><p class="word-mean">~할 수 있었다 / 과거 가능</p></div>
+        <span class="word-tag">묵음 l 주의!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[kʊd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">쿠</span>드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>l</b>은 묵음! "쿨드"가 아니라 <b>"쿠드"</b>!<br>
+        🔸 같은 묵음 l: <b>would</b> [우드] / <b>should</b> [슈드]<br>
+        🔸 <b>could never</b>: "쿠드네버" 빠르게 이어서<br>
+        🔸 <b>can → could</b>: 현재 → 과거로 바꿀 때!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">really meaning</p><p class="word-mean">진짜로 의미하는</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈriːli ˈmiːnɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">리</span>이리 <span class="stress">미</span>이닝</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>really</b>: "리이리" — 긴 ee!<br>
+        🔸 <b>meaning</b>: "미이닝" — 긴 ee + ing<br>
+        🔸 두 단어 모두 길고 부드러운 이중모음이에요<br>
+        🔸 빠르게: "리이리미이닝" 이어서!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">Yumi Zouma</p><p class="word-mean">가수 이름 발음</p></div>
+        <span class="word-tag">이름 교정!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈjuːmi ˈzuːmə]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">유</span>미 <span class="stress">주</span>마</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>Yumi</b>: "유미" — Y = [j] 소리<br>
+        🔸 <b>Zouma</b>: "주마" — Z = [z] + ou = "우" + ma<br>
+        🔸 ⚠️ 유미조마(✗) → <b>유미 주마</b>(✓) — 두 단어 띄어서!<br>
+        🔸 뉴질랜드 크라이스트처치 출신 인디 드림팝 밴드예요
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌊 [Good Morning Pops] Ostra
+— Yumi Zouma (유미 주마) · Willowbank (2017)
+
+💡 가수 이름: 유미조마 ✗ → Yumi Zouma (유미 주마) ✓
+   뉴질랜드 인디 드림팝 밴드
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 난 그걸 깨뜨릴 수가 없었어요
+✗ I can never break it.
+→ I could never break it. ✓
+   발음: 아이 쿠드 네버 브레이킷
+⚠️ can → could (과거형!)
+💡 can never = 지금/앞으로도 못 함
+   could never = 과거에도 못 했음 ✓
+   "없었어요" → 과거 → could!
+
+2️⃣ 확실해지면 연락해요
+→ Call me when you know. ✓
+   발음: 콜 미 웬 유 노우
+※ 가사: Closer, pulling over / Call me when you know
+
+3️⃣ 당신의 진짜 의도를 말해줘요
+✗ Tell me what your really meaning.
+→ Tell me what you're really meaning. ✓
+   발음: 텔 미 왓 유어 리이리 미이닝
+⚠️ your(당신의) ✗ → you're(you are) ✓
+💡 you're [유어] = you are 축약형 (동사!)
+   your [유어] = 당신의 (소유격, 형용사!)
+   발음은 같지만 뜻·역할이 달라요!
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 could [쿠드]
+  l은 묵음! "쿨드" ✗ → "쿠드" ✓
+  would[우드] / should[슈드]도 같은 패턴
+
+🔹 you're [유어] vs your [유어]
+  발음은 같지만 역할이 달라요!
+  you're = you are (동사) → 행동·상태
+  your = 당신의 (소유격) → 명사 앞에
+
+🔹 really [리이리]
+  긴 ee 이중모음! "리"가 아니라 "리이"
+
+🔹 Yumi Zouma [유미 주마]
+  Yumi = 유미 / Zouma = 주마
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 could never ~
+   과거에 아무리 해도 ~할 수 없었다
+   • I could never stay mad at you.
+     (나는 당신한테 화를 낼 수가 없었어.)
+💡 could(과거) vs can(현재·미래) — 시제 주의!
+
+🔹 Call me when you know.
+   알게 되면 / 확실해지면 연락해요
+   • Let me know when you're ready.
+     (준비됐으면 알려줘.)
+💡 when you know = 알게 될 그 때
+
+🔹 Tell me what you're really meaning.
+   진짜 하고 싶은 말이 뭔지 말해줘요
+   • What do you mean by that?
+     (그게 무슨 뜻이야?)
+💡 you're(you are) — 발음 you와 are 합치기!
+
+——————————————————
+
+📝 한 번에 정리
+
+I could never break it.
+→ 난 그걸 깨뜨릴 수가 없었어요.
+
+Call me when you know.
+→ 확실해지면 연락해요.
+
+Tell me what you're really meaning.
+→ 당신의 진짜 의도를 말해줘요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #Ostra #YumiZouma</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

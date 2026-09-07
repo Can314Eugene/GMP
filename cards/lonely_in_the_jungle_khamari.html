@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lonely in the Jungle — Khamari</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EAEEF5;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #3E5A8C;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C7D2E8;border-color:#1A2E52;color:#0F1C33}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #AEBEDD}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C7D2E8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C7D2E8;color:#0F1C33;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C3CDE5;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C3CDE5;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C3CDE5;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#1A2E52}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C7D2E8;color:#0F1C33;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EAEEF5;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #AEBEDD}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C3CDE5}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#0F1C33}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C3CDE5;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EAEEF5;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EAEEF5;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#0F1C33;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C3CDE5;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C7D2E8;color:#0F1C33;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EAEEF5;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#1A2E52;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#0F1C33;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C3CDE5;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C7D2E8;color:#0F1C33;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#AEBEDD}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #C3CDE5;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#1A2E52;background:#C7D2E8;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#0F1C33;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #EAEEF5;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#C7D2E8;color:#0F1C33;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#EAEEF5;border-left:3px solid #1A2E52;border-radius:10px;padding:12px 14px;font-size:13px;color:#1A2E52;line-height:1.8}
+  .twist-box b{color:#0F1C33;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#C7D2E8;color:#0F1C33;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #3E5A8C}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #C3CDE5;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #AEBEDD;background:#EAEEF5;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#C7D2E8;border-color:#3E5A8C}
+  .speed-btn.playing{background:#C7D2E8;border-color:#1A2E52;box-shadow:0 0 0 2px #C7D2E8}
+  .speed-label{font-size:13px;font-weight:600;color:#0F1C33;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#C7D2E8;color:#0F1C33;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#AEBEDD}
+  .play-all-btn.playing{background:#1A2E52;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#1A2E52;background:#C7D2E8;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#324A78;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #AEBEDD;background:#fff;color:#324A78;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#C7D2E8;border-color:#1A2E52;color:#0F1C33}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#3E5A8C;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#1A2E52;background:#C7D2E8;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #C3CDE5;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#0F1C33;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#AAA;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1A1A2E;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #3E5A8C;background:#EAEEF5;font-size:15px;font-family:inherit;font-weight:600;color:#1A2E52;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#C7D2E8;border-bottom-color:#1A2E52}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#C7D2E8;color:#0F1C33;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#AEBEDD}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #AEBEDD;background:#fff;color:#324A78;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#EAEEF5}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#AAA;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #AEBEDD;background:#EAEEF5;color:#0F1C33;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#C7D2E8;border-color:#3E5A8C}
+  .quiz-say.playing{background:#C7D2E8;border-color:#1A2E52;box-shadow:0 0 0 2px #C7D2E8}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #C3CDE5;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#1A2E52}
+  .score-label{font-size:12px;color:#888;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#1A2E52;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#0F1C33}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌧️</div>
+      <div>
+        <h2>Lonely in the Jungle</h2>
+        <p>Khamari · To Dry A Tear &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EAEEF5;border:1px solid #3E5A8C;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#0F1C33;line-height:1.7">
+      🌧️ <b>Khamari (카마리)</b> · 2025년 7월 25일 · 앨범 <i>To Dry A Tear</i><br>
+      <b>Diederik van Elsas, Khamari Barnes, Parrish Warrington</b>이 작사·작곡에 참여했어요.<br>
+      <b>"Lonely in the Jungle"</b>는 사랑에 응답받지 못하는 외로움을 <b>정글에서 홀로 헤매는 이미지</b>에 빗댄 곡이에요 🌫️<br>
+      👏 <b>a/an 관사 하나만 고치면 완벽해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">그건 정말 끔찍한 기분이에요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">It's such a awful feeling.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">It's such an awful feeling.</span>
+          </div>
+          <span class="pill-fix">a → an</span>
+          <p class="note-text">
+            가사: <b>Clock's broken, I lose count / It's such an awful feeling</b><br>
+            ⚠️ <b>awful</b>은 <b>모음 소리</b>[ɔː]로 시작해요! → <b>a</b> 대신 <b>an</b>을 써야 해요<br>
+            &nbsp;&nbsp;💡 <b>a/an 구분은 철자가 아니라 "소리"</b> 기준이에요 — awful은 a로 시작하는 <b>철자</b>지만, 발음이 모음이라 <b>an</b>!<br>
+            &nbsp;&nbsp;<b>such an + 형용사 + 명사</b> = 정말 ~한 …이다 (강조 구문!)<br>
+            &nbsp;&nbsp;"시계도 고장났고, 몇 시인지도 모르겠어 — 정말 끔찍한 기분이야"라는 무기력한 상태를 그려요 😔
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">왜 내 기도들은 응답을 받지 못한 걸까요?</p>
+          <div class="sent-row">
+            <span class="sent-right">Why haven't my prayers been answered?</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>If there's a God in this lonely jungle / Why haven't my prayers been answered?</b> — 완벽해요! 👏<br>
+            💡 <b>have + 목적어 + p.p.(과거분사)</b> = 수동태 현재완료 의문문<br>
+            &nbsp;&nbsp;<b>prayers</b>(기도)가 <b>answer</b>(응답하다)의 <b>대상</b>이라 수동태(been answered)를 써요!<br>
+            &nbsp;&nbsp;신이 있다면 왜 응답이 없는지 묻는, <b>절박하고 서글픈 질문</b>이에요 🙏
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 내 손이 닿지 않는 곳에 있네요</p>
+          <div class="sent-row">
+            <span class="sent-right">You're just out of my reach.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>You're just out of my reach / When I look in your brown eyes</b> — 완벽해요! 👏<br>
+            💡 <b>out of reach</b> = 손이 닿지 않는 곳에, 닿을 수 없는<br>
+            &nbsp;&nbsp;<b>reach</b>(손을 뻗다)가 명사로 쓰여서 <b>"닿을 수 있는 범위"</b>를 뜻해요!<br>
+            &nbsp;&nbsp;눈을 마주 보고 있는데도 <b>마음은 닿을 수 없는</b> — 물리적 거리가 아니라 <b>감정적 거리</b>를 표현한 문장이에요 💔
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">such an awful feeling</p>
+      <p class="expr-ko">정말 끔찍한 기분</p>
+      <span class="expr-tag">a/an (소리 기준!)</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>The clock is broken and I'm losing count — it's such an awful feeling.</b><br>→ 시계도 고장났고 몇 시인지도 모르겠어 — 정말 끔찍한 기분이야.</p>
+        <p><b>Waiting for news you're afraid to hear is such an awful feeling.</b><br>→ 듣기 두려운 소식을 기다리는 건 정말 끔찍한 기분이야.</p>
+        <p class="ex-note">💡 <b>such a/an + 형용사 + 명사</b> = 정말 ~한 …이다 (강조!)<br>⚠️ <b>a/an은 철자가 아니라 소리 기준</b>! awful[ɔː]는 모음 소리라 <b>an</b><br>📌 비교: a **u**niversity(유니버시티는 자음 소리 y로 시작!) / an **h**our(h가 묵음이라 모음 소리)<br>비슷한 표현: <b>such a terrible feeling</b>, <b>it feels awful</b></p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">haven't ~ been answered</p>
+      <p class="expr-ko">응답받지 못했다</p>
+      <span class="expr-tag">현재완료 수동태</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>If there's a God in this lonely jungle, why haven't my prayers been answered?</b><br>→ 이 외로운 정글에 신이 있다면, 왜 내 기도들은 응답받지 못한 걸까?</p>
+        <p><b>I sent three emails, but none of them have been answered yet.</b><br>→ 이메일을 세 통 보냈는데, 아직 하나도 답장을 못 받았어.</p>
+        <p class="ex-note">💡 <b>have/haven't been + p.p.</b> = 현재완료 수동태 — (지금까지 계속) ~되지 않았다<br><b>prayers</b>(기도)가 응답을 <b>받는 쪽</b>이라 수동태를 써요!<br>📌 능동태였다면: <b>God hasn't answered my prayers</b>(신이 내 기도에 응답하지 않았다)<br>비슷한 표현: <b>go unanswered</b>(응답받지 못한 채로 남다)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">out of reach</p>
+      <p class="expr-ko">손이 닿지 않는, 닿을 수 없는</p>
+      <span class="expr-tag">거리감 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>You're just out of my reach when I look in your brown eyes.</b><br>→ 네 갈색 눈동자를 바라볼 때도, 넌 내 손이 닿지 않는 곳에 있어.</p>
+        <p><b>That dream job feels completely out of reach right now.</b><br>→ 그 꿈의 직장은 지금 완전히 손에 닿지 않는 것처럼 느껴져.</p>
+        <p class="ex-note">💡 <b>out of reach</b> = 손이 닿지 않는 곳에, 닿을 수 없는 (물리적·감정적 거리 모두!)<br><b>reach</b>가 명사로 쓰여서 "닿을 수 있는 범위"를 뜻해요<br>📌 반대 표현: <b>within reach</b>(손이 닿는 곳에)<br>비슷한 표현: <b>unattainable</b>(도달할 수 없는), <b>beyond my grasp</b>(내 손이 닿지 않는)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>It's such an awful feeling.</span> → 그건 정말 끔찍한 기분이에요.<br>
+      <span>Why haven't my prayers been answered?</span> → 왜 내 기도들은 응답을 받지 못한 걸까요?<br>
+      <span>You're just out of my reach.</span> → 당신은 내 손이 닿지 않는 곳에 있네요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌧️</div>
+      <div><h2>곡 이야기</h2><p>Lonely in the Jungle · Khamari</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Khamari (카마리)</b>의 곡으로, 2025년 7월 25일 발매된 앨범 <i>To Dry A Tear</i>의 5번 트랙이에요. <b>Diederik van Elsas, Khamari Barnes, Parrish Warrington</b>이 작사·작곡에 참여했어요.
+        </p>
+        <p class="story-p">
+          <b>"Lonely in the Jungle"</b>은 사랑에 빠졌지만 그 사랑이 응답받지 못하는 <b>고통스러운 외로움</b>을 노래해요. 제목처럼, 마치 <b>정글에서 길을 잃은 것 같은</b> 막막함이 곡 전체에 흘러요 🌫️
+        </p>
+        <p class="story-p">
+          기타 반주 위에 감정을 절제하며 쌓아가는 R&B/소울 발라드예요.
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 소파 위의 밤</b><br>당신의 소파에서 잠들어요, 자기 의심 속으로 가라앉으면서. <b>그건 정말 끔찍한 기분이에요</b>(오늘 첫 문장!). 시계는 고장났고, 몇 시인지도 모르겠어요. 그래도 여전히 버티며, 헛된 희망을 어쩌지 못해요. 🛋️</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 신은 어디에</b><br>이 외로운 정글에 신이 있다면, <b>왜 내 기도들은 응답받지 못한 걸까요?</b>(두 번째 문장!) 답 없는 물음이 반복되며 절박함이 쌓여가요. 🙏</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Verse 2 — 과거는 묻지 말아요</b><br>당신의 과거 얘기는 하지 말아요, 마지막 사람 얘기도 듣고 싶지 않아요. 그 얘긴 날 무너뜨릴지도 몰라요. 여기서 죽을 수도 있겠다는 생각이 들 만큼, 이 헛된 눈물로는 <b>텅 빈 바다를 채울 수 없어요</b>. 😢</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 갈색 눈동자를 바라보며</b><br>벌써 세 시 반이에요. <b>당신은 내 손이 닿지 않는 곳에 있어요</b>(세 번째 문장!), 당신의 갈색 눈동자를 바라볼 때도요. 너무 뻔하지 않나요? 발밑의 <b>모래 늪(quicksand)</b>이 시간과 함께 날 숨 막히게 해요. 🕒</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          🌧️ <b>"정글"이라는 은유의 의미</b><br><br>
+          제목의 <b>jungle(정글)</b>은 단순한 배경이 아니에요. 정글은 <b>길을 잃기 쉽고, 방향을 알 수 없고, 무성한 소리에 둘러싸여도 정작 혼자인 곳</b>이에요.<br><br>
+          <b>quicksand(모래 늪)</b>이라는 이미지도 절묘해요 — 발버둥 칠수록 더 깊이 빠져드는 늪처럼, 화자는 애쓸수록 더 <b>숨 막히는(suffocating)</b> 상태에 놓여요.<br><br>
+          그리고 곡 후반부의 <b>"Ain't no God in this lonely jungle / Just me and my empty prayers"</b>(이 외로운 정글엔 신이 없어 / 그저 나와 텅 빈 기도뿐)라는 구절은, <b>질문(Why haven't...?)</b>이 끝내 <b>체념(Ain't no God)</b>으로 바뀌는 걸 보여줘요. 희망에서 절망으로 넘어가는 그 감정의 변화가 이 곡의 핵심이에요 💔
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① It's such an awful feeling</p>
+          <p class="learn-ko">그건 정말 끔찍한 기분이에요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② Why haven't my prayers been answered?</p>
+          <p class="learn-ko">왜 내 기도들은 응답을 받지 못한 걸까요?</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ You're just out of my reach</p>
+          <p class="learn-ko">당신은 내 손이 닿지 않는 곳에 있네요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Khamari+Lonely+in+the+Jungle+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Lonely in the Jungle 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Khamari · Diederik van Elsas · Parrish Warrington 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌧️</div>
+      <div><h2>핵심 단어 발음</h2><p>Lonely in the Jungle · Khamari</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">awful</span>
+        <span class="ref-ipa">[ˈɔːfəl]</span>
+        <span class="ref-kr"><span class="s">오</span>펄</span>
+        <span class="ref-mean">끔찍한 (모음 소리!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">prayers</span>
+        <span class="ref-ipa">[prɛrz]</span>
+        <span class="ref-kr"><span class="s">프레</span>어즈</span>
+        <span class="ref-mean">기도들</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">answered</span>
+        <span class="ref-ipa">[ˈænsərd]</span>
+        <span class="ref-kr"><span class="s">앤</span>서드</span>
+        <span class="ref-mean">응답된 (w 묵음!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">reach</span>
+        <span class="ref-ipa">[riːtʃ]</span>
+        <span class="ref-kr"><span class="s">리</span>치</span>
+        <span class="ref-mean">닿는 범위</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">jungle</span>
+        <span class="ref-ipa">[ˈdʒʌŋɡəl]</span>
+        <span class="ref-kr"><span class="s">정</span>글</span>
+        <span class="ref-mean">정글 (j="ㅈ")</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">quicksand</span>
+        <span class="ref-ipa">[ˈkwɪksænd]</span>
+        <span class="ref-kr"><span class="s">퀵</span>샌드</span>
+        <span class="ref-mean">모래 늪</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — awful (모음 소리로 시작!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">awful</p><p class="word-mean">끔찍한</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ an awful</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɔːfəl]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">오</span>펄</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>aw-</b>: "오" [ɔː] — 입을 둥글게, 길게!<br>
+        🔸 <b>-ful</b>: "펄" [fəl] — 약하게!<br>
+        🔸 📌 <b>a/an은 철자가 아니라 발음(소리)</b>으로 정해요!<br>
+        &nbsp;&nbsp;&nbsp;awful은 <b>a</b>로 시작하는 철자지만, 소리는 <b>모음</b>[ɔː] → <b>an awful</b> ✓<br>
+        🔸 비교: <b>a u</b>niversity(y 자음소리) / <b>an h</b>our(h 묵음이라 모음소리)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — answered (w는 묵음!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">answered</p><p class="word-mean">응답된</p></div>
+        <span class="word-tag">w 묵음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈænsərd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">앤</span>서드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>an-</b>: "앤" [æn] — a가 "애"!<br>
+        🔸 <b>-swer-</b>: "서" [sər] — <b>w는 묵음</b>! "앤스웨어드"(✗) → "앤서드"(✓)<br>
+        🔸 <b>-ed</b>: "드" [d]<br>
+        🔸 <b>haven't my prayers been answered</b>: "해븐마이 프레어즈 빈 앤서드" 🙏
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">prayers</p><p class="word-mean">기도들</p></div>
+        <span class="word-tag">air 소리</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[prɛrz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">프레</span>어즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>pra-</b>: pr을 붙여서 "프레" [prɛ]<br>
+        🔸 <b>-yers</b>: "어즈" [ərz] — air 소리!<br>
+        🔸 ⚠️ <b>prayer</b>[프레어](기도) vs <b>player</b>[플레이어](선수) — pr/pl 구별!<br>
+        🔸 <b>my empty prayers</b> = 나의 텅 빈 기도들 🙏
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">jungle</p><p class="word-mean">정글</p></div>
+        <span class="word-tag">j = "ㅈ"</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈdʒʌŋɡəl]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">정</span>글</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>jun-</b>: "정" [dʒʌŋ] — j는 "ㅈ" + "ㄷ" 사이 소리!<br>
+        🔸 <b>-gle</b>: "글" [ɡəl]<br>
+        🔸 <b>lonely jungle</b> = 외로운 정글 (제목 표현!) 🌫️<br>
+        🔸 같은 j: <b>j</b>oy[조이], <b>j</b>ump[점프]
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">quicksand</p><p class="word-mean">모래 늪</p></div>
+        <span class="word-tag">복합어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈkwɪksænd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">퀵</span>샌드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>quick</b>(빠른) + <b>sand</b>(모래) = quicksand<br>
+        🔸 <b>qu-</b>: "퀴" [kwɪ] — q는 항상 "쿠+w"!<br>
+        🔸 <b>this quicksand under my feet is suffocating me</b> = 발밑의 이 모래 늪이 날 숨 막히게 해<br>
+        🔸 발버둥 칠수록 더 빠져드는 이미지 — 헤어나올 수 없는 상황의 비유예요 🌀
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Lonely in the Jungle</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 such an awful feeling <span>· 정말 끔찍한 기분</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">The clock is broken and I'm losing count — it's such an awful feeling.</p>
+      <p class="listen-ko">시계도 고장났고 몇 시인지도 모르겠어 — 정말 끔찍한 기분이야.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;The clock is broken and I'm losing count — it's such an awful feeling.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;The clock is broken and I'm losing count — it's such an awful feeling.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;The clock is broken and I'm losing count — it's such an awful feeling.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Waiting for news you're afraid to hear is such an awful feeling.</p>
+      <p class="listen-ko">듣기 두려운 소식을 기다리는 건 정말 끔찍한 기분이야.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Waiting for news you're afraid to hear is such an awful feeling.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Waiting for news you're afraid to hear is such an awful feeling.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;Waiting for news you're afraid to hear is such an awful feeling.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 haven't ~ been answered <span>· 응답받지 못했다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">If there's a God in this lonely jungle, why haven't my prayers been answered?</p>
+      <p class="listen-ko">이 외로운 정글에 신이 있다면, 왜 내 기도들은 응답받지 못한 걸까?</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;If there's a God in this lonely jungle, why haven't my prayers been answered?&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;If there's a God in this lonely jungle, why haven't my prayers been answered?&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;If there's a God in this lonely jungle, why haven't my prayers been answered?&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">I sent three emails, but none of them have been answered yet.</p>
+      <p class="listen-ko">이메일을 세 통 보냈는데, 아직 하나도 답장을 못 받았어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I sent three emails, but none of them have been answered yet.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'I sent three emails, but none of them have been answered yet.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'I sent three emails, but none of them have been answered yet.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 out of reach <span>· 닿을 수 없는</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">You're just out of my reach when I look in your brown eyes.</p>
+      <p class="listen-ko">네 갈색 눈동자를 바라볼 때도, 넌 내 손이 닿지 않는 곳에 있어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;You're just out of my reach when I look in your brown eyes.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;You're just out of my reach when I look in your brown eyes.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;You're just out of my reach when I look in your brown eyes.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">That dream job feels completely out of reach right now.</p>
+      <p class="listen-ko">그 꿈의 직장은 지금 완전히 손에 닿지 않는 것처럼 느껴져.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'That dream job feels completely out of reach right now.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'That dream job feels completely out of reach right now.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'That dream job feels completely out of reach right now.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#EAEEF5;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#1A2E52;border:1px solid #AEBEDD">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div><h2>문장 암기</h2><p>빈칸 채우기 + 발음 연습 · Lonely in the Jungle</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      ✏️ <b>빈칸에 알맞은 영어 단어를 직접 입력</b>해서 오늘 배운 문장을 통째로 외워봐요!<br>
+      <b>오늘의 세 문장 + 표현별 예문</b>까지 전부 연습할 수 있어요.<br>
+      난이도를 골라 도전하세요 — <b>Level 1</b>(쉬움) → <b>Level 2</b>(보통) → <b>Level 3</b>(어려움)<br>
+      💡 각 칸을 채우고 <b>"정답 확인"</b>(또는 Enter)을 누르면 채점돼요.<br>
+      🔊 문장마다 <b>발음 듣기 버튼</b>이 있어요 — 듣고 따라 하면 더 빨리 외워져요!
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" id="lv1" onclick="setLevel(1,this)">Level 1<span>핵심 단어</span></button>
+      <button class="level-btn" id="lv2" onclick="setLevel(2,this)">Level 2<span>표현 위주</span></button>
+      <button class="level-btn" id="lv3" onclick="setLevel(3,this)">Level 3<span>거의 전체</span></button>
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">정답 확인을 누르면 점수가 표시돼요</div>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+
+    <div class="quiz-card" style="background:#EAEEF5;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#1A2E52;border:1px solid #AEBEDD;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌧️ [Good Morning Pops] Lonely in the Jungle
+— Khamari · To Dry A Tear
+
+🎵 2025년 7월 25일 발매
+   작사·작곡: Diederik van Elsas,
+             Khamari Barnes, Parrish Warrington
+
+   사랑에 응답받지 못하는 외로움을
+   정글에서 홀로 헤매는 이미지에 빗댄 곡 🌫️
+
+👏 a/an 관사 하나만 고치면 완벽해요!
+   a awful → an awful (모음 소리 기준!)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 such an awful feeling
+   정말 끔찍한 기분
+   • The clock is broken and I'm losing
+     count — it's such an awful feeling.
+     (시계도 고장났고 몇 시인지도
+      모르겠어 — 정말 끔찍한 기분이야.)
+   • Waiting for news you're afraid to
+     hear is such an awful feeling.
+     (듣기 두려운 소식을 기다리는 건
+      정말 끔찍한 기분이야.)
+💡 a/an은 철자가 아니라 소리 기준!
+   awful은 모음 소리[ɔː] → an awful ✓
+   비교: a university / an hour
+
+🔹 haven't ~ been answered
+   응답받지 못했다
+   • If there's a God in this lonely jungle,
+     why haven't my prayers been answered?
+     (이 외로운 정글에 신이 있다면, 왜
+      내 기도들은 응답받지 못한 걸까?)
+   • I sent three emails, but none of
+     them have been answered yet.
+     (이메일을 세 통 보냈는데, 아직
+      하나도 답장을 못 받았어.)
+💡 prayers가 응답을 받는 쪽이라 수동태!
+   have/haven't been + p.p. = 현재완료 수동태
+   비슷한 표현: go unanswered
+
+🔹 out of reach
+   손이 닿지 않는, 닿을 수 없는
+   • You're just out of my reach when
+     I look in your brown eyes.
+     (네 갈색 눈동자를 바라볼 때도,
+      넌 내 손이 닿지 않는 곳에 있어.)
+   • That dream job feels completely
+     out of reach right now.
+     (그 꿈의 직장은 지금 완전히
+      손에 닿지 않는 것처럼 느껴져.)
+💡 reach가 명사로 "닿을 수 있는 범위"
+   물리적·감정적 거리 모두에 써요!
+   반대 표현: within reach
+
+🔊 발음 팁
+   • awful = [오]펄 (aw는 "오"! 모음소리)
+   • answered = [앤]서드 (w는 묵음!)
+     "앤스웨어드" ✗ → "앤서드" ✓
+   • prayers = [프레]어즈 (player와 구별!)
+   • jungle = [정]글 (j는 "ㅈ" 소리)
+
+——————————————————
+#GoodMorningPops #팝송영어 #LonelyInTheJungle #Khamari</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "📝 오늘의 세 문장",
+    items: [
+      { ko:"그건 정말 끔찍한 기분이에요.", en:"It's such an awful feeling.", key:["awful","feeling"] },
+      { ko:"왜 내 기도들은 응답을 받지 못한 걸까요?", en:"Why haven't my prayers been answered?", key:["prayers","answered"] },
+      { ko:"당신은 내 손이 닿지 않는 곳에 있네요.", en:"You're just out of my reach.", key:["out","reach"] }
+    ]
+  },
+  {
+    title: "🔹 such an awful feeling",
+    items: [
+      { ko:"시계도 고장났고 몇 시인지도 모르겠어 — 정말 끔찍한 기분이야.", en:"The clock is broken and I'm losing count, it's such an awful feeling.", key:["broken","losing","awful"] },
+      { ko:"듣기 두려운 소식을 기다리는 건 정말 끔찍한 기분이야.", en:"Waiting for news you're afraid to hear is such an awful feeling.", key:["Waiting","afraid","awful"] }
+    ]
+  },
+  {
+    title: "🔹 haven't ~ been answered",
+    items: [
+      { ko:"이 외로운 정글에 신이 있다면, 왜 내 기도들은 응답받지 못한 걸까?", en:"If there's a God in this lonely jungle, why haven't my prayers been answered?", key:["jungle","prayers","answered"] },
+      { ko:"이메일을 세 통 보냈는데, 아직 하나도 답장을 못 받았어.", en:"I sent three emails, but none of them have been answered yet.", key:["emails","answered","yet"] }
+    ]
+  },
+  {
+    title: "🔹 out of reach",
+    items: [
+      { ko:"네 갈색 눈동자를 바라볼 때도, 넌 내 손이 닿지 않는 곳에 있어.", en:"You're just out of my reach when I look in your brown eyes.", key:["reach","brown","eyes"] },
+      { ko:"그 꿈의 직장은 지금 완전히 손에 닿지 않는 것처럼 느껴져.", en:"That dream job feels completely out of reach right now.", key:["dream","completely","reach"] }
+    ]
+  }
+];
+
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return s.toLowerCase().replace(/[.,!?'"\u2014\u2013\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level===1) target = Math.max(1, Math.round(n*0.20));
+  else if(level===2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">'+ item.ko +'</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blankIdx.length +'칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blankIdx.indexOf(wi) >= 0){
+          var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+          var pre = m ? m[1] : '';
+          var core = m && m[2] ? m[2] : w;
+          var post = m ? m[3] : '';
+          var size = Math.max(core.length, 4);
+          if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+          html += '<input class="quiz-blank" data-q="'+qi+'" data-w="'+wi+'" data-ans="'+encodeURIComponent(core)+'" size="'+size+'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkOne('+qi+')">';
+          if(post) html += '<span class="quiz-word">'+ post +'</span>';
+        } else {
+          html += '<span class="quiz-word">'+ w +'</span>';
+        }
+        html += ' ';
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne('+qi+')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne('+qi+')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.8)">🚶 보통</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',1.0)">🏃 원어민</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz2(this,'+qi+')">▶ 2회 반복</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr'+qi+'"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="'+qi+'"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayQuiz2(btn, qi){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr'+qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr'+qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">'+ getQuizText(qi) +'</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi=0; qi<total; qi++){
+    if(checkOne(qi)) correct++;
+  }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1){
+    label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  } else if(ratio >= 0.7){
+    label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  } else if(ratio >= 0.4){
+    label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  } else {
+    label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderQuiz);
+if(document.readyState !== 'loading') renderQuiz();
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

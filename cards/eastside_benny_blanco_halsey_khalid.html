@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eastside — benny blanco, Halsey & Khalid</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FBEDF0;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #B84A6A;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#F5CDD8;border-color:#6E1A30;color:#450F1E}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #EEB6C4}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#F5CDD8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#F5CDD8;color:#450F1E;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #F0C0CC;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #F0C0CC;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #F0C0CC;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#6E1A30}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#F5CDD8;color:#450F1E;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FBEDF0;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #EEB6C4}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #F0C0CC}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#450F1E}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #F0C0CC;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FBEDF0;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FBEDF0;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#450F1E;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #F0C0CC;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#F5CDD8;color:#450F1E;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FBEDF0;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#6E1A30;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#450F1E;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #F0C0CC;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#F5CDD8;color:#450F1E;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#EEB6C4}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #F0C0CC;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#6E1A30;background:#F5CDD8;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#450F1E;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FBEDF0;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#F5CDD8;color:#450F1E;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#FBEDF0;border-left:3px solid #6E1A30;border-radius:10px;padding:12px 14px;font-size:13px;color:#6E1A30;line-height:1.8}
+  .twist-box b{color:#450F1E;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#F5CDD8;color:#450F1E;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #B84A6A}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #F0C0CC;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #EEB6C4;background:#FBEDF0;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#F5CDD8;border-color:#B84A6A}
+  .speed-btn.playing{background:#F5CDD8;border-color:#6E1A30;box-shadow:0 0 0 2px #F5CDD8}
+  .speed-label{font-size:13px;font-weight:600;color:#450F1E;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#F5CDD8;color:#450F1E;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#EEB6C4}
+  .play-all-btn.playing{background:#6E1A30;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#6E1A30;background:#F5CDD8;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#98304C;font-weight:500}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌆</div>
+      <div>
+        <h2>Eastside</h2>
+        <p>benny blanco, Halsey &amp; Khalid &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FBEDF0;border:1px solid #B84A6A;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#450F1E;line-height:1.7">
+      🌆 <b>benny blanco, Halsey & Khalid</b> · 2018<br>
+      팝 프로듀서 <b>benny blanco</b>가 R&B 스타 <b>Khalid</b>와 일렉트로팝 아티스트 <b>Halsey</b>를 초빙해 만든 곡이에요. <b>Ed Sheeran</b>도 작곡에 참여했죠!<br>
+      <b>"Eastside"</b>는 어린 시절 첫사랑을 회상하며, <b>그때 그 사람과 함께 도망치고 싶다</b>는 애틋한 향수를 담은 곡이에요 🚗<br>
+      👏 <b>세 문장 모두 가사와 정확히 일치해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">그걸로 충분했어요</p>
+          <div class="sent-row">
+            <span class="sent-right">That was enough.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>We used to hold hands, man, that was enough</b> — 완벽해요! 👏<br>
+            💡 <b>That was enough</b> = 그걸로 충분했다 (더 바랄 게 없었다)<br>
+            &nbsp;&nbsp;<b>enough</b> = 충분한 → "손만 잡아도 그걸로 족했다"는 순수한 첫사랑의 감정!<br>
+            &nbsp;&nbsp;<b>used to + 동사</b> = (과거에) ~하곤 했다 (지금은 아닌 과거의 습관!) 💕
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">우리가 마음만 먹으면 무엇이든지 할 수 있어요</p>
+          <div class="sent-row">
+            <span class="sent-right">We can do anything if we put our minds to it.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>We can do anything if we put our minds to it</b> — 완벽해요! 👏<br>
+            💡 <b>put one's mind to ~</b> = ~에 마음을 쏟다, 작정하고 덤비다<br>
+            &nbsp;&nbsp;직역은 "~에 마음을 놓다"인데, <b>"작정하면, 마음만 먹으면"</b>이라는 뜻이에요!<br>
+            &nbsp;&nbsp;<b>if we put our minds to it</b> = 우리가 마음만 먹으면 (조건절!) 💪
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">난 어렸을 때를 떠올리고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I'm thinking back to when I was young.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Now I, I'm thinking back to when I was young</b> — 완벽해요! 👏<br>
+            💡 <b>think back to ~</b> = ~을 회상하다, 돌이켜 생각하다<br>
+            &nbsp;&nbsp;<b>back</b>(뒤로) 덕분에 "과거로 돌아가 생각한다"는 뉘앙스가 생겨요!<br>
+            &nbsp;&nbsp;<b>when I was young</b> = 내가 어렸을 때 (명사절 — think back to의 목적어!) 🕰️
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">that was enough</p>
+      <p class="expr-ko">그걸로 충분했다</p>
+      <span class="expr-tag">used to + enough</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>We used to just hold hands and talk for hours, and that was enough for me.</b><br>→ 우린 그저 손잡고 몇 시간씩 얘기하곤 했는데, 난 그걸로 충분했어.</p>
+        <p><b>A simple thank-you note would have been enough to make her day.</b><br>→ 간단한 감사 편지 한 장이면 그녀를 행복하게 하기에 충분했을 거야.</p>
+        <p class="ex-note">💡 <b>be enough</b> = 충분하다, 족하다<br><b>used to + 동사</b> = (과거에) ~하곤 했다 (지금은 아닌 옛 습관!)<br>📌 <b>enough</b>는 명사 뒤에도 와요: <b>time enough</b>(충분한 시간), <b>good enough</b>(충분히 좋은)<br>비슷한 표현: <b>That's all I needed</b>(그거면 됐어), <b>I couldn't ask for more</b>(더 바랄 게 없어)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">put one's mind to ~</p>
+      <p class="expr-ko">마음먹고 덤비다, 작정하다</p>
+      <span class="expr-tag">의지 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>We can do anything if we really put our minds to it and never give up.</b><br>→ 우리가 정말 마음만 먹고 절대 포기하지 않으면 뭐든 할 수 있어.</p>
+        <p><b>Once she puts her mind to something, nothing can stop her from finishing it.</b><br>→ 그녀는 일단 뭔가에 마음을 먹으면, 그 무엇도 그녀가 끝내는 걸 막을 수 없어.</p>
+        <p class="ex-note">💡 <b>put one's mind to ~</b> = ~에 마음을 쏟다 → 작정하고 덤비다, 마음먹다<br>"결심하고 온 힘을 쏟으면 못 할 게 없다"는 격려의 뉘앙스! 💪<br>📌 자주 쓰는 통짜 표현: <b>if you put your mind to it</b>(네가 마음만 먹으면)<br>비슷한 표현: <b>be determined to ~</b>(~하기로 굳게 결심하다), <b>set your mind on ~</b>(~에 몰두하다)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">think back to ~</p>
+      <p class="expr-ko">~을 회상하다, 돌이켜 생각하다</p>
+      <span class="expr-tag">회상 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Whenever I hear this song, I think back to when I was young and carefree.</b><br>→ 이 노래를 들을 때마다, 난 걱정 없던 어린 시절을 떠올려.</p>
+        <p><b>She often thinks back to the summers she spent at her grandmother's house.</b><br>→ 그녀는 할머니 집에서 보낸 여름들을 자주 회상해.</p>
+        <p class="ex-note">💡 <b>think back to ~</b> = ~을 회상하다, 과거를 돌이켜 생각하다<br><b>back</b>(뒤로)이 "과거로 돌아가"라는 시간의 방향을 만들어요 🕰️<br>📌 <b>look back on ~</b>도 비슷해요: 지난 일을 돌아보다<br>비슷한 표현: <b>reminisce about ~</b>(추억에 잠기다), <b>reflect on ~</b>(되새기다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>That was enough.</span> → 그걸로 충분했어요.<br>
+      <span>We can do anything if we put our minds to it.</span> → 우리가 마음만 먹으면 무엇이든지 할 수 있어요.<br>
+      <span>I'm thinking back to when I was young.</span> → 난 어렸을 때를 떠올리고 있어요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌆</div>
+      <div><h2>곡 이야기</h2><p>Eastside · benny blanco, Halsey & Khalid</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>benny blanco</b>는 수많은 히트곡을 만든 미국 팝 프로듀서예요. <b>"Eastside"</b>는 그의 첫 솔로 싱글로, R&B 스타 <b>Khalid</b>와 일렉트로팝 아티스트 <b>Halsey</b>가 함께했어요. 게다가 작곡에는 <b>Ed Sheeran</b>도 참여했죠!
+        </p>
+        <p class="story-p">
+          2018년 발매되어 전 세계적으로 큰 사랑을 받았어요. 미국 빌보드 Hot 100은 물론, 여러 나라 차트에서 상위권에 올랐죠 🌍
+        </p>
+        <p class="story-p">
+          <b>"Eastside"</b>는 <b>어린 시절 첫사랑을 회상</b>하는 곡이에요. 도시 동쪽 동네(Eastside)에서 몰래 만나던 그 시절, 그리고 어른이 된 지금 — <b>그때 그 사람과 함께 도망치고 싶다</b>는 애틋한 향수를 담았어요 🚗
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 (Khalid) — 순수했던 첫사랑</b><br>어렸을 때 난 사랑에 빠졌어. 우린 손만 잡곤 했는데, <b>그걸로 충분했어</b>(오늘 첫 문장!). 그러다 자라면서 더 가까워졌고, 버스 뒷자리 불빛 아래에서 키스하곤 했지. 네 아빠는 날 별로 안 좋아하셨고, 네가 운명이라고 말해도 안 믿으셨어. 그래도 넌 매일 밤 창문으로 몰래 빠져나와 날 만나러 왔어. 💕</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — Eastside에서의 만남</b><br>넌 <b>Eastside(동쪽 동네)</b>에서 날 만나곤 했어 — 해가 지지 않는 도시에서. 매일 우린 <b>파란 콜벳(blue Corvette)</b>을 타고 뒷골목을 누볐지. 오늘 밤 떠나고 싶어. 우린 어디든 갈 수 있어 — 해안까지 달려가 바다에 뛰어들자, 그냥 내 손을 잡고 함께 가자. 🚗</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Bridge — 마음만 먹으면</b><br><b>우린 마음만 먹으면 뭐든 할 수 있어</b>(두 번째 문장!). 지난 삶에 줄을 쫙 긋고 새로 시작하는 거야. 네가 받아들일 마음만 있다면 내 사랑은 네 거야. 네 마음을 줘 — 절대 아프게 하지 않을게. 오늘부터 함께 떠나, 다른 곳에서 새 삶을 시작하자. 💪</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Verse 2 (Halsey) — 어른이 된 현실</b><br>열일곱, 우린 가정을 꾸리는 꿈을 꿨어 — 집도, 그 사이 모든 것도. 그런데 갑자기 스물셋이 됐고, 인생을 더 진지하게 살라는 압박을 받게 됐지. 막다른 직장, 밀린 청구서, 옛 친구들은 이제 적이 됐어. <b>그래서 지금 난 어렸을 때를 떠올려</b>(세 번째 문장!) — 사랑에 빠지던 그 시절을. 🕰️</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          🌆 <b>두 개의 시간이 겹치는 노래</b><br><br>
+          이 곡은 <b>과거와 현재</b>를 교차시켜요. Khalid가 부르는 앞부분은 <b>순수했던 첫사랑</b>의 추억 — 손만 잡아도 충분했던, 몰래 만나던 그 시절이에요.<br><br>
+          그런데 Halsey가 부르는 뒷부분은 <b>어른이 된 현실</b>이에요 — <b>dead-end jobs</b>(막다른 직장), <b>bills to pay</b>(청구서), 적이 되어버린 친구들. 열일곱에 꾸던 꿈과는 너무 다른 삶이죠.<br><br>
+          그래서 <b>"I'm thinking back to when I was young"</b>(어렸을 때를 떠올려)이 이 곡의 심장이에요. 팍팍한 현실에서, 가장 순수했던 그 사랑으로 <b>도망치고 싶은 마음</b> — 누구나 한 번쯤 느껴봤을 향수를 노래해요 💫
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① That was enough</p>
+          <p class="learn-ko">그걸로 충분했어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② We can do anything if we put our minds to it</p>
+          <p class="learn-ko">우리가 마음만 먹으면 무엇이든지 할 수 있어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ I'm thinking back to when I was young</p>
+          <p class="learn-ko">난 어렸을 때를 떠올리고 있어요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=benny+blanco+Halsey+Khalid+Eastside+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Eastside 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 benny blanco · Halsey · Khalid · Ed Sheeran 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌆</div>
+      <div><h2>핵심 단어 발음</h2><p>Eastside · benny blanco, Halsey & Khalid</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">enough</span>
+        <span class="ref-ipa">[ɪˈnʌf]</span>
+        <span class="ref-kr">이<span class="s">너</span>프</span>
+        <span class="ref-mean">충분한 (gh=f!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">mind</span>
+        <span class="ref-ipa">[maɪnd]</span>
+        <span class="ref-kr"><span class="s">마</span>인드</span>
+        <span class="ref-mean">마음, 정신</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">young</span>
+        <span class="ref-ipa">[jʌŋ]</span>
+        <span class="ref-kr"><span class="s">영</span></span>
+        <span class="ref-mean">어린 (yu 주의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">anything</span>
+        <span class="ref-ipa">[ˈɛniθɪŋ]</span>
+        <span class="ref-kr"><span class="s">에</span>니씽</span>
+        <span class="ref-mean">무엇이든 (th!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">thinking</span>
+        <span class="ref-ipa">[ˈθɪŋkɪŋ]</span>
+        <span class="ref-kr"><span class="s">씽</span>킹</span>
+        <span class="ref-mean">생각하는 (th!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">Eastside</span>
+        <span class="ref-ipa">[ˈiːstsaɪd]</span>
+        <span class="ref-kr"><span class="s">이</span>스트사이드</span>
+        <span class="ref-mean">동쪽 동네</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — enough (gh = "f"!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">enough</p><p class="word-mean">충분한</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ gh = "프" 소리</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɪˈnʌf]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">이<span class="stress">너</span>프</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>e-</b>: "이" 약하게 [ɪ]<br>
+        🔸 <b>-nough</b>: "너프" [nʌf] — NUF에 강세! o가 "어" 소리<br>
+        🔸 ⚠️ <b>gh가 "f"(프) 소리</b>! "이너그"(✗) → "이너프"(✓)<br>
+        🔸 같은 gh=f: lau<b>gh</b>[래프], cou<b>gh</b>[코프], tou<b>gh</b>[터프], rou<b>gh</b>[러프]<br>
+        🔸 <b>That was enough</b>: "댓워<b>즈</b>이너프" (was의 s가 "ㅈ"!)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — th 발음 (anything, thinking)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">thinking</p><p class="word-mean">생각하는</p></div>
+        <span class="word-tag">th = 혀를 이 사이에</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈθɪŋkɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">씽</span>킹</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>th</b> [θ]: 혀끝을 윗니와 아랫니 사이에 살짝 물고 바람을! (s 아님!)<br>
+        🔸 "씽"과 "띵"의 중간 소리예요 — 혀가 이 사이로 살짝 나와요<br>
+        🔸 <b>-nking</b>: "ㅇ킹" [ŋkɪŋ]<br>
+        🔸 같은 th: <b>th</b>ank[쌩크], <b>th</b>ree[쓰리], <b>th</b>ing[씽], bir<b>th</b>day[버쓰데이]<br>
+        🔸 <b>anything</b>[에니씽], <b>thinking</b>[씽킹] — 둘 다 th!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">young</p><p class="word-mean">어린, 젊은</p></div>
+        <span class="word-tag">yu = 여</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[jʌŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">영</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>y-</b>: "여" [j] — 반모음!<br>
+        🔸 <b>-oung</b>: "엉" [ʌŋ] — o가 "어" 소리, ng는 콧소리!<br>
+        🔸 전체는 "영"에 가까워요 — "영"과 "영ng"의 중간! "야웅"(✗)<br>
+        🔸 <b>when I was young</b>: "웨나이워즈 <b>영</b>" (내가 어렸을 때) 🕰️
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">put our minds to</p><p class="word-mean">마음을 쏟다</p></div>
+        <span class="word-tag">연음 덩어리</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[pʊt aʊər maɪndz tu]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">푸<span class="stress">라</span>월 <span class="stress">마</span>인즈투</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>put our</b>: "풋 아워"가 아니라 <b>"푸라워"</b> — t + our 연음!<br>
+        🔸 미국식 t는 "ㄹ"처럼: pu<b>t</b> our → "푸<b>라</b>워"<br>
+        🔸 <b>minds</b>: "마인즈" [maɪndz] — ds가 "즈"!<br>
+        🔸 전체: <b>"푸라워 마인즈투잇"</b> (put our minds to it) 💪
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">think back to</p><p class="word-mean">회상하다</p></div>
+        <span class="word-tag">연음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[θɪŋk bæk tu]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">씽</span>크 <span class="stress">백</span>투</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>think</b>: "씽크" [θɪŋk] — th 발음!<br>
+        🔸 <b>back to</b>: "백투" [bæk tu] — k + to가 이어져요<br>
+        🔸 <b>think back to ~</b> = ~을 회상하다 (back = 과거로!)<br>
+        🔸 <b>thinking back to when</b>: "씽킹백투웬" 🕰️
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Eastside</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 that was enough <span>· 그걸로 충분했다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">We used to just hold hands and talk for hours, and that was enough for me.</p>
+      <p class="listen-ko">우린 그저 손잡고 몇 시간씩 얘기하곤 했는데, 난 그걸로 충분했어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'We used to just hold hands and talk for hours, and that was enough for me.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'We used to just hold hands and talk for hours, and that was enough for me.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'We used to just hold hands and talk for hours, and that was enough for me.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">A simple thank-you note would have been enough to make her day.</p>
+      <p class="listen-ko">간단한 감사 편지 한 장이면 그녀를 행복하게 하기에 충분했을 거야.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'A simple thank-you note would have been enough to make her day.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'A simple thank-you note would have been enough to make her day.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'A simple thank-you note would have been enough to make her day.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 put one's mind to ~ <span>· 마음먹고 덤비다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">We can do anything if we really put our minds to it and never give up.</p>
+      <p class="listen-ko">우리가 정말 마음만 먹고 절대 포기하지 않으면 뭐든 할 수 있어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'We can do anything if we really put our minds to it and never give up.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'We can do anything if we really put our minds to it and never give up.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'We can do anything if we really put our minds to it and never give up.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Once she puts her mind to something, nothing can stop her from finishing it.</p>
+      <p class="listen-ko">그녀는 일단 뭔가에 마음을 먹으면, 그 무엇도 그녀가 끝내는 걸 막을 수 없어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Once she puts her mind to something, nothing can stop her from finishing it.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Once she puts her mind to something, nothing can stop her from finishing it.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Once she puts her mind to something, nothing can stop her from finishing it.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 think back to ~ <span>· 회상하다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">Whenever I hear this song, I think back to when I was young and carefree.</p>
+      <p class="listen-ko">이 노래를 들을 때마다, 난 걱정 없던 어린 시절을 떠올려.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Whenever I hear this song, I think back to when I was young and carefree.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Whenever I hear this song, I think back to when I was young and carefree.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Whenever I hear this song, I think back to when I was young and carefree.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">She often thinks back to the summers she spent at her grandmother's house.</p>
+      <p class="listen-ko">그녀는 할머니 집에서 보낸 여름들을 자주 회상해.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;She often thinks back to the summers she spent at her grandmother's house.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;She often thinks back to the summers she spent at her grandmother's house.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;She often thinks back to the summers she spent at her grandmother's house.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#FBEDF0;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#6E1A30;border:1px solid #EEB6C4">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌆 [Good Morning Pops] Eastside
+— benny blanco, Halsey & Khalid
+
+🎵 팝 프로듀서 benny blanco의 곡
+   R&B 스타 Khalid + 일렉트로팝 Halsey 참여
+   (작곡엔 Ed Sheeran도!)
+   어린 시절 첫사랑을 회상하며
+   그때 그 사람과 함께 도망치고 싶은
+   애틋한 향수를 담은 곡 🚗
+
+👏 세 문장 모두 가사와 정확히 일치해요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 that was enough
+   그걸로 충분했다
+   • We used to just hold hands and talk
+     for hours, and that was enough for me.
+     (우린 그저 손잡고 몇 시간씩 얘기하곤
+      했는데, 난 그걸로 충분했어.)
+   • A simple thank-you note would have
+     been enough to make her day.
+     (간단한 감사 편지 한 장이면 그녀를
+      행복하게 하기에 충분했을 거야.)
+💡 be enough = 충분하다, 족하다
+   used to + 동사 = (과거에) ~하곤 했다
+   비슷한 표현: That's all I needed
+              I couldn't ask for more
+
+🔹 put one's mind to ~
+   마음먹고 덤비다, 작정하다
+   • We can do anything if we really put
+     our minds to it and never give up.
+     (우리가 정말 마음만 먹고 절대
+      포기하지 않으면 뭐든 할 수 있어.)
+   • Once she puts her mind to something,
+     nothing can stop her from finishing it.
+     (그녀는 일단 뭔가에 마음을 먹으면,
+      그 무엇도 끝내는 걸 막을 수 없어.)
+💡 ~에 마음을 쏟다 → 작정하고 덤비다
+   "결심하면 못 할 게 없다"는 격려! 💪
+   통짜 표현: if you put your mind to it
+   비슷한 표현: be determined to ~
+
+🔹 think back to ~
+   ~을 회상하다, 돌이켜 생각하다
+   • Whenever I hear this song, I think
+     back to when I was young and carefree.
+     (이 노래를 들을 때마다, 난 걱정
+      없던 어린 시절을 떠올려.)
+   • She often thinks back to the summers
+     she spent at her grandmother's house.
+     (그녀는 할머니 집에서 보낸 여름들을
+      자주 회상해.)
+💡 back(뒤로)이 "과거로 돌아가"를 만들어요 🕰️
+   look back on ~도 비슷 (지난 일을 돌아보다)
+   비슷한 표현: reminisce about ~ (추억에 잠기다)
+
+🔊 발음 팁
+   • enough = 이[너]프 (gh는 "f" 소리!)
+     "이너그" ✗ → "이너프" ✓
+     같은 패턴: laugh, cough, tough
+   • young = [영] (o는 "어", ng는 콧소리!)
+   • thinking/anything = th는 혀를 이 사이에!
+     "씽킹" "에니씽"
+   • put our = "푸라워" (t는 "ㄹ" 연음!)
+
+——————————————————
+#GoodMorningPops #팝송영어 #Eastside #bennyblanco #Halsey #Khalid</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

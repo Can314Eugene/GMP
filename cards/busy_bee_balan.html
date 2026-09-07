@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Busy Bee — 발란</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FFFBF0;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #E8C840;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#FFF0B0;border-color:#C89800;color:#5A4000}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #F0E080}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#FFF0B0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#FFF0B0;color:#5A4000;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #F0E8B0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #F0E8B0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #F0E8B0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#C89800}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#FFF0B0;color:#5A4000;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FFFBF0;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #F0E080}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #F0E8B0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#5A4000}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #F0E8B0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FFFBF0;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FFFBF0;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#5A4000;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #F0E8B0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#FFF0B0;color:#5A4000;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FFFBF0;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#C89800;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#5A4000;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #F0E8B0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#FFF0B0;color:#5A4000;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#F5E080}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🐝</div>
+      <div>
+        <h2>Busy Bee</h2>
+        <p>발란 (Balan) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">그게 당신을 집어삼키게 하지 말아요</p>
+          <div class="sent-row">
+            <span class="sent-right">Don't let it catch up with you.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text"><b>Don't let it catch up with you</b> — "그것이 당신을 따라잡게 두지 마"라는 뜻으로, 스트레스·부담이 자신을 압도하게 두지 말라는 응원의 표현이에요!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">당신의 재능은 태양보다도 밝게 빛나죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Your talent shines bright than sun.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Your talent shines brighter than the sun.</span>
+          </div>
+          <span class="pill-fix">bright → brighter (비교급)</span>
+          <span class="pill-fix">sun → the sun (관사 the)</span>
+          <p class="note-text">
+            가사 정확: <b>Your talent shines brighter than the sun</b><br>
+            ① <b>bright</b>(원급)(✗) → <b>brighter</b>(비교급)(✓) — "~보다 더"는 비교급 -er!<br>
+            ② <b>sun</b>(✗) → <b>the sun</b>(✓) — 태양은 세상에 하나뿐이라 반드시 정관사 <b>the</b>!<br>
+            💡 <b>brighter than the sun</b> = 태양보다 더 밝은 — 최고의 칭찬 표현!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 언제나 나를 감탄하게 만들어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Never falls to impress me.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Never fails to impress me.</span>
+          </div>
+          <span class="pill-fix">falls → fails (완전히 다른 단어!)</span>
+          <p class="note-text">
+            가사 정확: <b>Never fails to impress me</b><br>
+            ⚠️ <b>falls</b>(떨어지다)(✗) → <b>fails</b>(실패하다)(✓) — 발음이 비슷하지만 완전히 다른 단어!<br>
+            💡 <b>never fail to ~</b> = 항상 ~하다, ~하지 않은 적이 없다<br>
+            "You never fail to impress me" = "당신은 항상 나를 감탄하게 해요" (매번 인상적이에요!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">Don't let it catch up with you.</p>
+      <p class="expr-ko">그게 당신을 따라잡게 하지 마세요 / 압도당하지 마세요</p>
+      <span class="expr-tag">격려 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Don't let it catch up with you.</b> → 그게 당신을 집어삼키게 두지 마요.</p>
+        <p><b>The stress will catch up with you if you don't rest.</b> → 쉬지 않으면 스트레스가 결국 당신을 덮칠 거야.</p>
+        <p><b>Don't let your worries catch up with you.</b> → 걱정이 당신을 압도하게 두지 마세요.</p>
+        <p class="ex-note">💡 <b>catch up with ~</b> = 따라잡다, 결국 영향을 미치다<br>부정적인 것(스트레스, 피로, 걱정)이 결국 당신에게 미치는 것을 비유해요!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">shines brighter than the sun</p>
+      <p class="expr-ko">태양보다 더 밝게 빛나다</p>
+      <span class="expr-tag">비교급 칭찬 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Your talent shines brighter than the sun.</b> → 당신의 재능은 태양보다도 밝게 빛나요.</p>
+        <p><b>Her smile shines brighter than the stars.</b> → 그녀의 미소는 별보다도 더 빛나.</p>
+        <p><b>Your future is brighter than you know.</b> → 당신의 미래는 당신이 아는 것보다 더 밝아요.</p>
+        <p class="ex-note">💡 <b>비교급 + than the sun</b> = 태양보다 더 ~한. 최고의 찬사 표현!<br>⚠️ <b>bright than</b>(✗) → <b>brighter than</b>(✓) / <b>the sun</b>(정관사 필수!)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">never fail to impress</p>
+      <p class="expr-ko">항상 감탄하게 만들다 / 매번 인상적이다</p>
+      <span class="expr-tag">칭찬 관용표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>You never fail to impress me.</b> → 당신은 항상 나를 감탄하게 해요.</p>
+        <p><b>This restaurant never fails to impress.</b> → 이 식당은 항상 감탄스러워.</p>
+        <p><b>She never fails to make me laugh.</b> → 그녀는 항상 나를 웃게 만들어.</p>
+        <p><b>The sunset here never fails to take my breath away.</b> → 이 곳의 석양은 항상 숨막히게 아름다워.</p>
+        <p class="ex-note">💡 <b>never fail to + 동사</b> = 항상 ~한다 (빠짐없이, 매번)<br>⚠️ <b>falls</b>(떨어지다) ≠ <b>fails</b>(실패하다/못하다) — 발음 비슷하지만 전혀 다른 뜻!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Don't let it catch up with you.</span> → 그게 당신을 집어삼키게 하지 말아요.<br>
+      <span>Your talent shines brighter than the sun.</span> → 당신의 재능은 태양보다도 밝게 빛나죠.<br>
+      <span>Never fails to impress me.</span> → 당신은 언제나 나를 감탄하게 만들어요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🐝</div>
+      <div><h2>핵심 단어 발음</h2><p>Busy Bee · 발란</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">fails</span>
+        <span class="ref-ipa">[feɪlz]</span>
+        <span class="ref-kr"><span class="s">페</span>일즈</span>
+        <span class="ref-mean">실패하다 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">falls</span>
+        <span class="ref-ipa">[fɔːlz]</span>
+        <span class="ref-kr"><span class="s">폴</span>즈</span>
+        <span class="ref-mean">떨어지다 (혼동 주의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">brighter</span>
+        <span class="ref-ipa">[ˈbraɪtər]</span>
+        <span class="ref-kr"><span class="s">브라</span>이터</span>
+        <span class="ref-mean">더 밝은 (비교급)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">impress</span>
+        <span class="ref-ipa">[ɪmˈprɛs]</span>
+        <span class="ref-kr">임<span class="s">프레</span>스</span>
+        <span class="ref-mean">감탄시키다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">talent</span>
+        <span class="ref-ipa">[ˈtælənt]</span>
+        <span class="ref-kr"><span class="s">탤</span>런트</span>
+        <span class="ref-mean">재능</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">busy bee</span>
+        <span class="ref-ipa">[ˈbɪzi biː]</span>
+        <span class="ref-kr"><span class="s">비</span>지 <span class="s">비</span>이</span>
+        <span class="ref-mean">부지런한 사람</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — fails vs falls</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">fails</p><p class="word-mean">실패하다 → never fail to = 항상 ~하다</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[feɪlz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">페</span>일즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>f + 에이</b>: "페이" [feɪ] — 이중모음!<br>
+        🔸 <b>-ls</b>: "일즈" 부드럽게<br>
+        🔸 <b>fail → fails</b>: "페일" → "페일즈"
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">falls</p><p class="word-mean">떨어지다 (혼동 주의!)</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[fɔːlz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">폴</span>즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>f + 오</b>: "폴" [fɔːl] — 긴 "오"!<br>
+        🔸 🔑 차이: <b>fails [페일즈]</b> vs <b>falls [폴즈]</b><br>
+        모음이 달라요: "에이" vs "오"<br>
+        🔸 "fall" = 떨어지다 / "fail" = 실패하다 — 완전히 다른 뜻!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">brighter</p><p class="word-mean">더 밝은 (bright의 비교급)</p></div>
+        <span class="word-tag">⚠️ 비교급!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈbraɪtər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">브라</span>이터</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>br-</b>: b + r 연결 — "브라" 이중모음<br>
+        🔸 <b>-ter</b>: "터" 약하게 [tər]<br>
+        🔸 <b>bright [브라이트]</b> → <b>brighter [브라이터]</b> (비교급)<br>
+        🔸 ⚠️ <b>bright than</b>(✗) → <b>brighter than</b>(✓) — 비교할 때는 반드시 -er!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">impress</p><p class="word-mean">인상을 주다, 감탄시키다</p></div>
+        <span class="word-tag">강세 위치</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɪmˈprɛs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">임<span class="stress">프레</span>스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>im-</b>: 약하게 "임" [ɪm]<br>
+        🔸 <b>-PRESS</b>에 강세: "임<b>프레</b>스"<br>
+        🔸 <b>impress → impressive → impressed</b><br>
+        🔸 <b>never fails to impress</b>: "네버페일즈투임프레스"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">catch up with</p><p class="word-mean">따라잡다, 결국 미치다</p></div>
+        <span class="word-tag">구동사 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[kætʃ ʌp wɪð]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">캐</span>치 업 위드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>catch</b>: "캐치" [kætʃ] — a = "애" [æ]<br>
+        🔸 <b>up</b>: 약하게 "업"<br>
+        🔸 <b>with</b>: "위드" [wɪð] — th는 혀끝을 이 사이에!<br>
+        🔸 빠르게: "catch up with" → "캐치업위드" 이어서
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🐝 [Good Morning Pops] Busy Bee
+— 발란 (Balan)
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 그게 당신을 집어삼키게 하지 말아요
+→ Don't let it catch up with you. ✓
+   발음: 돈트 렛 잇 캐치업 위드 유
+💡 catch up with = 따라잡다, 결국 압도하다
+   스트레스·부담이 당신을 압도하게 두지 말라는 응원!
+
+2️⃣ 당신의 재능은 태양보다도 밝게 빛나죠
+✗ Your talent shines bright than sun.
+→ Your talent shines brighter than the sun. ✓
+   발음: 유어 탤런트 샤인즈 브라이터 댄 더 썬
+⚠️ bright → brighter (비교급! "~보다 더"는 -er)
+⚠️ sun → the sun (태양은 하나 → 정관사 the 필수!)
+
+3️⃣ 당신은 언제나 나를 감탄하게 만들어요
+✗ Never falls to impress me.
+→ Never fails to impress me. ✓
+   발음: 네버 페일즈 투 임프레스 미
+⚠️ falls(떨어지다) ✗ → fails(실패하다) ✓
+💡 fails [페일즈] vs falls [폴즈] — 모음이 달라요!
+   never fail to ~ = 항상 ~하다 (매번!)
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 fails [페일즈] vs falls [폴즈]
+  fails = "에이" 이중모음 → 실패하다 ✓
+  falls = 긴 "오" → 떨어지다 ✗
+
+🔹 brighter [브라이터]
+  br- 연결 + 이중모음 "라이"
+  bright(원급) → brighter(비교급)!
+
+🔹 impress [임프레스]
+  im- 약하게, -PRESS에 강세!
+
+🔹 catch up with [캐치 업 위드]
+  catch = "캐치" (a = "애"!)
+  with = "위드" (th = 혀끝을 이 사이에!)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 Don't let it catch up with you.
+   그게 당신을 집어삼키게 하지 말아요
+   • The stress will catch up with you if you don't rest.
+     (쉬지 않으면 스트레스가 결국 당신을 덮칠 거야.)
+💡 catch up with = 결국 따라잡다, 압도하다
+
+🔹 shines brighter than the sun
+   태양보다 더 밝게 빛나다
+   • Your future is brighter than you know.
+     (당신의 미래는 당신이 아는 것보다 더 밝아요.)
+💡 비교급(brighter) + than + the + 명사!
+
+🔹 never fail to impress
+   항상 감탄하게 만들다
+   • This restaurant never fails to impress.
+     (이 식당은 항상 감탄스러워.)
+   • She never fails to make me laugh.
+     (그녀는 항상 나를 웃게 만들어.)
+💡 never fail to ~ = 항상 ~한다 (빠짐없이!)
+
+——————————————————
+
+📝 한 번에 정리
+
+Don't let it catch up with you.
+→ 그게 당신을 집어삼키게 하지 말아요.
+
+Your talent shines brighter than the sun.
+→ 당신의 재능은 태양보다도 밝게 빛나죠.
+
+Never fails to impress me.
+→ 당신은 언제나 나를 감탄하게 만들어요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #BusyBee #발란</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

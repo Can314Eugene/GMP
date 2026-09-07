@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sweet Baby — Bothnia (feat. Cody Francis)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FDF0EE;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #C85A48;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#F6D3CB;border-color:#7A2A1C;color:#4A1810}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #EBBBAF}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#F6D3CB;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#F6D3CB;color:#4A1810;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #EFC7BC;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #EFC7BC;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #EFC7BC;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#7A2A1C}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#F6D3CB;color:#4A1810;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FDF0EE;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #EBBBAF}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #EFC7BC}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#4A1810}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EFC7BC;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FDF0EE;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FDF0EE;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#4A1810;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #EFC7BC;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#F6D3CB;color:#4A1810;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FDF0EE;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#7A2A1C;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#4A1810;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #EFC7BC;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#F6D3CB;color:#4A1810;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#EBBBAF}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #EFC7BC;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#7A2A1C;background:#F6D3CB;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#4A1810;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FDF0EE;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#F6D3CB;color:#4A1810;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#FDF0EE;border-left:3px solid #7A2A1C;border-radius:10px;padding:12px 14px;font-size:13px;color:#7A2A1C;line-height:1.8}
+  .twist-box b{color:#4A1810;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#F6D3CB;color:#4A1810;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #C85A48}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #EFC7BC;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #EBBBAF;background:#FDF0EE;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#F6D3CB;border-color:#C85A48}
+  .speed-btn.playing{background:#F6D3CB;border-color:#7A2A1C;box-shadow:0 0 0 2px #F6D3CB}
+  .speed-label{font-size:13px;font-weight:600;color:#4A1810;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#F6D3CB;color:#4A1810;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#EBBBAF}
+  .play-all-btn.playing{background:#7A2A1C;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#7A2A1C;background:#F6D3CB;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#A5442E;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #EBBBAF;background:#fff;color:#A5442E;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#F6D3CB;border-color:#7A2A1C;color:#4A1810}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#C85A48;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#7A2A1C;background:#F6D3CB;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #EFC7BC;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#4A1810;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#AAA;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1A1A2E;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #C85A48;background:#FDF0EE;font-size:15px;font-family:inherit;font-weight:600;color:#7A2A1C;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#F6D3CB;border-bottom-color:#7A2A1C}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#F6D3CB;color:#4A1810;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#EBBBAF}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #EBBBAF;background:#fff;color:#A5442E;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#FDF0EE}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#AAA;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #EBBBAF;background:#FDF0EE;color:#4A1810;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#F6D3CB;border-color:#C85A48}
+  .quiz-say.playing{background:#F6D3CB;border-color:#7A2A1C;box-shadow:0 0 0 2px #F6D3CB}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #EFC7BC;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#7A2A1C}
+  .score-label{font-size:12px;color:#888;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#7A2A1C;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#4A1810}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">💕</div>
+      <div>
+        <h2>Sweet Baby</h2>
+        <p>Bothnia feat. Cody Francis &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FDF0EE;border:1px solid #C85A48;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#4A1810;line-height:1.7">
+      💕 <b>Bothnia</b> feat. <b>Cody Francis</b><br>
+      <b>"Sweet Baby"</b>는 조각조각 부서졌던 마음을 다시 붙여준 사람에게 바치는, 따뜻하고 벅찬 사랑 고백 곡이에요 🧩<br>
+      👏 <b>문장 하나만 살짝 다듬으면 완벽해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 나를 다시 온전하게 만들어주죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">You take all my wrongs and make me better.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">You take all my wrongs and make them better.</span>
+          </div>
+          <span class="pill-fix">me → them</span>
+          <p class="note-text">
+            가사: <b>'Cause you glue all the pieces back together / Yeah you, you take all my wrongs and make them better</b><br>
+            ⚠️ <b>them</b>이 정답이에요! — <b>them</b>은 앞의 <b>my wrongs</b>(내 잘못들)를 가리켜요<br>
+            &nbsp;&nbsp;💡 "네가 <b>날</b> 더 좋게 만든다"가 아니라, "네가 <b>내 잘못들을</b> 더 좋게 만든다"는 뜻이에요!<br>
+            &nbsp;&nbsp;<b>take my wrongs and make them better</b> = 내 잘못들을 가져다가 더 나은 것으로 바꿔주다<br>
+            &nbsp;&nbsp;앞줄의 <b>glue all the pieces back together</b>(조각들을 다시 붙여주다)와 이어지는 아름다운 비유예요 🧩
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">난 완전히 포기하는 사람은 절대로 아니었어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I was never the one to give up the ghost.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I was never the one to give up the ghost, no</b> — 완벽해요! 👏<br>
+            💡 <b>give up the ghost</b> = 완전히 포기하다, (원래는) 죽다, 숨을 거두다<br>
+            &nbsp;&nbsp;원래 뜻은 <b>"영혼(ghost)을 내려놓다" → 죽다</b>인데, 비유적으로 <b>"완전히 포기하다"</b>라는 뜻으로 자주 써요!<br>
+            &nbsp;&nbsp;<b>the one to + 동사원형</b> = ~하는 사람 — "난 그런(포기하는) 사람이 아니었어"라는 뜻이에요 💪
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">생각나는 대로 말하고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I'm thinking out loud.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>And I think to myself / And I'm thinking out loud</b> — 완벽해요! 👏<br>
+            💡 <b>think out loud</b> = 속마음을 그대로 소리 내어 말하다, 생각나는 대로 말하다<br>
+            &nbsp;&nbsp;<b>out loud</b> = 소리 내어, 큰 소리로 (조용히 생각만 하는 게 아니라 <b>입 밖으로!</b>)<br>
+            &nbsp;&nbsp;걸러내지 않은 <b>진심 그대로</b>를 말하고 있다는, 솔직하고 편안한 순간을 보여줘요 💭
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">take ~ and make them better</p>
+      <p class="expr-ko">~을 가져다가 더 나은 것으로 바꾸다</p>
+      <span class="expr-tag">them = 앞말 가리킴</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>You glue all the pieces back together, you take all my wrongs and make them better.</b><br>→ 넌 조각들을 다시 붙여주고, 내 잘못들을 가져다가 더 나은 걸로 바꿔줘.</p>
+        <p><b>A good editor takes your rough ideas and makes them clearer.</b><br>→ 좋은 편집자는 너의 거친 아이디어를 가져다가 더 명확하게 만들어줘.</p>
+        <p class="ex-note">💡 <b>take A and make A better</b> = A를 가져다가 더 나은 것으로 바꾸다<br>대명사 <b>them/it</b>은 항상 <b>앞에 나온 명사</b>를 가리켜요 — 문맥 확인이 중요! 🧩<br>📌 <b>make + 목적어 + 형용사</b> = ~을 …하게 만들다 (5형식!)<br>비슷한 표현: <b>turn ~ into something better</b>(~을 더 나은 것으로 바꾸다)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">give up the ghost</p>
+      <p class="expr-ko">완전히 포기하다</p>
+      <span class="expr-tag">관용 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I was never the one to give up the ghost, even when things looked hopeless.</b><br>→ 상황이 아무리 절망적으로 보여도, 난 완전히 포기하는 사람은 아니었어.</p>
+        <p><b>The old printer finally gave up the ghost after years of jamming.</b><br>→ 그 낡은 프린터는 몇 년간 걸리다가 결국 완전히 멈춰버렸어.</p>
+        <p class="ex-note">💡 <b>give up the ghost</b> = 완전히 포기하다 (사람) / 완전히 고장 나다, 작동을 멈추다 (기계·물건!)<br>원래 뜻은 "영혼을 내려놓다" → 죽다인데, 오늘날은 비유적으로 더 자주 쓰여요<br>📌 기계나 물건에 쓰면 유머러스한 느낌을 줘요 😄<br>비슷한 표현: <b>throw in the towel</b>(수건을 던지다=포기하다), <b>call it quits</b>(그만두다)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">think out loud</p>
+      <p class="expr-ko">생각나는 대로 소리 내어 말하다</p>
+      <span class="expr-tag">out loud = 소리 내어</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>And I think to myself, and I'm thinking out loud — we won't need nothing else.</b><br>→ 혼자 생각하다가, 소리 내어 말해봐 — 우린 다른 게 필요 없을 거야.</p>
+        <p><b>Sorry, I was just thinking out loud, I didn't mean to say that.</b><br>→ 미안, 그냥 생각나는 대로 말한 거야, 그렇게 말할 생각은 아니었어.</p>
+        <p class="ex-note">💡 <b>think out loud</b> = 속으로만 생각하지 않고 소리 내어 말하다<br><b>out loud</b> = 소리 내어, 큰 소리로 (read out loud=소리 내어 읽다)<br>📌 정제되지 않은 <b>날것의 생각</b>을 말할 때 자주 써요 — "그냥 떠오르는 대로 말하자면"<br>비슷한 표현: <b>speak my mind</b>(속마음을 말하다), <b>let it out</b>(털어놓다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>You take all my wrongs and make them better.</span> → 당신은 나를 다시 온전하게 만들어주죠.<br>
+      <span>I was never the one to give up the ghost.</span> → 난 완전히 포기하는 사람은 절대로 아니었어요.<br>
+      <span>I'm thinking out loud.</span> → 생각나는 대로 말하고 있어요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💕</div>
+      <div><h2>곡 이야기</h2><p>Sweet Baby · Bothnia feat. Cody Francis</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Bothnia</b>의 곡으로, 보컬리스트 <b>Cody Francis</b>가 피처링으로 참여했어요.
+        </p>
+        <p class="story-p">
+          <b>"Sweet Baby"</b>는 <b>조각조각 부서졌던 마음을 다시 이어붙여준 사람</b>에게 바치는 곡이에요. 예전에는 사랑을 믿지 못했던 화자가, 한 사람을 만나 마침내 마음을 여는 과정을 그려요 🧩
+        </p>
+        <p class="story-p">
+          따뜻하고 벅찬 사운드 위에 <b>진솔한 사랑 고백</b>이 얹힌 곡이에요.
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 아무나를 위해 노래하지 않던 사람</b><br>난 아무나를 위해 노래를 쓰는 사람이 아니었어요. 늘 옛 대화 속에서 길을 잃곤 했죠. <b>기다리기만 하면 다 풀릴 거라고</b> 늘 들어왔으니까요. 그런데 당신이 나타나서, 내가 완전히 틀렸다는 걸 증명해줬어요. 🎵</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — 조각들을 다시 붙여줘요</b><br>당신은 <b>조각들을 다시 붙여줘요</b>(glue all the pieces back together). <b>당신은 내 잘못들을 가져다가 더 나은 것으로 바꿔줘요</b>(오늘 첫 문장!). 당신은 날 영원히 노력하고 싶게 만들어요. 그리고 난 정말 자유로워진 걸 느껴요, 오 나의 sweet baby. 🧩</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Verse 2 — 갇혀 있던 마음</b><br><b>난 완전히 포기하는 사람은 절대로 아니었어요</b>(두 번째 문장!). 하지만 너무 갇혀 있었죠, 아무것도 변하지 않아서 포기하고 싶어 하면서도 계속 내 역할만 하고 있었어요. 그런데 당신과 함께라면 모든 게 선명해요 — 이제야 모든 색깔의 스펙트럼이 보여요. 🌈</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 소리 내어 하는 생각</b><br>혼자 생각에 잠기다가, <b>생각나는 대로 말하고 있어요</b>(세 번째 문장!). 우리에겐 다른 게 더 필요 없을 거예요, 앞으로 남은 시간 내내요. 그리고 그걸 정말 잘 알아요. 💭</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          💕 <b>"조각(pieces)"이라는 이미지의 힘</b><br><br>
+          이 곡 전체를 관통하는 이미지는 <b>부서진 조각들</b>이에요. <b>glue all the pieces back together</b>(조각들을 다시 붙이다), <b>take all my wrongs and make them better</b>(잘못들을 가져다가 더 나은 것으로) — 화자는 자신을 <b>깨져 있던 존재</b>로 그려요.<br><br>
+          그리고 <b>I was never the one to give up the ghost</b>(완전히 포기하는 사람은 아니었다)라는 구절이 중요해요. 완전히 무너지진 않았지만, <b>정체되어 있었다</b>(so stuck)는 거죠 — 포기하지도, 나아가지도 못하는 상태였던 거예요.<br><br>
+          그 정체된 상태를 깨준 게 바로 상대방이에요. <b>I see colors in every spectrum</b>(모든 색의 스펙트럼이 보여요)이라는 구절이 그 변화를 압축해서 보여줘요 — 흑백이었던 세상이 갑자기 <b>총천연색</b>이 된 거죠 🌈
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① You take all my wrongs and make them better</p>
+          <p class="learn-ko">당신은 나를 다시 온전하게 만들어주죠</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I was never the one to give up the ghost</p>
+          <p class="learn-ko">난 완전히 포기하는 사람은 절대로 아니었어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ I'm thinking out loud</p>
+          <p class="learn-ko">생각나는 대로 말하고 있어요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Bothnia+Sweet+Baby+Cody+Francis+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Sweet Baby 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Bothnia · Cody Francis 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💕</div>
+      <div><h2>핵심 단어 발음</h2><p>Sweet Baby · Bothnia feat. Cody Francis</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">ghost</span>
+        <span class="ref-ipa">[ɡoʊst]</span>
+        <span class="ref-kr"><span class="s">고</span>우스트</span>
+        <span class="ref-mean">유령 (h 묵음!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wrongs</span>
+        <span class="ref-ipa">[rɔːŋz]</span>
+        <span class="ref-kr"><span class="s">렁</span>즈</span>
+        <span class="ref-mean">잘못들 (w 묵음!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">glue</span>
+        <span class="ref-ipa">[ɡluː]</span>
+        <span class="ref-kr"><span class="s">글</span>루</span>
+        <span class="ref-mean">붙이다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">pieces</span>
+        <span class="ref-ipa">[ˈpiːsɪz]</span>
+        <span class="ref-kr"><span class="s">피</span>시즈</span>
+        <span class="ref-mean">조각들</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">spectrum</span>
+        <span class="ref-ipa">[ˈspɛktrəm]</span>
+        <span class="ref-kr"><span class="s">스펙</span>트럼</span>
+        <span class="ref-mean">스펙트럼</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">stuck</span>
+        <span class="ref-ipa">[stʌk]</span>
+        <span class="ref-kr"><span class="s">스턱</span></span>
+        <span class="ref-mean">갇힌, 막힌</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — ghost (h가 묵음!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">ghost</p><p class="word-mean">유령, 영혼</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ gh는 그냥 "ㄱ"</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɡoʊst]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">고</span>우스트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>gho-</b>: "고우" [ɡoʊ] — <b>gh는 그냥 "ㄱ"</b> 소리! h는 안 들려요<br>
+        🔸 <b>-st</b>: "스트" [st]<br>
+        🔸 ⚠️ enough[이너프]에서는 gh가 "f"였는데, ghost는 gh가 "ㄱ"! 단어마다 규칙이 달라요<br>
+        🔸 <b>give up the ghost</b>: "기브업더 고우스트" 👻
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — wrongs (w가 묵음!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">wrongs</p><p class="word-mean">잘못들</p></div>
+        <span class="word-tag">wr = "ㄹ"만</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[rɔːŋz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">렁</span>즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wr-</b>: <b>w는 묵음</b>! r만 발음해요 — "우롱"(✗) → "렁"(✓)<br>
+        🔸 <b>-ongs</b>: "옹즈"[ɔːŋz]<br>
+        🔸 같은 wr- 단어: <b>wr</b>ite[라이트], <b>wr</b>ist[리스트], <b>wr</b>ap[랩]<br>
+        🔸 <b>take all my wrongs</b>: "테이콜마이 렁즈" (all my 연음!)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">glue</p><p class="word-mean">붙이다, 접착제</p></div>
+        <span class="word-tag">gl 연속자음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɡluː]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">글</span>루</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>gl-</b>: g+l 붙여서 "글" — "그루"(✗) → "글루"(✓)<br>
+        🔸 <b>-ue</b>: "우" [uː] — 긴 우 소리!<br>
+        🔸 <b>glue all the pieces back together</b> = 조각들을 다시 붙이다 🧩<br>
+        🔸 감정적으로 "다시 온전하게 만들어주다"는 비유로도 자주 써요
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">out loud</p><p class="word-mean">소리 내어, 큰 소리로</p></div>
+        <span class="word-tag">ou = 아우</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[aʊt laʊd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">아</span>웃 <span class="stress">라</span>우드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>out</b>: "아웃" [aʊt] — ou가 "아우"!<br>
+        🔸 <b>loud</b>: "라우드" [laʊd] — 역시 ou가 "아우"<br>
+        🔸 <b>thinking out loud</b>: "씽킹 아웃 라우드" — 생각나는 대로 소리 내어 말하기 💭<br>
+        🔸 반대: <b>silently</b>(조용히), <b>to myself</b>(혼자 속으로)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">spectrum</p><p class="word-mean">스펙트럼</p></div>
+        <span class="word-tag">SPEC 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈspɛktrəm]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">스펙</span>트럼</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>spec-</b>: "스펙" [spɛk] — SPEC에 강세!<br>
+        🔸 <b>-trum</b>: "트럼" [trəm] — 약하게<br>
+        🔸 <b>I see colors in every spectrum</b> = 모든 색의 스펙트럼이 보여요 🌈<br>
+        🔸 무채색 세상이 컬러풀해진 걸 비유하는 표현이에요
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Sweet Baby</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 take ~ and make them better <span>· 더 나은 것으로 바꾸다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">You glue all the pieces back together, you take all my wrongs and make them better.</p>
+      <p class="listen-ko">넌 조각들을 다시 붙여주고, 내 잘못들을 가져다가 더 나은 걸로 바꿔줘.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'You glue all the pieces back together, you take all my wrongs and make them better.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'You glue all the pieces back together, you take all my wrongs and make them better.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'You glue all the pieces back together, you take all my wrongs and make them better.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">A good editor takes your rough ideas and makes them clearer.</p>
+      <p class="listen-ko">좋은 편집자는 너의 거친 아이디어를 가져다가 더 명확하게 만들어줘.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'A good editor takes your rough ideas and makes them clearer.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'A good editor takes your rough ideas and makes them clearer.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'A good editor takes your rough ideas and makes them clearer.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 give up the ghost <span>· 완전히 포기하다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I was never the one to give up the ghost, even when things looked hopeless.</p>
+      <p class="listen-ko">상황이 아무리 절망적으로 보여도, 난 완전히 포기하는 사람은 아니었어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I was never the one to give up the ghost, even when things looked hopeless.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'I was never the one to give up the ghost, even when things looked hopeless.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'I was never the one to give up the ghost, even when things looked hopeless.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">The old printer finally gave up the ghost after years of jamming.</p>
+      <p class="listen-ko">그 낡은 프린터는 몇 년간 걸리다가 결국 완전히 멈춰버렸어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'The old printer finally gave up the ghost after years of jamming.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'The old printer finally gave up the ghost after years of jamming.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'The old printer finally gave up the ghost after years of jamming.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 think out loud <span>· 생각나는 대로 말하다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">And I think to myself, and I'm thinking out loud — we won't need nothing else.</p>
+      <p class="listen-ko">혼자 생각하다가, 소리 내어 말해봐 — 우린 다른 게 필요 없을 거야.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;And I think to myself, and I'm thinking out loud — we won't need nothing else.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;And I think to myself, and I'm thinking out loud — we won't need nothing else.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;And I think to myself, and I'm thinking out loud — we won't need nothing else.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Sorry, I was just thinking out loud, I didn't mean to say that.</p>
+      <p class="listen-ko">미안, 그냥 생각나는 대로 말한 거야, 그렇게 말할 생각은 아니었어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Sorry, I was just thinking out loud, I didn't mean to say that.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Sorry, I was just thinking out loud, I didn't mean to say that.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;Sorry, I was just thinking out loud, I didn't mean to say that.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#FDF0EE;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#7A2A1C;border:1px solid #EBBBAF">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div><h2>문장 암기</h2><p>빈칸 채우기 + 발음 연습 · Sweet Baby</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      ✏️ <b>빈칸에 알맞은 영어 단어를 직접 입력</b>해서 오늘 배운 문장을 통째로 외워봐요!<br>
+      <b>오늘의 세 문장 + 표현별 예문</b>까지 전부 연습할 수 있어요.<br>
+      난이도를 골라 도전하세요 — <b>Level 1</b>(쉬움) → <b>Level 2</b>(보통) → <b>Level 3</b>(어려움)<br>
+      💡 각 칸을 채우고 <b>"정답 확인"</b>(또는 Enter)을 누르면 채점돼요.<br>
+      🔊 문장마다 <b>발음 듣기 버튼</b>이 있어요 — 듣고 따라 하면 더 빨리 외워져요!
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" id="lv1" onclick="setLevel(1,this)">Level 1<span>핵심 단어</span></button>
+      <button class="level-btn" id="lv2" onclick="setLevel(2,this)">Level 2<span>표현 위주</span></button>
+      <button class="level-btn" id="lv3" onclick="setLevel(3,this)">Level 3<span>거의 전체</span></button>
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">정답 확인을 누르면 점수가 표시돼요</div>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+
+    <div class="quiz-card" style="background:#FDF0EE;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#7A2A1C;border:1px solid #EBBBAF;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">💕 [Good Morning Pops] Sweet Baby
+— Bothnia feat. Cody Francis
+
+🎵 조각조각 부서졌던 마음을
+   다시 이어붙여준 사람에게 바치는 곡
+   따뜻하고 벅찬 사랑 고백 🧩
+
+👏 문장 하나만 살짝 다듬으면 완벽해요!
+   make me better → make them better
+   (them은 앞의 wrongs를 가리켜요!)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 take ~ and make them better
+   ~을 가져다가 더 나은 것으로 바꾸다
+   • You glue all the pieces back together,
+     you take all my wrongs and make
+     them better.
+     (넌 조각들을 다시 붙여주고, 내
+      잘못들을 가져다가 더 나은 걸로 바꿔줘.)
+   • A good editor takes your rough ideas
+     and makes them clearer.
+     (좋은 편집자는 너의 거친 아이디어를
+      가져다가 더 명확하게 만들어줘.)
+💡 them/it은 항상 앞에 나온 명사를 가리켜요
+   make + 목적어 + 형용사 = ~하게 만들다
+
+🔹 give up the ghost
+   완전히 포기하다
+   • I was never the one to give up the
+     ghost, even when things looked hopeless.
+     (상황이 아무리 절망적으로 보여도,
+      난 완전히 포기하는 사람은 아니었어.)
+   • The old printer finally gave up the
+     ghost after years of jamming.
+     (그 낡은 프린터는 몇 년간 걸리다가
+      결국 완전히 멈춰버렸어.)
+💡 사람에겐 "포기하다", 기계에겐
+   "완전히 고장 나다"는 뜻으로도 써요! 😄
+   비슷한 표현: throw in the towel
+
+🔹 think out loud
+   생각나는 대로 소리 내어 말하다
+   • And I think to myself, and I'm
+     thinking out loud — we won't need
+     nothing else.
+     (혼자 생각하다가, 소리 내어 말해봐 —
+      우린 다른 게 필요 없을 거야.)
+   • Sorry, I was just thinking out loud,
+     I didn't mean to say that.
+     (미안, 그냥 생각나는 대로 말한 거야,
+      그렇게 말할 생각은 아니었어.)
+💡 out loud = 소리 내어, 큰 소리로
+   정제되지 않은 날것의 생각을 말할 때!
+   비슷한 표현: speak my mind
+
+🔊 발음 팁
+   • ghost = [고]우스트 (gh는 그냥 "ㄱ"!)
+     enough의 gh(f소리)와는 다른 규칙
+   • wrongs = [렁]즈 (w는 묵음!)
+     같은 패턴: write, wrist, wrap
+   • glue = [글]루 (gl 연속자음!)
+   • out loud = [아]웃 [라]우드 (ou는 "아우")
+
+——————————————————
+#GoodMorningPops #팝송영어 #SweetBaby #Bothnia #CodyFrancis</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "📝 오늘의 세 문장",
+    items: [
+      { ko:"당신은 나를 다시 온전하게 만들어주죠.", en:"You take all my wrongs and make them better.", key:["wrongs","them","better"] },
+      { ko:"난 완전히 포기하는 사람은 절대로 아니었어요.", en:"I was never the one to give up the ghost.", key:["never","give","ghost"] },
+      { ko:"생각나는 대로 말하고 있어요.", en:"I'm thinking out loud.", key:["thinking","loud"] }
+    ]
+  },
+  {
+    title: "🔹 take ~ and make them better",
+    items: [
+      { ko:"넌 조각들을 다시 붙여주고, 내 잘못들을 가져다가 더 나은 걸로 바꿔줘.", en:"You glue all the pieces back together, you take all my wrongs and make them better.", key:["glue","pieces","wrongs","better"] },
+      { ko:"좋은 편집자는 너의 거친 아이디어를 가져다가 더 명확하게 만들어줘.", en:"A good editor takes your rough ideas and makes them clearer.", key:["editor","rough","clearer"] }
+    ]
+  },
+  {
+    title: "🔹 give up the ghost",
+    items: [
+      { ko:"상황이 아무리 절망적으로 보여도, 난 완전히 포기하는 사람은 아니었어.", en:"I was never the one to give up the ghost, even when things looked hopeless.", key:["never","ghost","hopeless"] },
+      { ko:"그 낡은 프린터는 몇 년간 걸리다가 결국 완전히 멈춰버렸어.", en:"The old printer finally gave up the ghost after years of jamming.", key:["printer","ghost","jamming"] }
+    ]
+  },
+  {
+    title: "🔹 think out loud",
+    items: [
+      { ko:"혼자 생각하다가, 소리 내어 말해봐 — 우린 다른 게 필요 없을 거야.", en:"And I think to myself, and I'm thinking out loud, we won't need nothing else.", key:["myself","thinking","loud"] },
+      { ko:"미안, 그냥 생각나는 대로 말한 거야, 그렇게 말할 생각은 아니었어.", en:"Sorry, I was just thinking out loud, I didn't mean to say that.", key:["thinking","loud","mean"] }
+    ]
+  }
+];
+
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return s.toLowerCase().replace(/[.,!?'"\u2014\u2013\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level===1) target = Math.max(1, Math.round(n*0.20));
+  else if(level===2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">'+ item.ko +'</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blankIdx.length +'칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blankIdx.indexOf(wi) >= 0){
+          var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+          var pre = m ? m[1] : '';
+          var core = m && m[2] ? m[2] : w;
+          var post = m ? m[3] : '';
+          var size = Math.max(core.length, 4);
+          if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+          html += '<input class="quiz-blank" data-q="'+qi+'" data-w="'+wi+'" data-ans="'+encodeURIComponent(core)+'" size="'+size+'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkOne('+qi+')">';
+          if(post) html += '<span class="quiz-word">'+ post +'</span>';
+        } else {
+          html += '<span class="quiz-word">'+ w +'</span>';
+        }
+        html += ' ';
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne('+qi+')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne('+qi+')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.8)">🚶 보통</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',1.0)">🏃 원어민</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz2(this,'+qi+')">▶ 2회 반복</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr'+qi+'"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="'+qi+'"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayQuiz2(btn, qi){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr'+qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr'+qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">'+ getQuizText(qi) +'</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi=0; qi<total; qi++){
+    if(checkOne(qi)) correct++;
+  }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1){
+    label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  } else if(ratio >= 0.7){
+    label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  } else if(ratio >= 0.4){
+    label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  } else {
+    label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderQuiz);
+if(document.readyState !== 'loading') renderQuiz();
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

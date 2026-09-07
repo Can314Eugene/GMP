@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make You Mine — Tyron Hapi & Jordie Ireland</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#E9F3EE;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #3E9070;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C4E6D6;border-color:#134E36;color:#083020}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #A9DCC5}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C4E6D6;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C4E6D6;color:#083020;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C6E5D5;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-add{min-width:26px;height:26px;border-radius:50%;background:#E8EEFC;color:#1E3A8A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-add{display:inline-block;background:#E8EEFC;color:#1E3A8A;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C6E5D5;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C6E5D5;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#134E36}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C4E6D6;color:#083020;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#E9F3EE;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #A9DCC5}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C6E5D5}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#083020}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C6E5D5;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #E9F3EE;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#E9F3EE;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#083020;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C6E5D5;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C4E6D6;color:#083020;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#E9F3EE;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#134E36;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#083020;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C6E5D5;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C4E6D6;color:#083020;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#A9DCC5}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #C6E5D5;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#134E36;background:#C4E6D6;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#083020;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #E9F3EE;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#C4E6D6;color:#083020;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#E9F3EE;border-left:3px solid #134E36;border-radius:10px;padding:12px 14px;font-size:13px;color:#134E36;line-height:1.8}
+  .twist-box b{color:#083020;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#C4E6D6;color:#083020;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #3E9070}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #C6E5D5;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #A9DCC5;background:#E9F3EE;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#C4E6D6;border-color:#3E9070}
+  .speed-btn.playing{background:#C4E6D6;border-color:#134E36;box-shadow:0 0 0 2px #C4E6D6}
+  .speed-label{font-size:13px;font-weight:600;color:#083020;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#C4E6D6;color:#083020;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#A9DCC5}
+  .play-all-btn.playing{background:#134E36;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#134E36;background:#C4E6D6;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#2E7050;font-weight:500}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🎸</div>
+      <div>
+        <h2>Make You Mine</h2>
+        <p>Tyron Hapi & Jordie Ireland (feat. Cassadee Pope) &nbsp;·&nbsp; GMP</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#E9F3EE;border:1px solid #3E9070;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#083020;line-height:1.7">
+      🎸 <b>Tyron Hapi & Jordie Ireland</b> (feat. Cassadee Pope) · 2020<br>
+      둘 다 <b>호주 출신 프로듀서</b>예요! Jordie Ireland는 Avicii, Martin Garrix 같은 EDM 아티스트에게서 영향을 받았대요. 보컬은 <b>Cassadee Pope</b>가 맡았어요.<br>
+      <b>"Make You Mine"</b>은 밤낮없이 애쓰며 <b>"너를 내 사람으로 만들고 싶다"</b>고 고백하는 밝고 경쾌한 댄스팝이에요 💚
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">강한 확신이 들어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I got the feeling in my bones.</span>
+          </div>
+          <span class="pill-ok">가사와 거의 일치 ✓</span>
+          <span class="pill-note">가사는 "Got this feeling in my bones"</span>
+          <p class="note-text">
+            가사: <b>Got this feeling in my bones, and I / I've been searching high and low</b><br>
+            💡 <b>feel it in my bones</b> = 뼛속 깊이 느끼다 → <b>강하게 확신하다, 직감하다</b><br>
+            &nbsp;&nbsp;직역은 "뼛속에서 느껴진다"인데, <b>이유는 설명 못 해도 확실히 안다</b>는 직감을 뜻해요! 🦴<br>
+            &nbsp;&nbsp;가사는 <b>this</b>(이 느낌), Eugene님은 <b>the</b>(그 느낌) — 둘 다 자연스러워요. 문법 완벽! 👏
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-add">2</div>
+        <div class="check-body">
+          <p class="check-meaning">전에도 이런 길을 가본 적 있어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I've been down this road sometime before.</span>
+          </div>
+          <span class="pill-add">✍️ Eugene님 창작 문장 (가사엔 없어요)</span>
+          <p class="note-text">
+            이 문장은 가사엔 없지만, <b>문법적으로 완벽하고 아주 자연스러워요!</b> 👏<br>
+            💡 <b>be down this road</b> = 이 길을 가보다 → <b>이런 상황을 겪어보다</b> (비유!)<br>
+            &nbsp;&nbsp;<b>I've been down this road (before)</b>는 원어민이 정말 자주 쓰는 <b>관용 표현</b>이에요.<br>
+            &nbsp;&nbsp;📌 작은 팁: <b>sometime</b>(언젠가)보다 <b>some time</b>(얼마간의 시간)이나 그냥 <b>before</b>만 쓰는 게 더 자연스러워요.<br>
+            &nbsp;&nbsp;→ <b>I've been down this road before.</b> (전에 이 길을 가봤어) 가 가장 깔끔해요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">낭비할 시간이 없어요</p>
+          <div class="sent-row">
+            <span class="sent-right">There's no time to waste.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I know it's late and there's no time to waste</b> — 완벽해요! 👏<br>
+            💡 <b>There's no time to waste</b> = 낭비할 시간이 없다 → <b>서둘러야 한다</b><br>
+            &nbsp;&nbsp;<b>time to waste</b> = 낭비할 시간 (to부정사가 time을 꾸며줘요!)<br>
+            &nbsp;&nbsp;<b>waste</b> = 낭비하다 → "늦었으니 서두르자"는 절박함이 담긴 표현이에요 ⏰
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">feel it in my bones</p>
+      <p class="expr-ko">뼛속 깊이 느끼다 → 강하게 직감하다</p>
+      <span class="expr-tag">직감·확신 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I've got this feeling in my bones that something good is about to happen.</b><br>→ 뭔가 좋은 일이 일어날 것 같은 강한 예감이 들어.</p>
+        <p><b>I can feel it in my bones that we're going to win tonight.</b><br>→ 오늘 밤 우리가 이길 거라는 확신이 뼛속까지 느껴져.</p>
+        <p class="ex-note">💡 <b>feel it in my bones</b> = 뼛속 깊이 느끼다 → 이유는 몰라도 <b>강하게 확신하다</b> 🦴<br>논리적 근거보다는 <b>직감·본능</b>으로 아는 느낌이에요<br>📌 비슷한 표현: <b>I have a gut feeling</b>(직감이 들어), <b>Something tells me ~</b>(왠지 ~할 것 같아)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">be down this road (before)</p>
+      <p class="expr-ko">이런 상황을 (전에) 겪어보다</p>
+      <span class="expr-tag">인생 비유 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I've been down this road before, so I know exactly how it ends.</b><br>→ 난 전에 이 길을 가봤어서, 어떻게 끝날지 정확히 알아.</p>
+        <p><b>We've been down this road together, and we always figure it out.</b><br>→ 우린 이런 상황을 함께 겪어봤고, 늘 방법을 찾아내잖아.</p>
+        <p class="ex-note">💡 <b>be/go down this road</b> = 이 길을 가다 → <b>이런 상황·경험을 겪다</b> (인생을 길에 비유!)<br><b>I've been down this road before</b>는 "이거 겪어봐서 안다"는 뜻의 관용 표현이에요 🛣️<br>📌 <b>go down that road</b> = 그런 길로 가다 (특정 선택을 하다)<br>비슷한 표현: <b>been there, done that</b>(다 겪어봤어)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">no time to waste</p>
+      <p class="expr-ko">낭비할 시간이 없다 → 서둘러야 한다</p>
+      <span class="expr-tag">to부정사 수식</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>The train leaves in ten minutes, so there's no time to waste.</b><br>→ 기차가 10분 뒤에 떠나니까, 낭비할 시간이 없어.</p>
+        <p><b>We have a lot to do today, and no time to waste at all.</b><br>→ 오늘 할 일이 많아서, 조금도 지체할 시간이 없어.</p>
+        <p class="ex-note">💡 <b>no time to waste</b> = 낭비할 시간이 없다 → 서둘러야 한다 ⏰<br><b>time to waste</b>: to부정사가 앞의 <b>time</b>을 꾸며줘요 (낭비할 → 시간)<br>📌 같은 구조: <b>nothing to lose</b>(잃을 게 없다), <b>a lot to do</b>(할 일이 많다), <b>someone to talk to</b>(얘기할 사람)<br>비슷한 표현: <b>Let's not waste any time</b>(시간 낭비하지 말자)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I got the feeling in my bones.</span> → 강한 확신이 들어요.<br>
+      <span>I've been down this road before.</span> → 전에도 이런 길을 가본 적 있어요.<br>
+      <span>There's no time to waste.</span> → 낭비할 시간이 없어요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎸</div>
+      <div><h2>곡 이야기</h2><p>Make You Mine · Tyron Hapi & Jordie Ireland</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Tyron Hapi</b>와 <b>Jordie Ireland</b>는 둘 다 <b>호주 출신 프로듀서</b>예요. 2020년에 함께 <b>"Make You Mine"</b>을 발표했고, 보컬은 미국 싱어송라이터 <b>Cassadee Pope</b>가 맡았어요.
+        </p>
+        <p class="story-p">
+          Jordie Ireland는 어릴 때부터 피아노, 기타, 드럼, 바이올린을 배운 음악 신동이었고, 14살에 <b>Avicii</b>의 공연을 보고 프로듀서의 꿈을 키웠대요 🎹
+        </p>
+        <p class="story-p">
+          이 곡은 밝고 경쾌한 <b>댄스팝</b>이에요. 밤낮없이 애쓰면서 <b>"너를 내 사람으로 만들고 싶다"</b>고 고백하는, 여름밤의 설렘이 가득한 노래죠 ☀️
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse — 뼛속까지 느껴지는 확신</b><br><b>이 느낌이 뼛속 깊이 느껴져요</b>(오늘 첫 문장!). 난 여기저기 다 찾아 헤맸어요. 너에게 꼭 알려주고 싶은 게 있어. 그건 바로 — <b>너를 내 사람으로 만들고 싶다</b>는 거예요. 🦴</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 초과근무도 마다않고</b><br>난 <b>초과근무를 해왔어요</b>(been working overtime), 오직 널 내 사람으로 만들기 위해서요. 밤낮으로 깨어 있었죠 — 위스키와 와인과 함께. 그만큼 간절하다는 표현이에요 🍷</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 늦었으니 서두르자</b><br>이미 늦은 거 알아요, 그리고 <b>낭비할 시간이 없어요</b>(세 번째 문장!). 우리 지금 도망치듯 떠날 수 있다면, 오늘 밤 탈출하자. 네가 곁에 있는 한, 날씨 따위는 아무래도 좋아요. ⏰</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 집처럼 편안한 손길</b><br>맨발로 물수제비를 뜨며, 이 여름밤은 <b>점점 더 좋아져요</b>(keep getting better). 네 손이 내 손 안에 있으면 <b>집에 온 것 같아요</b>(feels like home). 소박하지만 완벽한 순간이죠 🏡</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          🎸 <b>"노력"으로 완성되는 사랑</b><br><br>
+          많은 사랑 노래가 "운명처럼 빠졌다"고 말하지만, 이 곡은 달라요. <b>working overtime</b>(초과근무), <b>up all day and night</b>(밤낮없이), <b>searching high and low</b>(여기저기 찾아다니며) — 전부 <b>"애쓰는" 단어들</b>이에요.<br><br>
+          사랑을 <b>가만히 기다리는 게 아니라, 적극적으로 만들어가는 것</b>으로 그렸어요. 제목 <b>"Make You Mine"</b>도 그래요 — "너는 내 것이야"(You're mine)가 아니라, <b>"너를 내 것으로 만들겠다"(make you mine)</b>는 의지의 표현이죠.<br><br>
+          경쾌한 여름 사운드 안에 <b>이렇게 적극적인 마음</b>을 담은 게 이 곡의 매력이에요 💚
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① (Got) the feeling in my bones</p>
+          <p class="learn-ko">강한 확신이 들어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I've been down this road before</p>
+          <p class="learn-ko">전에도 이런 길을 가본 적 있어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ There's no time to waste</p>
+          <p class="learn-ko">낭비할 시간이 없어요</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Tyron+Hapi+Jordie+Ireland+Make+You+Mine+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Make You Mine 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Tyron Hapi · Jordie Ireland · Cassadee Pope 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎸</div>
+      <div><h2>핵심 단어 발음</h2><p>Make You Mine · Tyron Hapi & Jordie Ireland</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">bones</span>
+        <span class="ref-ipa">[boʊnz]</span>
+        <span class="ref-kr"><span class="s">보</span>운즈</span>
+        <span class="ref-mean">뼈 (o=오우!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">waste</span>
+        <span class="ref-ipa">[weɪst]</span>
+        <span class="ref-kr"><span class="s">웨</span>이스트</span>
+        <span class="ref-mean">낭비하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">waist</span>
+        <span class="ref-ipa">[weɪst]</span>
+        <span class="ref-kr"><span class="s">웨</span>이스트</span>
+        <span class="ref-mean">허리 (동음이의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">road</span>
+        <span class="ref-ipa">[roʊd]</span>
+        <span class="ref-kr"><span class="s">로</span>우드</span>
+        <span class="ref-mean">길</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">mine</span>
+        <span class="ref-ipa">[maɪn]</span>
+        <span class="ref-kr"><span class="s">마</span>인</span>
+        <span class="ref-mean">내 것</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">searching</span>
+        <span class="ref-ipa">[ˈsɜːrtʃɪŋ]</span>
+        <span class="ref-kr"><span class="s">써</span>칭</span>
+        <span class="ref-mean">찾는</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — waste vs waist (동음이의어!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">waste / waist</p><p class="word-mean">낭비하다 / 허리</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 발음 똑같아요!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[weɪst]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">웨</span>이스트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wa-</b>: "웨이" [weɪ] — a가 "에이" 이중모음!<br>
+        🔸 <b>-ste / -st</b>: "스트" [st]<br>
+        🔸 📌 <b>waste</b>(낭비하다)와 <b>waist</b>(허리)는 <b>발음이 완전히 같아요</b>! (동음이의어)<br>
+        🔸 문맥으로 구분해요: no time to <b>waste</b>(낭비), a slim <b>waist</b>(허리)<br>
+        🔸 ⚠️ "와스트"(✗) 아니에요 — a는 "에이"! "웨이스트"(✓)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — bones (o = "오우"!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">bones</p><p class="word-mean">뼈 (복수)</p></div>
+        <span class="word-tag">o = 오우</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[boʊnz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">보</span>운즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>bo-</b>: "보우" [boʊ] — o가 <b>"오우"</b> 이중모음! "본즈"(✗) → "보운즈"(✓)<br>
+        🔸 <b>-nes</b>: "운즈" [nz] — 끝의 s는 <b>"즈"</b> [z] 소리!<br>
+        🔸 같은 o=오우: <b>ro</b>ad[로우드], <b>ho</b>me[호움], <b>alo</b>ne[얼로운]<br>
+        🔸 <b>feel it in my bones</b>: "필리린마이 <b>보</b>운즈" 🦴
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">feeling in my</p><p class="word-mean">내 안의 느낌</p></div>
+        <span class="word-tag">연음 덩어리</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈfiːlɪŋ ɪn maɪ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">피</span>링인마이</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>feeling</b>: "필링" [ˈfiːlɪŋ] — 긴 이 소리!<br>
+        🔸 <b>in my</b>: "인마이" — 부드럽게 이어져요<br>
+        🔸 전체 연음: <b>"피링인마이 보운즈"</b> (feeling in my bones)<br>
+        🔸 <b>FEEL</b>과 <b>BONES</b>에 강세를 주면 자연스러워요 💪
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">road</p><p class="word-mean">길</p></div>
+        <span class="word-tag">r vs l</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[roʊd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">로</span>우드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>r</b>: 혀를 <b>어디에도 안 닿게</b> 굴려요 (한국어 ㄹ 아님!)<br>
+        🔸 <b>-oad</b>: "오우드" [oʊd] — o = "오우"!<br>
+        🔸 ⚠️ <b>road</b>[로우드](길) vs <b>load</b>[로우드](짐) — r/l 구별 연습!<br>
+        🔸 <b>down this road</b>: "다운디스 로우드" 🛣️
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">searching</p><p class="word-mean">찾는, 뒤지는</p></div>
+        <span class="word-tag">ear = 어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsɜːrtʃɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">써</span>ㄹ칭</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>sear-</b>: "써ㄹ" [sɜːr] — ear가 <b>"어ㄹ"</b> 소리! "씨어칭"(✗)<br>
+        🔸 <b>-ching</b>: "칭" [tʃɪŋ]<br>
+        🔸 같은 ear=어ㄹ: l<b>ear</b>n[런], <b>ear</b>th[어쓰], h<b>ear</b>d[허드]<br>
+        🔸 <b>search high and low</b> = 샅샅이 뒤지다 (여기저기 다 찾다) 🔍
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Make You Mine</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 feel it in my bones <span>· 뼛속 깊이 확신하다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I've got this feeling in my bones that something good is about to happen.</p>
+      <p class="listen-ko">뭔가 좋은 일이 일어날 것 같은 강한 예감이 들어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I've got this feeling in my bones that something good is about to happen.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I've got this feeling in my bones that something good is about to happen.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I've got this feeling in my bones that something good is about to happen.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">I can feel it in my bones that we're going to win tonight.</p>
+      <p class="listen-ko">오늘 밤 우리가 이길 거라는 확신이 뼛속까지 느껴져.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I can feel it in my bones that we're going to win tonight.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I can feel it in my bones that we're going to win tonight.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I can feel it in my bones that we're going to win tonight.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 be down this road (before) <span>· 이런 상황을 겪어보다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I've been down this road before, so I know exactly how it ends.</p>
+      <p class="listen-ko">난 전에 이 길을 가봤어서, 어떻게 끝날지 정확히 알아.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I've been down this road before, so I know exactly how it ends.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I've been down this road before, so I know exactly how it ends.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I've been down this road before, so I know exactly how it ends.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">We've been down this road together, and we always figure it out.</p>
+      <p class="listen-ko">우린 이런 상황을 함께 겪어봤고, 늘 방법을 찾아내잖아.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;We've been down this road together, and we always figure it out.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;We've been down this road together, and we always figure it out.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;We've been down this road together, and we always figure it out.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 no time to waste <span>· 낭비할 시간이 없다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">The train leaves in ten minutes, so there's no time to waste.</p>
+      <p class="listen-ko">기차가 10분 뒤에 떠나니까, 낭비할 시간이 없어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;The train leaves in ten minutes, so there's no time to waste.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;The train leaves in ten minutes, so there's no time to waste.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;The train leaves in ten minutes, so there's no time to waste.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">We have a lot to do today, and no time to waste at all.</p>
+      <p class="listen-ko">오늘 할 일이 많아서, 조금도 지체할 시간이 없어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'We have a lot to do today, and no time to waste at all.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'We have a lot to do today, and no time to waste at all.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'We have a lot to do today, and no time to waste at all.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#E9F3EE;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#134E36;border:1px solid #A9DCC5">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🎸 [Good Morning Pops] Make You Mine
+— Tyron Hapi & Jordie Ireland
+   (feat. Cassadee Pope)
+
+🎵 호주 출신 프로듀서 듀오의 2020년 곡
+   밤낮없이 애쓰며 "너를 내 사람으로
+   만들고 싶다"고 고백하는 경쾌한 댄스팝
+   여름밤의 설렘이 가득! ☀️
+
+👏 세 문장 모두 훌륭하게 쓰셨어요!
+   (2번은 가사엔 없지만 완벽한 창작 문장!)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 feel it in my bones
+   뼛속 깊이 느끼다 → 강하게 직감하다
+   • I've got this feeling in my bones
+     that something good is about to happen.
+     (뭔가 좋은 일이 일어날 것 같은
+      강한 예감이 들어.)
+   • I can feel it in my bones
+     that we're going to win tonight.
+     (오늘 밤 우리가 이길 거라는
+      확신이 뼛속까지 느껴져.)
+💡 이유는 몰라도 강하게 확신하다 🦴
+   논리보다 직감·본능으로 아는 느낌!
+   비슷한 표현: I have a gut feeling
+              Something tells me ~
+
+🔹 be down this road (before)
+   이런 상황을 (전에) 겪어보다
+   • I've been down this road before,
+     so I know exactly how it ends.
+     (난 전에 이 길을 가봤어서,
+      어떻게 끝날지 정확히 알아.)
+   • We've been down this road together,
+     and we always figure it out.
+     (우린 이런 상황을 함께 겪어봤고,
+      늘 방법을 찾아내잖아.)
+💡 인생을 길에 비유한 표현! 🛣️
+   "이거 겪어봐서 안다"는 뜻
+   비슷한 표현: been there, done that
+
+🔹 no time to waste
+   낭비할 시간이 없다 → 서둘러야 한다
+   • The train leaves in ten minutes,
+     so there's no time to waste.
+     (기차가 10분 뒤에 떠나니까,
+      낭비할 시간이 없어.)
+   • We have a lot to do today,
+     and no time to waste at all.
+     (오늘 할 일이 많아서,
+      조금도 지체할 시간이 없어.)
+💡 time to waste = 낭비할 시간
+   to부정사가 time을 꾸며줘요! ⏰
+   같은 구조: nothing to lose (잃을 게 없다)
+            a lot to do (할 일이 많다)
+
+🔊 발음 팁
+   • bones = [보]운즈 (o는 "오우"!)
+     "본즈" ✗ → "보운즈" ✓
+     같은 패턴: road[로우드] home[호움]
+   • waste = waist(허리)와 발음 똑같아요!
+     "웨이스트" (a는 "에이"! "와스트" ✗)
+   • searching = [써]ㄹ칭 (ear는 "어"!)
+     learn, earth와 같은 소리
+
+——————————————————
+#GoodMorningPops #팝송영어 #MakeYouMine #TyronHapi #JordieIreland</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

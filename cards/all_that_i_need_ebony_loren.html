@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All That I Need — Ebony Loren & Sebastian</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F4F8FF;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #88A8E0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#D8E2FA;border-color:#3858B8;color:#16285A}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #C0CEF0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#D8E2FA;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#D8E2FA;color:#16285A;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #D0DAF2;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #D0DAF2;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #D0DAF2;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#3858B8}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#D8E2FA;color:#16285A;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F4F8FF;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #C0CEF0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #D0DAF2}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#16285A}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #D0DAF2;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F4F8FF;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F4F8FF;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#16285A;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #D0DAF2;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#D8E2FA;color:#16285A;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F4F8FF;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#3858B8;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#16285A;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #D0DAF2;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#D8E2FA;color:#16285A;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#B8C8F0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #D0DAF2;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#3858B8;background:#D8E2FA;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #F2F6FE}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🏠</div>
+      <div>
+        <h2>All That I Need</h2>
+        <p>Ebony Loren & Sebastian · 2023 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#F4F8FF;border:1px solid #88A8E0;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#16285A;line-height:1.7">
+      🏠 <b>가수 이름:</b> 에브니 (✗) → <b>Ebony Loren (에보니 로렌)</b> (✓), feat. Sebastian<br>
+      "All That I Need"는 화려한 것 없이 사랑하는 사람과 함께하는 소박한 일상이 전부라는 따뜻한 곡이에요!
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신과 함께 집에만 있어도 난 괜찮아요</p>
+          <div class="sent-row">
+            <span class="sent-right">I don't mind staying in with you.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I don't mind staying in with you</b> — 완벽해요! 👏<br>
+            💡 <b>don't mind + -ing</b> = ~해도 괜찮다, 상관없다. <b>stay in</b> = 집에 있다 (외출 안 하다)<br>
+            "게으른 일요일 아침, 이불 속에 숨어 너와 집에 있어도 좋아"라는 가사 흐름이에요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 내 기분을 들뜨게 하죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">You have got my head in the cloud.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">You have got my head in the clouds.</span>
+          </div>
+          <span class="pill-fix">cloud → clouds (복수)</span>
+          <p class="note-text">
+            가사 정확: <b>And you have got my head in the clouds</b><br>
+            ⚠️ <b>cloud</b>(단수)(✗) → <b>clouds</b>(복수)(✓) — 관용표현은 항상 복수 <b>clouds</b>!<br>
+            💡 <b>head in the clouds</b> = 들뜨다, 공상에 빠지다, 붕 떠 있다<br>
+            구름 "여러 개" 속에 머리가 있는 이미지 → 항상 복수형으로 써요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">난 많은 걸 바라지 않아요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I don't need to much.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I don't need too much.</span>
+          </div>
+          <span class="pill-fix">to much → too much (철자: o 두 개)</span>
+          <p class="note-text">
+            가사 정확: <b>Don't need too much, just your simple lovin'</b><br>
+            ⚠️ <b>to</b>(✗) → <b>too</b>(✓) — "너무, 지나치게"는 <b>too</b>(o 두 개)!<br>
+            💡 <b>to</b>(~로, 전치사) vs <b>too</b>(너무, 부사) — 자주 헷갈리는 단어예요!<br>
+            &nbsp;&nbsp;<b>too much</b> = 너무 많이 / "지나치게 많은 걸 바라지 않아"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">don't mind staying in</p>
+      <p class="expr-ko">집에 있어도 괜찮다 / 안 나가도 좋다</p>
+      <span class="expr-tag">일상 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I don't mind staying in with you.</b> → 너와 집에 있어도 난 괜찮아.</p>
+        <p><b>I don't mind waiting.</b> → 기다려도 괜찮아.</p>
+        <p><b>Do you mind if I open the window?</b> → 창문 좀 열어도 될까요?</p>
+        <p><b>Let's just stay in tonight.</b> → 오늘 밤은 그냥 집에 있자.</p>
+        <p class="ex-note">💡 <b>don't mind + -ing</b> = ~해도 상관없다, 괜찮다<br><b>stay in</b>(집에 있다) ↔ <b>go out</b>(외출하다)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">head in the clouds</p>
+      <p class="expr-ko">들뜨다 / 공상에 빠지다 / 붕 떠 있다</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>You have got my head in the clouds.</b> → 당신은 날 들뜨게 해요.</p>
+        <p><b>She's always got her head in the clouds.</b> → 그녀는 늘 공상에 빠져 있어.</p>
+        <p><b>Stop daydreaming — get your head out of the clouds.</b> → 공상 그만하고 현실로 돌아와.</p>
+        <p class="ex-note">💡 <b>head in the clouds</b> = 들떠 있다, 공상에 빠지다 (항상 복수 clouds!)<br>반대: <b>feet on the ground</b>(현실적이다) — 지난번 배운 표현! ↔ 짝꿍 표현이에요</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">don't need too much</p>
+      <p class="expr-ko">많은 걸 바라지 않다</p>
+      <span class="expr-tag">to vs too 핵심!</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Don't need too much, just your simple lovin'.</b> → 많은 걸 바라지 않아, 그저 너의 소박한 사랑이면 돼.</p>
+        <p><b>That's too much for me.</b> → 그건 나한테 너무 과해.</p>
+        <p><b>You worry too much.</b> → 넌 걱정이 너무 많아.</p>
+        <p><b>I'd love to go.</b> → 가고 싶어. (to = ~하기 위해/방향)</p>
+        <p class="ex-note">💡 <b>to</b>(전치사: ~로, ~에게) vs <b>too</b>(부사: 너무, 게다가) vs <b>two</b>(숫자 2)<br>발음은 모두 [투]지만 뜻이 달라요! "너무"는 <b>too</b>(o 두 개)!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I don't mind staying in with you.</span> → 당신과 함께 집에만 있어도 난 괜찮아요.<br>
+      <span>You have got my head in the clouds.</span> → 당신은 내 기분을 들뜨게 하죠.<br>
+      <span>I don't need too much.</span> → 난 많은 걸 바라지 않아요.
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🏠</div>
+      <div><h2>전체 가사</h2><p>All That I Need · Ebony Loren & Sebastian (2023)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1</span>
+        <div class="lyric-line"><span class="lyric-en">Lazy Sunday mornings</span><span class="lyric-ko">나른한 일요일 아침</span></div>
+        <div class="lyric-line"><span class="lyric-en">Hiding under covers</span><span class="lyric-ko">이불 속에 숨어서</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">I don't mind staying in with you</span></span><span class="lyric-ko">너와 집에 있어도 난 괜찮아 ① </span></div>
+        <div class="lyric-line"><span class="lyric-en">Play your favorite movie</span><span class="lyric-ko">네가 좋아하는 영화를 틀고</span></div>
+        <div class="lyric-line"><span class="lyric-en">Laying right beside me</span><span class="lyric-ko">내 바로 옆에 누워서</span></div>
+        <div class="lyric-line"><span class="lyric-en">I don't mind when it's just us two</span><span class="lyric-ko">우리 둘만 있어도 난 괜찮아</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Verse 1 (cont.)</span>
+        <div class="lyric-line"><span class="lyric-en">That corner coffee shop we like to go</span><span class="lyric-ko">우리가 즐겨 가는 모퉁이 커피숍</span></div>
+        <div class="lyric-line"><span class="lyric-en">Late night walks with you to take me home</span><span class="lyric-ko">날 집까지 데려다주는 늦은 밤 산책</span></div>
+        <div class="lyric-line"><span class="lyric-en">With you I never feel alone</span><span class="lyric-ko">너와 함께라면 난 결코 외롭지 않아</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Pre-Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">And these little songs make me glad to call you mine</span><span class="lyric-ko">이 작은 노래들이 널 내 사람이라 부르게 해 기뻐</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">And you have got my head in the clouds</span></span><span class="lyric-ko">그리고 당신은 날 들뜨게 해요 ② </span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">Chorus</span>
+        <div class="lyric-line"><span class="lyric-en">All that I need is your body next to me</span><span class="lyric-ko">내게 필요한 건 내 곁의 당신뿐</span></div>
+        <div class="lyric-line"><span class="lyric-en">On rainy days just need your company</span><span class="lyric-ko">비 오는 날엔 그저 당신의 함께함이 필요해</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Don't need too much, just your simple lovin'</span></span><span class="lyric-ko">많은 걸 바라지 않아, 그저 너의 소박한 사랑이면 돼 ③ </span></div>
+        <div class="lyric-line"><span class="lyric-en">It's everything</span><span class="lyric-ko">그게 전부야</span></div>
+        <div class="lyric-line"><span class="lyric-en">The simple joy of hearing your voice</span><span class="lyric-ko">네 목소리를 듣는 소박한 기쁨</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장<br>※ 가사는 학습 참고용이며 저작권은 아티스트·저작권자에게 있습니다</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🏠</div>
+      <div><h2>핵심 단어 발음</h2><p>All That I Need · Ebony Loren</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">clouds</span>
+        <span class="ref-ipa">[klaʊdz]</span>
+        <span class="ref-kr"><span class="s">클라</span>우즈</span>
+        <span class="ref-mean">구름들 (복수) ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">too</span>
+        <span class="ref-ipa">[tuː]</span>
+        <span class="ref-kr"><span class="s">투</span></span>
+        <span class="ref-mean">너무 (부사) ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">to</span>
+        <span class="ref-ipa">[tuː/tə]</span>
+        <span class="ref-kr"><span class="s">투</span>/터</span>
+        <span class="ref-mean">~로 (전치사)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">mind</span>
+        <span class="ref-ipa">[maɪnd]</span>
+        <span class="ref-kr"><span class="s">마</span>인드</span>
+        <span class="ref-mean">상관하다, 꺼리다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">stay in</span>
+        <span class="ref-ipa">[steɪ ɪn]</span>
+        <span class="ref-kr"><span class="s">스테</span>이 인</span>
+        <span class="ref-mean">집에 있다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">company</span>
+        <span class="ref-ipa">[ˈkʌmpəni]</span>
+        <span class="ref-kr"><span class="s">컴</span>퍼니</span>
+        <span class="ref-mean">함께함, 동행</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — to vs too</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">too</p><p class="word-mean">너무, 지나치게 (부사)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[tuː]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">투</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>too</b> = "너무, 지나치게" 또는 "~도, 게다가"<br>
+        🔸 <b>too much</b> = 너무 많이 ✓<br>
+        🔸 철자: <b>too</b> (o 두 개!)<br>
+        🔸 "Me too"(나도), "too late"(너무 늦은)
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">to</p><p class="word-mean">~로, ~에게 (전치사)</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[tuː / tə]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">투</span> / 터</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>to</b> = 방향·대상의 전치사, 또는 to부정사<br>
+        🔸 <b>go to school</b>(학교에 가다), <b>want to go</b>(가고 싶다)<br>
+        🔸 🔑 발음은 같지만: <b>too</b>(너무) ≠ <b>to</b>(~로) ≠ <b>two</b>(2)<br>
+        🔸 "너무 많이"는 반드시 <b>too much</b>(o 두 개!)
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">clouds</p><p class="word-mean">구름들 (복수!)</p></div>
+        <span class="word-tag">⚠️ 복수형</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[klaʊdz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">클라</span>우즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>cl-</b>: c + l 연결 — "클"<br>
+        🔸 <b>-ou-</b>: "아우" [aʊ] 이중모음!<br>
+        🔸 <b>-ds</b>: "즈" — 복수 z 소리<br>
+        🔸 <b>head in the clouds</b>: 항상 복수 clouds!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">mind</p><p class="word-mean">상관하다, 꺼리다</p></div>
+        <span class="word-tag">don't mind</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[maɪnd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">마</span>인드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>mind</b>: "마인드" [maɪnd] — ai = 이중모음!<br>
+        🔸 <b>don't mind + -ing</b> = ~해도 괜찮다<br>
+        🔸 <b>I don't mind staying</b>: "아이돈마인드스테잉"<br>
+        🔸 mind는 명사(마음)도 되고 동사(꺼리다)도 돼요!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">company</p><p class="word-mean">함께함, 동행 (≠ 회사)</p></div>
+        <span class="word-tag">의미 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈkʌmpəni]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">컴</span>퍼니</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>COM-</b>에 강세: "컴" [kʌm]<br>
+        🔸 <b>-pany</b>: "퍼니" [pəni]<br>
+        🔸 <b>company</b> = 회사 + <b>함께함, 곁에 있어줌</b>!<br>
+        🔸 "your company" = 당신이 곁에 있어주는 것
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🏠 [Good Morning Pops] All That I Need
+— Ebony Loren & Sebastian · 2023
+
+💡 가수 이름: 에브니 ✗ → Ebony Loren (에보니 로렌) ✓
+   feat. Sebastian
+   화려함 없이 사랑하는 사람과의 소박한 일상이
+   전부라는 따뜻한 곡!
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 당신과 함께 집에만 있어도 난 괜찮아요
+→ I don't mind staying in with you. ✓
+   발음: 아이 돈트 마인드 스테잉 인 위드 유
+✨ 완벽! 👏
+💡 don't mind + -ing = ~해도 괜찮다
+   stay in = 집에 있다 (외출 안 하다)
+
+2️⃣ 당신은 내 기분을 들뜨게 하죠
+✗ You have got my head in the cloud.
+→ You have got my head in the clouds. ✓
+   발음: 유 해브 갓 마이 헤드 인 더 클라우즈
+⚠️ cloud → clouds (복수!)
+💡 head in the clouds = 들뜨다, 공상에 빠지다
+   (항상 복수 clouds!)
+   ↔ feet on the ground (현실적이다)의 반대 표현!
+
+3️⃣ 난 많은 걸 바라지 않아요
+✗ I don't need to much.
+→ I don't need too much. ✓
+   발음: 아이 돈트 니드 투 머치
+⚠️ to → too (o 두 개!)
+💡 too(너무, 부사) vs to(~로, 전치사)
+   발음은 같지만 뜻이 달라요!
+   "너무"는 too much!
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 too [투] vs to [투/터] vs two [투]
+  too = 너무 (o 두 개!) ✓
+  to = ~로 (전치사)
+  two = 2 (숫자)
+
+🔹 clouds [클라우즈]
+  ou = "아우" 이중모음
+  head in the clouds = 항상 복수!
+
+🔹 mind [마인드]
+  don't mind + -ing = ~해도 괜찮다
+
+🔹 company [컴퍼니]
+  회사 + "함께함, 곁에 있어줌"!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 don't mind staying in
+   집에 있어도 괜찮다
+   • I don't mind waiting.
+     (기다려도 괜찮아.)
+💡 stay in(집에 있다) ↔ go out(외출하다)
+
+🔹 head in the clouds
+   들뜨다, 공상에 빠지다
+   • She's always got her head in the clouds.
+     (그녀는 늘 공상에 빠져 있어.)
+💡 ↔ feet on the ground(현실적이다) 짝꿍 표현!
+
+🔹 don't need too much
+   많은 걸 바라지 않다
+   • You worry too much.
+     (넌 걱정이 너무 많아.)
+💡 too(너무) ≠ to(~로) ≠ two(2)
+
+——————————————————
+
+📝 한 번에 정리
+
+I don't mind staying in with you.
+→ 당신과 함께 집에만 있어도 난 괜찮아요.
+
+You have got my head in the clouds.
+→ 당신은 내 기분을 들뜨게 하죠.
+
+I don't need too much.
+→ 난 많은 걸 바라지 않아요.
+
+——————————————————
+
+🎶 전체 가사 흐름
+나른한 일요일, 집에 있어도 좋아 (V1) →
+작은 노래들이 날 들뜨게 해 (Pre) →
+내게 필요한 건 당신뿐, 많은 건 필요 없어 (Chorus)
+
+——————————————————
+#GoodMorningPops #팝송영어 #AllThatINeed #EbonyLoren</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

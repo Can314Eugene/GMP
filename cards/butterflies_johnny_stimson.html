@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Butterflies — Johnny Stimson</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0FFF8;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #80D0A8;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C8F0E0;border-color:#0F9060;color:#064830}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #A8E8CC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C8F0E0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C8F0E0;color:#064830;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C0EAD8;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C0EAD8;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C0EAD8;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#0F9060}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C8F0E0;color:#064830;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F0FFF8;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #A8E8CC}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C0EAD8}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#064830}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C0EAD8;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEFBF4;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F0FFF8;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#064830;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C0EAD8;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C8F0E0;color:#064830;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F0FFF8;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#0F9060;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#064830;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C0EAD8;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C8F0E0;color:#064830;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#A0DFC0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🦋</div>
+      <div>
+        <h2>Butterflies</h2>
+        <p>Johnny Stimson · 2021 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7">
+      💡 <b>가수·제목 교정:</b><br>
+      조니 스팀스 (✗) → <b>Johnny Stimson (조니 스팀슨)</b> (✓)<br>
+      Butterfly (✗) → <b>Butterflies</b> (✓) — 복수형이에요!
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">모든 게 뒤집힌 느낌이에요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Everything is turing upside down.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Everything is turning upside down.</span>
+          </div>
+          <span class="pill-fix">turing → turning (철자 오류)</span>
+          <p class="note-text">
+            가사 정확: <b>Everything is turning upside down</b><br>
+            ⚠️ <b>turing</b>(✗) → <b>turning</b>(✓) — n이 빠진 철자 오류예요!<br>
+            💡 <b>turn upside down</b> = 뒤집히다, 완전히 바뀌다<br>
+            → <b>Everything is turning upside down</b> = 모든 게 뒤죽박죽이 되어가고 있어
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">우리가 왜 이 모든 일을 겪고 있는지 궁금한 적 없나요?</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Don't you ever wonder why?</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Don't you ever wonder why we've been going through all this?</span>
+          </div>
+          <span class="pill-fix">뒷 구절 누락</span>
+          <p class="note-text">
+            가사 정확: <b>Don't you ever wonder why, wonder why / We've been going through all this</b><br>
+            <b>Don't you ever wonder why?</b>의 영어 표현 자체는 완벽해요! 👏<br>
+            다만 가사에서 이어지는 <b>we've been going through all this</b>가 한국어 번역의 "이 모든 일을 겪고 있는지" 부분이에요.<br>
+            💡 전체 뜻: <b>Don't you ever wonder why / we've been going through all this?</b><br>
+            = 우리가 왜 이 모든 걸 겪고 있는지 궁금하지 않아?
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">나 모든 걸 새로운 시선으로 보고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I seeing everything through new reze.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Seeing everything through a new lens.</span>
+          </div>
+          <span class="pill-fix">I seeing → Seeing (주어+be동사 없이)</span>
+          <span class="pill-fix">new reze → a new lens</span>
+          <p class="note-text">
+            가사 정확: <b>Seeing everything through a new lens</b><br>
+            ① <b>I seeing</b>(✗) → <b>Seeing</b>(✓) — 가사는 주어(I) 없이 분사구문으로 시작해요<br>
+            ② <b>new reze</b>(✗) → <b>a new lens</b>(✓) — "reze"는 영어 단어가 아니에요! <b>lens</b>[렌즈]를 다르게 들으신 거예요<br>
+            💡 <b>through a new lens</b> = 새로운 시각으로, 다른 관점에서 (카메라 렌즈 이미지!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">turn(ing) upside down</p>
+      <p class="expr-ko">뒤집히다 / 완전히 뒤죽박죽이 되다</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Everything is turning upside down.</b> → 모든 게 뒤집혀 가고 있어.</p>
+        <p><b>The news turned my world upside down.</b> → 그 소식이 내 세상을 완전히 뒤집어놨어.</p>
+        <p><b>She turned the room upside down looking for her keys.</b> → 그녀는 열쇠를 찾으려고 방을 완전히 뒤집어놨어.</p>
+        <p><b>My life has been turned upside down recently.</b> → 내 삶이 최근에 완전히 뒤집혔어.</p>
+        <p class="ex-note">💡 <b>upside down</b> = 거꾸로, 뒤집혀. <b>turn upside down</b> = 완전히 뒤집다/혼란스럽게 하다. 물리적으로 뒤집는 것과 상황이 혼란스러워지는 것 모두 표현 가능!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">Don't you ever wonder why ~?</p>
+      <p class="expr-ko">왜 ~인지 궁금한 적 없어요? / ~인 이유가 궁금하지 않아?</p>
+      <span class="expr-tag">수사적 질문</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Don't you ever wonder why we've been going through all this?</b> → 우리가 왜 이 모든 걸 겪고 있는지 궁금하지 않아?</p>
+        <p><b>Don't you ever wonder why things happen the way they do?</b> → 왜 일이 그런 식으로 일어나는지 궁금하지 않아?</p>
+        <p><b>Don't you ever wonder why some people are always happy?</b> → 왜 어떤 사람들은 항상 행복한지 궁금하지 않아?</p>
+        <p class="ex-note">💡 <b>Don't you ever ~?</b> = "~한 적 없어요?"라는 수사적 질문. 강한 공감을 유도할 때 써요.<br><b>wonder why ~</b> = ~인 이유가 궁금하다</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">through a new lens</p>
+      <p class="expr-ko">새로운 시각으로 / 다른 관점으로 바라보다</p>
+      <span class="expr-tag">관점 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Seeing everything through a new lens.</b> → 모든 걸 새로운 시각으로 보고 있어.</p>
+        <p><b>Travel helps you see the world through a new lens.</b> → 여행은 세상을 새로운 시각으로 볼 수 있게 해줘.</p>
+        <p><b>She looked at her past through a different lens.</b> → 그녀는 자신의 과거를 다른 시각으로 바라봤어.</p>
+        <p><b>After therapy, I see my relationships through a new lens.</b> → 상담 후, 내 인간관계를 새로운 시각으로 보게 됐어.</p>
+        <p class="ex-note">💡 <b>through a lens</b> = 렌즈를 통해 → 비유적으로 "어떤 관점/시각으로"<br>비슷한 표현: <b>from a new perspective</b> / <b>with fresh eyes</b> = 새로운 시각으로</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Everything is turning upside down.</span> → 모든 게 뒤집힌 느낌이에요.<br>
+      <span>Don't you ever wonder why we've been going through all this?</span><br>
+      → 우리가 왜 이 모든 일을 겪고 있는지 궁금한 적 없나요?<br>
+      <span>Seeing everything through a new lens.</span> → 모든 걸 새로운 시선으로 보고 있어요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🦋</div>
+      <div><h2>핵심 단어 발음</h2><p>Butterflies · Johnny Stimson</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">turning</span>
+        <span class="ref-ipa">[ˈtɜːrnɪŋ]</span>
+        <span class="ref-kr"><span class="s">터</span>닝</span>
+        <span class="ref-mean">뒤집혀 가는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">upside down</span>
+        <span class="ref-ipa">[ˈʌpsaɪd daʊn]</span>
+        <span class="ref-kr"><span class="s">업</span>사이드 다운</span>
+        <span class="ref-mean">거꾸로, 뒤집혀</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wonder</span>
+        <span class="ref-ipa">[ˈwʌndər]</span>
+        <span class="ref-kr"><span class="s">원</span>더</span>
+        <span class="ref-mean">궁금하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">lens</span>
+        <span class="ref-ipa">[lɛnz]</span>
+        <span class="ref-kr"><span class="s">렌</span>즈</span>
+        <span class="ref-mean">렌즈, 시각 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">chrysalis</span>
+        <span class="ref-ipa">[ˈkrɪsəlɪs]</span>
+        <span class="ref-kr"><span class="s">크리</span>설리스</span>
+        <span class="ref-mean">번데기</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">butterfly</span>
+        <span class="ref-ipa">[ˈbʌtərflaɪ]</span>
+        <span class="ref-kr"><span class="s">버</span>터플라이</span>
+        <span class="ref-mean">나비</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — lens 발음</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">lens</p><p class="word-mean">렌즈 → 비유적으로 "시각, 관점"</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[lɛnz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">렌</span>즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>le-</b>: "렌" [lɛn] — e는 "에" 소리<br>
+        🔸 <b>-s</b>: 단수도 "렌즈" — z처럼 발음! [lɛnz]<br>
+        🔸 💡 <b>reze</b>라고 들릴 수 있는 이유: "a new lens"를 빠르게 말하면 "어뉴렌즈" → "어뉴레즈"처럼 들릴 수 있어요!<br>
+        🔸 <b>through a new lens</b>: "쓰루 어 뉴 렌즈" — 연음으로 이어서!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">turning</p><p class="word-mean">뒤집혀 가는, 변해가는</p></div>
+        <span class="word-tag">⚠️ 철자 교정</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈtɜːrnɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">터</span>닝</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>tur-</b>: "터" [tɜːr] — r을 살짝 말아서<br>
+        🔸 <b>-ning</b>: "닝" — n이 두 개! tu<b>rn</b>+i<b>n</b>g<br>
+        🔸 ⚠️ 철자: <b>tu<u>r</u>ning</b> (✓) — r 빠지면 <b>tuing</b>(✗) 또는 <b>turing</b>(✗)<br>
+        🔸 <b>turn → turning</b>: r 있는 채로 -ing 붙이기!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">upside down</p><p class="word-mean">거꾸로, 뒤집혀</p></div>
+        <span class="word-tag">관용표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈʌpsaɪd daʊn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">업</span>사이드 <span class="stress">다</span>운</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>UP-</b>에 강세: "업" 강하게<br>
+        🔸 <b>-side</b>: "사이드" [saɪd] — 이중모음<br>
+        🔸 <b>down</b>: "다운" [daʊn] — au 이중모음<br>
+        🔸 연음: "upside down" → "업사이다운"처럼 이어져요!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">wonder why</p><p class="word-mean">왜 ~인지 궁금하다</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈwʌndər waɪ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">원</span>더 <span class="stress">와</span>이</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>WON-</b>에 강세: "원" [wʌn] — "완"이 아니라 "원"!<br>
+        🔸 <b>-der</b>: 약하게 "더" [dər]<br>
+        🔸 <b>why</b>: "와이" [waɪ] — w + "아이" 이중모음<br>
+        🔸 가사에서 <b>wonder why, wonder why</b> 두 번 반복!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">butterfly / butterflies</p><p class="word-mean">나비 / 나비들 (복수)</p></div>
+        <span class="word-tag">제목 단어</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈbʌtərflaɪz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">버</span>터플라이즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>BUT-</b>에 강세: "버" [bʌt]<br>
+        🔸 <b>-ter</b>: "터" [tər] — 미국식은 "버러" 처럼 연음<br>
+        🔸 <b>-flies</b>: "플라이즈" — fly의 복수형 flies!<br>
+        🔸 ⚠️ <b>Butterfly</b>(단수) vs <b>Butterflies</b>(복수 = 제목!) — s 꼭!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🦋 [Good Morning Pops] Butterflies
+— Johnny Stimson (2021)
+
+💡 교정:
+  조니 스팀스 ✗ → Johnny Stimson (조니 스팀슨) ✓
+  Butterfly ✗ → Butterflies ✓ (복수형이에요!)
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 모든 게 뒤집힌 느낌이에요
+✗ Everything is turing upside down.
+→ Everything is turning upside down. ✓
+   발음: 에브리씽 이즈 터닝 업사이다운
+⚠️ turing → turning (n이 빠진 철자 오류!)
+💡 turn upside down = 뒤집히다, 완전히 바뀌다
+
+2️⃣ 우리가 왜 이 모든 일을 겪고 있는지 궁금한 적 없나요?
+△ Don't you ever wonder why?
+→ Don't you ever wonder why / we've been going through all this? ✓
+   발음: 돈츄 에버 원더 와이 / 위브 빈 고잉 쓰루 올 디스
+※ 영어 표현은 완벽! 가사의 뒷 구절이 "이 모든 일을 겪고 있는지" 부분이에요.
+💡 Don't you ever wonder why? = 왜 ~인지 궁금하지 않아?
+
+3️⃣ 나 모든 걸 새로운 시선으로 보고 있어요
+✗ I seeing everything through new reze.
+→ Seeing everything through a new lens. ✓
+   발음: 씨잉 에브리씽 쓰루 어 뉴 렌즈
+⚠️ I seeing → Seeing (가사는 분사구문, 주어 I 없음)
+⚠️ new reze → a new lens
+💡 lens [렌즈] — "reze"는 영어 단어가 아니에요!
+   "a new lens"를 빠르게 들으면 "어뉴레즈"처럼 들릴 수 있어요 👂
+💡 through a new lens = 새로운 시각으로
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 turning [터닝]
+  ⚠️ turing ✗ → turning ✓ (n 두 개!)
+  turn + ing → tur-n-ing
+
+🔹 upside down [업사이다운]
+  UP-에 강세. 연음으로 "업사이다운"
+
+🔹 lens [렌즈]
+  le- = "렌" (e = 에 소리)
+  빠르게 "a new lens" → "어뉴레즈"처럼 들려요!
+
+🔹 wonder why [원더 와이]
+  WON-에 강세. "완더"가 아니라 "원더"!
+
+🔹 butterflies [버터플라이즈]
+  BUT-에 강세. 복수형 -flies (s 꼭!)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 turn(ing) upside down
+   뒤집히다, 완전히 혼란스러워지다
+   • The news turned my world upside down.
+     (그 소식이 내 세상을 완전히 뒤집어놨어.)
+   • My life has been turned upside down.
+     (내 삶이 완전히 뒤집혔어.)
+💡 물리적으로 뒤집는 것 + 상황이 혼란스러워지는 것 모두 표현 가능!
+
+🔹 Don't you ever wonder why ~?
+   왜 ~인지 궁금하지 않아?
+   • Don't you ever wonder why things happen this way?
+     (왜 일이 이런 식으로 일어나는지 궁금하지 않아?)
+💡 Don't you ever ~? = "~한 적 없어?" 강한 공감 유도 표현
+
+🔹 through a new lens
+   새로운 시각으로
+   • Travel helps you see the world through a new lens.
+     (여행은 세상을 새로운 시각으로 볼 수 있게 해줘.)
+   • = from a new perspective / with fresh eyes
+💡 lens(렌즈) → 비유적으로 "관점, 시각"
+
+——————————————————
+
+📝 한 번에 정리
+
+Everything is turning upside down.
+→ 모든 게 뒤집힌 느낌이에요.
+
+Don't you ever wonder why / we've been going through all this?
+→ 우리가 왜 이 모든 일을 겪고 있는지 궁금한 적 없나요?
+
+Seeing everything through a new lens.
+→ 나 모든 걸 새로운 시선으로 보고 있어요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #Butterflies #JohnnyStimson</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

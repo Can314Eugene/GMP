@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beautiful — Dapz On The Map & Pheleba</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F6F4F2;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #B0A498;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#E8E0D8;border-color:#6A5848;color:#3A2C20}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #DCD2C8}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#E8E0D8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#E8E0D8;color:#3A2C20;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E2DAD0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E2DAD0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E2DAD0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#6A5848}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#E8E0D8;color:#3A2C20;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F6F4F2;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #DCD2C8}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E2DAD0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#3A2C20}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E2DAD0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F6F4F2;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F6F4F2;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#3A2C20;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E2DAD0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#E8E0D8;color:#3A2C20;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F6F4F2;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#6A5848;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#3A2C20;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #E2DAD0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#E8E0D8;color:#3A2C20;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#D8CCC0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #E2DAD0;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#6A5848;background:#E8E0D8;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #F3F0EC}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">💛</div>
+      <div>
+        <h2>Beautiful</h2>
+        <p>Dapz On The Map &amp; Pheleba · 2020 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#F6F4F2;border:1px solid #B0A498;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#3A2C20;line-height:1.7">
+      💛 <b>Dapz On The Map &amp; Pheleba</b>의 <b>Beautiful</b>은 상대를 아름답게 느끼게 해주고 싶다는 따뜻한 마음을 담은 곡이에요.<br>
+      오늘은 <b>makes you beautiful</b>, <b>let me into</b>, <b>let you down</b> 세 표현을 중심으로 볼게요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신을 아름답게 하는 게 뭔지 모르겠어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Don’t you know what make sure beautiful.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Don’t you know what makes you beautiful?</span>
+          </div>
+          <span class="pill-fix">make sure → makes you</span>
+          <span class="pill-fix">. → ?</span>
+          <p class="note-text">
+            가사 정확: <b>Don’t you know what makes you beautiful?</b><br>
+            ⚠️ <b>make sure</b>(확인하다)(✗) → <b>makes you</b>(당신을 ~하게 만들다)(✓)<br>
+            💡 <b>what makes you beautiful</b> = “무엇이 당신을 아름답게 만드는지”<br>
+            &nbsp;&nbsp;<b>what</b>이 주어처럼 쓰여서 <b>make</b>가 아니라 <b>makes</b>가 와요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">어떻게든 나를 당신 마음속에 들어가게 해줘요</p>
+          <div class="sent-row">
+            <span class="sent-right">Let me into your heart somehow.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Let me into your heart somehow.</b> — 아주 좋아요! 👏<br>
+            💡 <b>let me into ~</b> = 나를 ~ 안으로 들어가게 해줘요<br>
+            &nbsp;&nbsp;<b>somehow</b> = 어떻게든, 어떤 식으로든. 마음의 문을 열어 달라는 느낌이에요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신을 실망시키지 않을게요</p>
+          <div class="sent-row">
+            <span class="sent-right">I won’t let you down.</span>
+          </div>
+          <span class="pill-ok">문장 정확 ✓</span>
+          <span class="pill-note">가사 흐름상 Let me in and I won’t let you down. 형태로도 나와요</span>
+          <p class="note-text">
+            핵심 표현: <b>I won’t let you down.</b><br>
+            💡 <b>let someone down</b> = 누군가를 실망시키다<br>
+            &nbsp;&nbsp;<b>won’t</b> = will not의 축약형 → “절대/앞으로 ~하지 않을게”라는 약속의 느낌이에요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">what makes you beautiful</p>
+      <p class="expr-ko">무엇이 당신을 아름답게 만드는지</p>
+      <span class="expr-tag">make + 목적어 + 형용사</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Don’t you know what makes you beautiful?</b> → 당신을 아름답게 하는 게 뭔지 모르겠어요?</p>
+        <p><b>Your smile makes you beautiful.</b> → 당신의 미소가 당신을 아름답게 만들어요.</p>
+        <p><b>Kindness makes people beautiful.</b> → 친절함은 사람을 아름답게 만들어요.</p>
+        <p><b>Your confidence makes you beautiful.</b> → 당신의 자신감이 당신을 아름답게 만들어요.</p>
+        <p><b>한 번에 정리:</b> Don’t you know what makes you beautiful? → 당신을 아름답게 하는 게 뭔지 모르겠어요?</p>
+        <p class="ex-note">💡 <b>make + 사람 + 형용사</b> = 사람을 ~하게 만들다<br><b>what</b>이 주어 역할을 할 때는 3인칭 단수처럼 <b>makes</b>를 써요.</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">let me into your heart</p>
+      <p class="expr-ko">나를 당신 마음속에 들어가게 해줘요</p>
+      <span class="expr-tag">감정 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Let me into your heart somehow.</b> → 어떻게든 나를 당신 마음속에 들어가게 해줘요.</p>
+        <p><b>Please let me into your life.</b> → 당신의 삶 안으로 나를 들여보내 주세요.</p>
+        <p><b>Let me in.</b> → 나를 들여보내 줘 / 마음을 열어줘.</p>
+        <p><b>Let me into your world.</b> → 당신의 세상 안으로 나를 들여보내 주세요.</p>
+        <p><b>한 번에 정리:</b> Let me into your heart somehow. → 어떻게든 나를 당신 마음속에 들어가게 해줘요.</p>
+        <p class="ex-note">💡 <b>let + 사람 + 동사원형</b> = 사람이 ~하게 해주다<br><b>into</b>는 “안으로 들어가는 방향”을 나타내요.</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">I won’t let you down</p>
+      <p class="expr-ko">당신을 실망시키지 않을게요</p>
+      <span class="expr-tag">약속 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I won’t let you down.</b> → 당신을 실망시키지 않을게요.</p>
+        <p><b>Trust me. I won’t let you down.</b> → 믿어줘. 실망시키지 않을게.</p>
+        <p><b>Don’t let yourself down.</b> → 스스로를 실망시키지 마.</p>
+        <p><b>I promise I won’t let you down.</b> → 약속해요, 당신을 실망시키지 않을게요.</p>
+        <p><b>한 번에 정리:</b> I won’t let you down. → 당신을 실망시키지 않을게요.</p>
+        <p class="ex-note">💡 <b>let down</b>은 “아래로 내리다”에서 발전해 “실망시키다”라는 뜻으로 자주 써요.</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Don’t you know what makes you beautiful?</span> → 당신을 아름답게 하는 게 뭔지 모르겠어요?<br>
+      <span>Let me into your heart somehow.</span> → 어떻게든 나를 당신 마음속에 들어가게 해줘요.<br>
+      <span>I won’t let you down.</span> → 당신을 실망시키지 않을게요.
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💛</div>
+      <div><h2>전체 가사</h2><p>Beautiful · Dapz On The Map &amp; Pheleba (2020)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+      <div class="lyrics-section">
+        <span class="lyrics-tag">오늘 배운 핵심 문장</span>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Don’t you know what makes you beautiful?</span></span><span class="lyric-ko">당신을 아름답게 하는 게 뭔지 모르겠어요? ①</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Let me into your heart somehow.</span></span><span class="lyric-ko">어떻게든 나를 당신 마음속에 들어가게 해줘요. ②</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">I won’t let you down.</span></span><span class="lyric-ko">당신을 실망시키지 않을게요. ③</span></div>
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">전체 가사 흐름</span>
+        <div class="lyric-line"><span class="lyric-en">The speaker tells the other person that they may not realize their own beauty.</span><span class="lyric-ko">화자는 상대가 자기 안의 아름다움을 잘 모르는 것 같다고 말해요.</span></div>
+        <div class="lyric-line"><span class="lyric-en">He wants to get closer and asks to be let into their heart.</span><span class="lyric-ko">상대에게 더 가까이 다가가고 싶어 하며, 마음을 열어 달라고 부탁해요.</span></div>
+        <div class="lyric-line"><span class="lyric-en">He promises that he will not disappoint them if they let him in.</span><span class="lyric-ko">상대가 마음을 열어 준다면 실망시키지 않겠다고 약속해요.</span></div>
+        <div class="lyric-line"><span class="lyric-en">The song feels warm, gentle, and reassuring.</span><span class="lyric-ko">전체적으로 따뜻하고 부드럽게 안심시켜 주는 분위기의 노래예요.</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장<br>※ 저작권 보호를 위해 전체 원문 가사는 수록하지 않고, 학습 문장과 전체 흐름을 정리했습니다.</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💛</div>
+      <div><h2>핵심 단어 발음</h2><p>Beautiful · Dapz On The Map &amp; Pheleba</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">beautiful</span>
+        <span class="ref-ipa">[ˈbjuːtɪfəl]</span>
+        <span class="ref-kr"><span class="s">뷰</span>티풀</span>
+        <span class="ref-mean">아름다운</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">makes you</span>
+        <span class="ref-ipa">[meɪks juː]</span>
+        <span class="ref-kr">메익스 유</span>
+        <span class="ref-mean">당신을 ~하게 만들다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">heart</span>
+        <span class="ref-ipa">[hɑːrt]</span>
+        <span class="ref-kr"><span class="s">하</span>트</span>
+        <span class="ref-mean">마음, 심장</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">somehow</span>
+        <span class="ref-ipa">[ˈsʌmhaʊ]</span>
+        <span class="ref-kr"><span class="s">썸</span>하우</span>
+        <span class="ref-mean">어떻게든</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">won’t</span>
+        <span class="ref-ipa">[woʊnt]</span>
+        <span class="ref-kr">워운트</span>
+        <span class="ref-mean">will not 축약</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">let you down</span>
+        <span class="ref-ipa">[let juː daʊn]</span>
+        <span class="ref-kr">렛 유 다운</span>
+        <span class="ref-mean">실망시키다</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — make sure vs makes you</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">makes you</p><p class="word-mean">당신을 ~하게 만들다</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[meɪks juː]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">메익스 유</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>make + 사람 + 형용사</b> = 사람을 ~하게 만들다<br>
+        🔸 <b>what makes you beautiful</b> = 당신을 아름답게 만드는 것<br>
+        🔸 <b>what</b>이 주어 역할이라 <b>makes</b>로 써요.
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">make sure</p><p class="word-mean">확인하다, 확실히 하다</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[meɪk ʃʊr]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">메익 슈어</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>make sure</b> = 확인하다<br>
+        🔸 예: <b>Make sure you lock the door.</b> = 문 잠갔는지 꼭 확인해.<br>
+        🔸 “아름답게 만들다”라는 뜻에는 <b>makes you beautiful</b>을 써야 해요.
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">beautiful</p><p class="word-mean">아름다운</p></div>
+        <span class="word-tag">3음절</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈbjuːtɪfəl]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">뷰</span>티풀</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 강세는 첫 음절 <b>뷰</b>!<br>
+        🔸 “비-유-티-풀”처럼 끊기보다 <b>뷰티풀</b>로 자연스럽게 읽어요.
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">somehow</p><p class="word-mean">어떻게든</p></div>
+        <span class="word-tag">감정 표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsʌmhaʊ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">썸</span>하우</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>some</b>은 여기서 “썸”에 가까워요.<br>
+        🔸 <b>somehow</b> = 정확한 방법은 모르지만 어떻게든.
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">let you down</p><p class="word-mean">당신을 실망시키다</p></div>
+        <span class="word-tag">관용표현</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[let juː daʊn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">렛 유 <span class="stress">다운</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>I won’t let you down.</b> = 실망시키지 않을게요.<br>
+        🔸 <b>won’t</b>는 will not의 축약형. 약속할 때 자주 써요.
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">💛 [Good Morning Pops] Beautiful
+— Dapz On The Map & Pheleba · 2020
+
+🎵 상대를 아름답게 느끼게 해주고 싶다는
+   따뜻한 마음을 담은 곡
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 what makes you beautiful
+   당신을 아름답게 만드는 것
+   한 번에 정리:
+   Don’t you know what makes you beautiful?
+   → 당신을 아름답게 하는 게 뭔지 모르겠어요?
+   • Your smile makes you beautiful.
+     (당신의 미소가 당신을 아름답게 만들어요.)
+   • Your confidence makes you beautiful.
+     (당신의 자신감이 당신을 아름답게 만들어요.)
+💡 make + 사람 + 형용사 = 사람을 ~하게 만들다
+
+🔹 let me into your heart
+   나를 당신 마음속에 들어가게 해줘요
+   한 번에 정리:
+   Let me into your heart somehow.
+   → 어떻게든 나를 당신 마음속에 들어가게 해줘요.
+   • Please let me into your life.
+     (당신의 삶 안으로 나를 들여보내 주세요.)
+   • Let me into your world.
+     (당신의 세상 안으로 나를 들여보내 주세요.)
+💡 into = 안으로 들어가는 방향
+
+🔹 I won’t let you down
+   당신을 실망시키지 않을게요
+   한 번에 정리:
+   I won’t let you down.
+   → 당신을 실망시키지 않을게요.
+   • Trust me. I won’t let you down.
+     (믿어줘. 실망시키지 않을게.)
+   • I promise I won’t let you down.
+     (약속해요, 당신을 실망시키지 않을게요.)
+💡 let down = 실망시키다
+
+——————————————————
+
+🎶 전체 가사 흐름
+상대가 자기 아름다움을 모르는 것 같다고 말함 →
+어떻게든 마음속으로 들어가게 해달라고 부탁함 →
+마음을 열어주면 실망시키지 않겠다고 약속함
+
+——————————————————
+#GoodMorningPops #팝송영어 #Beautiful #DapzOnTheMap #Pheleba</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

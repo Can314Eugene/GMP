@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Superstar — 조낙 콜리</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F3F0FA;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #8868C8;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#DDD0F5;border-color:#5028A0;color:#2A1258}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #C8B4EC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#DDD0F5;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#DDD0F5;color:#2A1258;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E0D4F2;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E0D4F2;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E0D4F2;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#5028A0}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#DDD0F5;color:#2A1258;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F3F0FA;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #C8B4EC}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E0D4F2}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#2A1258}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E0D4F2;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F3F0FA;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F3F0FA;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#2A1258;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E0D4F2;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#DDD0F5;color:#2A1258;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F3F0FA;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#5028A0;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#2A1258;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #E0D4F2;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#DDD0F5;color:#2A1258;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#C8B0F0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Lyrics tab */
+  .lyrics-wrap{background:#fff;border:1px solid #E0D4F2;border-radius:16px;padding:20px}
+  .lyrics-section{margin-bottom:20px}
+  .lyrics-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#5028A0;background:#DDD0F5;padding:3px 10px;border-radius:8px;margin-bottom:8px;text-transform:uppercase}
+  .lyric-line{display:flex;flex-direction:column;gap:1px;padding:7px 0;border-bottom:1px solid #F3F0FA}
+  .lyric-line:last-child{border-bottom:none}
+  .lyric-en{font-size:14px;color:#1A1A2E;font-weight:500;line-height:1.5}
+  .lyric-ko{font-size:12px;color:#999;line-height:1.4}
+  .lyric-hl{background:#FFF4D8;border-radius:4px;padding:1px 4px}
+  .info-banner{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('lyrics',this)">전체 가사</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🌟</div>
+      <div>
+        <h2>Superstar</h2>
+        <p>조낙 콜리 · 2021 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div class="info-banner">
+      ⚠️ <b>곡 정보 확인 필요:</b> "조낙 콜리"라는 가수명과 2021년 "Superstar"를 정확히 특정하지 못했어요. 정확한 영어 철자(가수명)나 Spotify/YouTube 링크를 알려주시면 전체 가사와 가수 정보를 정확히 업데이트해 드릴게요! 아래 세 문장 교정은 영어 문법 기준으로 정확합니다 ✓
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">모든 당신의 속셈을 알아요</p>
+          <div class="sent-row">
+            <span class="sent-right">Everybody knows your game.</span>
+          </div>
+          <span class="pill-ok">문법·구조 정확 ✓</span>
+          <p class="note-text">
+            <b>Everybody knows your game</b> — 문법·구조 모두 완벽해요! 👏<br>
+            💡 <b>game</b> = 게임 + <b>속셈, 수작, 꿍꿍이</b>! "know your game" = 네 속셈을 안다<br>
+            &nbsp;&nbsp;<b>everybody</b>는 단수 취급이라 <b>knows</b>(s)를 정확히 쓰셨어요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">당신의 진심[충성심]을 믿을 수 없네요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I can't count of your royalty.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I can't count on your loyalty.</span>
+          </div>
+          <span class="pill-fix">count of → count on (전치사)</span>
+          <span class="pill-fix">royalty → loyalty (r → l)</span>
+          <p class="note-text">
+            추정 정확: <b>I can't count on your loyalty</b><br>
+            ① <b>count of</b>(✗) → <b>count on</b>(✓) — "믿다, 의지하다"는 <b>count on</b>!<br>
+            ② <b>royalty</b>(왕족, 저작권료)(✗) → <b>loyalty</b>(충성심, 진심)(✓) — r과 l 차이!<br>
+            💡 <b>count on ~</b> = ~을 믿다, 의지하다. <b>loyalty</b> = 충성심, 신의<br>
+            &nbsp;&nbsp;⚠️ <b>royalty</b>[로열티](왕족) ≠ <b>loyalty</b>[로열티](충성심) — 첫 글자만 달라요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 내 에너지를 다 빼앗아 가죠</p>
+          <div class="sent-row">
+            <span class="sent-right">You take all my energy.</span>
+          </div>
+          <span class="pill-ok">완벽해요! ✓</span>
+          <p class="note-text">
+            <b>You take all my energy</b> — 문법·구조 모두 완벽해요! 👏<br>
+            💡 <b>take all my energy</b> = 내 모든 에너지를 가져가다[빼앗다]<br>
+            &nbsp;&nbsp;지치게 만드는 사람을 표현할 때 딱이에요! "넌 날 진 빠지게 해"라는 뉘앙스
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">know your game</p>
+      <p class="expr-ko">속셈을 알다 / 수작을 간파하다</p>
+      <span class="expr-tag">game = 속셈</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Everybody knows your game.</b> → 모두가 네 속셈을 알아.</p>
+        <p><b>I see through your game.</b> → 네 수작이 다 보여.</p>
+        <p><b>Don't play games with me.</b> → 나한테 수작 부리지 마.</p>
+        <p><b>What's your game?</b> → 네 속셈이 뭐야?</p>
+        <p class="ex-note">💡 <b>game</b> = 게임 + <b>속셈, 수작, 꿍꿍이</b> (구어 표현!)<br>know your game(속셈을 알다), play games(수작 부리다), see through(간파하다)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">count on / loyalty</p>
+      <p class="expr-ko">믿다, 의지하다 / 충성심, 진심</p>
+      <span class="expr-tag">count on 핵심!</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I can't count on your loyalty.</b> → 네 진심을 믿을 수 없어.</p>
+        <p><b>You can count on me.</b> → 날 믿어도 돼.</p>
+        <p><b>I'm counting on you.</b> → 너만 믿어.</p>
+        <p><b>Her loyalty never wavered.</b> → 그녀의 충성심은 흔들리지 않았어.</p>
+        <p class="ex-note">💡 <b>count on ~</b> = ~을 믿다, 의지하다 (전치사 <b>on</b>!)<br><b>loyalty</b> = 충성심, 신의 ⚠️ <b>royalty</b>(왕족/저작권료)와 첫 글자(r/l)만 달라요!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">take all my energy</p>
+      <p class="expr-ko">내 에너지를 다 빼앗아 가다</p>
+      <span class="expr-tag">감정 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>You take all my energy.</b> → 넌 내 에너지를 다 빼앗아 가.</p>
+        <p><b>That job drains my energy.</b> → 그 일은 내 진을 빼.</p>
+        <p><b>Dealing with him is exhausting.</b> → 그를 상대하는 건 진 빠져.</p>
+        <p><b>She gives me energy.</b> → 그녀는 내게 에너지를 줘. (반대!)</p>
+        <p class="ex-note">💡 <b>take all my energy</b> = 내 모든 에너지를 가져가다 → 진 빠지게 하다<br>비슷한 표현: <b>drain</b>(빼내다), <b>exhaust</b>(지치게 하다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Everybody knows your game.</span> → 모든 당신의 속셈을 알아요.<br>
+      <span>I can't count on your loyalty.</span> → 당신의 진심을 믿을 수 없네요.<br>
+      <span>You take all my energy.</span> → 당신은 내 에너지를 다 빼앗아 가죠.
+    </div>
+  </div>
+
+  <!-- LYRICS -->
+  <div id="panel-lyrics" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌟</div>
+      <div><h2>전체 가사</h2><p>Superstar · 조낙 콜리 (2021)</p></div>
+    </div>
+    <div class="lyrics-wrap">
+      <div class="info-banner" style="margin-bottom:16px">
+        🔍 정확한 곡을 특정하지 못해 전체 가사를 싣지 못했어요. 가수명 영어 철자나 Spotify/YouTube 링크를 알려주시면 전체 가사 + 한국어 번역을 추가해 드릴게요!<br><br>
+        대신 오늘 학습한 <b>세 문장</b>을 정리했어요:
+      </div>
+
+      <div class="lyrics-section">
+        <span class="lyrics-tag">오늘의 세 문장</span>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">Everybody knows your game</span></span><span class="lyric-ko">모든 당신의 속셈을 알아요 ①</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">I can't count on your loyalty</span></span><span class="lyric-ko">당신의 진심을 믿을 수 없네요 ②</span></div>
+        <div class="lyric-line"><span class="lyric-en"><span class="lyric-hl">You take all my energy</span></span><span class="lyric-ko">당신은 내 에너지를 다 빼앗아 가죠 ③</span></div>
+      </div>
+
+      <p style="font-size:11px;color:#AAA;text-align:center;margin-top:8px;line-height:1.6">🟡 노란 표시 = 오늘 학습한 세 문장<br>※ 정확한 곡 정보를 주시면 전체 가사를 추가할게요</p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🌟</div>
+      <div><h2>핵심 단어 발음</h2><p>Superstar · 조낙 콜리</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">loyalty</span>
+        <span class="ref-ipa">[ˈlɔɪəlti]</span>
+        <span class="ref-kr"><span class="s">로</span>열티</span>
+        <span class="ref-mean">충성심, 진심 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">royalty</span>
+        <span class="ref-ipa">[ˈrɔɪəlti]</span>
+        <span class="ref-kr"><span class="s">로</span>열티</span>
+        <span class="ref-mean">왕족 (혼동 주의!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">count on</span>
+        <span class="ref-ipa">[kaʊnt ɒn]</span>
+        <span class="ref-kr"><span class="s">카</span>운트 온</span>
+        <span class="ref-mean">믿다, 의지하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">game</span>
+        <span class="ref-ipa">[ɡeɪm]</span>
+        <span class="ref-kr"><span class="s">게</span>임</span>
+        <span class="ref-mean">속셈, 수작</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">energy</span>
+        <span class="ref-ipa">[ˈɛnərdʒi]</span>
+        <span class="ref-kr"><span class="s">에</span>너지</span>
+        <span class="ref-mean">에너지, 기운</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">everybody</span>
+        <span class="ref-ipa">[ˈɛvriˌbɑːdi]</span>
+        <span class="ref-kr"><span class="s">에</span>브리바디</span>
+        <span class="ref-mean">모두 (단수 취급!)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — loyalty vs royalty</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">loyalty</p><p class="word-mean">충성심, 신의, 진심</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈlɔɪəlti]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">로</span>열티</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>L</b>oyalty: 혀끝을 윗니 뒤에! (L 발음)<br>
+        🔸 <b>loyal</b>(충성스러운) + <b>-ty</b> = 충성심<br>
+        🔸 <b>count on your loyalty</b> = 진심[충성심]을 믿다<br>
+        🔸 <b>be loyal to ~</b> = ~에게 충실하다
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">royalty</p><p class="word-mean">왕족, 저작권료</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈrɔɪəlti]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">로</span>열티</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>R</b>oyalty: 혀를 안 대고 굴려요! (R 발음)<br>
+        🔸 🔑 <b>L</b>oyalty(충성심) vs <b>R</b>oyalty(왕족)<br>
+        첫 글자 L/R만 다르고 나머진 똑같아요!<br>
+        🔸 <b>royal</b>(왕의) + <b>-ty</b> = 왕족<br>
+        🔸 한글론 둘 다 "로열티"지만 L/R 발음이 관건!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">count on</p><p class="word-mean">믿다, 의지하다</p></div>
+        <span class="word-tag">구동사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[kaʊnt ɒn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">카</span>운트 온</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>count</b>: "카운트" [kaʊnt] — ou = "아우"!<br>
+        🔸 <b>on</b>: "온" — ⚠️ <b>of</b>(어브)가 아니라 <b>on</b>!<br>
+        🔸 <b>count on ~</b> = ~을 믿다, 의지하다<br>
+        🔸 count(세다) + on = "~에 기대어 세다" → 믿다
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">everybody</p><p class="word-mean">모두 (단수 취급!)</p></div>
+        <span class="word-tag">주어-동사 일치</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɛvriˌbɑːdi]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">에</span>브리바디</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>every-</b>: "에브리" — EV에 강세!<br>
+        🔸 <b>-body</b>: "바디" [bɑːdi]<br>
+        🔸 ⚠️ <b>everybody</b>는 단수 → <b>knows</b>(s)!<br>
+        🔸 Everybody know<b>s</b> / Everybody i<b>s</b> / Everybody ha<b>s</b>
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">energy</p><p class="word-mean">에너지, 기운</p></div>
+        <span class="word-tag">발음 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɛnərdʒi]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">에</span>너지</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>en-</b>: "에" [ɛ] — EN에 강세!<br>
+        🔸 <b>-er-</b>: "너" [nər]<br>
+        🔸 <b>-gy</b>: "지" [dʒi] — g가 "지" 소리!<br>
+        🔸 한국어 "에너지"와 강세만 다르게 "에너지"
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🌟 [Good Morning Pops] Superstar
+— 조낙 콜리 · 2021
+
+⚠️ 곡 정보 확인 필요
+   정확한 가수명·링크를 알려주시면
+   전체 가사와 가수 정보를 업데이트할게요!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 know your game
+   속셈을 알다 / 수작을 간파하다
+   • Everybody knows your game.
+     (모두가 네 속셈을 알아.)
+   • Don't play games with me.
+     (나한테 수작 부리지 마.)
+   • What's your game?
+     (네 속셈이 뭐야?)
+💡 game = 게임 + 속셈, 수작, 꿍꿍이 (구어!)
+   everybody는 단수 → knows(s)!
+
+🔹 count on / loyalty
+   믿다, 의지하다 / 충성심, 진심
+   • I can't count on your loyalty.
+     (네 진심을 믿을 수 없어.)
+   • You can count on me.
+     (날 믿어도 돼.)
+   • I'm counting on you.
+     (너만 믿어.)
+💡 count on ~ = ~을 믿다 (전치사 on!)
+   ⚠️ loyalty(충성심) vs royalty(왕족)
+   L/R 첫 글자만 달라요!
+
+🔹 take all my energy
+   내 에너지를 다 빼앗아 가다
+   • You take all my energy.
+     (넌 내 에너지를 다 빼앗아 가.)
+   • That job drains my energy.
+     (그 일은 내 진을 빼.)
+   • Dealing with him is exhausting.
+     (그를 상대하는 건 진 빠져.)
+💡 take all my energy = 진 빠지게 하다
+   비슷한 표현: drain(빼내다), exhaust(지치게 하다)
+
+——————————————————
+#GoodMorningPops #팝송영어 #Superstar</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

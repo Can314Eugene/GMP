@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>playing tricks — Thuy</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F7EEF2;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #B0587C;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#F2CADB;border-color:#701838;color:#440A20}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #E6B4CC}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#F2CADB;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#F2CADB;color:#440A20;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #EAC6D6;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #EAC6D6;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #EAC6D6;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#701838}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#F2CADB;color:#440A20;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F7EEF2;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #E6B4CC}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #EAC6D6}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#440A20}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EAC6D6;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F7EEF2;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F7EEF2;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#440A20;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #EAC6D6;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#F2CADB;color:#440A20;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F7EEF2;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#701838;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#440A20;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #EAC6D6;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#F2CADB;color:#440A20;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#EAB8CE}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #EAC6D6;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#701838;background:#F2CADB;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#440A20;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F7EEF2;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#F2CADB;color:#440A20;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#F7EEF2;border-left:3px solid #701838;border-radius:10px;padding:12px 14px;font-size:13px;color:#701838;line-height:1.8}
+  .twist-box b{color:#440A20;font-weight:600}
+  /* Listen / pronunciation practice tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #EAC6D6;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:16px;font-weight:600;color:#1A1A2E;line-height:1.5;margin-bottom:4px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:90px;border:1px solid #E6B4CC;background:#F7EEF2;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#F2CADB;border-color:#B0587C}
+  .speed-btn.playing{background:#F2CADB;border-color:#701838;box-shadow:0 0 0 2px #F2CADB}
+  .speed-label{font-size:13px;font-weight:600;color:#440A20;display:block}
+  .speed-sub{font-size:10px;color:#B0587C;display:block;margin-top:2px}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#F2CADB;color:#440A20;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#EAB8CE}
+  .play-all-btn.playing{background:#701838;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#701838;background:#F2CADB;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#A0486C;font-weight:500}
+  .listen-card.mini{padding:14px 16px}
+  .listen-card.mini .listen-en{font-size:15px;margin-bottom:3px}
+  .listen-card.mini .listen-ko{margin-bottom:10px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🎭</div>
+      <div>
+        <h2>playing tricks</h2>
+        <p>Thuy · girls like me don't cry (2022) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#F7EEF2;border:1px solid #B0587C;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#440A20;line-height:1.7">
+      🎭 <b>Thuy (투이)</b> · 2022년 발매 · 앨범 <i>girls like me don't cry</i><br>
+      캘리포니아 스톡턴 출신 베트남계 미국 R&B 싱어예요! <b>"playing tricks"</b>는 진짜 사랑을 만났으면서도 "이게 진짜일까? 내 마음이 또 날 속이는 건 아닐까?" 스스로 의심하며 불안해하는 마음을 그린 곡이에요.
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">난 포기하기 직전이었어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I was on the brink of giving up.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>I was on the brink of giving up</b> — 완벽해요! 👏<br>
+            💡 <b>on the brink of ~</b> = ~하기 직전인, ~의 벼랑 끝에 있는<br>
+            &nbsp;&nbsp;<b>brink</b> = 벼랑 끝, 직전. <b>give up</b> = 포기하다<br>
+            &nbsp;&nbsp;"막 포기하려던 참이었다"는 절박한 순간의 표현이에요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">난 우리의 발전을 계속 막고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I keep holding us back.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Blaming myself, I keep holding us back</b> — 완벽해요! 👏<br>
+            💡 <b>keep + -ing</b> = 계속 ~하다. <b>hold ~ back</b> = ~을 막다, 방해하다, 붙들다<br>
+            &nbsp;&nbsp;<b>hold us back</b> = 우리(관계)의 발전을 막다 → "내가 자꾸 우릴 가로막고 있어"<br>
+            &nbsp;&nbsp;자기 자신을 탓하며(blaming myself) 관계를 망치는 스스로를 자책하는 표현!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">그건 내가 어떻게 할 수 없는 일이었어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">There's nothing I can charge about it.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Nothing I can change about it.</span>
+          </div>
+          <span class="pill-fix">charge → change (발음 혼동!)</span>
+          <p class="note-text">
+            가사 정확: <b>Nothing I can change 'bout it</b> ('bout = about 축약)<br>
+            ⚠️ <b>charge</b>(청구하다, 충전하다)(✗) → <b>change</b>(바꾸다)(✓) — 발음이 비슷해 헷갈리셨네요!<br>
+            💡 <b>charge</b> [<b>차</b>지] vs <b>change</b> [<b>체</b>인지] — 모음이 "아" vs "에이"로 달라요!<br>
+            &nbsp;&nbsp;<b>Nothing I can change about it</b> = 내가 어떻게 바꿀 수 없는 일 → "어쩔 수 없는 일"<br>
+            &nbsp;&nbsp;앞에 <b>There's</b>를 붙여도 좋지만, 가사는 <b>Nothing I can change</b>로 시작해요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">on the brink of ~</p>
+      <p class="expr-ko">~하기 직전인, 벼랑 끝의</p>
+      <span class="expr-tag">절박함 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I was on the brink of giving up.</b> → 난 포기하기 직전이었어.</p>
+        <p><b>They're on the brink of a breakup.</b> → 그들은 헤어지기 직전이야.</p>
+        <p><b>She was on the brink of tears.</b> → 그녀는 눈물이 터지기 직전이었어.</p>
+        <p><b>The company is on the brink of collapse.</b> → 그 회사는 붕괴 직전이야.</p>
+        <p class="ex-note">💡 <b>on the brink of + 명사/-ing</b> = ~의 직전에 있는<br><b>brink</b> = 벼랑 끝, 가장자리 → 무언가가 막 일어나기 직전!<br>비슷한 표현: on the verge of ~ (~의 직전에)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">hold ~ back</p>
+      <p class="expr-ko">~을 막다, 방해하다, 붙들다</p>
+      <span class="expr-tag">keep + -ing</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I keep holding us back.</b> → 난 자꾸 우릴 가로막고 있어.</p>
+        <p><b>Don't let fear hold you back.</b> → 두려움이 널 막게 두지 마.</p>
+        <p><b>She held back her tears.</b> → 그녀는 눈물을 참았어.</p>
+        <p><b>What's holding you back?</b> → 뭐가 널 망설이게 해?</p>
+        <p class="ex-note">💡 <b>hold ~ back</b> = ~을 막다, 저지하다, (감정을) 참다<br><b>keep + -ing</b> = 계속 ~하다 (keep holding = 계속 막다)<br>발전·성장을 방해하거나, 눈물·감정을 억누를 때 모두 써요!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">change vs charge</p>
+      <p class="expr-ko">바꾸다 vs 청구하다/충전하다</p>
+      <span class="expr-tag">발음 혼동 주의!</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Nothing I can change about it.</b> → 내가 어떻게 바꿀 수 없는 일이야.</p>
+        <p><b>I can't change the past.</b> → 난 과거를 바꿀 수 없어.</p>
+        <p><b>How much do you charge?</b> → 얼마를 청구하시나요? (charge)</p>
+        <p><b>I need to charge my phone.</b> → 폰 충전해야 해. (charge)</p>
+        <p class="ex-note">💡 <b>change</b> [체인지] = 바꾸다, 변하다<br><b>charge</b> [차지] = 청구하다, 충전하다, 돌진하다<br>⚠️ 모음이 "에이"(change) vs "아"(charge)로 달라요! 뜻도 완전 다르니 주의!</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I was on the brink of giving up.</span> → 난 포기하기 직전이었어요.<br>
+      <span>I keep holding us back.</span> → 난 우리의 발전을 계속 막고 있어요.<br>
+      <span>Nothing I can change about it.</span> → 그건 내가 어떻게 할 수 없는 일이었어요.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎭</div>
+      <div><h2>곡 이야기</h2><p>playing tricks · Thuy (2022)</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Thuy (투이, 본명 Thuy Thi Thu Tran)</b>는 캘리포니아 스톡턴 출신의 <b>베트남계 미국</b> R&B 싱어송라이터예요. <b>"playing tricks"</b>는 2022년 앨범 <i>girls like me don't cry</i>에 수록됐어요.
+        </p>
+        <p class="story-p">
+          부드러운 R&B 사운드 위에, <b>진짜 사랑을 만났으면서도 스스로 의심하며 불안해하는</b> 마음이 담겨 있어요. 제목 <b>"playing tricks"</b>는 "장난치다, 속이다"라는 뜻으로, 여기서는 <b>내 마음(mind)이 내 진심(heart)에게 장난을 치는</b> 상황을 말해요 🎭
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 포기 직전에 만난 사랑</b><br>난 막 포기하려던 참이었어. 그만두라는 마음의 소리도 들렸지. 그런데 너 같은 사랑을 찾을 줄은 몰랐어. 널 잃지 않길 기도해.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 자책</b><br>좋은 걸 망치는 방법을 자꾸 찾아내. 마음속으론 늘 너였다는 걸 알면서도. 넌 내가 원하는 전부인데, 나 자신을 탓하며 자꾸 우릴 가로막고 있어.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 마음의 장난</b><br>이게 진짜일까, 그냥 기분일 뿐일까? 아니면 내 마음이 또 내 진심에게 장난을 치는 걸까? 순간에 빠져, 이 감정에 갇혀서.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Verse 2 — 어쩔 수 없는 일</b><br>파티에 늦었지만, 내가 어떻게 바꿀 수 없는 일이야. 너에 대해 불평도 하고, 너와 떨어져 하루를 보내기도 했지. 도망쳐서 새 얼굴들도 만나봤지만 — 결국 넌 내가 가진 전부야.</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">제목의 의미 ✨</span>
+        <div class="twist-box">
+          🎭 <b>"playing tricks on my heart"</b><br><br>
+          핵심 가사는 <b>"Is my mind playing tricks on my heart again?"</b>(내 마음이 또 내 진심에게 장난을 치는 걸까?)예요.<br><br>
+          <b>mind</b>(머리/이성)와 <b>heart</b>(가슴/진심)를 <b>서로 다른 인물처럼</b> 그린 게 이 곡의 매력이에요. 진심(heart)은 이 사랑이 진짜라고 하는데, 이성(mind)은 자꾸 "이거 가짜 아니야? 착각 아니야?" 하며 <b>진심에게 장난을 걸어</b> 불안하게 만드는 거죠.<br><br>
+          사랑 앞에서 자꾸 의심하고 스스로를 방해하는, 누구나 겪어본 <b>연애의 불안</b>을 섬세하게 표현했어요 💗
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① I was on the brink of giving up</p>
+          <p class="learn-ko">난 포기하기 직전이었어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I keep holding us back</p>
+          <p class="learn-ko">난 우리의 발전을 계속 막고 있어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ Nothing I can change about it</p>
+          <p class="learn-ko">그건 내가 어떻게 할 수 없는 일이었어요</p>
+        </div>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 Melon · 지니 · Spotify · Apple Music 등<br>정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Thuy Tran 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎭</div>
+      <div><h2>핵심 단어 발음</h2><p>playing tricks · Thuy</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">change</span>
+        <span class="ref-ipa">[tʃeɪndʒ]</span>
+        <span class="ref-kr"><span class="s">체</span>인지</span>
+        <span class="ref-mean">바꾸다 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">charge</span>
+        <span class="ref-ipa">[tʃɑːrdʒ]</span>
+        <span class="ref-kr"><span class="s">차</span>지</span>
+        <span class="ref-mean">청구/충전 (혼동!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">brink</span>
+        <span class="ref-ipa">[brɪŋk]</span>
+        <span class="ref-kr"><span class="s">브링</span>크</span>
+        <span class="ref-mean">벼랑 끝, 직전</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">hold back</span>
+        <span class="ref-ipa">[hoʊld bæk]</span>
+        <span class="ref-kr"><span class="s">홀</span>드 백</span>
+        <span class="ref-mean">막다, 참다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">tricks</span>
+        <span class="ref-ipa">[trɪks]</span>
+        <span class="ref-kr"><span class="s">트릭</span>스</span>
+        <span class="ref-mean">장난, 속임수</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">mind</span>
+        <span class="ref-ipa">[maɪnd]</span>
+        <span class="ref-kr"><span class="s">마</span>인드</span>
+        <span class="ref-mean">마음, 이성</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — change vs charge</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">change</p><p class="word-mean">바꾸다, 변하다</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[tʃeɪndʒ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">체</span>인지</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>cha-</b>: "체이" [tʃeɪ] — a가 "에이" 소리!<br>
+        🔸 <b>-nge</b>: "인지" [ndʒ]<br>
+        🔸 <b>change</b> = 바꾸다 → "체인지"<br>
+        🔸 <b>Nothing I can change</b> = 내가 바꿀 수 없는 것
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">charge</p><p class="word-mean">청구하다, 충전하다, 돌진하다</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[tʃɑːrdʒ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">차</span>지</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>cha-</b>: "차" [tʃɑː] — a가 "아" 소리 + r!<br>
+        🔸 🔑 <b>change [체</b>인지<b>]</b>(바꾸다) vs <b>charge [차</b>지<b>]</b>(청구/충전)<br>
+        🔸 모음이 <b>"에이" vs "아"</b>로 완전히 달라요!<br>
+        🔸 뜻도 전혀 달라요: 바꾸다 vs 청구·충전하다
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">brink</p><p class="word-mean">벼랑 끝, 직전</p></div>
+        <span class="word-tag">br 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[brɪŋk]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">브링</span>크</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>br-</b>: "브르" — b + r 연결!<br>
+        🔸 <b>-ink</b>: "잉크" [ɪŋk] — 짧은 이!<br>
+        🔸 <b>on the brink of ~</b> = ~의 직전에<br>
+        🔸 ⚠️ brink[브링크] ≠ blink[블링크](깜빡이다) — r/l 구별!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">hold back</p><p class="word-mean">막다, 참다, 저지하다</p></div>
+        <span class="word-tag">구동사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[hoʊld bæk]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">홀</span>드 백</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>hold</b>: "홀드" [hoʊld] — o = "오우"!<br>
+        🔸 <b>back</b>: "백" [bæk] — a = "애"!<br>
+        🔸 <b>hold ~ back</b> = ~을 막다, (감정을) 참다<br>
+        🔸 <b>keep holding</b> = 계속 막다 (keep + -ing)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">tricks</p><p class="word-mean">장난, 속임수 (제목!)</p></div>
+        <span class="word-tag">tr 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[trɪks]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">트릭</span>스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>tr-</b>: "츄r" 비슷하게 — t + r 연결!<br>
+        🔸 <b>-icks</b>: "릭스" [ɪks] — 짧은 이!<br>
+        🔸 <b>play tricks on ~</b> = ~에게 장난치다, 속이다<br>
+        🔸 <b>trick</b> = 속임수, 장난 / <b>treat</b> = 대접 (핼러윈!)
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN / PRONUNCIATION PRACTICE -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · playing tricks</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>3회 반복</b>으로 들려드려요!<br>
+      ① <b>천천히</b> (또박또박) → ② <b>보통</b> 속도 → ③ <b>원어민</b> 속도<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"3회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 오늘의 세 문장 ===== -->
+    <div class="listen-group">📝 오늘의 세 문장</div>
+
+    <div class="listen-card">
+      <p class="listen-en">I was on the brink of giving up.</p>
+      <p class="listen-ko">난 포기하기 직전이었어요</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I was on the brink of giving up.',0.55)"><span class="speed-label">🐢 천천히</span><span class="speed-sub">또박또박</span></div>
+        <div class="speed-btn" onclick="say(this,'I was on the brink of giving up.',0.8)"><span class="speed-label">🚶 보통</span><span class="speed-sub">학습 속도</span></div>
+        <div class="speed-btn" onclick="say(this,'I was on the brink of giving up.',1.0)"><span class="speed-label">🏃 원어민</span><span class="speed-sub">자연 속도</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,'I was on the brink of giving up.')">▶ 3회 반복 듣기 (천천히 → 보통 → 원어민)</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">I keep holding us back.</p>
+      <p class="listen-ko">난 우리의 발전을 계속 막고 있어요</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I keep holding us back.',0.55)"><span class="speed-label">🐢 천천히</span><span class="speed-sub">또박또박</span></div>
+        <div class="speed-btn" onclick="say(this,'I keep holding us back.',0.8)"><span class="speed-label">🚶 보통</span><span class="speed-sub">학습 속도</span></div>
+        <div class="speed-btn" onclick="say(this,'I keep holding us back.',1.0)"><span class="speed-label">🏃 원어민</span><span class="speed-sub">자연 속도</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,'I keep holding us back.')">▶ 3회 반복 듣기 (천천히 → 보통 → 원어민)</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Nothing I can change about it.</p>
+      <p class="listen-ko">그건 내가 어떻게 할 수 없는 일이었어요</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Nothing I can change about it.',0.55)"><span class="speed-label">🐢 천천히</span><span class="speed-sub">또박또박</span></div>
+        <div class="speed-btn" onclick="say(this,'Nothing I can change about it.',0.8)"><span class="speed-label">🚶 보통</span><span class="speed-sub">학습 속도</span></div>
+        <div class="speed-btn" onclick="say(this,'Nothing I can change about it.',1.0)"><span class="speed-label">🏃 원어민</span><span class="speed-sub">자연 속도</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,'Nothing I can change about it.')">▶ 3회 반복 듣기 (천천히 → 보통 → 원어민)</button>
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 on the brink of ~ <span>· ~하기 직전인</span></div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">I was on the brink of giving up.</p>
+      <p class="listen-ko">난 포기하기 직전이었어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I was on the brink of giving up.',0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,'I was on the brink of giving up.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'I was on the brink of giving up.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,'I was on the brink of giving up.')">▶ 3회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">They're on the brink of a breakup.</p>
+      <p class="listen-ko">그들은 헤어지기 직전이야.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;They're on the brink of a breakup.&quot;,0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;They're on the brink of a breakup.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;They're on the brink of a breakup.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,&quot;They're on the brink of a breakup.&quot;)">▶ 3회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">She was on the brink of tears.</p>
+      <p class="listen-ko">그녀는 눈물이 터지기 직전이었어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'She was on the brink of tears.',0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,'She was on the brink of tears.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'She was on the brink of tears.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,'She was on the brink of tears.')">▶ 3회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 hold ~ back <span>· 막다, 참다</span></div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">I keep holding us back.</p>
+      <p class="listen-ko">난 자꾸 우릴 가로막고 있어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I keep holding us back.',0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,'I keep holding us back.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'I keep holding us back.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,'I keep holding us back.')">▶ 3회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">Don't let fear hold you back.</p>
+      <p class="listen-ko">두려움이 널 막게 두지 마.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Don't let fear hold you back.&quot;,0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Don't let fear hold you back.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Don't let fear hold you back.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,&quot;Don't let fear hold you back.&quot;)">▶ 3회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">What's holding you back?</p>
+      <p class="listen-ko">뭐가 널 망설이게 해?</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;What's holding you back?&quot;,0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;What's holding you back?&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;What's holding you back?&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,&quot;What's holding you back?&quot;)">▶ 3회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 change vs charge <span>· 바꾸다 vs 청구/충전</span></div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">Nothing I can change about it.</p>
+      <p class="listen-ko">내가 어떻게 바꿀 수 없는 일이야.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Nothing I can change about it.',0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,'Nothing I can change about it.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Nothing I can change about it.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,'Nothing I can change about it.')">▶ 3회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">I can't change the past.</p>
+      <p class="listen-ko">난 과거를 바꿀 수 없어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I can't change the past.&quot;,0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I can't change the past.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I can't change the past.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,&quot;I can't change the past.&quot;)">▶ 3회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">I need to charge my phone.</p>
+      <p class="listen-ko">폰 충전해야 해. (charge)</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I need to charge my phone.',0.55)"><span class="speed-label">🐢 천천히</span></div>
+        <div class="speed-btn" onclick="say(this,'I need to charge my phone.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'I need to charge my phone.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say3(this,'I need to charge my phone.')">▶ 3회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#F7EEF2;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#701838;border:1px solid #E6B4CC">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🎭 [Good Morning Pops] playing tricks
+— Thuy (투이) · 2022
+
+🎵 캘리포니아 출신 베트남계 미국 R&B 싱어
+   진짜 사랑을 만났으면서도
+   "이게 진짜일까? 내 마음이 날 속이나?"
+   스스로 의심하며 불안해하는 마음의 곡
+
+💡 제목 뜻: 내 mind(이성)가
+   내 heart(진심)에게 장난치는 것!
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 on the brink of ~
+   ~하기 직전인, 벼랑 끝의
+   • I was on the brink of giving up.
+     (난 포기하기 직전이었어.)
+   • They're on the brink of a breakup.
+     (그들은 헤어지기 직전이야.)
+   • She was on the brink of tears.
+     (그녀는 눈물이 터지기 직전이었어.)
+💡 brink = 벼랑 끝, 직전
+   비슷한 표현: on the verge of ~
+
+🔹 hold ~ back
+   ~을 막다, 방해하다, 참다
+   • I keep holding us back.
+     (난 자꾸 우릴 가로막고 있어.)
+   • Don't let fear hold you back.
+     (두려움이 널 막게 두지 마.)
+   • What's holding you back?
+     (뭐가 널 망설이게 해?)
+💡 keep + -ing = 계속 ~하다
+   hold back = 막다 / 감정을 억누르다
+
+🔹 change vs charge (발음 주의!)
+   바꾸다 vs 청구하다/충전하다
+   • Nothing I can change about it.
+     (내가 어떻게 바꿀 수 없는 일이야.)
+   • I can't change the past.
+     (난 과거를 바꿀 수 없어.)
+   • I need to charge my phone.
+     (폰 충전해야 해.) → charge
+💡 change[체인지] vs charge[차지]
+   모음 "에이" vs "아"로 완전히 달라요!
+   뜻도 전혀 다르니 주의!
+
+——————————————————
+#GoodMorningPops #팝송영어 #playingtricks #Thuy</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+
+  // 영어 음성만 추리기
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+
+  // 알려진 여성 아나운서 음성 이름 (기기·브라우저별)
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+
+  // 남성으로 알려진 이름 (배제용)
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    if(femaleNames.some(function(f){return n.indexOf(f)>=0;})) return true;
+    return false;
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+
+  // 1순위: 이름에 여성 키워드가 있는 음성
+  var female = pool.find(isFemale);
+  if(female) return female;
+
+  // 2순위: 남성으로 알려지지 않은 음성 (여성일 확률 높음)
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+
+  // 3순위: 그냥 첫 영어 음성
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+// 단일 속도 재생 (텍스트 기반)
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+// 한 문장 3회 반복 (천천히 → 보통 → 원어민)
+function say3(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.55, 0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+// 일부 브라우저는 voices를 비동기 로드
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

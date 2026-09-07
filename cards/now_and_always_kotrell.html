@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Now and Always — Kotrell</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F4EEE5;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #A5773A;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#E9D6B8;border-color:#5F3F12;color:#3A2708}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #DEC194}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#E9D6B8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#E9D6B8;color:#3A2708;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #E4CEA8;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #E4CEA8;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #E4CEA8;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#5F3F12}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#E9D6B8;color:#3A2708;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F4EEE5;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #DEC194}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #E4CEA8}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#3A2708}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E4CEA8;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F4EEE5;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F4EEE5;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#3A2708;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #E4CEA8;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#E9D6B8;color:#3A2708;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F4EEE5;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#5F3F12;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#3A2708;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #E4CEA8;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#E9D6B8;color:#3A2708;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#DEC194}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #E4CEA8;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#5F3F12;background:#E9D6B8;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#3A2708;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F4EEE5;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#E9D6B8;color:#3A2708;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#F4EEE5;border-left:3px solid #5F3F12;border-radius:10px;padding:12px 14px;font-size:13px;color:#5F3F12;line-height:1.8}
+  .twist-box b{color:#3A2708;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#E9D6B8;color:#3A2708;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #A5773A}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #E4CEA8;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #DEC194;background:#F4EEE5;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#E9D6B8;border-color:#A5773A}
+  .speed-btn.playing{background:#E9D6B8;border-color:#5F3F12;box-shadow:0 0 0 2px #E9D6B8}
+  .speed-label{font-size:13px;font-weight:600;color:#3A2708;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#E9D6B8;color:#3A2708;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#DEC194}
+  .play-all-btn.playing{background:#5F3F12;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#5F3F12;background:#E9D6B8;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#856025;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #DEC194;background:#fff;color:#856025;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#E9D6B8;border-color:#5F3F12;color:#3A2708}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#A5773A;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#5F3F12;background:#E9D6B8;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #E4CEA8;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#3A2708;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#AAA;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1A1A2E;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #A5773A;background:#F4EEE5;font-size:15px;font-family:inherit;font-weight:600;color:#5F3F12;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#E9D6B8;border-bottom-color:#5F3F12}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#E9D6B8;color:#3A2708;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#DEC194}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #DEC194;background:#fff;color:#856025;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#F4EEE5}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#AAA;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #DEC194;background:#F4EEE5;color:#3A2708;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#E9D6B8;border-color:#A5773A}
+  .quiz-say.playing{background:#E9D6B8;border-color:#5F3F12;box-shadow:0 0 0 2px #E9D6B8}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #E4CEA8;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#5F3F12}
+  .score-label{font-size:12px;color:#888;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#5F3F12;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#3A2708}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">💍</div>
+      <div>
+        <h2>Now and Always</h2>
+        <p>Kotrell · 2024 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#F4EEE5;border:1px solid #A5773A;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#3A2708;line-height:1.7">
+      💍 <b>Kotrell (코트렐)</b> · 2024<br>
+      작사는 Kotrell 본인(Cotterell Atonopriya)과 Hope Yasso Dennis, 프로듀싱은 Dee-Yasso가 맡았어요.<br>
+      <b>"Now and Always"</b>는 미래가 불확실해도, 힘든 순간이 와도 <b>변치 않고 곁을 지키겠다</b>는 진심 어린 약속의 곡이에요 💕<br>
+      👏 <b>세 문장 모두 조금씩 다듬으면 완벽해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">미래는 알 수 없다는 걸 알고 있어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I know that the future is impossible.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I know that the future's impossible to see.</span>
+          </div>
+          <span class="pill-fix">to see 추가</span>
+          <p class="note-text">
+            가사: <b>I know, you know that the future's impossible to see</b><br>
+            ⚠️ <b>to see</b>가 빠지면 뜻이 달라져요! "미래 자체가 불가능하다"(✗)가 아니라 <b>"미래를 내다보는 게 불가능하다"</b>(✓)는 뜻이에요<br>
+            &nbsp;&nbsp;💡 <b>impossible to + 동사원형</b> = ~하기가 불가능한 (to부정사가 impossible을 꾸며줘요!)<br>
+            &nbsp;&nbsp;<b>impossible to see</b> = 내다볼 수 없는, 예측할 수 없는 — 미래는 알 수 없다는 뜻을 정확히 담으려면 <b>to see</b>가 꼭 필요해요 🔮
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">딱 오늘 하루만 당신을 원하는 게 아니에요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">I don't wants you for just today.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">I don't want you for just today.</span>
+          </div>
+          <span class="pill-fix">wants → want</span>
+          <p class="note-text">
+            가사: <b>But I don't want you for just today / No I need you a little bit longer</b><br>
+            ⚠️ <b>don't</b> 뒤에는 항상 <b>동사원형</b>이 와요! (wants ✗ → want ✓)<br>
+            &nbsp;&nbsp;💡 <b>don't/doesn't</b>가 이미 부정과 인칭 정보를 담당하니까, 뒤의 동사는 <b>원형 그대로</b> 써요<br>
+            &nbsp;&nbsp;<b>for just today</b> = 딱 오늘만 — "오늘 하루로 끝나는 게 아니라, 계속 함께하고 싶다"는 마음이에요 💕
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">이 삶이 때때로 힘들어지겠죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">This life will get harder sometimes.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">This life will get hard sometimes.</span>
+          </div>
+          <span class="pill-fix">harder → hard</span>
+          <p class="note-text">
+            가사: <b>I know, you know that this life will get hard sometimes</b><br>
+            ⚠️ 가사는 비교급 <b>harder</b>가 아니라 원급 <b>hard</b>를 써요!<br>
+            &nbsp;&nbsp;💡 <b>get + 형용사</b> = ~해지다 (상태 변화). <b>hard</b>만으로도 "힘들어지다"라는 뜻이 완성돼요<br>
+            &nbsp;&nbsp;📌 <b>harder</b>를 쓰려면 "무엇보다" 더 힘든지 비교 대상이 필요해요 — 여기선 그냥 <b>"힘들어질 것"</b>이라는 뜻이라 <b>hard</b>가 자연스러워요 💪
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">impossible to see</p>
+      <p class="expr-ko">내다볼 수 없는, 예측 불가능한</p>
+      <span class="expr-tag">to부정사 형용사 수식</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I know that the future's impossible to see, but I still choose you.</b><br>→ 미래는 내다볼 수 없다는 걸 알지만, 그래도 난 당신을 선택해요.</p>
+        <p><b>The outcome of the game was impossible to predict until the very last minute.</b><br>→ 그 경기의 결과는 마지막 순간까지 예측하기 불가능했어.</p>
+        <p class="ex-note">💡 <b>형용사 + to + 동사원형</b> = ~하기에 …한 (to부정사가 형용사를 꾸며줘요!)<br><b>impossible to see</b> = 내다보기 불가능한 → 예측 불가능한 🔮<br>📌 같은 패턴: <b>easy to use</b>(쓰기 쉬운), <b>hard to believe</b>(믿기 힘든)<br>비슷한 표현: <b>unpredictable</b>(예측 불가능한), <b>uncertain</b>(불확실한)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">don't want ~ for just today</p>
+      <p class="expr-ko">딱 오늘만 원하는 게 아니다</p>
+      <span class="expr-tag">don't + 동사원형</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>I don't want you for just today, I need you a little bit longer.</b><br>→ 딱 오늘 하루만 당신을 원하는 게 아니에요, 좀 더 오래 당신이 필요해요.</p>
+        <p><b>She doesn't want success for just this year — she's thinking long-term.</b><br>→ 그녀는 올해만의 성공을 원하는 게 아니에요 — 장기적으로 생각하고 있어요.</p>
+        <p class="ex-note">💡 <b>don't/doesn't + 동사원형</b> — do/does가 부정·인칭을 담당! (don't wants ✗)<br><b>for just today</b> = 딱 오늘만, 오늘 하루로 그치는 것<br>📌 "오늘만이 아니라 계속"이라는 뜻을 강조하는 문형이에요<br>비슷한 표현: <b>not just for now</b>(지금만이 아니라), <b>for the long run</b>(장기적으로)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">get hard sometimes</p>
+      <p class="expr-ko">때때로 힘들어지다</p>
+      <span class="expr-tag">get + 형용사</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>I know this life will get hard sometimes, but I'll be by your side no matter the weather.</b><br>→ 이 삶이 때때로 힘들어질 거란 걸 알지만, 어떤 상황에서도 당신 곁에 있을게요.</p>
+        <p><b>Learning a new language can get hard sometimes, but it's always worth it.</b><br>→ 새 언어를 배우는 건 때때로 힘들어질 수 있지만, 늘 그만한 가치가 있어.</p>
+        <p class="ex-note">💡 <b>get + 형용사</b> = ~한 상태로 변하다 (become과 비슷하지만 더 캐주얼!)<br><b>get hard</b> = 힘들어지다, <b>get tired</b> = 피곤해지다, <b>get dark</b> = 어두워지다<br>📌 <b>sometimes</b>는 문장 끝이나 앞에 자유롭게 위치해요<br>비슷한 표현: <b>become difficult</b>(어려워지다), <b>be tough at times</b>(가끔 힘들다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I know that the future's impossible to see.</span> → 미래는 알 수 없다는 걸 알고 있어요.<br>
+      <span>I don't want you for just today.</span> → 딱 오늘 하루만 당신을 원하는 게 아니에요.<br>
+      <span>This life will get hard sometimes.</span> → 이 삶이 때때로 힘들어지겠죠.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💍</div>
+      <div><h2>곡 이야기</h2><p>Now and Always · Kotrell</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Kotrell (코트렐, 본명 Cotterell Atonopriya)</b>의 곡으로, 2024년 발매됐어요. Hope Yasso Dennis가 작사에 함께 참여했고, 프로듀싱은 Dee-Yasso가 맡았어요.
+        </p>
+        <p class="story-p">
+          <b>"Now and Always"</b>는 발매 후 TikTok 등에서 큰 사랑을 받았고, 이후 <b>Bridget Blue</b>와 함께한 리믹스 버전도 2024년 10월 앨범 <i>Forever,</i>에 수록됐어요 🎶
+        </p>
+        <p class="story-p">
+          제목 그대로, <b>"지금도, 언제나"</b> 변하지 않는 사랑을 약속하는 소울풀한 R&B 발라드예요.
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 당신뿐이에요</b><br>당신이 아름답다는 걸 당신도 알죠. 그런데 내가 오직 당신만 바라본다는 것도 알고 있나요? <b>미래는 내다볼 수 없다는 걸 알아요</b>(오늘 첫 문장!). 하지만 난 당신 말고는 다른 누구와도 함께하는 내 모습을 그릴 수 없어요. 💕</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 사랑해요, 원해요, 필요해요</b><br>그래서 난 당신을 사랑하나요? 네, 그래요. 원하나요? 네, 그래요. 필요한가요? 네, 그래요. 그리고 <b>딱 오늘 하루만 당신을 원하는 게 아니에요</b>(두 번째 문장!) — 좀 더 오래 당신이 필요해요. 매일 당신을 원해요. ✨</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 지금도, 언제나</b><br>난 <b>지금도, 언제나(now and always)</b>를 이야기하고 있어요. 그게 내가 생각하는 전부예요. 반복되는 후렴구가 이 곡의 제목이자 핵심 메시지를 강조해요. 💍</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Verse 2 — 힘들어도 곁에 있을게요</b><br><b>이 삶이 때때로 힘들어질 거라는 걸 알아요</b>(세 번째 문장!). 하지만 어떤 날씨든 상관없이, 난 당신 곁에 있을 거예요. 이 세상에 완벽한 사람은 없다는 것도 알지만, 남은 평생 매일 당신을 선택하겠다고 약속해요. 🌦️</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          💍 <b>불확실함을 인정하는 약속</b><br><br>
+          많은 사랑 노래가 "영원히 완벽할 거야"라고 약속하지만, 이 곡은 다르게 접근해요. <b>the future's impossible to see</b>(미래는 예측할 수 없다), <b>this life will get hard sometimes</b>(삶은 때때로 힘들어질 것이다), <b>nobody perfect for this life</b>(완벽한 사람은 없다) — <b>불확실함과 불완전함을 먼저 인정</b>해요.<br><br>
+          그런데도 <b>no matter the weather, I will be by your side</b>(어떤 날씨든 상관없이 곁에 있겠다)라고 말해요. 완벽을 약속하는 게 아니라, <b>불완전함 속에서도 함께하겠다는 선택</b>을 약속하는 거예요.<br><br>
+          그래서 제목 <b>"Now and Always"</b>가 더 진솔하게 느껴져요 — 화려한 맹세가 아니라, <b>현실을 알면서도 계속 선택하겠다</b>는 성숙한 사랑의 언어예요 💕
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① I know that the future's impossible to see</p>
+          <p class="learn-ko">미래는 알 수 없다는 걸 알고 있어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I don't want you for just today</p>
+          <p class="learn-ko">딱 오늘 하루만 당신을 원하는 게 아니에요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ This life will get hard sometimes</p>
+          <p class="learn-ko">이 삶이 때때로 힘들어지겠죠</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Kotrell+Now+and+Always+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;Now and Always 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Kotrell · Hope Yasso Dennis 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">💍</div>
+      <div><h2>핵심 단어 발음</h2><p>Now and Always · Kotrell</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">impossible</span>
+        <span class="ref-ipa">[ɪmˈpɑːsəbəl]</span>
+        <span class="ref-kr">임<span class="s">파</span>서블</span>
+        <span class="ref-mean">불가능한</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">always</span>
+        <span class="ref-ipa">[ˈɔːlweɪz]</span>
+        <span class="ref-kr"><span class="s">올</span>웨이즈</span>
+        <span class="ref-mean">언제나 (제목!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">weather</span>
+        <span class="ref-ipa">[ˈwɛðər]</span>
+        <span class="ref-kr"><span class="s">웨</span>더</span>
+        <span class="ref-mean">날씨 (whether와 동음!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">promise</span>
+        <span class="ref-ipa">[ˈprɑːmɪs]</span>
+        <span class="ref-kr"><span class="s">프라</span>미스</span>
+        <span class="ref-mean">약속하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">perfect</span>
+        <span class="ref-ipa">[ˈpɜːrfɪkt]</span>
+        <span class="ref-kr"><span class="s">퍼</span>ㄹ픽트</span>
+        <span class="ref-mean">완벽한</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">longer</span>
+        <span class="ref-ipa">[ˈlɔːŋɡər]</span>
+        <span class="ref-kr"><span class="s">롱</span>거</span>
+        <span class="ref-mean">더 오래</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — impossible (IM에 강세 아님!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">impossible</p><p class="word-mean">불가능한</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ POS에 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɪmˈpɑːsəbəl]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">임<span class="stress">파</span>서블</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>im-POS-si-ble</b> — 4음절! <b>POS</b>에 강세 💥<br>
+        🔸 <b>im-</b>: "임" 약하게 [ɪm]<br>
+        🔸 <b>-pos-</b>: "파" [pɑː] — o가 "아" 소리!<br>
+        🔸 <b>-sible</b>: "서블" [səbəl] — 약하게<br>
+        🔸 <b>impossible to see</b>: "임파서블투씨" 🔮
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — weather (whether와 동음이의!)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">weather</p><p class="word-mean">날씨</p></div>
+        <span class="word-tag">whether와 발음 같음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈwɛðər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">웨</span>더</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>wea-</b>: "웨" [wɛ] — e가 "에" 소리!<br>
+        🔸 <b>-ther</b>: "더" [ðər] — th는 유성음, 혀를 이 사이에!<br>
+        🔸 📌 <b>weather</b>(날씨)와 <b>whether</b>(~인지 아닌지)는 <b>발음이 완전히 같아요</b>!<br>
+        🔸 <b>no matter the weather</b> = 어떤 날씨든 상관없이 (문맥으로 구분!) 🌦️
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">always</p><p class="word-mean">언제나 (제목!)</p></div>
+        <span class="word-tag">al = 올</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɔːlweɪz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">올</span>웨이즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>al-</b>: "올" [ɔːl] — a가 "오" 소리!<br>
+        🔸 <b>-ways</b>: "웨이즈" [weɪz] — a가 "에이"!<br>
+        🔸 <b>now and always</b>: "나우앤 <b>올</b>웨이즈" — 곡 제목이자 후렴 💍<br>
+        🔸 같은 al=올: <b>al</b>so[올소], <b>al</b>most[올모스트]
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">don't want you</p><p class="word-mean">당신을 원하지 않다 (부분)</p></div>
+        <span class="word-tag">연음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[doʊnt wɑːnt juː]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">도</span>운트 <span class="stress">원</span>츄</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>don't</b>: "도운트" [doʊnt] — o가 "오우"!<br>
+        🔸 <b>want you</b>: "원츄" — t + y가 만나 <b>"츄"</b> 소리로!<br>
+        🔸 <b>I don't want you for just today</b>: "아이 도운트 원츄 포r 저스트 투데이" 💕<br>
+        🔸 같은 t+y="츄" 연음: <b>meet you</b>[미츄], <b>get you</b>[게츄]
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">promise</p><p class="word-mean">약속하다</p></div>
+        <span class="word-tag">PROM에 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈprɑːmɪs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">프라</span>미스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>prom-</b>: "프라" [prɑː] — o가 "아" 소리! PROM에 강세<br>
+        🔸 <b>-ise</b>: "미스" [mɪs]<br>
+        🔸 <b>I promise to choose you everyday</b> = 매일 당신을 선택하겠다고 약속해요<br>
+        🔸 "프로미스"(✗) 아니에요 — "프라미스"(✓)!
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · Now and Always</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 impossible to see <span>· 내다볼 수 없는</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I know that the future's impossible to see, but I still choose you.</p>
+      <p class="listen-ko">미래는 내다볼 수 없다는 걸 알지만, 그래도 난 당신을 선택해요.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I know that the future's impossible to see, but I still choose you.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I know that the future's impossible to see, but I still choose you.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I know that the future's impossible to see, but I still choose you.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">The outcome of the game was impossible to predict until the very last minute.</p>
+      <p class="listen-ko">그 경기의 결과는 마지막 순간까지 예측하기 불가능했어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'The outcome of the game was impossible to predict until the very last minute.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'The outcome of the game was impossible to predict until the very last minute.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'The outcome of the game was impossible to predict until the very last minute.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 don't want ~ for just today <span>· 딱 오늘만이 아니다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I don't want you for just today, I need you a little bit longer.</p>
+      <p class="listen-ko">딱 오늘 하루만 당신을 원하는 게 아니에요, 좀 더 오래 당신이 필요해요.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I don't want you for just today, I need you a little bit longer.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I don't want you for just today, I need you a little bit longer.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I don't want you for just today, I need you a little bit longer.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">She doesn't want success for just this year — she's thinking long-term.</p>
+      <p class="listen-ko">그녀는 올해만의 성공을 원하는 게 아니에요 — 장기적으로 생각하고 있어요.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;She doesn't want success for just this year — she's thinking long-term.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;She doesn't want success for just this year — she's thinking long-term.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;She doesn't want success for just this year — she's thinking long-term.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 get hard sometimes <span>· 때때로 힘들어지다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">I know this life will get hard sometimes, but I'll be by your side no matter the weather.</p>
+      <p class="listen-ko">이 삶이 때때로 힘들어질 거란 걸 알지만, 어떤 상황에서도 당신 곁에 있을게요.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I know this life will get hard sometimes, but I'll be by your side no matter the weather.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I know this life will get hard sometimes, but I'll be by your side no matter the weather.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I know this life will get hard sometimes, but I'll be by your side no matter the weather.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Learning a new language can get hard sometimes, but it's always worth it.</p>
+      <p class="listen-ko">새 언어를 배우는 건 때때로 힘들어질 수 있지만, 늘 그만한 가치가 있어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Learning a new language can get hard sometimes, but it's always worth it.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Learning a new language can get hard sometimes, but it's always worth it.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;Learning a new language can get hard sometimes, but it's always worth it.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#F4EEE5;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#5F3F12;border:1px solid #DEC194">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div><h2>문장 암기</h2><p>빈칸 채우기 + 발음 연습 · Now and Always</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      ✏️ <b>빈칸에 알맞은 영어 단어를 직접 입력</b>해서 오늘 배운 문장을 통째로 외워봐요!<br>
+      <b>오늘의 세 문장 + 표현별 예문</b>까지 전부 연습할 수 있어요.<br>
+      난이도를 골라 도전하세요 — <b>Level 1</b>(쉬움) → <b>Level 2</b>(보통) → <b>Level 3</b>(어려움)<br>
+      💡 각 칸을 채우고 <b>"정답 확인"</b>(또는 Enter)을 누르면 채점돼요.<br>
+      🔊 문장마다 <b>발음 듣기 버튼</b>이 있어요 — 듣고 따라 하면 더 빨리 외워져요!
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" id="lv1" onclick="setLevel(1,this)">Level 1<span>핵심 단어</span></button>
+      <button class="level-btn" id="lv2" onclick="setLevel(2,this)">Level 2<span>표현 위주</span></button>
+      <button class="level-btn" id="lv3" onclick="setLevel(3,this)">Level 3<span>거의 전체</span></button>
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">정답 확인을 누르면 점수가 표시돼요</div>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+
+    <div class="quiz-card" style="background:#F4EEE5;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#5F3F12;border:1px solid #DEC194;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">💍 [Good Morning Pops] Now and Always
+— Kotrell
+
+🎵 2024년 발매
+   작사: Kotrell, Hope Yasso Dennis
+   프로듀싱: Dee-Yasso
+
+   미래가 불확실해도, 힘든 순간이 와도
+   변치 않고 곁을 지키겠다는
+   진심 어린 약속의 곡 💕
+
+👏 세 문장 모두 조금씩 다듬으면 완벽해요!
+   ① is impossible → 's impossible to see
+   ② don't wants → don't want
+   ③ get harder → get hard
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 impossible to see
+   내다볼 수 없는, 예측 불가능한
+   • I know that the future's impossible
+     to see, but I still choose you.
+     (미래는 내다볼 수 없다는 걸 알지만,
+      그래도 난 당신을 선택해요.)
+   • The outcome of the game was
+     impossible to predict until the
+     very last minute.
+     (그 경기의 결과는 마지막 순간까지
+      예측하기 불가능했어.)
+💡 형용사 + to + 동사원형 = ~하기에 …한
+   같은 패턴: easy to use, hard to believe
+
+🔹 don't want ~ for just today
+   딱 오늘만 원하는 게 아니다
+   • I don't want you for just today,
+     I need you a little bit longer.
+     (딱 오늘 하루만 당신을 원하는 게
+      아니에요, 좀 더 오래 당신이 필요해요.)
+   • She doesn't want success for just
+     this year — she's thinking long-term.
+     (그녀는 올해만의 성공을 원하는 게
+      아니에요 — 장기적으로 생각하고 있어요.)
+💡 don't/doesn't + 동사원형!
+   (don't wants ✗)
+
+🔹 get hard sometimes
+   때때로 힘들어지다
+   • I know this life will get hard
+     sometimes, but I'll be by your side
+     no matter the weather.
+     (이 삶이 때때로 힘들어질 거란 걸
+      알지만, 어떤 상황에서도 당신 곁에
+      있을게요.)
+   • Learning a new language can get
+     hard sometimes, but it's always
+     worth it.
+     (새 언어를 배우는 건 때때로 힘들어질
+      수 있지만, 늘 그만한 가치가 있어.)
+💡 get + 형용사 = ~한 상태로 변하다
+   get hard/tired/dark 등 다양하게 활용!
+
+🔊 발음 팁
+   • impossible = 임[파]서블 (POS에 강세!)
+   • weather = [웨]더 (whether와 발음 같아요!)
+   • always = [올]웨이즈 (al은 "올"!)
+   • promise = [프라]미스 ("프로미스" ✗)
+
+——————————————————
+#GoodMorningPops #팝송영어 #NowAndAlways #Kotrell</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "📝 오늘의 세 문장",
+    items: [
+      { ko:"미래는 알 수 없다는 걸 알고 있어요.", en:"I know that the future's impossible to see.", key:["future","impossible","see"] },
+      { ko:"딱 오늘 하루만 당신을 원하는 게 아니에요.", en:"I don't want you for just today.", key:["want","today"] },
+      { ko:"이 삶이 때때로 힘들어지겠죠.", en:"This life will get hard sometimes.", key:["life","hard","sometimes"] }
+    ]
+  },
+  {
+    title: "🔹 impossible to see",
+    items: [
+      { ko:"미래는 내다볼 수 없다는 걸 알지만, 그래도 난 당신을 선택해요.", en:"I know that the future's impossible to see, but I still choose you.", key:["future","impossible","choose"] },
+      { ko:"그 경기의 결과는 마지막 순간까지 예측하기 불가능했어.", en:"The outcome of the game was impossible to predict until the very last minute.", key:["outcome","impossible","predict"] }
+    ]
+  },
+  {
+    title: "🔹 don't want ~ for just today",
+    items: [
+      { ko:"딱 오늘 하루만 당신을 원하는 게 아니에요, 좀 더 오래 당신이 필요해요.", en:"I don't want you for just today, I need you a little bit longer.", key:["want","today","need","longer"] },
+      { ko:"그녀는 올해만의 성공을 원하는 게 아니에요 — 장기적으로 생각하고 있어요.", en:"She doesn't want success for just this year, she's thinking long-term.", key:["doesn't","success","longterm"] }
+    ]
+  },
+  {
+    title: "🔹 get hard sometimes",
+    items: [
+      { ko:"이 삶이 때때로 힘들어질 거란 걸 알지만, 어떤 상황에서도 당신 곁에 있을게요.", en:"I know this life will get hard sometimes, but I'll be by your side no matter the weather.", key:["life","hard","weather"] },
+      { ko:"새 언어를 배우는 건 때때로 힘들어질 수 있지만, 늘 그만한 가치가 있어.", en:"Learning a new language can get hard sometimes, but it's always worth it.", key:["Learning","hard","worth"] }
+    ]
+  }
+];
+
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return s.toLowerCase().replace(/[.,!?'"\u2014\u2013\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level===1) target = Math.max(1, Math.round(n*0.20));
+  else if(level===2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">'+ item.ko +'</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blankIdx.length +'칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blankIdx.indexOf(wi) >= 0){
+          var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+          var pre = m ? m[1] : '';
+          var core = m && m[2] ? m[2] : w;
+          var post = m ? m[3] : '';
+          var size = Math.max(core.length, 4);
+          if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+          html += '<input class="quiz-blank" data-q="'+qi+'" data-w="'+wi+'" data-ans="'+encodeURIComponent(core)+'" size="'+size+'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkOne('+qi+')">';
+          if(post) html += '<span class="quiz-word">'+ post +'</span>';
+        } else {
+          html += '<span class="quiz-word">'+ w +'</span>';
+        }
+        html += ' ';
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne('+qi+')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne('+qi+')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.8)">🚶 보통</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',1.0)">🏃 원어민</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz2(this,'+qi+')">▶ 2회 반복</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr'+qi+'"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="'+qi+'"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayQuiz2(btn, qi){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr'+qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr'+qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">'+ getQuizText(qi) +'</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi=0; qi<total; qi++){
+    if(checkOne(qi)) correct++;
+  }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1){
+    label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  } else if(ratio >= 0.7){
+    label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  } else if(ratio >= 0.4){
+    label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  } else {
+    label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderQuiz);
+if(document.readyState !== 'loading') renderQuiz();
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

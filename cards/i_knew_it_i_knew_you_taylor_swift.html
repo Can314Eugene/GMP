@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Knew It, I Knew You — Taylor Swift</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F6EE;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #90A060;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#DDE4C0;border-color:#4E6020;color:#28340A}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #C8D4A0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#DDE4C0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#DDE4C0;color:#28340A;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #D8E0BC;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #D8E0BC;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #D8E0BC;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#4E6020}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#DDE4C0;color:#28340A;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F5F6EE;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #C8D4A0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #D8E0BC}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#28340A}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #D8E0BC;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F5F6EE;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F5F6EE;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#28340A;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #D8E0BC;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#DDE4C0;color:#28340A;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F5F6EE;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#4E6020;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#28340A;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #D8E0BC;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#DDE4C0;color:#28340A;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#C8D49A}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #D8E0BC;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#4E6020;background:#DDE4C0;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#28340A;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F2F4E8;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#DDE4C0;color:#28340A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🤠</div>
+      <div>
+        <h2>I Knew It, I Knew You</h2>
+        <p>Taylor Swift · Toy Story 5 OST (2026) &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#F5F6EE;border:1px solid #90A060;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#28340A;line-height:1.7">
+      🤠 <b>Taylor Swift (테일러 스위프트)</b> · 2026년 6월 5일 발매<br>
+      디즈니·픽사 <b>Toy Story 5</b> 사운드트랙 수록곡이에요! Jack Antonoff와 함께 만들었고, 카우걸 인형 <b>제시(Jessie)</b>의 이야기에서 영감을 받았어요. 테일러가 컨트리 뿌리로 돌아간 곡이죠 🎸
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">인생은 참 이상하게도 그런 날들을 뒤로 남겨 두게 만들기도 하죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Life has ways leaving those days behind.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Life has ways of leaving those days behind.</span>
+          </div>
+          <span class="pill-fix">ways leaving → ways of leaving (전치사 of!)</span>
+          <p class="note-text">
+            ⚠️ <b>ways</b> 뒤에 전치사 <b>of</b>가 꼭 필요해요!<br>
+            💡 <b>have ways of + -ing</b> = ~하는 방식[버릇]이 있다<br>
+            &nbsp;&nbsp;명사(ways) 뒤에 동사를 붙이려면 <b>of + -ing</b> 형태로 연결해야 해요.<br>
+            &nbsp;&nbsp;<b>leave ~ behind</b> = ~을 뒤에 남겨두다, 두고 가다<br>
+            &nbsp;&nbsp;참고로 이 곡에는 <b>love has ways of ~</b>라는 짝을 이루는 표현도 나와요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">정말 중요한 순간에 돌아왔죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">We came back, when it metered.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Came back when it mattered.</span>
+          </div>
+          <span class="pill-fix">metered → mattered (발음 혼동!)</span>
+          <span class="pill-note">가사는 주어 없이 "Came back~"</span>
+          <p class="note-text">
+            ⚠️ <b>metered</b>(미터로 재다, 계량하다)(✗) → <b>mattered</b>(중요하다)(✓)<br>
+            💡 <b>meter</b> [<b>미</b>터] vs <b>matter</b> [<b>매</b>터] — 첫 모음이 "이" vs "애"로 달라요!<br>
+            &nbsp;&nbsp;<b>when it mattered</b> = 정말 중요했던 그 순간에<br>
+            &nbsp;&nbsp;<b>matter</b>는 동사로 "중요하다"! (지난번 <i>Nothing else matters</i>에서 배운 그 단어예요 👍)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">우린 마치 형제처럼 티격태격 할 때도 있었죠</p>
+          <div class="sent-row">
+            <span class="sent-right">We could fight like brothers.</span>
+          </div>
+          <span class="pill-ok">문장 정확 ✓</span>
+          <p class="note-text">
+            <b>We could fight like brothers</b> — 문법·구조 모두 정확해요! 👏<br>
+            💡 실제 가사에는 앞에 <b>There were times ~</b>(~할 때도 있었다)가 붙어요.<br>
+            &nbsp;&nbsp;<b>There were times we could ~</b> = 우린 ~하곤 했던 때도 있었다<br>
+            &nbsp;&nbsp;<b>fight like brothers</b> = 형제처럼 티격태격하다 (미워서가 아니라 가까워서 싸우는 것!)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">have ways of + -ing</p>
+      <p class="expr-ko">~하는 방식[버릇]이 있다</p>
+      <span class="expr-tag">전치사 of 핵심!</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Life has ways of leaving those days behind.</b> → 인생은 그런 날들을 뒤로 남겨두게 하곤 해.</p>
+        <p><b>Love has ways of bringing things back to life.</b> → 사랑은 죽은 것도 되살리곤 해.</p>
+        <p><b>Time has a way of healing everything.</b> → 시간은 모든 걸 치유하곤 해.</p>
+        <p><b>He has a way of making people smile.</b> → 그는 사람들을 웃게 만드는 재주가 있어.</p>
+        <p class="ex-note">💡 <b>have a way / ways of + -ing</b> = ~하는 방식·버릇·재주가 있다<br>⚠️ 명사 ways 뒤엔 반드시 <b>of</b>! (ways leaving ✗ → ways <b>of</b> leaving ✓)<br><b>leave ~ behind</b> = ~을 뒤에 남겨두다</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">when it mattered</p>
+      <p class="expr-ko">정말 중요했던 순간에</p>
+      <span class="expr-tag">matter vs meter</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Came back when it mattered.</b> → 정말 중요한 순간에 돌아왔어.</p>
+        <p><b>You were there when it mattered most.</b> → 가장 중요할 때 넌 곁에 있었어.</p>
+        <p><b>It doesn't matter anymore.</b> → 이제 더는 중요하지 않아.</p>
+        <p><b>What matters is that you tried.</b> → 중요한 건 네가 노력했다는 거야.</p>
+        <p class="ex-note">💡 <b>matter</b> = 중요하다 (동사) / 문제, 사안 (명사)<br>⚠️ <b>meter</b>[미터](계량하다) ≠ <b>matter</b>[매터](중요하다) — 첫 모음 "이" vs "애"!<br>지난번 <b>Nothing else matters</b>(다른 건 중요하지 않아)에서 배운 그 단어!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">fight like brothers / There were times ~</p>
+      <p class="expr-ko">형제처럼 티격태격하다 / ~할 때도 있었다</p>
+      <span class="expr-tag">비유 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>There were times we could fight like brothers.</b> → 우린 형제처럼 티격태격할 때도 있었어.</p>
+        <p><b>They fight like cats and dogs.</b> → 걔들은 개와 고양이처럼 싸워.</p>
+        <p><b>There were times I wanted to give up.</b> → 포기하고 싶었던 때도 있었어.</p>
+        <p><b>We argued a lot, but we always made up.</b> → 우린 많이 다퉜지만 늘 화해했어.</p>
+        <p class="ex-note">💡 <b>fight like brothers</b> = 형제처럼 다투다 — 미워서가 아니라 <b>가까워서</b> 싸우는 것!<br><b>There were times (when) 주어 + 동사</b> = ~하던 때도 있었다 (추억을 회상할 때!)<br>비슷한 표현: fight like cats and dogs(개와 고양이처럼 싸우다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Life has ways of leaving those days behind.</span><br>→ 인생은 그런 날들을 뒤로 남겨 두게 만들기도 하죠.<br>
+      <span>Came back when it mattered.</span> → 정말 중요한 순간에 돌아왔죠.<br>
+      <span>We could fight like brothers.</span> → 우린 형제처럼 티격태격할 때도 있었죠.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🤠</div>
+      <div><h2>곡 이야기</h2><p>I Knew It, I Knew You · Taylor Swift (2026)</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>2026년 6월 5일</b>, 디즈니·픽사의 <b>Toy Story 5</b> 사운드트랙으로 발매됐어요. 테일러 스위프트가 오랜 협업자 <b>Jack Antonoff</b>와 함께 쓰고 프로듀싱했죠.
+        </p>
+        <p class="story-p">
+          테일러는 영화 시사회를 보고 집에 돌아오자마자 이 곡을 썼다고 해요. 카우걸 인형 <b>제시(Jessie)</b>의 이야기에서 영감을 받았고, 다섯 살 때 첫 편을 본 이후로 줄곧 토이스토리 팬이었대요. 스스로 "음악적 일탈이자 동시에 집으로 돌아오는 느낌"이라고 표현했어요 — <b>컨트리 뿌리로의 귀환</b>이죠 🎸
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 어린 시절의 기억</b><br>여름 풀밭, 맨발로 뛰어다니던 소리… 화자는 오래전 함께했던 시절을 떠올려요. 하지만 인생은 그런 날들을 뒤로 남겨두게 만들죠.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — 재회의 순간</b><br>창가 빛 속에 서 있는 그 사람. 그 익숙한 미소. "정말 오랜만이야." 그리고 화자는 깨달아요 — <b>난 알고 있었어, 난 널 알고 있었어.</b></p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Verse 2 — 함께한 시간들</b><br>기분에 따라 색이 변하는 무드링처럼, 서로의 우울함까지 알던 사이. 형제처럼 티격태격하던 때도 있었죠. 마지막이라 생각했던 이별의 순간도요.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 확인</b><br>작별하며 흘린 눈물, 혹시 다 내 착각이었을까 하는 의심. 하지만 이제 눈을 마주 보며 알게 돼요. 착각이 아니었다는 걸.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">5</div>
+          <p class="flow-txt"><b>메시지</b><br>인생은 소중한 날들을 뒤로 남겨두게 하지만, <b>사랑은 그것들을 다시 살려내는 방법을 안다</b> — 그게 이 곡의 핵심이에요. 오랜 친구와의 재회, 그리고 변치 않은 마음.</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① Life has ways of leaving those days behind</p>
+          <p class="learn-ko">인생은 그런 날들을 뒤로 남겨 두게 만들기도 하죠</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② Came back when it mattered</p>
+          <p class="learn-ko">정말 중요한 순간에 돌아왔죠</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ We could fight like brothers</p>
+          <p class="learn-ko">우린 형제처럼 티격태격할 때도 있었죠</p>
+        </div>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 Melon · 지니 · Spotify · Apple Music 등<br>정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Taylor Swift · Jack Antonoff · Walt Disney Records에 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🤠</div>
+      <div><h2>핵심 단어 발음</h2><p>I Knew It, I Knew You · Taylor Swift</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">mattered</span>
+        <span class="ref-ipa">[ˈmætərd]</span>
+        <span class="ref-kr"><span class="s">매</span>러드</span>
+        <span class="ref-mean">중요했다 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">metered</span>
+        <span class="ref-ipa">[ˈmiːtərd]</span>
+        <span class="ref-kr"><span class="s">미</span>터드</span>
+        <span class="ref-mean">계량했다 (혼동!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">ways of</span>
+        <span class="ref-ipa">[weɪz əv]</span>
+        <span class="ref-kr"><span class="s">웨</span>이저브</span>
+        <span class="ref-mean">~하는 방식 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">behind</span>
+        <span class="ref-ipa">[bɪˈhaɪnd]</span>
+        <span class="ref-kr">비<span class="s">하</span>인드</span>
+        <span class="ref-mean">뒤에</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">brothers</span>
+        <span class="ref-ipa">[ˈbrʌðərz]</span>
+        <span class="ref-kr"><span class="s">브러</span>더즈</span>
+        <span class="ref-mean">형제들</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">knew</span>
+        <span class="ref-ipa">[njuː]</span>
+        <span class="ref-kr"><span class="s">뉴</span></span>
+        <span class="ref-mean">알았다 (know 과거)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — mattered vs metered</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">mattered</p><p class="word-mean">중요했다 (matter의 과거)</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 가사 정확</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈmætərd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">매</span>러드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>ma-</b>: "매" [mæ] — 입을 옆으로 크게!<br>
+        🔸 <b>-tter-</b>: 미국식 t는 "러" 소리 → "매러"<br>
+        🔸 <b>matter</b> = 중요하다 (동사)<br>
+        🔸 <b>when it mattered</b> = 정말 중요했던 순간에
+      </div>
+    </div>
+
+    <div class="word-card" style="border-color:#FCEBEB">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#C94040">metered</p><p class="word-mean">계량했다, 미터로 쟀다</p></div>
+        <span class="word-tag" style="background:#FCEBEB;color:#791F1F">✗ 혼동 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈmiːtərd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">미</span>터드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>me-</b>: "미" [miː] — 긴 이 소리!<br>
+        🔸 🔑 <b>matter [매</b>러<b>]</b>(중요하다) vs <b>meter [미</b>터<b>]</b>(계량하다)<br>
+        🔸 첫 모음이 <b>"애" vs "이"</b>로 완전히 달라요!<br>
+        🔸 Eugene님이 자주 만나는 짧은 i / 애 구분 패턴이에요 💪
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">ways of leaving</p><p class="word-mean">~하는 방식</p></div>
+        <span class="word-tag">연음 + 전치사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[weɪz əv ˈliːvɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">웨</span>이저브 <span class="stress">리</span>빙</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>ways of</b>: "웨이저브" — z + of 연음!<br>
+        🔸 <b>of</b>는 약하게 "어브" [əv]<br>
+        🔸 ⚠️ 소리가 약해서 안 들리기 쉽지만 <b>of</b>는 꼭 필요해요!<br>
+        🔸 <b>leaving</b>: "리빙" [ˈliːvɪŋ] — 긴 이!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">knew</p><p class="word-mean">알았다 (know의 과거)</p></div>
+        <span class="word-tag">묵음 k!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[njuː]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">뉴</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>k</b>는 <b>묵음</b>! "크뉴"(✗) → "뉴"(✓)<br>
+        🔸 <b>know → knew → known</b> (불규칙)<br>
+        🔸 같은 묵음 k: <b>knee</b>[니], <b>knife</b>[나이프], <b>knock</b>[낙]<br>
+        🔸 <b>I knew it</b>: "아이 뉴 잇" → "아이뉴잇" 연음!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">brothers</p><p class="word-mean">형제들</p></div>
+        <span class="word-tag">th 유성음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈbrʌðərz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">브러</span>더즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>bro-</b>: "브러" [brʌ] — o = "어"!<br>
+        🔸 <b>-th-</b>: 혀끝을 이 사이에 + <b>목청 울려서</b> "더" [ð]<br>
+        🔸 <b>-ers</b>: "어즈" — 복수 z 소리<br>
+        🔸 think[띵크]의 무성 th와 달리 brother는 <b>유성</b> th!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🤠 [Good Morning Pops] I Knew It, I Knew You
+— Taylor Swift (테일러 스위프트) · 2026
+
+🎵 디즈니·픽사 Toy Story 5 사운드트랙!
+   Jack Antonoff와 공동 작업
+   카우걸 인형 제시(Jessie)의 이야기에서 영감
+   테일러의 컨트리 뿌리로의 귀환 🎸
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 have ways of + -ing
+   ~하는 방식[버릇]이 있다
+   • Life has ways of leaving those days behind.
+     (인생은 그런 날들을 뒤로 남겨두게 하곤 해.)
+   • Time has a way of healing everything.
+     (시간은 모든 걸 치유하곤 해.)
+   • He has a way of making people smile.
+     (그는 사람들을 웃게 만드는 재주가 있어.)
+💡 명사 ways 뒤엔 반드시 of!
+   ways leaving ✗ → ways of leaving ✓
+   leave ~ behind = ~을 뒤에 남겨두다
+
+🔹 when it mattered
+   정말 중요했던 순간에
+   • Came back when it mattered.
+     (정말 중요한 순간에 돌아왔어.)
+   • You were there when it mattered most.
+     (가장 중요할 때 넌 곁에 있었어.)
+   • What matters is that you tried.
+     (중요한 건 네가 노력했다는 거야.)
+💡 matter = 중요하다 (동사)
+   ⚠️ meter[미터](계량하다) ≠ matter[매터](중요하다)
+   첫 모음 "이" vs "애"!
+
+🔹 fight like brothers / There were times ~
+   형제처럼 티격태격하다 / ~할 때도 있었다
+   • There were times we could fight like brothers.
+     (우린 형제처럼 티격태격할 때도 있었어.)
+   • They fight like cats and dogs.
+     (걔들은 개와 고양이처럼 싸워.)
+   • There were times I wanted to give up.
+     (포기하고 싶었던 때도 있었어.)
+💡 fight like brothers = 미워서가 아니라
+   가까워서 싸우는 것!
+   There were times ~ = ~하던 때도 있었다 (회상)
+
+——————————————————
+#GoodMorningPops #팝송영어 #IKnewItIKnewYou #TaylorSwift #ToyStory5</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

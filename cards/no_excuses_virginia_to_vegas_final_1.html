@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>no excuses — Virginia to Vegas</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EAF4F4;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #4E8C90;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C2E4E4;border-color:#14494C;color:#082C2E}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #A8D6D6}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C2E4E4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C2E4E4;color:#082C2E;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C4E2E2;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C4E2E2;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C4E2E2;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#14494C}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C2E4E4;color:#082C2E;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EAF4F4;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #A8D6D6}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C4E2E2}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#082C2E}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C4E2E2;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EAF4F4;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EAF4F4;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#082C2E;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C4E2E2;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C2E4E4;color:#082C2E;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EAF4F4;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#14494C;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#082C2E;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C4E2E2;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C2E4E4;color:#082C2E;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#A8D6D6}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #C4E2E2;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#14494C;background:#C2E4E4;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#082C2E;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #EAF4F4;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#C2E4E4;color:#082C2E;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#EAF4F4;border-left:3px solid #14494C;border-radius:10px;padding:12px 14px;font-size:13px;color:#14494C;line-height:1.8}
+  .twist-box b{color:#082C2E;font-weight:600}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #C4E2E2;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:16px;font-weight:600;color:#1A1A2E;line-height:1.5;margin-bottom:4px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #A8D6D6;background:#EAF4F4;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#C2E4E4;border-color:#4E8C90}
+  .speed-btn.playing{background:#C2E4E4;border-color:#14494C;box-shadow:0 0 0 2px #C2E4E4}
+  .speed-label{font-size:13px;font-weight:600;color:#082C2E;display:block}
+  .speed-sub{font-size:10px;color:#4E8C90;display:block;margin-top:2px}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#C2E4E4;color:#082C2E;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#A8D6D6}
+  .play-all-btn.playing{background:#14494C;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#14494C;background:#C2E4E4;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#356E72;font-weight:500}
+  .listen-card.mini{padding:14px 16px}
+  .listen-card.mini .listen-en{font-size:15px;margin-bottom:3px}
+  .listen-card.mini .listen-ko{margin-bottom:10px}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🎰</div>
+      <div>
+        <h2>no excuses</h2>
+        <p>Virginia to Vegas &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#EAF4F4;border:1px solid #4E8C90;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#082C2E;line-height:1.7">
+      🎰 <b>Virginia to Vegas (버지니아 투 베이거스)</b><br>
+      본명 <b>Derik John Baker</b>, 미국 태생 캐나다 싱어송라이터예요! 활동명이 특이하죠 — 도시 이름 두 개를 이은 이름이에요.<br>
+      <b>"no excuses"</b>는 서로 좋아하면서도 온갖 <b>핑계</b>를 대며 고백하지 못하는 친구 사이의 이야기예요. "이제 핑계는 그만!"이라고 마음을 털어놓는 곡이죠 💘
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">우리는 계속 빙빙 돌려 얘기하고 있잖아요</p>
+          <div class="sent-row">
+            <span class="sent-right">We've been dancing around it.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>But we've been dancing around it</b> — 완벽해요! 👏<br>
+            💡 <b>dance around ~</b> = ~을 빙빙 돌려 말하다, 핵심을 피하다<br>
+            &nbsp;&nbsp;직역하면 "그것 주위를 춤추며 돈다" → 정작 본론은 건드리지 않는 모습! 🕺<br>
+            &nbsp;&nbsp;<b>We've been + -ing</b> (현재완료진행) = 계속 ~해오고 있다
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 일하느라 바쁘죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">You've busy with your job.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">You've been busy with your job.</span>
+          </div>
+          <span class="pill-fix">been 누락! You've → You've been</span>
+          <p class="note-text">
+            가사 정확: <b>Or you've been busy with your job and got no time</b><br>
+            ⚠️ <b>You've</b>는 <b>You have</b>의 축약이에요! <b>have</b> 뒤엔 <b>과거분사</b>가 필요해요.<br>
+            &nbsp;&nbsp;busy는 <b>형용사</b>라 혼자 못 와요 → <b>been</b>(be의 과거분사)을 넣어야 해요!<br>
+            💡 <b>You've been busy</b> = 너는 (그동안) 바빴다 (현재완료)<br>
+            &nbsp;&nbsp;📌 <b>1번 문장</b>과 비교해 보세요! <b>We've been</b> dancing ✓ / <b>You've been</b> busy ✓<br>
+            &nbsp;&nbsp;두 문장 모두 <b>have + been</b> 구조예요. 1번은 맞게 쓰셨으니 같은 감각으로! 👍
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">왜 우리는 자꾸만 의심하는 걸까요?</p>
+          <div class="sent-row">
+            <span class="sent-right">Why do we keep second guessing?</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">
+            가사 정확: <b>Why do we keep second guessing</b> — 완벽해요! 👏<br>
+            💡 <b>second-guess</b> = 뒤늦게 의심하다, 재고하다, 곱씹다<br>
+            &nbsp;&nbsp;직역은 "두 번째로 추측하다" → 이미 정한 것을 다시 의심하는 것!<br>
+            &nbsp;&nbsp;<b>keep + -ing</b> = 계속 ~하다 (지난번 <i>keep holding us back</i>에서 배운 그 구조!) 👍
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">dance around ~</p>
+      <p class="expr-ko">빙빙 돌려 말하다, 핵심을 피하다</p>
+      <span class="expr-tag">비유 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>We've been dancing around it for months, but neither of us wants to say it first.</b><br>→ 우린 몇 달째 그 얘기를 빙빙 돌리고 있어, 둘 다 먼저 말하긴 싫은 거지.</p>
+        <p><b>Stop dancing around the issue and just tell me what you really think.</b><br>→ 그 문제 그만 돌려 말하고 네 진짜 생각을 말해줘.</p>
+        <p><b>He danced around my question all evening, so I still don't know the answer.</b><br>→ 그는 저녁 내내 내 질문을 피해 갔고, 그래서 난 아직도 답을 몰라.</p>
+        <p class="ex-note">💡 <b>dance around ~</b> = ~을 빙빙 돌려 말하다, 회피하다<br>직역: "그것 주위를 춤추며 돌다" → 정작 핵심은 안 건드리는 모습! 🕺<br>비슷한 표현: <b>beat around the bush</b>(덤불 주변만 두드리다)<br>반대 표현: <b>get to the point</b>(요점으로), <b>cut to the chase</b>(핵심으로 바로)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">have/has been + 형용사</p>
+      <p class="expr-ko">(그동안) ~해왔다 — been 필수!</p>
+      <span class="expr-tag">현재완료 핵심</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>You've been busy with your job lately, so I didn't want to bother you.</b><br>→ 넌 요즘 일하느라 바빴잖아, 그래서 널 방해하고 싶지 않았어.</p>
+        <p><b>I've been tired all week, and I still have three more shifts to go.</b><br>→ 난 일주일 내내 피곤했는데, 아직 세 번의 근무가 더 남았어.</p>
+        <p><b>We've been friends for years, but I've never told you how I really feel.</b><br>→ 우린 몇 년째 친구지만, 난 내 진짜 마음을 한 번도 말한 적이 없어.</p>
+        <p class="ex-note">💡 <b>have/has + been + 형용사</b> = (그동안 계속) ~한 상태였다<br>⚠️ <b>You've</b> = You have! have 뒤엔 <b>과거분사</b>가 와야 해요<br>busy는 형용사라 혼자 못 와요 → <b>been</b> 필수! (You've busy ✗ / You've been busy ✓)<br><b>be → was/were → been</b> (be동사의 과거분사가 been!)<br>📌 <b>You were busy</b>(그때 바빴어, 끝난 과거) vs <b>You've been busy</b>(그동안 쭉 바빴어)<br>📌 been은 문장에서 약하게 뭉개져 잘 안 들려요 — 안 들려도 반드시 쓰기! 💪</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">second-guess</p>
+      <p class="expr-ko">뒤늦게 의심하다, 재고하다</p>
+      <span class="expr-tag">keep + -ing</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Why do we keep second guessing something that already feels right?</b><br>→ 이미 옳게 느껴지는 걸 우린 왜 자꾸 의심하는 걸까?</p>
+        <p><b>Don't second-guess yourself just because someone else disagrees with you.</b><br>→ 누가 반대한다는 이유만으로 네 자신을 의심하지 마.</p>
+        <p><b>I keep second-guessing my decision even though everyone says it was right.</b><br>→ 다들 옳은 결정이었다고 하는데도 난 자꾸 그 결정을 곱씹게 돼.</p>
+        <p class="ex-note">💡 <b>second-guess</b> = 뒤늦게 의심하다, 재고하다, 곱씹다<br>직역 "두 번째로 추측하다" → 이미 정한 걸 다시 의심하는 것!<br><b>keep + -ing</b> = 계속 ~하다 (keep second guessing = 자꾸 의심하다)<br>📌 자기에게: second-guess <b>myself</b>(내 판단 의심) / 남에게: second-guess <b>my boss</b>(결정에 토 달기)<br>비슷한 표현: <b>overthink</b>(지나치게 생각하다), <b>have second thoughts</b>(재고하다)<br>반대 표현: <b>trust your gut</b>(직감을 믿다)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>We've been dancing around it.</span> → 우리는 계속 빙빙 돌려 얘기하고 있잖아요.<br>
+      <span>You've been busy with your job.</span> → 당신은 일하느라 바쁘죠.<br>
+      <span>Why do we keep second guessing?</span> → 왜 우리는 자꾸만 의심하는 걸까요?
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎰</div>
+      <div><h2>곡 이야기</h2><p>no excuses · Virginia to Vegas</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Virginia to Vegas (버지니아 투 베이거스)</b>는 본명이 <b>Derik John Baker</b>인 미국 태생 캐나다 싱어송라이터예요. 활동명이 도시 이름 두 개를 이은 독특한 형태죠. 감성적인 일렉트로팝으로 유명해요.
+        </p>
+        <p class="story-p">
+          <b>"no excuses"</b>는 <b>서로 좋아하면서도 고백하지 못하는 친구 사이</b>의 이야기예요. 온갖 핑계를 대며 관계를 미뤄온 두 사람, 그리고 마침내 "이제 핑계는 그만두자"고 마음을 털어놓는 순간을 그렸어요 💘
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse 1 — 말 못 한 그날</b><br>화자는 어떻게 입을 떼야 할지 모르겠다고 말하며 시작해요. 대학 시절 어느 밤, 두 사람은 함께 집으로 갈 <b>뻔</b>했죠. 그리고 화자는 조심스레 덧붙여요 — 사실 그랬으면 좋았을 거라고. 하지만 그 뒤로 둘은 그 밤 이야기를 <b>한 번도 정면으로 꺼내지 않고</b> 주변만 맴돌았어요. 여기서 오늘 배운 <b>dancing around it</b>이 등장해요!</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Chorus — 온갖 핑계들</b><br>후렴은 <b>핑계 목록</b>이에요. ① "시도해봐야 소용없다고 서로 말할 수도 있어." ② "<b>넌 일하느라 바빠서 시간이 없잖아</b>" (오늘 배운 그 문장!) ③ "난 사랑 같은 건 시시하다고 생각해, 진지한 관계는 찾고 있지 않아." ④ "우린 연애하는 사람들을 비웃곤 했잖아." ⑤ "네 아버지는 아마 날 못마땅해하실 거야."<br>그리고 반전 — <b>"그래도 난 우리가 이걸 해봐야 한다고 생각해. 핑계 없이."</b> 핑계는 내가 널 향해 느끼는 감정을 <b>가로막을 뿐</b>이니까요.</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Verse 2 — 친구로 지내자던 약속</b><br>두 사람은 예전에 "우린 그냥 친구로 지내자"고 정했어요. 게다가 <b>마흔이 됐는데도 둘 다 혼자면 그때 결혼하자</b>는, 흔한 농담 같은 약속까지 했죠. 화자도 인정해요 — 진지한 관계(commitment)를 입에 올리는 게 무섭다는 걸. 그러면서 스스로를 <b>"전형적인 밀레니얼"</b>이라 부르며 웃어넘겨요. 하지만 곧 진심이 튀어나와요: "그래도 난 널 사랑하는 것 같아. 넌 정말 아름다워."</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>Bridge — 결국 고백</b><br>네가 곁에 있을 때마다 화자는 괜히 장난스러운 메시지를 보내며 마음을 감춰요. 그러다 결국 터뜨리죠 — <b>"왜 우린 자꾸만 의심하는 걸까?"</b> (오늘 배운 second guessing!) 그리고 마지막 한마디. <b>"널 사랑하는 것 같아. 자, 말해버렸다."</b> 곡의 제목처럼, 더 이상 핑계는 없어요 💘</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">제목의 의미 ✨</span>
+        <div class="twist-box">
+          🎰 <b>"no excuses"</b> = 핑계는 그만!<br><br>
+          이 곡의 후렴은 온통 <b>핑계 목록</b>이에요. "시도해봐야 소용없어", "넌 바빠", "난 사랑 같은 건 안 믿어"... 전부 <b>진심을 숨기려는 방어막</b>이죠.<br><br>
+          그러다 화자는 깨달아요. <b>"핑계는 내가 널 향해 느끼는 감정을 가로막을 뿐이야."</b> 그래서 마지막엔 결국 이렇게 말해버려요 — <b>"널 사랑하는 것 같아, 자 말했다."</b><br><br>
+          누구나 한 번쯤 겪어봤을, <b>고백을 미루다 결국 터뜨리는</b> 그 순간의 곡이에요 💘
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① We've been dancing around it</p>
+          <p class="learn-ko">우리는 계속 빙빙 돌려 얘기하고 있잖아요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② You've been busy with your job</p>
+          <p class="learn-ko">당신은 일하느라 바쁘죠</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ Why do we keep second guessing?</p>
+          <p class="learn-ko">왜 우리는 자꾸만 의심하는 걸까요?</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Virginia+to+Vegas+no+excuses+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" style="display:inline-block;background:#C2E4E4;color:#082C2E;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #4E8C90">
+          🔎 &nbsp;no excuses 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Derik John Baker 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎰</div>
+      <div><h2>핵심 단어 발음</h2><p>no excuses · Virginia to Vegas</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">been</span>
+        <span class="ref-ipa">[bɪn]</span>
+        <span class="ref-kr"><span class="s">빈</span></span>
+        <span class="ref-mean">be의 과거분사 ✓</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">bean</span>
+        <span class="ref-ipa">[biːn]</span>
+        <span class="ref-kr"><span class="s">비</span>인</span>
+        <span class="ref-mean">콩 (혼동!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">excuses</span>
+        <span class="ref-ipa">[ɪkˈskjuːsɪz]</span>
+        <span class="ref-kr">익<span class="s">스큐</span>지즈</span>
+        <span class="ref-mean">핑계들 (제목!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">guessing</span>
+        <span class="ref-ipa">[ˈɡɛsɪŋ]</span>
+        <span class="ref-kr"><span class="s">게</span>싱</span>
+        <span class="ref-mean">추측하는 (u 묵음!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">dancing</span>
+        <span class="ref-ipa">[ˈdænsɪŋ]</span>
+        <span class="ref-kr"><span class="s">댄</span>싱</span>
+        <span class="ref-mean">춤추는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">busy</span>
+        <span class="ref-ipa">[ˈbɪzi]</span>
+        <span class="ref-kr"><span class="s">비</span>지</span>
+        <span class="ref-mean">바쁜 (u가 "이"!)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — been 발음</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">been</p><p class="word-mean">be의 과거분사</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 꼭 필요해요!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[bɪn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">빈</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 미국식은 <b>짧게</b> "빈" [bɪn] — 길게 "비인"(✗)<br>
+        🔸 ⚠️ <b>been</b>[빈] vs <b>bean</b>[비인](콩) — 미국식에선 길이가 달라요!<br>
+        🔸 문장 안에선 <b>더 약하게</b> 발음돼서 잘 안 들려요 → 그래서 빠뜨리기 쉬워요!<br>
+        🔸 <b>You've been</b>: "유브빈" → 실제론 "유v빈"처럼 뭉개져요<br>
+        🔸 <b>안 들려도 반드시 써야 하는</b> 단어예요! 💪
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">excuses</p><p class="word-mean">핑계들 (제목!)</p></div>
+        <span class="word-tag">명사 vs 동사</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ɪkˈskjuːsɪz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">익<span class="stress">스큐</span>지즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>ex-</b>: "익스" [ɪks]<br>
+        🔸 <b>-cu-</b>: "큐" [kjuː] — CU에 강세!<br>
+        🔸 🔑 <b>명사</b>(핑계) excuse [익스큐<b>스</b>] — 끝이 "스"<br>
+        🔸 🔑 <b>동사</b>(용서하다) excuse [익스큐<b>즈</b>] — 끝이 "즈"<br>
+        🔸 Excuse me! [익스큐<b>즈</b> 미] = 동사라서 "즈"!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">guessing</p><p class="word-mean">추측하는</p></div>
+        <span class="word-tag">u 묵음!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈɡɛsɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">게</span>싱</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>gu-</b>: "게" — <b>u는 묵음</b>! "구에싱"(✗) → "게싱"(✓)<br>
+        🔸 같은 패턴: <b>gue</b>ss[게스], <b>gui</b>tar[기타], <b>gui</b>de[가이드]<br>
+        🔸 u는 g를 "ㄱ" 소리로 유지시키는 역할이에요!<br>
+        🔸 <b>second-guess</b> = 뒤늦게 의심하다
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">busy</p><p class="word-mean">바쁜</p></div>
+        <span class="word-tag">u가 "이" 소리!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈbɪzi]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">비</span>지</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>bu-</b>: "비" [bɪ] — <b>u인데 "이" 소리</b>! "부지"(✗)<br>
+        🔸 <b>-sy</b>: "지" [zi] — s가 "ㅈ" 소리!<br>
+        🔸 비슷한 예외: <b>bu</b>siness[비즈니스], <b>bu</b>ry[베리](묻다)<br>
+        🔸 <b>busy with ~</b> = ~로 바쁘다 (전치사 with!)
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">dancing around</p><p class="word-mean">빙빙 돌려 말하는</p></div>
+        <span class="word-tag">연음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈdænsɪŋ əˈraʊnd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">댄</span>싱 어<span class="stress">라</span>운드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>dan-</b>: "댄" [dæn] — a = "애"!<br>
+        🔸 <b>around</b>: "어라운드" [əˈraʊnd] — ROUND에 강세!<br>
+        🔸 연음: "댄싱어<b>라</b>운딧" (dancing around it)<br>
+        🔸 <b>dance around ~</b> = 빙빙 돌려 말하다 🕺
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN / PRONUNCIATION PRACTICE -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · no excuses</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <!-- ===== 표현 1 ===== -->
+    <div class="listen-group">🔹 dance around ~ <span>· 빙빙 돌려 말하다</span></div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">We've been dancing around it for months, but neither of us wants to say it first.</p>
+      <p class="listen-ko">우린 몇 달째 그 얘기를 빙빙 돌리고 있어, 둘 다 먼저 말하긴 싫은 거지.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;We've been dancing around it for months, but neither of us wants to say it first.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;We've been dancing around it for months, but neither of us wants to say it first.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;We've been dancing around it for months, but neither of us wants to say it first.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">Stop dancing around the issue and just tell me what you really think.</p>
+      <p class="listen-ko">그 문제 그만 돌려 말하고 네 진짜 생각을 말해줘.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Stop dancing around the issue and just tell me what you really think.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Stop dancing around the issue and just tell me what you really think.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Stop dancing around the issue and just tell me what you really think.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">He danced around my question all evening, so I still don't know the answer.</p>
+      <p class="listen-ko">그는 저녁 내내 내 질문을 피해 갔고, 그래서 난 아직도 답을 몰라.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;He danced around my question all evening, so I still don't know the answer.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;He danced around my question all evening, so I still don't know the answer.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;He danced around my question all evening, so I still don't know the answer.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 2 ===== -->
+    <div class="listen-group">🔹 have/has been + 형용사 <span>· been 필수!</span></div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">You've been busy with your job lately, so I didn't want to bother you.</p>
+      <p class="listen-ko">넌 요즘 일하느라 바빴잖아, 그래서 널 방해하고 싶지 않았어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;You've been busy with your job lately, so I didn't want to bother you.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;You've been busy with your job lately, so I didn't want to bother you.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;You've been busy with your job lately, so I didn't want to bother you.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">I've been tired all week, and I still have three more shifts to go.</p>
+      <p class="listen-ko">난 일주일 내내 피곤했는데, 아직 세 번의 근무가 더 남았어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I've been tired all week, and I still have three more shifts to go.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I've been tired all week, and I still have three more shifts to go.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I've been tired all week, and I still have three more shifts to go.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">We've been friends for years, but I've never told you how I really feel.</p>
+      <p class="listen-ko">우린 몇 년째 친구지만, 난 내 진짜 마음을 한 번도 말한 적이 없어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;We've been friends for years, but I've never told you how I really feel.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;We've been friends for years, but I've never told you how I really feel.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;We've been friends for years, but I've never told you how I really feel.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- ===== 표현 3 ===== -->
+    <div class="listen-group">🔹 second-guess <span>· 뒤늦게 의심하다</span></div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">Why do we keep second guessing something that already feels right?</p>
+      <p class="listen-ko">이미 옳게 느껴지는 걸 우린 왜 자꾸 의심하는 걸까?</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'Why do we keep second guessing something that already feels right?',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'Why do we keep second guessing something that already feels right?',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'Why do we keep second guessing something that already feels right?')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">Don't second-guess yourself just because someone else disagrees with you.</p>
+      <p class="listen-ko">누가 반대한다는 이유만으로 네 자신을 의심하지 마.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Don't second-guess yourself just because someone else disagrees with you.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Don't second-guess yourself just because someone else disagrees with you.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;Don't second-guess yourself just because someone else disagrees with you.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card mini">
+      <p class="listen-en">I keep second-guessing my decision even though everyone says it was right.</p>
+      <p class="listen-ko">다들 옳은 결정이었다고 하는데도 난 자꾸 그 결정을 곱씹게 돼.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I keep second-guessing my decision even though everyone says it was right.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'I keep second-guessing my decision even though everyone says it was right.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'I keep second-guessing my decision even though everyone says it was right.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <!-- 정지 -->
+    <div class="listen-card" style="background:#EAF4F4;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#14494C;border:1px solid #A8D6D6">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🎰 [Good Morning Pops] no excuses
+— Virginia to Vegas
+
+🎵 본명 Derik John Baker
+   미국 태생 캐나다 싱어송라이터
+   서로 좋아하면서도 온갖 핑계를 대며
+   고백하지 못하는 친구 사이의 이야기
+   "이제 핑계는 그만!" 💘
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 dance around ~
+   빙빙 돌려 말하다, 핵심을 피하다
+   • We've been dancing around it for months,
+     but neither of us wants to say it first.
+     (우린 몇 달째 그 얘기를 빙빙 돌리고 있어,
+      둘 다 먼저 말하긴 싫은 거지.)
+   • Stop dancing around the issue and just
+     tell me what you really think.
+     (그 문제 그만 돌려 말하고
+      네 진짜 생각을 말해줘.)
+   • He danced around my question all evening,
+     so I still don't know the answer.
+     (그는 저녁 내내 내 질문을 피해 갔고,
+      그래서 난 아직도 답을 몰라.)
+💡 직역: "그것 주위를 춤추며 돌다"
+   정작 핵심은 안 건드리는 모습! 🕺
+   비슷한 표현: beat around the bush
+   반대 표현: get to the point / cut to the chase
+
+🔹 have/has been + 형용사
+   (그동안 계속) ~한 상태였다 — been 필수!
+   • You've been busy with your job lately,
+     so I didn't want to bother you.
+     (넌 요즘 일하느라 바빴잖아,
+      그래서 널 방해하고 싶지 않았어.)
+   • I've been tired all week, and I still
+     have three more shifts to go.
+     (난 일주일 내내 피곤했는데,
+      아직 세 번의 근무가 더 남았어.)
+   • We've been friends for years, but I've
+     never told you how I really feel.
+     (우린 몇 년째 친구지만, 난 내 진짜 마음을
+      한 번도 말한 적이 없어.)
+💡 You've = You have! have 뒤엔 과거분사!
+   busy는 형용사라 혼자 못 와요
+   ⚠️ You've busy ✗ → You've been busy ✓
+   be → was/were → been (be의 과거분사!)
+   You were busy = 그때 바빴어 (끝난 과거)
+   You've been busy = 그동안 쭉 바빴어
+   been은 약하게 뭉개져 잘 안 들려요 —
+   안 들려도 반드시 쓰기! 💪
+
+🔹 second-guess
+   뒤늦게 의심하다, 재고하다, 곱씹다
+   • Why do we keep second guessing
+     something that already feels right?
+     (이미 옳게 느껴지는 걸
+      우린 왜 자꾸 의심하는 걸까?)
+   • Don't second-guess yourself just because
+     someone else disagrees with you.
+     (누가 반대한다는 이유만으로
+      네 자신을 의심하지 마.)
+   • I keep second-guessing my decision even
+     though everyone says it was right.
+     (다들 옳은 결정이었다고 하는데도
+      난 자꾸 그 결정을 곱씹게 돼.)
+💡 직역 "두 번째로 추측하다"
+   이미 정한 걸 다시 의심하는 것!
+   keep + -ing = 계속 ~하다
+   자기에게: second-guess myself (내 판단 의심)
+   남에게: second-guess my boss (결정에 토 달기)
+   비슷한 표현: overthink / have second thoughts
+   반대 표현: trust your gut (직감을 믿다)
+
+——————————————————
+#GoodMorningPops #팝송영어 #noexcuses #VirginiaToVegas</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>

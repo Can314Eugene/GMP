@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Round and Round — 트리버블</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#EFF8F8;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #60B8B8;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#C0EAEA;border-color:#0A7878;color:#044040}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #A0DEDE}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#C0EAEA;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#C0EAEA;color:#044040;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #C0E8E8;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #C0E8E8;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #C0E8E8;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#0A7878}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#C0EAEA;color:#044040;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#EFF8F8;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #A0DEDE}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #C0E8E8}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#044040}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #C0E8E8;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EFF8F8;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#EFF8F8;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#044040;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #C0E8E8;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#C0EAEA;color:#044040;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#EFF8F8;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#0A7878;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#044040;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #C0E8E8;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#C0EAEA;color:#044040;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#90DEDE}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🔄</div>
+      <div>
+        <h2>Round and Round</h2>
+        <p>트리버블 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 너무 뻔해요</p>
+          <div class="sent-row">
+            <span class="sent-right">You're so predictable.</span>
+          </div>
+          <span class="pill-ok">완벽해요! ✓</span>
+          <p class="note-text">
+            <b>You're so predictable</b> — 문법·철자 모두 완벽해요! 👏<br>
+            💡 <b>predictable</b> = 예측 가능한, 뻔한. <b>predict</b>(예측하다) + <b>-able</b>(~할 수 있는)<br>
+            "네가 어떻게 할지 다 알겠어"라는 뉘앙스예요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">우리에게 시간이 얼마 남지 않았어요</p>
+          <div class="sent-row">
+            <span class="sent-right">We're running out of time.</span>
+          </div>
+          <span class="pill-ok">완벽해요! ✓</span>
+          <p class="note-text">
+            <b>We're running out of time</b> — 완벽해요! 👏<br>
+            💡 <b>run out of ~</b> = ~이 다 떨어지다, 바닥나다<br>
+            running out of time(시간이 떨어지다) / running out of money(돈이 떨어지다) / running out of patience(인내심이 바닥나다)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">누구의 잘못도 아니에요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">It's no ones fault.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">It's no one's fault.</span>
+          </div>
+          <span class="pill-fix">no ones → no one's (소유격 아포스트로피)</span>
+          <p class="note-text">
+            <b>It's no one's fault</b> — 거의 완벽! 작은 교정 하나예요.<br>
+            ⚠️ <b>no ones</b>(✗) → <b>no one's</b>(✓) — 소유격에는 <b>아포스트로피(')</b>가 필요해요!<br>
+            💡 <b>no one's fault</b> = 누구의 잘못도 아닌 → "no one + 's(소유격)" = 누구의<br>
+            &nbsp;&nbsp;someone's(누군가의), everyone's(모두의)처럼 's를 붙여요!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">You're so predictable.</p>
+      <p class="expr-ko">당신은 너무 뻔해요 / 다 예상돼요</p>
+      <span class="expr-tag">성격 묘사 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>You're so predictable.</b> → 너 너무 뻔해.</p>
+        <p><b>I knew you'd say that — so predictable!</b> → 네가 그럴 줄 알았어 — 너무 뻔해!</p>
+        <p><b>The ending was completely predictable.</b> → 결말이 완전히 예상됐어.</p>
+        <p><b>He's predictable, but I find it comforting.</b> → 그는 뻔하지만, 난 그게 편안해.</p>
+        <p class="ex-note">💡 <b>predictable</b> = 예측 가능한, 뻔한. <b>predict</b>(예측하다) + <b>-able</b><br>반대말: <b>unpredictable</b>(예측 불가능한). 사람·영화·결과 등에 두루 써요!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">run out of time</p>
+      <p class="expr-ko">시간이 다 떨어지다 / 시간이 부족하다</p>
+      <span class="expr-tag">관용표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>We're running out of time.</b> → 우리 시간이 얼마 안 남았어.</p>
+        <p><b>I'm running out of money.</b> → 돈이 떨어져 가.</p>
+        <p><b>We've run out of milk.</b> → 우유가 다 떨어졌어.</p>
+        <p><b>Don't run out of patience with me.</b> → 나한테 인내심 잃지 마.</p>
+        <p class="ex-note">💡 <b>run out of ~</b> = ~이 바닥나다, 다 떨어지다<br>시간, 돈, 음식, 인내심 등 다양하게 활용! 진행형 <b>running out of</b>는 "점점 떨어져 가는 중"!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">It's no one's fault.</p>
+      <p class="expr-ko">누구의 잘못도 아니에요</p>
+      <span class="expr-tag">소유격 핵심!</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>It's no one's fault.</b> → 누구의 잘못도 아니야.</p>
+        <p><b>It's not your fault.</b> → 네 잘못이 아니야.</p>
+        <p><b>Whose fault is it?</b> → 누구 잘못이야?</p>
+        <p><b>It's everyone's responsibility.</b> → 그건 모두의 책임이야.</p>
+        <p class="ex-note">💡 <b>소유격 's</b> 규칙: no one<b>'s</b>(누구의), someone<b>'s</b>(누군가의), everyone<b>'s</b>(모두의)<br>⚠️ 아포스트로피(') 빠지면 안 돼요! no ones(✗) → no one's(✓)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>You're so predictable.</span> → 당신은 너무 뻔해요.<br>
+      <span>We're running out of time.</span> → 우리에게 시간이 얼마 남지 않았어요.<br>
+      <span>It's no one's fault.</span> → 누구의 잘못도 아니에요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔄</div>
+      <div><h2>핵심 단어 발음</h2><p>Round and Round · 트리버블</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">predictable</span>
+        <span class="ref-ipa">[prɪˈdɪktəbəl]</span>
+        <span class="ref-kr">프리<span class="s">딕</span>터블</span>
+        <span class="ref-mean">예측 가능한</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">run out of</span>
+        <span class="ref-ipa">[rʌn aʊt əv]</span>
+        <span class="ref-kr"><span class="s">런</span> 아우러브</span>
+        <span class="ref-mean">다 떨어지다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">no one's</span>
+        <span class="ref-ipa">[ˈnoʊ wʌnz]</span>
+        <span class="ref-kr"><span class="s">노</span>우 원즈</span>
+        <span class="ref-mean">누구의 (소유격)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">fault</span>
+        <span class="ref-ipa">[fɔːlt]</span>
+        <span class="ref-kr"><span class="s">폴</span>트</span>
+        <span class="ref-mean">잘못, 책임</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">round</span>
+        <span class="ref-ipa">[raʊnd]</span>
+        <span class="ref-kr"><span class="s">라</span>운드</span>
+        <span class="ref-mean">둥근, 빙빙</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">time</span>
+        <span class="ref-ipa">[taɪm]</span>
+        <span class="ref-kr"><span class="s">타</span>임</span>
+        <span class="ref-mean">시간</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">predictable</p><p class="word-mean">예측 가능한, 뻔한</p></div>
+        <span class="word-tag">4음절</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[prɪˈdɪktəbəl]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">프리<span class="stress">딕</span>터블</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>pre-</b>: "프리" [prɪ] — pr 연결<br>
+        🔸 <b>-DICT-</b>에 강세: "딕"<br>
+        🔸 <b>-able</b>: "터블" [təbəl]<br>
+        🔸 <b>predict</b>(예측하다) + <b>-able</b>(가능한) = "예측 가능한"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">run out of</p><p class="word-mean">다 떨어지다</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[rʌn aʊt əv]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">런</span> 아우러브</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>run</b>: "런" [rʌn] — u = "어"!<br>
+        🔸 <b>out of</b>: "아우러브" — 연음으로!<br>
+        🔸 <b>running out of</b>: "러닝아우러브" 이어서<br>
+        🔸 <b>We're running out of time</b>: "위어러닝아우러브타임"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">no one's fault</p><p class="word-mean">누구의 잘못도 아닌</p></div>
+        <span class="word-tag">⚠️ 소유격 's</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈnoʊ wʌnz fɔːlt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">노</span>우 원즈 <span class="stress">폴</span>트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>no one's</b>: "노우원즈" — 's는 "즈" 소리<br>
+        🔸 <b>fault</b>: "폴트" [fɔːlt] — au = 긴 "오"!<br>
+        🔸 ⚠️ 철자: no one<b>'s</b> — 아포스트로피(') 필수!<br>
+        🔸 someone's, everyone's, no one's — 모두 's 소유격!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">Round and Round</p><p class="word-mean">빙글빙글, 제자리에서 맴도는 (제목)</p></div>
+        <span class="word-tag">제목 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[raʊnd ænd raʊnd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">라</span>운드 앤 <span class="stress">라</span>운드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>round</b>: "라운드" [raʊnd] — ou = "아우" 이중모음<br>
+        🔸 <b>and</b>: 약하게 "앤" — 빠르게 "라운든라운드"<br>
+        🔸 <b>round and round</b> = 빙글빙글 (제자리에서 맴도는 관계를 비유!)
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🔄 [Good Morning Pops] Round and Round
+— 트리버블
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 당신은 너무 뻔해요
+→ You're so predictable. ✓
+   발음: 유어 쏘 프리딕터블
+✨ 문법·철자 모두 완벽! 👏
+💡 predictable = 예측 가능한, 뻔한
+   predict(예측) + -able(가능한)
+
+2️⃣ 우리에게 시간이 얼마 남지 않았어요
+→ We're running out of time. ✓
+   발음: 위어 러닝 아우러브 타임
+✨ 완벽! 👏
+💡 run out of ~ = ~이 다 떨어지다
+   running out of time/money/patience
+
+3️⃣ 누구의 잘못도 아니에요
+✗ It's no ones fault.
+→ It's no one's fault. ✓
+   발음: 잇츠 노우 원즈 폴트
+⚠️ no ones → no one's (아포스트로피!)
+💡 소유격엔 's가 필요해요
+   no one's(누구의), someone's(누군가의),
+   everyone's(모두의)
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 predictable [프리딕터블]
+  -DICT-에 강세. predict + able
+
+🔹 run out of [런 아우러브]
+  연음으로 "아우러브"
+
+🔹 no one's fault [노우 원즈 폴트]
+  's = "즈" 소리
+  fault = "폴트" (au = 긴 오)
+
+🔹 Round and Round [라운드 앤 라운드]
+  빙글빙글 맴도는 (관계 비유!)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 You're so predictable.
+   당신은 너무 뻔해요
+   • I knew you'd say that — so predictable!
+     (네가 그럴 줄 알았어 — 너무 뻔해!)
+💡 반대말: unpredictable(예측 불가능한)
+
+🔹 run out of time
+   시간이 다 떨어지다
+   • I'm running out of money.
+     (돈이 떨어져 가.)
+   • We've run out of milk.
+     (우유가 다 떨어졌어.)
+💡 시간·돈·음식·인내심 등 다양하게!
+
+🔹 It's no one's fault.
+   누구의 잘못도 아니에요
+   • It's not your fault.
+     (네 잘못이 아니야.)
+   • Whose fault is it?
+     (누구 잘못이야?)
+💡 소유격 's — 아포스트로피 꼭!
+
+——————————————————
+
+📝 한 번에 정리
+
+You're so predictable.
+→ 당신은 너무 뻔해요.
+
+We're running out of time.
+→ 우리에게 시간이 얼마 남지 않았어요.
+
+It's no one's fault.
+→ 누구의 잘못도 아니에요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #RoundAndRound</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

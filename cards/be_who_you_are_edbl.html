@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Who You Are — edbl</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FDF5FF;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #D5B8EC;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#F2E6FA;border-color:#A855CC;color:#5B2070}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #E8D5F5}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#F2E6FA;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#F2E6FA;color:#5B2070;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #EDE0F8;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #EDE0F8;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #EDE0F8;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#A855CC}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#F2E6FA;color:#5B2070;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FAF5FF;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #E8D5F5}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #EDE0F8}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#5B2070}
+  /* Pronunciation */
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EDE0F8;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F5EEFF;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FAF5FF;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#5B2070;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #EDE0F8;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#F2E6FA;color:#5B2070;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FAF5FF;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#A855CC;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#5B2070;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #EDE0F8;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#F2E6FA;color:#5B2070;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#E4C8F5}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13" stroke="#8B3DB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="#8B3DB8" stroke-width="1.5"/><circle cx="18" cy="16" r="3" stroke="#8B3DB8" stroke-width="1.5"/></svg>
+      </div>
+      <div>
+        <h2>Be Who You Are</h2>
+        <p>edbl ft. Jay Alexzander · 2019 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <!-- 가수 이름 교정 -->
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>가수 이름:</b> 애드볼 → 정식 표기는 <b>edbl</b> (에드블), 본명은 Ed Black. feat. Jay Alexzander
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신 눈빛이 뭔가 달라 보여요</p>
+          <div class="sent-row">
+            <span class="sent-right">I see something different in your eyes.</span>
+          </div>
+          <span class="pill-ok">자연스럽고 올바른 표현 ✓</span>
+          <p class="note-text"><b>see something different in your eyes</b> — "눈빛에서 뭔가 다른 걸 보다"는 표현으로, 상대의 변화를 감지할 때 쓰는 자연스러운 영어예요.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 그냥 당신답지 않아 보였어요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">You just have seem to yourself.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">You just don't seem like yourself.</span>
+          </div>
+          <span class="pill-fix">have seem → don't seem</span>
+          <span class="pill-fix">to yourself → like yourself</span>
+          <p class="note-text">
+            ✏️ 교정 포인트 두 가지:<br>
+            ① <b>have seem</b> → <b>don't seem</b> (긍정+어색한 동사 → 자연스러운 부정형)<br>
+            ② <b>to yourself</b> → <b>like yourself</b> (전치사 to → like)<br>
+            💡 <b>seem like yourself</b> = "당신답다, 평소 같다" — 부정형 <b>don't seem like yourself</b>가 "당신답지 않다"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">그냥 당신답게 있어줘요</p>
+          <div class="sent-row">
+            <span class="sent-right">Just be who you are.</span>
+          </div>
+          <span class="pill-ok">가사 제목이자 핵심 가사 ✓</span>
+          <p class="note-text">이 곡의 제목이자 핵심 메시지예요! <b>Just be who you are</b> = "그냥 있는 그대로의 당신이 되어줘" — 꾸밈없이 자기 자신으로 있으라는 따뜻한 말이에요.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">see something different in your eyes</p>
+      <p class="expr-ko">눈빛에서 뭔가 다른 걸 느끼다 / 눈빛이 달라 보이다</p>
+      <span class="expr-tag">감정 관찰 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>I see something different in your eyes.</b> → 당신 눈빛에서 뭔가 달라진 게 보여요.</p>
+        <p><b>I see something different in you today.</b> → 오늘 당신에게서 뭔가 달라진 게 보여요.</p>
+        <p><b>There's something different about you lately.</b> → 요즘 당신이 뭔가 달라진 것 같아요.</p>
+        <p class="ex-note">💡 <b>see something in ~</b> = ~에서 무언가를 보다/느끼다. "I see greatness in you." = 당신에게서 위대함이 보여요.</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">don't seem like yourself</p>
+      <p class="expr-ko">당신답지 않아 보이다 / 평소 같지 않다</p>
+      <span class="expr-tag">걱정·위로 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>You just don't seem like yourself.</b> → 그냥 당신답지 않아 보여요.</p>
+        <p><b>Are you okay? You don't seem like yourself today.</b> → 괜찮아? 오늘 평소 같지 않아 보여.</p>
+        <p><b>She hasn't seemed like herself lately.</b> → 그녀가 요즘 평소 같지 않아 보여.</p>
+        <p><b>I feel like myself again.</b> → 다시 내 자신으로 돌아온 것 같아.</p>
+        <p class="ex-note">💡 <b>seem like yourself</b> = 평소의 자기 자신 같다. 걱정할 때 자주 쓰는 표현! <b>feel like yourself</b>는 자신이 말할 때 씀.</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">Just be who you are.</p>
+      <p class="expr-ko">그냥 있는 그대로의 당신이 되어줘 / 당신답게 있어줘</p>
+      <span class="expr-tag">격려·위로 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Just be who you are.</b> → 그냥 있는 그대로의 당신이 되어줘.</p>
+        <p><b>Don't change — just be who you are.</b> → 변하지 마, 그냥 너답게 있어.</p>
+        <p><b>Be yourself, everyone else is already taken.</b> → 당신답게 살아요, 다른 사람들은 이미 다 있으니까. (Oscar Wilde)</p>
+        <p><b>Love yourself for who you are.</b> → 있는 그대로의 자신을 사랑하세요.</p>
+        <p class="ex-note">💡 <b>be who you are</b> = 자기 자신이 되다. <b>be yourself</b>와 같은 의미! 더 강조된 표현이에요.</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>I see something different in your eyes.</span> → 당신 눈빛이 뭔가 달라 보여요.<br>
+      <span>You just don't seem like yourself.</span> → 당신은 그냥 당신답지 않아 보여요.<br>
+      <span>Just be who you are.</span> → 그냥 당신답게 있어줘요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13" stroke="#8B3DB8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="#8B3DB8" stroke-width="1.5"/><circle cx="18" cy="16" r="3" stroke="#8B3DB8" stroke-width="1.5"/></svg>
+      </div>
+      <div><h2>핵심 단어 발음</h2><p>Be Who You Are · edbl</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">different</span>
+        <span class="ref-ipa">[ˈdɪfrənt]</span>
+        <span class="ref-kr"><span class="s">디</span>프런트</span>
+        <span class="ref-mean">다른</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">seem</span>
+        <span class="ref-ipa">[siːm]</span>
+        <span class="ref-kr"><span class="s">씨</span>임</span>
+        <span class="ref-mean">~처럼 보이다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">yourself</span>
+        <span class="ref-ipa">[jərˈsɛlf]</span>
+        <span class="ref-kr">여<span class="s">셀</span>프</span>
+        <span class="ref-mean">당신 자신</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">just</span>
+        <span class="ref-ipa">[dʒʌst]</span>
+        <span class="ref-kr"><span class="s">져</span>스트</span>
+        <span class="ref-mean">그냥, 단지</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">eyes</span>
+        <span class="ref-ipa">[aɪz]</span>
+        <span class="ref-kr"><span class="s">아</span>이즈</span>
+        <span class="ref-mean">눈, 눈빛</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">something</span>
+        <span class="ref-ipa">[ˈsʌmθɪŋ]</span>
+        <span class="ref-kr"><span class="s">썸</span>띵</span>
+        <span class="ref-mean">뭔가</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">different</p><p class="word-mean">다른, 달라진</p></div>
+        <span class="word-tag">3음절 → 2음절!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈdɪfrənt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">디</span>프런트</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 철자는 3음절(dif-fer-ent)지만 실제 발음은 <b>"디프런트"</b> 2~3음절!<br>
+        🔸 중간 <b>-fer-</b>가 매우 빠르게 줄어요: "디퍼런트" → "디프런트"<br>
+        🔸 <b>DIF-</b>에 강세: 첫 음절을 강하게!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">seem like</p><p class="word-mean">~처럼 보이다</p></div>
+        <span class="word-tag">⚠️ 이번 교정 핵심</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[siːm laɪk]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">씨</span>임 라이크</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>seem</b>: "심"이 아니라 <b>"씨임"</b> — iː 길게!<br>
+        🔸 <b>like</b>: "라이크" — 전치사로 "~처럼" 뜻<br>
+        🔸 ⚠️ <b>seem to yourself</b> (✗) → <b>seem like yourself</b> (✓)<br>
+        🔸 연음: "seem like" → "씨임라이크" 이어서 발음
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">yourself</p><p class="word-mean">당신 자신</p></div>
+        <span class="word-tag">강세 위치</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[jərˈsɛlf]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">여<span class="stress">셀</span>프</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>your-</b>: 약하게 "여" [jər]<br>
+        🔸 <b>-SELF</b>에 강세: "여<b>셀</b>프"<br>
+        🔸 같은 패턴: <b>myself</b> [마이셀프] / <b>himself</b> [힘셀프] / <b>herself</b> [허셀프]
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">something</p><p class="word-mean">뭔가, 어떤 것</p></div>
+        <span class="word-tag">th 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsʌmθɪŋ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">썸</span>띵</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>SUM-</b>에 강세: "썸" [sʌm]<br>
+        🔸 <b>-th-</b>: 혀끝을 이 사이에 살짝 끼워서 "띠"<br>
+        🔸 빠르게 말하면 "썸띵" → "썸딩"처럼 들리기도 해요.<br>
+        🔸 <b>-ing</b>: 비음으로 "이ŋ" — "잉"보다 코로 내는 느낌
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">be who you are</p><p class="word-mean">당신 자신이 되다</p></div>
+        <span class="word-tag">제목 문장 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[biː huː juː ɑːr]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">비 <span class="stress">후</span> 유 아</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>who</b>: "후" — wh는 [h] 소리!<br>
+        🔸 빠르게 연음: "비후유아" → "비후여아"처럼도!<br>
+        🔸 <b>Just</b> 앞에 붙이면: "져스트 비 후 유 아" — just에 약한 강세
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🫧 [Good Morning Pops] Be Who You Are
+— edbl ft. Jay Alexzander (2019)
+
+💡 가수 이름: 애드볼 → 정식 표기 edbl (에드블), 본명 Ed Black
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 당신 눈빛이 뭔가 달라 보여요
+→ I see something different in your eyes. ✓
+   발음: 아이 씨 썸띵 디프런트 인 유어 아이즈
+※ "눈빛에서 뭔가 다른 걸 보다" — 상대의 변화를 감지하는 표현!
+
+2️⃣ 당신은 그냥 당신답지 않아 보였어요
+✗ You just have seem to yourself.
+→ You just don't seem like yourself. ✓
+   발음: 유 져스트 돈트 씨임 라이크 여셀프
+⚠️ have seem → don't seem (부정형으로!)
+⚠️ to yourself → like yourself (전치사 to → like)
+💡 don't seem like yourself = 당신답지 않아 보이다
+
+3️⃣ 그냥 당신답게 있어줘요
+→ Just be who you are. ✓
+   발음: 져스트 비 후 유 아
+※ 이 곡의 제목이자 핵심 메시지!
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 different [디프런트]
+  철자 3음절 → 발음은 2음절!
+  "디퍼런트" 아니라 "디프런트"
+
+🔹 seem like [씨임 라이크]
+  seem = 길게 "씨임" (iː)
+  like = "처럼" (전치사)
+
+🔹 yourself [여셀프]
+  your- 약하게, -SELF에 강세!
+
+🔹 something [썸띵]
+  SUM-에 강세, -th- 혀끝을 이 사이에!
+
+🔹 be who you are [비 후 유 아]
+  who = "후" (wh = h 소리)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 see something different in your eyes
+   눈빛이 뭔가 달라 보이다
+   • I see something different in you today.
+     (오늘 당신에게서 뭔가 달라진 게 보여요.)
+💡 see something in ~ = ~에서 무언가를 보다
+
+🔹 don't seem like yourself
+   당신답지 않아 보이다
+   • Are you okay? You don't seem like yourself today.
+     (괜찮아? 오늘 평소 같지 않아 보여.)
+   • I feel like myself again.
+     (다시 내 자신으로 돌아온 것 같아.)
+💡 seem like yourself ↔ don't seem like yourself
+
+🔹 Just be who you are.
+   그냥 있는 그대로의 당신이 되어줘
+   • Don't change — just be who you are.
+     (변하지 마, 그냥 너답게 있어.)
+💡 = be yourself (더 강조된 표현!)
+
+——————————————————
+
+📝 한 번에 정리
+
+I see something different in your eyes.
+→ 당신 눈빛이 뭔가 달라 보여요.
+
+You just don't seem like yourself.
+→ 당신은 그냥 당신답지 않아 보여요.
+
+Just be who you are.
+→ 그냥 당신답게 있어줘요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #BeWhoYouAre #edbl</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

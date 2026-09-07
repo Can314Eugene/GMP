@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talk to Me — Mina Okabe</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F2F9FF;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #90C0E0;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#D8EEFA;border-color:#2080C0;color:#0A3A60}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #C0DCF0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#D8EEFA;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#D8EEFA;color:#0A3A60;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #D0E8F5;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #D0E8F5;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #D0E8F5;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#2080C0}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#D8EEFA;color:#0A3A60;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F2F9FF;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #C0DCF0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #D0E8F5}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#0A3A60}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #D0E8F5;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEF6FF;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F2F9FF;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#0A3A60;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #D0E8F5;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#D8EEFA;color:#0A3A60;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F2F9FF;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#2080C0;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#0A3A60;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #D0E8F5;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#D8EEFA;color:#0A3A60;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#B8D8F0}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🗣️</div>
+      <div>
+        <h2>Talk to Me</h2>
+        <p>Mina Okabe · 2022 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>가수 이름 교정:</b> 미나 오카르베 (✗) → <b>Mina Okabe (미나 오카베)</b> (✓)<br>
+      일본계 영국 싱어송라이터예요!
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">1</div>
+        <div class="check-body">
+          <p class="check-meaning">침묵이 날 미치게 해</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Silance is killing me.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">Silence is killing me.</span>
+          </div>
+          <span class="pill-fix">Silance → Silence (철자 오류)</span>
+          <p class="note-text">
+            가사 정확: <b>Silence is killing me</b><br>
+            ⚠️ <b>Silance</b>(✗) → <b>Silence</b>(✓) — 철자 주의! <b>si-lence</b> (a가 아니라 e!)<br>
+            💡 <b>be killing me</b> = 나를 죽이고 있다 → "미치게 한다, 너무 힘들다"는 강조 표현<br>
+            가사 전체: <b>Silence is killing me / Whatever's on your mind / I want to get in line / Just think of me</b>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">이렇게 굴지 마</p>
+          <div class="sent-row">
+            <span class="sent-right">Don't be this way.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사 정확: <b>If you want to see me again / Don't be this way</b> — "나를 다시 보고 싶다면 이렇게 굴지 마"로 이어지는 단호한 표현이에요!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">당신은 나에게 중요한 사람이야</p>
+          <div class="sent-row">
+            <span class="sent-wrong">You're a prority.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">You're a priority.</span>
+          </div>
+          <span class="pill-fix">prority → priority (철자 오류)</span>
+          <p class="note-text">
+            가사 정확: <b>You're a priority</b><br>
+            ⚠️ <b>prority</b>(✗) → <b>priority</b>(✓) — <b>pri-or-i-ty</b> (4음절!)<br>
+            💡 가사 문맥: <b>So I'll try to believe / You feel the same as me / You're a priority</b><br>
+            "당신도 나와 같은 마음이라고 믿고 싶어 — 당신은 내게 우선순위야"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">Silence is killing me.</p>
+      <p class="expr-ko">침묵이 날 미치게 해 / 아무 말도 없는 게 너무 힘들어</p>
+      <span class="expr-tag">강조 감정 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Silence is killing me.</b> → 침묵이 날 미치게 해.</p>
+        <p><b>The waiting is killing me — just tell me the result.</b> → 기다리는 게 너무 힘들어 — 그냥 결과 알려줘.</p>
+        <p><b>This heat is killing me.</b> → 이 더위가 날 죽이네.</p>
+        <p><b>The suspense is killing me!</b> → 궁금해서 미치겠어!</p>
+        <p class="ex-note">💡 <b>~ is killing me</b> = 직역은 "~이 나를 죽이고 있다"지만, 실제로는 "너무 힘들다, 미치겠다"는 강조 표현! 과장된 일상 표현으로 자주 써요.</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">Don't be this way.</p>
+      <p class="expr-ko">이렇게 굴지 마 / 이런 태도 그만해</p>
+      <span class="expr-tag">태도 지적 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>Don't be this way — just talk to me.</b> → 이렇게 굴지 말고 그냥 나한테 말해.</p>
+        <p><b>Come on, don't be like this.</b> → 이러지 마, 제발.</p>
+        <p><b>Why are you being this way?</b> → 왜 이러는 거야?</p>
+        <p><b>You don't have to be this cold.</b> → 이렇게 차갑게 굴 필요 없잖아.</p>
+        <p class="ex-note">💡 <b>Don't be this way</b> = <b>Don't be like this</b>와 같은 뜻. "이런 식으로 행동하지 마"라는 부드러운 항의 표현. <b>this way</b> = 이런 식으로, 이렇게</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">You're a priority.</p>
+      <p class="expr-ko">당신은 내 우선순위야 / 당신이 나에게 중요한 사람이야</p>
+      <span class="expr-tag">관계 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>You're a priority.</b> → 당신은 내 우선순위야.</p>
+        <p><b>You're my top priority.</b> → 당신이 내 최우선순위야.</p>
+        <p><b>Make yourself a priority.</b> → 자기 자신을 우선순위에 두세요.</p>
+        <p><b>Family is always my first priority.</b> → 가족은 항상 내 첫 번째 우선순위야.</p>
+        <p class="ex-note">💡 <b>priority</b> [프라이오러티] — 4음절! pri-or-i-ty. 철자: pr<b>i</b>or<b>i</b>ty (i가 두 번!)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Silence is killing me.</span> → 침묵이 날 미치게 해.<br>
+      <span>Don't be this way.</span> → 이렇게 굴지 마.<br>
+      <span>You're a priority.</span> → 당신은 나에게 중요한 사람이야.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🗣️</div>
+      <div><h2>핵심 단어 발음</h2><p>Talk to Me · Mina Okabe</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">silence</span>
+        <span class="ref-ipa">[ˈsaɪləns]</span>
+        <span class="ref-kr"><span class="s">사</span>일런스</span>
+        <span class="ref-mean">침묵</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">killing</span>
+        <span class="ref-ipa">[ˈkɪlɪŋ]</span>
+        <span class="ref-kr"><span class="s">킬</span>링</span>
+        <span class="ref-mean">죽이는, 힘들게 하는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">priority</span>
+        <span class="ref-ipa">[praɪˈɒrɪti]</span>
+        <span class="ref-kr">프라이<span class="s">오</span>러티</span>
+        <span class="ref-mean">우선순위</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">this way</span>
+        <span class="ref-ipa">[ðɪs weɪ]</span>
+        <span class="ref-kr">디스 <span class="s">웨</span>이</span>
+        <span class="ref-mean">이렇게, 이런 식으로</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">silence</span>
+        <span class="ref-ipa">[ˈsaɪləns]</span>
+        <span class="ref-kr"><span class="s">사</span>일런스</span>
+        <span class="ref-mean">si-lence (a 아님 e!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">honest</span>
+        <span class="ref-ipa">[ˈɒnɪst]</span>
+        <span class="ref-kr"><span class="s">아</span>니스트</span>
+        <span class="ref-mean">솔직한 (가사 속 단어)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">silence</p><p class="word-mean">침묵</p></div>
+        <span class="word-tag">⚠️ 철자 교정</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsaɪləns]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">사</span>일런스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>si-</b>: "사이" [saɪ] — s + "아이" 이중모음<br>
+        🔸 <b>-lence</b>: "런스" [ləns] — e는 약하게 "어"<br>
+        🔸 ⚠️ 철자: <b>sil<u>e</u>nce</b> (✓) — a가 아니라 <b>e</b>! <b>sil<u>a</u>nce</b>(✗)<br>
+        🔸 <b>silent</b> [사일런트] → <b>silence</b> [사일런스] — 같은 어근!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">priority</p><p class="word-mean">우선순위, 중요한 것</p></div>
+        <span class="word-tag">⚠️ 4음절!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[praɪˈɒrɪti]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">프라이<span class="stress">오</span>러티</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 4음절: <b>pri-or-i-ty</b> — 하나씩 끊어서 연습!<br>
+        🔸 <b>-OR-</b>에 강세: "프라이<b>오</b>러티"<br>
+        🔸 ⚠️ 철자: pr<b>i</b>or<b>i</b>ty — i가 두 번 들어가요!<br>
+        🔸 <b>prority</b>(✗) → <b>priority</b>(✓) — i 하나 더!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">killing me</p><p class="word-mean">날 미치게 해 (강조 표현)</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈkɪlɪŋ miː]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">킬</span>링 미</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>kil-</b>: "킬" 강하게 — KIL-에 강세<br>
+        🔸 <b>-ling</b>: "링" — 비음으로 코로 내는 느낌<br>
+        🔸 연음: "killing me" → "킬링미" 이어서!<br>
+        🔸 <b>is killing me</b> 전체: "이즈킬링미" 빠르게
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">Don't be this way</p><p class="word-mean">이렇게 굴지 마</p></div>
+        <span class="word-tag">문장 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[doʊnt biː ðɪs weɪ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">돈</span>트 비 디스 <span class="stress">웨</span>이</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>don't</b>: "돈트" — t를 강하게 끊지 말고 가볍게!<br>
+        🔸 <b>this</b>: "디스" [ðɪs] — th는 혀를 이 사이에!<br>
+        🔸 <b>way</b>: "웨이" [weɪ] — w + "에이" 이중모음<br>
+        🔸 문장 강세: "Don't be <b>this</b> <b>way</b>" — this와 way에 강세!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🗣️ [Good Morning Pops] Talk to Me
+— Mina Okabe (2022)
+
+💡 가수 이름: 미나 오카르베 ✗ → Mina Okabe (미나 오카베) ✓
+   일본계 영국 싱어송라이터
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 침묵이 날 미치게 해
+✗ Silance is killing me.
+→ Silence is killing me. ✓
+   발음: 사일런스 이즈 킬링 미
+⚠️ Silance → Silence (철자 오류!)
+💡 si-lence — a가 아니라 e!
+💡 ~ is killing me = 미치겠다, 너무 힘들다 (강조 표현)
+
+2️⃣ 이렇게 굴지 마
+→ Don't be this way. ✓
+   발음: 돈트 비 디스 웨이
+※ 가사: If you want to see me again / Don't be this way
+
+3️⃣ 당신은 나에게 중요한 사람이야
+✗ You're a prority.
+→ You're a priority. ✓
+   발음: 유아 어 프라이오러티
+⚠️ prority → priority (i가 하나 더!)
+💡 pri-or-i-ty (4음절) — prIorIty (i 두 번!)
+※ 가사 문맥: So I'll try to believe / You feel the same as me / You're a priority
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 silence [사일런스]
+  si- = "사이" 이중모음
+  -lence = "런스"
+  ⚠️ silence (e ✓) ≠ silance (a ✗)
+
+🔹 priority [프라이오러티]
+  4음절: pri-or-i-ty
+  -OR-에 강세! i가 두 번 들어가요
+
+🔹 killing me [킬링 미]
+  KIL-에 강세. 연음으로 "킬링미"
+
+🔹 Don't be this way [돈트 비 디스 웨이]
+  this = "디스" (th = 혀끝을 이 사이에!)
+  way = "웨이" (w + 에이 이중모음)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 Silence is killing me.
+   침묵이 날 미치게 해
+   • The waiting is killing me.
+     (기다리는 게 너무 힘들어.)
+   • The suspense is killing me!
+     (궁금해서 미치겠어!)
+💡 ~ is killing me = "너무 힘들다"는 과장 강조 표현!
+
+🔹 Don't be this way.
+   이렇게 굴지 마
+   • Why are you being this way?
+     (왜 이러는 거야?)
+   • Come on, don't be like this.
+     (이러지 마, 제발.)
+💡 = Don't be like this. 이런 태도를 그만하라는 부드러운 항의!
+
+🔹 You're a priority.
+   당신은 내 우선순위야
+   • You're my top priority.
+     (당신이 내 최우선순위야.)
+   • Make yourself a priority.
+     (자기 자신을 우선순위에 두세요.)
+💡 priority = 우선순위, 중요한 것
+
+——————————————————
+
+📝 한 번에 정리
+
+Silence is killing me.
+→ 침묵이 날 미치게 해.
+
+Don't be this way.
+→ 이렇게 굴지 마.
+
+You're a priority.
+→ 당신은 나에게 중요한 사람이야.
+
+——————————————————
+#GoodMorningPops #팝송영어 #TalkToMe #MinaOkabe</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

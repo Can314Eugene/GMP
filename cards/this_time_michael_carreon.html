@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>This Time — Michael Carreon</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FFF8F2;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #F0B870;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#FEE8C0;border-color:#D08020;color:#6A3A00}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #F5D8A0}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#FEE8C0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#FEE8C0;color:#6A3A00;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #F0E0C0;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #F0E0C0;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #F0E0C0;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#D08020}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#FEE8C0;color:#6A3A00;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FFF8F2;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #F5D8A0}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #F0E0C0}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#6A3A00}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #F0E0C0;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FFF5E8;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FFF8F2;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#6A3A00;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #F0E0C0;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#FEE8C0;color:#6A3A00;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FFF8F2;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#D08020;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#6A3A00;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #F0E0C0;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#FEE8C0;color:#6A3A00;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#F5D090}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🎶</div>
+      <div>
+        <h2>This Time</h2>
+        <p>Michael Carreon · 2023 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>가수 이름 교정:</b> 마이클 케리온 (✗) → <b>Michael Carreon (마이클 캐리온)</b> (✓)<br>
+      필리핀계 미국인 R&B 싱어송라이터예요!
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신보다 날 더 행복하게 하는 사람은 없어요</p>
+          <div class="sent-row">
+            <span class="sent-right">No one makes me happier than you.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사 정확: <b>No one makes me happier than you / Anybody else just wouldn't do</b> — "다른 누구도 안 돼"로 이어지는 확실한 고백이에요!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">내 모든 슬픔이 사라지는 것 같아요</p>
+          <div class="sent-row">
+            <span class="sent-wrong">all my sadness seem to wash a way.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">All my sadness seems to wash away.</span>
+          </div>
+          <span class="pill-fix">seem → seems (주어-동사 일치)</span>
+          <span class="pill-fix">a way → away (한 단어)</span>
+          <p class="note-text">
+            가사 정확: <b>All my sadness seems to wash away</b><br>
+            ① <b>seem</b>(✗) → <b>seems</b>(✓) — <b>sadness</b>는 단수 명사이므로 <b>seems</b>!<br>
+            ② <b>a way</b>(✗) → <b>away</b>(✓) — "사라지다"는 <b>wash away</b> 한 단어예요.<br>
+            💡 <b>wash away</b> = (물처럼) 씻겨 나가다, 사라지다
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">바로 그거예요</p>
+          <div class="sent-row">
+            <span class="sent-right">This is it.</span>
+          </div>
+          <span class="pill-ok">가사와 정확히 일치 ✓</span>
+          <p class="note-text">가사 정확: <b>This is it / This is what I've been waiting for</b> — "이게 바로 내가 기다려왔던 것"으로 이어지는 설레는 표현이에요! <b>This is it</b>은 확신·감탄의 순간에 쓰는 표현이에요.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">No one makes me happier than you.</p>
+      <p class="expr-ko">당신보다 날 더 행복하게 하는 사람은 없어요</p>
+      <span class="expr-tag">비교 최상급 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>No one makes me happier than you.</b> → 당신보다 날 더 행복하게 하는 사람은 없어요.</p>
+        <p><b>No one knows me better than you do.</b> → 당신보다 나를 더 잘 아는 사람은 없어.</p>
+        <p><b>Nothing makes me feel better than a good night's sleep.</b> → 숙면보다 나를 더 기분 좋게 만드는 건 없어.</p>
+        <p><b>Nobody laughs louder than him.</b> → 그보다 더 크게 웃는 사람은 없어.</p>
+        <p class="ex-note">💡 <b>No one + 동사 + 비교급 + than ~</b> = ~보다 더 …한 사람은 없다 (사실상 최상급 표현!)<br>= <b>You make me the happiest.</b>와 같은 뜻!</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">wash away</p>
+      <p class="expr-ko">씻겨 나가다 / (슬픔이) 사라지다</p>
+      <span class="expr-tag">감정 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>All my sadness seems to wash away.</b> → 내 모든 슬픔이 사라지는 것 같아.</p>
+        <p><b>The rain washed away all the dirt.</b> → 비가 모든 먼지를 씻어냈어.</p>
+        <p><b>Music washes away the stress of the day.</b> → 음악이 하루의 스트레스를 씻어줘.</p>
+        <p><b>Let it all wash away.</b> → 다 흘려보내.</p>
+        <p class="ex-note">💡 <b>wash away</b> = 물에 씻겨 사라지다. 물리적으로 씻기는 것 + 감정·슬픔이 사라지는 것 모두 표현 가능! <b>a way</b>(방법, 길)와 혼동 주의!</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">This is it.</p>
+      <p class="expr-ko">바로 이거야 / 이게 바로 그거야 / 드디어 이 순간이다</p>
+      <span class="expr-tag">확신·감탄 표현</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>This is it.</b> → 바로 이거야. / 이 순간이야.</p>
+        <p><b>This is it — I've found the one.</b> → 바로 이거야 — 운명의 사람을 찾았어.</p>
+        <p><b>This is it, the moment we've been waiting for.</b> → 드디어 우리가 기다리던 순간이야.</p>
+        <p><b>"Are you nervous?" "This is it."</b> → "긴장돼?" "이제 진짜야."</p>
+        <p class="ex-note">💡 상황에 따라 다양한 뉘앙스!<br>① 설레는 확신: "바로 이거야!" (긍정)<br>② 결정적 순간: "이제 진짜야, 이게 마지막 기회야"<br>가사에서는 "드디어 내가 기다려온 이 사람이야!" 💕</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>No one makes me happier than you.</span> → 당신보다 날 더 행복하게 하는 사람은 없어요.<br>
+      <span>All my sadness seems to wash away.</span> → 내 모든 슬픔이 사라지는 것 같아요.<br>
+      <span>This is it.</span> → 바로 그거예요.
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🎶</div>
+      <div><h2>핵심 단어 발음</h2><p>This Time · Michael Carreon</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">happier</span>
+        <span class="ref-ipa">[ˈhæpiər]</span>
+        <span class="ref-kr"><span class="s">해</span>피어</span>
+        <span class="ref-mean">더 행복한</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">sadness</span>
+        <span class="ref-ipa">[ˈsædnɪs]</span>
+        <span class="ref-kr"><span class="s">새</span>드니스</span>
+        <span class="ref-mean">슬픔</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">seems</span>
+        <span class="ref-ipa">[siːmz]</span>
+        <span class="ref-kr"><span class="s">씨</span>임즈</span>
+        <span class="ref-mean">~처럼 보인다 (단수)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">wash away</span>
+        <span class="ref-ipa">[wɒʃ əˈweɪ]</span>
+        <span class="ref-kr"><span class="s">워</span>쉬 어<span class="s">웨</span>이</span>
+        <span class="ref-mean">씻겨 나가다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">no one</span>
+        <span class="ref-ipa">[ˈnoʊ wʌn]</span>
+        <span class="ref-kr"><span class="s">노</span>우 원</span>
+        <span class="ref-mean">아무도 ~않다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">this is it</span>
+        <span class="ref-ipa">[ðɪs ɪz ɪt]</span>
+        <span class="ref-kr">디스 이즈 <span class="s">잇</span></span>
+        <span class="ref-mean">바로 이거야</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — seems vs seem / away vs a way</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">sadness seems</p><p class="word-mean">슬픔이 ~처럼 보인다 (단수 주어)</p></div>
+        <span class="word-tag">주어-동사 일치</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈsædnɪs siːmz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">새</span>드니스 <span class="stress">씨</span>임즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>sadness</b>: 단수 명사 — s로 끝나도 단수!<br>
+        🔸 단수 주어 → <b>seems</b>(✓) / <b>seem</b>(✗)<br>
+        🔸 <b>seems</b>: "씨임즈" — seem + s<br>
+        🔸 헷갈리는 예: happiness, sadness, kindness → 모두 <b>단수</b>!
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">wash away</p><p class="word-mean">씻겨 나가다, 사라지다</p></div>
+        <span class="word-tag">⚠️ a way vs away</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[wɒʃ əˈweɪ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">워</span>쉬 어<span class="stress">웨</span>이</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>away</b> [어웨이]: 부사 — "멀리, 사라지게" (한 단어!)<br>
+        🔸 <b>a way</b> [어 웨이]: 명사구 — "하나의 방법, 길"<br>
+        🔸 🔑 <b>wash away</b>(씻겨 사라지다) ≠ <b>wash a way</b>(방법을 씻다? ✗)<br>
+        🔸 같은 패턴: run away / fly away / fade away — 모두 한 단어!
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">happier</p><p class="word-mean">더 행복한 (비교급)</p></div>
+        <span class="word-tag">비교급 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈhæpiər]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">해</span>피어</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>HAP-</b>에 강세: "해" [hæ] — 입 크게!<br>
+        🔸 <b>-pi-er</b>: "피어" — py + er 연결<br>
+        🔸 <b>happy → happier → happiest</b><br>
+        🔸 <b>No one makes me happier</b>: "노우원메익스미해피어"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">no one</p><p class="word-mean">아무도 ~않다</p></div>
+        <span class="word-tag">연음 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈnoʊ wʌn]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">노</span>우 원</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>no</b>: "노우" [noʊ] — 이중모음<br>
+        🔸 <b>one</b>: "원" [wʌn] — "온"이 아니라 "원"!<br>
+        🔸 연음: "no one" → "노우원" 이어서<br>
+        🔸 <b>no one</b> = <b>nobody</b> — 둘 다 "아무도 ~않다"
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">This is it.</p><p class="word-mean">바로 이거야</p></div>
+        <span class="word-tag">강세 패턴</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ðɪs ɪz ɪt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr">디스 이즈 <span class="stress">잇</span></p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>This</b>: "디스" — th = 혀끝을 이 사이에!<br>
+        🔸 <b>it</b>에 강세: "디스 이즈 <b>잇</b>" — 마지막에 힘!<br>
+        🔸 빠르게: "디시짓!" 처럼 이어져요<br>
+        🔸 <b>This is IT</b> — 강조할수록 it을 더 강하게!
+      </div>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🎶 [Good Morning Pops] This Time
+— Michael Carreon (2023)
+
+💡 가수 이름: 마이클 케리온 ✗ → Michael Carreon (마이클 캐리온) ✓
+   필리핀계 미국인 R&B 싱어송라이터
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 당신보다 날 더 행복하게 하는 사람은 없어요
+→ No one makes me happier than you. ✓
+   발음: 노우원 메익스 미 해피어 댄 유
+※ 가사: No one makes me happier than you / Anybody else just wouldn't do
+
+2️⃣ 내 모든 슬픔이 사라지는 것 같아요
+✗ all my sadness seem to wash a way.
+→ All my sadness seems to wash away. ✓
+   발음: 올 마이 새드니스 씨임즈 투 워쉬 어웨이
+⚠️ seem → seems
+   (sadness = 단수 명사 → 반드시 seems!)
+⚠️ a way → away (한 단어!)
+💡 wash away = 씻겨 사라지다
+   a way(방법)와 혼동 금지!
+
+3️⃣ 바로 그거예요
+→ This is it. ✓
+   발음: 디스 이짓
+※ 가사: This is it / This is what I've been waiting for
+※ 1번, 3번 모두 완벽했어요! 👏
+
+——————————————————
+
+📌 발음 포인트
+
+🔹 sadness seems [새드니스 씨임즈]
+  sadness = 단수 → seems (s 꼭!)
+  seem(✗) → seems(✓)
+
+🔹 wash away [워쉬 어웨이]
+  away = 부사 (한 단어) → 씻겨 사라지다
+  a way = 명사 (방법) — 완전히 다른 뜻!
+
+🔹 happier [해피어]
+  HAP-에 강세. happy의 비교급!
+
+🔹 no one [노우원]
+  "온"이 아니라 "원" [wʌn]
+
+🔹 This is it [디스 이짓]
+  it에 강세! "디시짓"처럼 이어져요
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 No one makes me happier than you.
+   당신보다 날 더 행복하게 하는 사람은 없어요
+   • No one knows me better than you do.
+     (당신보다 나를 더 잘 아는 사람은 없어.)
+💡 No one + 비교급 + than = 사실상 최상급 표현!
+
+🔹 wash away
+   씻겨 나가다, 사라지다
+   • Music washes away the stress of the day.
+     (음악이 하루의 스트레스를 씻어줘.)
+   • Let it all wash away.
+     (다 흘려보내.)
+💡 물리적 + 감정적 의미 모두 사용!
+
+🔹 This is it.
+   바로 이거야 / 드디어 이 순간이야
+   • This is it — I've found the one.
+     (바로 이거야 — 운명의 사람을 찾았어.)
+   • This is what I've been waiting for.
+     (이게 바로 내가 기다려온 거야.)
+💡 확신·감탄의 순간에 딱 맞는 표현!
+
+——————————————————
+
+📝 한 번에 정리
+
+No one makes me happier than you.
+→ 당신보다 날 더 행복하게 하는 사람은 없어요.
+
+All my sadness seems to wash away.
+→ 내 모든 슬픔이 사라지는 것 같아요.
+
+This is it.
+→ 바로 그거예요.
+
+——————————————————
+#GoodMorningPops #팝송영어 #ThisTime #MichaelCarreon</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>

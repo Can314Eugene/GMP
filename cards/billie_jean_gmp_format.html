@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billie Jean — Michael Jackson</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F7FBFF;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 18px;border-radius:20px;border:1px solid #9CC9FF;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#DDEEFF;border-color:#3D8BFF;color:#0A3A7A}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #CFE3FF}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#DDEEFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#DDEEFF;color:#0A3A7A;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #D7E7FF;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok,.num-fix{min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-ok{background:#E8F3FF;color:#0A3A7A}
+  .num-fix{background:#FCEBEB;color:#791F1F}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix,.pill-ok,.pill-note{display:inline-block;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 4px 3px 0}
+  .pill-fix{background:#FCEBEB;color:#791F1F;font-family:monospace}
+  .pill-ok{background:#E8F3FF;color:#0A3A7A}
+  .pill-note{background:#FFF4DE;color:#7C5500}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #D7E7FF;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #D7E7FF;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#3D8BFF}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#DDEEFF;color:#0A3A7A;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F7FBFF;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #CFE3FF}
+  .ex-box p{margin:0 0 6px;font-size:13px;color:#555}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:8px!important;font-size:11px!important;color:#AAA!important;line-height:1.5}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.2;border:1px solid #D7E7FF}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#0A3A7A}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #D7E7FF;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #EEF5FF;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F7FBFF;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#0A3A7A;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #D7E7FF;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#DDEEFF;color:#0A3A7A;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F7FBFF;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#3D8BFF;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#0A3A7A;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #D7E7FF;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#DDEEFF;color:#0A3A7A;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#C9E0FF}.copy-btn.done{background:#E8F3FF;color:#0A3A7A}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">🕺</div>
+      <div>
+        <h2>Billie Jean</h2>
+        <p>Michael Jackson · 1982 · Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.6">
+      💡 <b>곡 이름 교정:</b> billy jean (✗) → <b>Billie Jean</b> (✓)<br>
+      💡 <b>가수 이름:</b> Michael Jackson (마이클 잭슨)
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">당신 행동을 조심해</p>
+          <div class="sent-row">
+            <span class="sent-right">Be careful of what you do.</span>
+          </div>
+          <span class="pill-ok">표현 정확함</span>
+          <p class="note-text">
+            가사 정확: <b>Be careful of what you do</b><br>
+            💡 <b>be careful of</b> = ~을 조심하다<br>
+            문맥상 “네 행동을 조심해” 또는 “무슨 행동을 하는지 조심해”라는 뜻이에요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">2</div>
+        <div class="check-body">
+          <p class="check-meaning">거짓말이 진실이 된다</p>
+          <div class="sent-row">
+            <span class="sent-wrong">Cause The lie becomes the trueth.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">'Cause the lie becomes the truth.</span>
+          </div>
+          <span class="pill-fix">trueth → truth</span>
+          <span class="pill-fix">Cause → 'Cause</span>
+          <p class="note-text">
+            가사 정확: <b>'Cause the lie becomes the truth</b><br>
+            ⚠️ <b>trueth</b>(✗) → <b>truth</b>(✓)<br>
+            ⚠️ 구어체 축약형은 보통 <b>'Cause</b> 로 적어요.<br>
+            💡 뜻은 “거짓말이 결국 진실처럼 되어버린다”에 가까워요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">3</div>
+        <div class="check-body">
+          <p class="check-meaning">항상 두 번 생각할 것을 기억해</p>
+          <div class="sent-row">
+            <span class="sent-right">Just remember to always think twice.</span>
+          </div>
+          <span class="pill-ok">표현 정확함</span>
+          <p class="note-text">
+            가사 정확: <b>Just remember to always think twice</b><br>
+            💡 <b>think twice</b> = 한 번 더 신중하게 생각하다<br>
+            직역보다 “항상 한 번 더 생각해”로 익히면 더 자연스러워요.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">be careful of what you do</p>
+      <p class="expr-ko">네 행동을 조심해</p>
+      <span class="expr-tag">경고 표현</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Be careful of what you do.</b> → 네 행동을 조심해.</p>
+        <p><b>Be careful of what you say.</b> → 네가 하는 말을 조심해.</p>
+        <p><b>You should be careful of who you trust.</b> → 누구를 믿는지 조심해야 해.</p>
+        <p class="ex-note">💡 <b>be careful of</b> 뒤에는 명사나 의문사절이 자주 와요. <b>what you do</b>, <b>who you love</b> 같은 구조가 자주 나옵니다.</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">the lie becomes the truth</p>
+      <p class="expr-ko">거짓이 진실이 되어버리다</p>
+      <span class="expr-tag">강한 표현</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>'Cause the lie becomes the truth.</b> → 거짓말이 진실처럼 되어버리니까.</p>
+        <p><b>A rumor can become the truth in people's minds.</b> → 소문은 사람들 마음속에서 진실처럼 될 수 있어.</p>
+        <p><b>If you repeat a lie enough, people may believe it.</b> → 거짓말도 계속 반복하면 사람들이 믿을 수 있어.</p>
+        <p class="ex-note">💡 이 표현은 문법보다 의미가 중요해요. “거짓말이 퍼지면 진실처럼 받아들여질 수 있다”는 뉘앙스입니다.</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">think twice</p>
+      <p class="expr-ko">한 번 더 신중하게 생각하다</p>
+      <span class="expr-tag">회화 필수</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>Just remember to always think twice.</b> → 항상 한 번 더 생각해.</p>
+        <p><b>You should think twice before you decide.</b> → 결정하기 전에 한 번 더 생각해야 해.</p>
+        <p><b>I thought twice about quitting.</b> → 그만둘지 신중하게 다시 생각했어.</p>
+        <p class="ex-note">💡 <b>think twice</b> 는 시험, 인간관계, 소비, 결정 상황에서 정말 자주 쓰이는 표현이에요.</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Be careful of what you do.</span> → 당신 행동을 조심해.<br>
+      <span>'Cause the lie becomes the truth.</span> → 거짓말이 진실이 된다.<br>
+      <span>Just remember to always think twice.</span> → 항상 두 번 생각할 것을 기억해.
+    </div>
+  </div>
+
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🕺</div>
+      <div><h2>핵심 단어 발음</h2><p>Billie Jean · Michael Jackson</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">careful</span>
+        <span class="ref-ipa">[ˈkerfəl]</span>
+        <span class="ref-kr"><span class="s">케</span>어펄</span>
+        <span class="ref-mean">조심하는</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">lie</span>
+        <span class="ref-ipa">[laɪ]</span>
+        <span class="ref-kr"><span class="s">라</span>이</span>
+        <span class="ref-mean">거짓말</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">truth</span>
+        <span class="ref-ipa">[truːθ]</span>
+        <span class="ref-kr"><span class="s">트</span>루쓰</span>
+        <span class="ref-mean">진실</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">remember</span>
+        <span class="ref-ipa">[rɪˈmembər]</span>
+        <span class="ref-kr">리<span class="s">멤</span>버</span>
+        <span class="ref-mean">기억하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">think twice</span>
+        <span class="ref-ipa">[θɪŋk twaɪs]</span>
+        <span class="ref-kr"><span class="s">띵</span>크 트와이스</span>
+        <span class="ref-mean">한 번 더 생각하다</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">Billie Jean</span>
+        <span class="ref-ipa">[ˌbɪli ˈdʒiːn]</span>
+        <span class="ref-kr">빌리 <span class="s">진</span></span>
+        <span class="ref-mean">곡 제목 / 인명</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 이번 교정 핵심 — truth 철자</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">truth</p><p class="word-mean">진실</p></div>
+        <span class="word-tag">철자 주의</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[truːθ]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">트</span>루쓰</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>truth</b> 는 <b>trueth</b>가 아니에요.<br>
+        🔸 끝의 <b>th</b> 는 혀를 살짝 내밀고 내는 소리예요.<br>
+        🔸 <b>the truth</b> = 진실 / 사실<br>
+        🔸 노래에서는 <b>the lie becomes the truth</b> 로 함께 외우면 좋아요.
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">think twice</p><p class="word-mean">다시 생각하다, 신중히 생각하다</p></div>
+        <span class="word-tag">회화 핵심</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[θɪŋk twaɪs]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">띵</span>크 트와이스</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>think</b> 의 <b>th</b> 도 혀를 살짝 내밀어요.<br>
+        🔸 <b>twice</b> 는 “트와이스”에 가까워요.<br>
+        🔸 합쳐서 “띵크 트와이스”처럼 이어서 말하면 자연스러워요.
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">Michael Jackson</p><p class="word-mean">가수 이름 발음</p></div>
+        <span class="word-tag">이름 발음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈmaɪkəl ˈdʒæksən]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">마</span>이컬 <span class="stress">잭</span>슨</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>Michael</b> 은 “마이클”보다 영어 소리는 “마이컬”에 가까워요.<br>
+        🔸 <b>Jackson</b> 은 “잭슨”처럼 짧게 발음해요.<br>
+        🔸 한국어 표기는 보통 <b>마이클 잭슨</b>으로 씁니다.
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">🕺 [Good Morning Pops] Billie Jean
+— Michael Jackson (1982)
+
+💡 곡 이름: billy jean ✗ → Billie Jean ✓
+💡 가수 이름: Michael Jackson (마이클 잭슨)
+
+——————————————————
+
+✅ 가사 체크
+
+1️⃣ 당신 행동을 조심해
+Be careful of what you do. ✓
+   발음: 비 케어펄 어브 왓 유 두
+💡 be careful of = ~을 조심하다
+
+2️⃣ 거짓말이 진실이 된다
+✗ Cause The lie becomes the trueth.
+→ 'Cause the lie becomes the truth. ✓
+   발음: 코즈 더 라이 비컴즈 더 트루쓰
+⚠️ trueth ✗ → truth ✓
+⚠️ 보통 'Cause 로 적어요
+
+3️⃣ 항상 두번 생각할 것을 기억해
+Just remember to always think twice. ✓
+   발음: 저스트 리멤버 투 올웨이즈 띵크 트와이스
+💡 think twice = 한 번 더 신중하게 생각하다
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 be careful of what you do
+   네 행동을 조심해
+   • Be careful of what you say.
+     (네가 하는 말을 조심해.)
+
+🔹 the lie becomes the truth
+   거짓말이 진실처럼 되어버리다
+   • A rumor can become the truth in people's minds.
+     (소문은 사람들 마음속에서 진실처럼 될 수 있어.)
+
+🔹 think twice
+   한 번 더 신중하게 생각하다
+   • You should think twice before you decide.
+     (결정하기 전에 한 번 더 생각해야 해.)
+
+——————————————————
+
+📝 한 번에 정리
+
+Be careful of what you do.
+→ 당신 행동을 조심해.
+
+'Cause the lie becomes the truth.
+→ 거짓말이 진실이 된다.
+
+Just remember to always think twice.
+→ 항상 두 번 생각할 것을 기억해.
+
+——————————————————
+#GoodMorningPops #팝송영어 #BillieJean #MichaelJackson</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+</script>
+</body>
+</html>
