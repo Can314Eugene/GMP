@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>No Roots · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>No Roots</h1>
+    <p class="artist">Alice Merton</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p class="en">오늘의 곡은 Alice Merton의 No Roots.</p><p>계속 짐을 싸고 떠나면서도, 자신만의 소속감을 찾아가는 노래예요.</p><p>제목이 &quot;뿌리가 없다&quot;인데, 듣다 보면 그게 자유인지 외로움인지 헷갈립니다. 🧳</p><p>그런데 오늘 챙겨갈 영어는 이사할 때도, 회의할 때도 쓰이는 표현들입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다. ☕🎧</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">pack it up</p><p class="phrase-ko">짐을 싸다 · 그것을 포장하다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Then pack it up in boxes.</p><p class="gloss">→ 그런 다음 짐을 상자에 싸요.</p></div><div class="blk"><p>여기서 꼭 기억할 구조는 이것입니다.</p><p class="point">👉 목적어가 대명사면 동사와 up 사이에 넣습니다. (pack up it ✗)</p></div><div class="blk"><p>명사일 때는 자리가 자유롭습니다.</p><p class="en">pack up the books ⭕ / pack the books up ⭕</p><p>그런데 it, them처럼 대명사가 오면 자리가 하나로 고정돼요.</p><p class="en">pack it up ⭕ / pack up it ✗</p></div><div class="blk"><p>예를 들어,</p><p class="en">We are moving tomorrow, so pack it up carefully and label the box.</p><p class="gloss">→ 내일 이사하니까 그것을 조심히 포장하고 상자에 이름표를 붙여요.</p></div><div class="blk"><p>또,</p><p class="en">After the exhibition, we packed everything up in boxes and loaded the van.</p><p class="gloss">→ 전시가 끝난 뒤 모든 물건을 상자에 싸서 승합차에 실었어요.</p></div><div class="blk"><p class="tip">💡 pick it up(그거 주워/받아 와), back it up(백업해 둬)도 똑같은 구조예요.</p><p>이 세 개를 묶어서 외워두면 대명사 자리가 헷갈리지 않습니다.</p></div><div class="blk"><p>책상 정리하다가 이 한마디면 됩니다.</p><p class="en">Let&#x27;s pack it up. 🧳</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">have no roots / put down roots</p><p class="phrase-ko">뿌리가 없다 / 정착하다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I&#x27;ve got no roots.</p><p class="gloss">→ 난 한곳에 뿌리를 내리지 않아요.</p></div><div class="blk"><p>여기서 꼭 기억할 포인트는 이것입니다.</p><p class="point">👉 have no roots는 지금의 상태, put down roots는 새로 정착해 가는 과정입니다.</p></div><div class="blk"><p>roots는 나무 뿌리만 뜻하는 게 아니라</p><p>&quot;내가 뿌리내린 곳&quot;, 그러니까 소속감과 정착을 가리키는 말로 자주 씁니다.</p></div><div class="blk"><p>예를 들어,</p><p class="en">I&#x27;ve got no roots in this city yet, but my neighbors are making me feel welcome.</p><p class="gloss">→ 아직 이 도시에 뿌리를 내리지는 못했지만, 이웃들이 나를 따뜻하게 맞아 주고 있어요.</p></div><div class="blk"><p>또,</p><p class="en">After years of moving around, I want to put down roots near my family.</p><p class="gloss">→ 몇 년 동안 이곳저곳 옮겨 다닌 뒤, 가족 가까이에 정착하고 싶어요.</p></div><div class="blk"><p class="tip">💡 have got은 여기서 have와 같은 뜻이에요.</p><p class="en">I&#x27;ve got no roots = I have no roots. 회화에서는 have got 쪽을 더 자주 씁니다.</p></div><div class="blk"><p>이직이나 이사가 잦았던 분이라면 이 문장이 남 얘기 같지 않으실 거예요.</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">a wishful plan</p><p class="phrase-ko">바람만 앞선 계획</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">That&#x27;s just a wishful plan.</p><p class="gloss">→ 그건 그저 희망만 담긴 계획일 뿐이에요.</p></div><div class="blk"><p>여기서 꼭 기억할 포인트는 이것입니다.</p><p class="point">👉 wishful은 현실적 근거보다 바람이 앞선다는 뜻입니다.</p></div><div class="blk"><p>hopeful(희망을 품은)과는 온도가 달라요.</p><p>hopeful은 근거가 있는 기대, wishful은 근거보다 바람이 앞선 쪽입니다.</p></div><div class="blk"><p>예를 들어,</p><p class="en">Without a budget or a team, opening the cafe this month is just a wishful plan.</p><p class="gloss">→ 예산도 팀도 없이 이번 달에 카페를 열겠다는 것은 그저 바람에 불과한 계획이에요.</p></div><div class="blk"><p>또,</p><p class="en">We need clear steps and a deadline to turn this wishful plan into something real.</p><p class="gloss">→ 이 희망 섞인 계획을 현실로 만들려면 명확한 단계와 마감일이 필요해요.</p></div><div class="blk"><p class="tip">💡 wishful thinking은 아예 굳어진 표현이에요.</p><p>&quot;근거 없이 바라기만 하는 생각&quot; — 회의에서 정말 자주 나오는 말입니다.</p></div></section><section class="sec sec-aside"><h2>📌 알아두면 좋은 것 하나</h2><div class="blk"><p>roots와 routes는 발음이 같을 수 있어요.</p><p>roots(뿌리)와 routes(경로) — 뜻은 문맥으로 구별합니다.</p><p>뿌리가 없어서 계속 길 위에 있는 노래니까, 사실 둘 다 이 곡 이야기네요.</p></div></section><section class="sec"><h2>☕ 30초 복습</h2><div class="blk"><p>오늘은 딱 세 개만 가져갑니다.</p></div><div class="blk"><p class="numbered">① pack it up</p><p class="gloss">→ 짐을 싸다 (it은 반드시 가운데에!)</p><p class="numbered">② have no roots / put down roots</p><p class="gloss">→ 뿌리가 없다 / 정착하다</p><p class="numbered">③ a wishful plan</p><p class="gloss">→ 바람만 앞선 계획</p></div><div class="blk"><p>한 문장으로 연결해 볼까요?</p><p>짐을 싸는 장면 → 뿌리가 없다는 선언 → 머물고 싶다는 바람.</p><p>장면에서 정체성으로, 다시 속마음으로 내려갑니다.</p><p>세 문장을 이어보면 자유와 불안이 같이 들려요.</p></div></section><section class="sec"><h2>🔊 발음도 한 줄만</h2><div class="blk"><p class="bullet">· pack it up = 패키럽 (세 단어를 끊지 말고 한 덩어리로)</p><p class="bullet">· boxes = 박시즈 (/s/ 뒤 복수형은 한 음절이 늘어요)</p><p class="bullet">· wishful = 위시펄 (WISH에 강세, -ful은 가볍게)</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>오늘 하나만 기억한다면 저는</p><p class="en">a wishful plan</p><p>을 고르겠습니다.</p></div><div class="blk"><p>계획을 세울 때마다 스스로 한 번 물어보게 되거든요.</p><p class="en">이건 plan인가, wishful plan인가.</p><p>차이를 만드는 건 결국 예산과 마감일, 그리고 오늘 한 걸음입니다.</p></div></section><section class="sec sec-turn"><h2>✍️ YOUR TURN</h2><div class="blk"><p>아래 문장을 완성해 보세요.</p><p class="en">Someday I want to put down roots in ________.</p></div><div class="blk"><p>예를 들면,</p><p class="en">Someday I want to put down roots in a quiet town by the sea.</p><p>언젠가 바닷가 조용한 마을에 정착하고 싶어요.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨보세요. 😊</p><p>영어는 많이 읽는 것도 좋지만</p><p>내 이야기를 영어로 한 번 만들어 볼 때 훨씬 오래 기억됩니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/no_roots_alice_merton_7tabs.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/no_roots_alice_merton_7tabs.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div></section><section class="sec sec-end"><h2>🌞 내일 아침에도 Good Morning Pops와 함께</h2><div class="blk"><p>하루 세 표현.</p><p>그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다. ☕🎧</p></div></section>
+
+  <p class="tags">#GoodMorningPops #굿모닝팝스 #팝송영어 #AliceMerton #NoRoots #영어공부 #하루한문장</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝송] No Roots — Alice Merton | pack it up · have no roots · a wishful plan</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝송] No Roots — Alice Merton | pack it up · have no roots · a wishful plan
+
+🎧 Good Morning Pops
+No Roots — Alice Merton
+
+오늘의 곡은 Alice Merton의 No Roots.
+계속 짐을 싸고 떠나면서도, 자신만의 소속감을 찾아가는 노래예요.
+제목이 &quot;뿌리가 없다&quot;인데, 듣다 보면 그게 자유인지 외로움인지 헷갈립니다. 🧳
+그런데 오늘 챙겨갈 영어는 이사할 때도, 회의할 때도 쓰이는 표현들입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다. ☕🎧
+
+📌 오늘의 영어 ①
+pack it up
+짐을 싸다 · 그것을 포장하다
+
+오늘 문장에서는:
+Then pack it up in boxes.
+→ 그런 다음 짐을 상자에 싸요.
+
+여기서 꼭 기억할 구조는 이것입니다.
+👉 목적어가 대명사면 동사와 up 사이에 넣습니다. (pack up it ✗)
+
+명사일 때는 자리가 자유롭습니다.
+pack up the books ⭕ / pack the books up ⭕
+그런데 it, them처럼 대명사가 오면 자리가 하나로 고정돼요.
+pack it up ⭕ / pack up it ✗
+
+예를 들어,
+We are moving tomorrow, so pack it up carefully and label the box.
+→ 내일 이사하니까 그것을 조심히 포장하고 상자에 이름표를 붙여요.
+
+또,
+After the exhibition, we packed everything up in boxes and loaded the van.
+→ 전시가 끝난 뒤 모든 물건을 상자에 싸서 승합차에 실었어요.
+
+💡 pick it up(그거 주워/받아 와), back it up(백업해 둬)도 똑같은 구조예요.
+이 세 개를 묶어서 외워두면 대명사 자리가 헷갈리지 않습니다.
+
+책상 정리하다가 이 한마디면 됩니다.
+Let&#x27;s pack it up. 🧳
+
+📌 오늘의 영어 ②
+have no roots / put down roots
+뿌리가 없다 / 정착하다
+
+오늘 문장에서는:
+I&#x27;ve got no roots.
+→ 난 한곳에 뿌리를 내리지 않아요.
+
+여기서 꼭 기억할 포인트는 이것입니다.
+👉 have no roots는 지금의 상태, put down roots는 새로 정착해 가는 과정입니다.
+
+roots는 나무 뿌리만 뜻하는 게 아니라
+&quot;내가 뿌리내린 곳&quot;, 그러니까 소속감과 정착을 가리키는 말로 자주 씁니다.
+
+예를 들어,
+I&#x27;ve got no roots in this city yet, but my neighbors are making me feel welcome.
+→ 아직 이 도시에 뿌리를 내리지는 못했지만, 이웃들이 나를 따뜻하게 맞아 주고 있어요.
+
+또,
+After years of moving around, I want to put down roots near my family.
+→ 몇 년 동안 이곳저곳 옮겨 다닌 뒤, 가족 가까이에 정착하고 싶어요.
+
+💡 have got은 여기서 have와 같은 뜻이에요.
+I&#x27;ve got no roots = I have no roots. 회화에서는 have got 쪽을 더 자주 씁니다.
+
+이직이나 이사가 잦았던 분이라면 이 문장이 남 얘기 같지 않으실 거예요.
+
+📌 오늘의 영어 ③
+a wishful plan
+바람만 앞선 계획
+
+오늘 문장에서는:
+That&#x27;s just a wishful plan.
+→ 그건 그저 희망만 담긴 계획일 뿐이에요.
+
+여기서 꼭 기억할 포인트는 이것입니다.
+👉 wishful은 현실적 근거보다 바람이 앞선다는 뜻입니다.
+
+hopeful(희망을 품은)과는 온도가 달라요.
+hopeful은 근거가 있는 기대, wishful은 근거보다 바람이 앞선 쪽입니다.
+
+예를 들어,
+Without a budget or a team, opening the cafe this month is just a wishful plan.
+→ 예산도 팀도 없이 이번 달에 카페를 열겠다는 것은 그저 바람에 불과한 계획이에요.
+
+또,
+We need clear steps and a deadline to turn this wishful plan into something real.
+→ 이 희망 섞인 계획을 현실로 만들려면 명확한 단계와 마감일이 필요해요.
+
+💡 wishful thinking은 아예 굳어진 표현이에요.
+&quot;근거 없이 바라기만 하는 생각&quot; — 회의에서 정말 자주 나오는 말입니다.
+
+📌 알아두면 좋은 것 하나
+roots와 routes는 발음이 같을 수 있어요.
+roots(뿌리)와 routes(경로) — 뜻은 문맥으로 구별합니다.
+뿌리가 없어서 계속 길 위에 있는 노래니까, 사실 둘 다 이 곡 이야기네요.
+
+☕ 30초 복습
+오늘은 딱 세 개만 가져갑니다.
+
+① pack it up
+→ 짐을 싸다 (it은 반드시 가운데에!)
+② have no roots / put down roots
+→ 뿌리가 없다 / 정착하다
+③ a wishful plan
+→ 바람만 앞선 계획
+
+한 문장으로 연결해 볼까요?
+짐을 싸는 장면 → 뿌리가 없다는 선언 → 머물고 싶다는 바람.
+장면에서 정체성으로, 다시 속마음으로 내려갑니다.
+세 문장을 이어보면 자유와 불안이 같이 들려요.
+
+🔊 발음도 한 줄만
+· pack it up = 패키럽 (세 단어를 끊지 말고 한 덩어리로)
+· boxes = 박시즈 (/s/ 뒤 복수형은 한 음절이 늘어요)
+· wishful = 위시펄 (WISH에 강세, -ful은 가볍게)
+
+⭐ 오늘 딱 한 표현
+오늘 하나만 기억한다면 저는
+a wishful plan
+을 고르겠습니다.
+
+계획을 세울 때마다 스스로 한 번 물어보게 되거든요.
+이건 plan인가, wishful plan인가.
+차이를 만드는 건 결국 예산과 마감일, 그리고 오늘 한 걸음입니다.
+
+✍️ YOUR TURN
+아래 문장을 완성해 보세요.
+Someday I want to put down roots in ________.
+
+예를 들면,
+Someday I want to put down roots in a quiet town by the sea.
+언젠가 바닷가 조용한 마을에 정착하고 싶어요.
+
+댓글에 여러분의 문장 하나 남겨보세요. 😊
+영어는 많이 읽는 것도 좋지만
+내 이야기를 영어로 한 번 만들어 볼 때 훨씬 오래 기억됩니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/no_roots_alice_merton_7tabs.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+🌞 내일 아침에도 Good Morning Pops와 함께
+하루 세 표현.
+그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다. ☕🎧
+
+#GoodMorningPops #굿모닝팝스 #팝송영어 #AliceMerton #NoRoots #영어공부 #하루한문장
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>

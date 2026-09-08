@@ -759,5 +759,182 @@ if(synth && typeof synth.onvoiceschanged !== 'undefined'){
   synth.onvoiceschanged = pickVoice;
 }
 </script>
+<!-- GMP-TTS-FIX:start -->
+<script>
+/* ===== 안드로이드 음성 호환 보정 (GMP TTS FIX v1) =====
+   아이폰에서는 나던 소리가 안드로이드(삼성)에서 안 나는 원인을 보정한다.
+   카드의 기존 함수는 그대로 두고 speechSynthesis 자체를 감싼다. */
+(function(){
+  if(!window.speechSynthesis || window.__gmpTtsFix) return;
+  window.__gmpTtsFix = true;
+
+  var synth = window.speechSynthesis;
+  var rawSpeak  = synth.speak.bind(synth);
+  var rawCancel = synth.cancel.bind(synth);
+
+  var lastCancel = 0;
+  var voices = [];
+  var warned = false;
+  var keepAlive = null;
+
+  /* --- 1. 목소리 목록 캐싱 ---
+     안드로이드 크롬은 getVoices()가 처음엔 빈 배열을 준다. */
+  function loadVoices(){
+    try { var v = synth.getVoices(); if(v && v.length) voices = v; } catch(e){}
+  }
+  loadVoices();
+  try { synth.addEventListener('voiceschanged', loadVoices); } catch(e){
+    synth.onvoiceschanged = loadVoices;
+  }
+  setTimeout(loadVoices, 300);
+  setTimeout(loadVoices, 1200);
+  setTimeout(checkEnglish, 2500);
+
+  function englishVoices(){
+    return voices.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf('en') === 0; });
+  }
+
+  /* 카드는 여성 영어 음성을 기준으로 만들어졌다.
+     보정이 개입할 때도 같은 결을 유지해야 학습 자료가 들쭉날쭉해지지 않는다. */
+  var FEMALE = ['samantha','victoria','allison','ava','susan','zira','aria','jenny',
+    'michelle','joanna','salli','kendra','kimberly','google us english','karen','moira',
+    'tessa','fiona','serena','female','woman','zoe','nicky','vicki','eddy','flo'];
+  var MALE = ['albert','bad news','bahh','bells','boing','bubbles','cellos','david',
+    'mark','alex','daniel','fred','male','man','guy','tom','george','james','oliver',
+    'arthur','microsoft david','junior','ralph','organ','trinoids','whisper','wobble',
+    'jester','superstar','grandpa','rocko','reed','sandy','shelley','good news'];
+  function nameHas(v, list){
+    var n = (v.name || '').toLowerCase();
+    return list.some(function(k){ return n.indexOf(k) >= 0; });
+  }
+  function bestEnglish(){
+    var en = englishVoices();
+    if(!en.length) return null;
+    var us = en.filter(function(v){ return v.lang === 'en-US'; });
+    var pool = us.length ? us : en;
+    return pool.filter(function(v){ return nameHas(v, FEMALE); })[0]
+        || pool.filter(function(v){ return !nameHas(v, MALE); })[0]
+        || pool[0];
+  }
+
+  /* --- 2. 영어 목소리가 아예 없으면 알려준다 ---
+     삼성 기기에서 구글 TTS 영어 데이터가 없으면 소리가 안 난다.
+     이때는 조용히 실패하지 말고 무엇을 해야 하는지 보여 준다. */
+  function checkEnglish(){
+    if(warned || !voices.length) return;
+    if(englishVoices().length) return;
+    warned = true;
+    var box = document.createElement('div');
+    box.setAttribute('role','status');
+    box.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;'
+      + 'background:#3A2317;color:#FFF3E4;border-radius:12px;padding:13px 15px;'
+      + 'font:14px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;'
+      + 'box-shadow:0 6px 24px rgba(0,0,0,.3);max-width:520px;margin:0 auto';
+    box.innerHTML = '🔇 <b>이 기기에 영어 음성이 없어 소리가 나지 않습니다.</b><br>'
+      + '설정 → 일반 → <b>접근성 → 텍스트 음성 변환</b>에서 '
+      + '<b>Google 음성 인식 및 합성</b>을 선택하고, 언어에 <b>English</b>를 내려받아 주세요.'
+      + '<div style="text-align:right;margin-top:8px">'
+      + '<button style="background:#FFF3E4;color:#3A2317;border:0;border-radius:999px;'
+      + 'padding:6px 14px;font-size:13px;font-weight:600">닫기</button></div>';
+    box.querySelector('button').onclick = function(){ box.remove(); };
+    document.body.appendChild(box);
+  }
+
+  /* --- 3. 안드로이드 크롬은 재생 중 스스로 멈추는 버그가 있다 --- */
+  function startKeepAlive(){
+    if(keepAlive) return;
+    keepAlive = setInterval(function(){
+      if(!synth.speaking){ stopKeepAlive(); return; }
+      if(synth.paused){ try { synth.resume(); } catch(e){} }
+    }, 3000);
+  }
+  function stopKeepAlive(){
+    if(keepAlive){ clearInterval(keepAlive); keepAlive = null; }
+  }
+
+  /* --- 4. cancel() 시각을 기록한다 ---
+     cancel() 직후 같은 순간에 speak()를 부르면 안드로이드는 그 발화를 조용히 버린다.
+     아이폰은 버리지 않기 때문에 아이폰에서만 소리가 났던 것이다. */
+  synth.cancel = function(){
+    lastCancel = Date.now();
+    stopKeepAlive();
+    return rawCancel();
+  };
+
+  /* --- 5. 발화 보정 후 재생 --- */
+  function fixUtterance(u){
+    // 영어 문장인데 한국어 목소리가 붙으면 안드로이드는 발음하지 못한다.
+    var wantEn = !u.lang || u.lang.toLowerCase().indexOf('en') === 0;
+    if(wantEn){
+      var bad = u.voice && u.voice.lang && u.voice.lang.toLowerCase().indexOf('en') !== 0;
+      if(bad) u.voice = null;
+      if(!u.voice){
+        var pick = bestEnglish();
+        if(pick){ u.voice = pick; u.lang = pick.lang; }
+      }
+      if(!u.lang) u.lang = 'en-US';
+    }
+    // 일부 안드로이드 TTS는 극단적인 속도를 무시하거나 무음으로 처리한다
+    if(typeof u.rate === 'number'){
+      if(u.rate < 0.5) u.rate = 0.5;
+      if(u.rate > 1.8) u.rate = 1.8;
+    }
+    return u;
+  }
+
+  synth.speak = function(u){
+    if(!u) return;
+    fixUtterance(u);
+
+    // onend가 끝내 오지 않아도 다음 단계로 넘어가게 한다 (3단계 연속 듣기 대비)
+    var done = false;
+    var userEnd = u.onend;
+    var userErr = u.onerror;
+    function finish(ev){
+      if(done) return;
+      done = true;
+      stopKeepAlive();
+      if(typeof userEnd === 'function'){ try { userEnd.call(u, ev || {}); } catch(e){} }
+    }
+    u.onend = function(ev){ finish(ev); };
+    u.onerror = function(ev){
+      if(done) return;
+      done = true;
+      stopKeepAlive();
+      if(typeof userErr === 'function'){ try { userErr.call(u, ev); } catch(e){} }
+      else if(typeof userEnd === 'function'){ try { userEnd.call(u, ev); } catch(e){} }
+    };
+
+    var words = String(u.text || '').split(/\s+/).length;
+    var estimate = Math.max(2500, (words / Math.max(0.5, u.rate || 1)) * 700 + 2500);
+
+    var wait = Math.max(0, 260 - (Date.now() - lastCancel));
+    setTimeout(function(){
+      loadVoices();
+      if(!u.voice) fixUtterance(u);
+      try { rawSpeak(u); } catch(e){ finish(); return; }
+      startKeepAlive();
+      setTimeout(function(){ if(!done && !synth.speaking) finish(); }, estimate);
+    }, wait);
+  };
+
+  /* --- 6. 첫 터치에서 음성 엔진을 깨운다 ---
+     일부 안드로이드 브라우저는 사용자 조작 없이는 음성 엔진을 준비하지 않는다. */
+  function unlock(){
+    loadVoices();
+    try {
+      var u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      rawSpeak(u);
+    } catch(e){}
+    document.removeEventListener('touchstart', unlock, true);
+    document.removeEventListener('click', unlock, true);
+  }
+  document.addEventListener('touchstart', unlock, true);
+  document.addEventListener('click', unlock, true);
+})();
+
+</script>
+<!-- GMP-TTS-FIX:end -->
 </body>
 </html>
