@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  GMP 팝송 수업 카드 · 참조 템플릿
+  이 파일은 실제로 동작하는 GMP 수업 카드입니다 (The Suburbs / Ruel).
+  새 곡을 만들 때: 이 파일을 복사 -> 색 팔레트 치환 -> 본문 교체
+                  -> QUIZ_GROUPS 교체 -> REVIEW_BANK 맨 뒤에 4문항 추가.
+  REVIEW_BANK 의 기존 곡은 절대 삭제하지 않습니다.
+  localStorage 키 gmp_review_v1 은 변경하지 않습니다.
+-->
+<title>The Suburbs — Ruel | Good Morning Pops</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F4F1E3;min-height:100vh;padding:20px;color:#2C2A18}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #9A8A3E;font-size:13px;cursor:pointer;background:#fff;color:#71859A;transition:all .15s;font-weight:500}
+  .tab.active{background:#E6DDA6;border-color:#6B5D18;color:#3E360A}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #D0C486}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#E6DDA6;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#2C2A18;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#71859A}
+  .song-badge{background:#E6DDA6;color:#3E360A;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#ACA893;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #D7E1EE;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#9B9680;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#2C2A18}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#71859A;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#3A3729;font-weight:600}
+  .divider{border:none;border-top:1px solid #D7E1EE;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #D7E1EE;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#6B5D18}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#2C2A18;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#71859A;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#E6DDA6;color:#3E360A;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#F4F1E3;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #D0C486}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#5C5844;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#2C2A18;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#ACA893!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#ACA893;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #D7E1EE}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#3E360A}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #D7E1EE;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #F4F1E3;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#F4F1E3;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#ACA893;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#2C2A18;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#3E360A;font-size:12px}
+  .ref-kr{font-weight:600;color:#2C2A18;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#71859A}
+  .word-card{background:#fff;border:1px solid #D7E1EE;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#2C2A18}
+  .word-mean{font-size:12px;color:#ACA893;margin-top:3px}
+  .word-tag{font-size:11px;background:#E6DDA6;color:#3E360A;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#F4F1E3;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#6B5D18;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#3E360A;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#2C2A18;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #D7E1EE;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#2C2A18;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#E6DDA6;color:#3E360A;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#D0C486}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #D7E1EE;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#6B5D18;background:#E6DDA6;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#4C4938;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#3E360A;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F4F1E3;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#E6DDA6;color:#3E360A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#5C5844;line-height:1.7}
+  .flow-txt b{color:#2C2A18;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#2C2A18;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#71859A}
+  .note-small{font-size:11px;color:#ACA893;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#F4F1E3;border-left:3px solid #6B5D18;border-radius:10px;padding:12px 14px;font-size:13px;color:#6B5D18;line-height:1.8}
+  .twist-box b{color:#3E360A;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#E6DDA6;color:#3E360A;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #9A8A3E}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #D7E1EE;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#2C2A18;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#9B9680;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #D0C486;background:#F4F1E3;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#E6DDA6;border-color:#9A8A3E}
+  .speed-btn.playing{background:#E6DDA6;border-color:#6B5D18;box-shadow:0 0 0 2px #E6DDA6}
+  .speed-label{font-size:13px;font-weight:600;color:#3E360A;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#E6DDA6;color:#3E360A;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#D0C486}
+  .play-all-btn.playing{background:#6B5D18;color:#fff}
+  .listen-note{font-size:11px;color:#ACA893;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#6B5D18;background:#E6DDA6;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#5F5528;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #D0C486;background:#fff;color:#5F5528;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#E6DDA6;border-color:#6B5D18;color:#3E360A}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#9A8A3E;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#6B5D18;background:#E6DDA6;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #D7E1EE;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#3E360A;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#ACA893;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#2C2A18;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #9A8A3E;background:#F4F1E3;font-size:15px;font-family:inherit;font-weight:600;color:#6B5D18;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#E6DDA6;border-bottom-color:#6B5D18}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#E6DDA6;color:#3E360A;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#D0C486}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #D0C486;background:#fff;color:#5F5528;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#F4F1E3}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#ACA893;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #D0C486;background:#F4F1E3;color:#3E360A;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#E6DDA6;border-color:#9A8A3E}
+  .quiz-say.playing{background:#E6DDA6;border-color:#6B5D18;box-shadow:0 0 0 2px #E6DDA6}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #D7E1EE;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#6B5D18}
+  .score-label{font-size:12px;color:#71859A;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#6B5D18;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#3E360A}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+
+  /* --- intro box --- */
+  .intro-box{background:#fff;border:1px solid #D7E1EE;border-left:3px solid #6B5D18;border-radius:14px;padding:14px 16px;margin-bottom:20px}
+  .intro-fix{font-size:12.5px;color:#791F1F;background:#FCEBEB;border-radius:8px;padding:8px 11px;margin-bottom:9px;line-height:1.7}
+  .intro-fix s{color:#B07272}
+  .intro-p{font-size:12.5px;color:#5C5844;line-height:1.8;margin-bottom:6px}
+  .intro-p:last-child{margin-bottom:0}
+  .intro-p b{color:#3E360A;font-weight:600}
+  /* --- 사용자 창작 문장용 --- */
+  .num-add{min-width:26px;height:26px;border-radius:50%;background:#E6F0FC;color:#14427A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .pill-add{display:inline-block;background:#E6F0FC;color:#14427A;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  /* --- listen tab 보조 --- */
+  .listen-ipa{font-family:'SF Mono',monospace;font-size:11.5px;color:#9A8A3E;letter-spacing:.02em}
+  .link-box{margin-top:12px;background:#FBF4E6;border:1px dashed #D9BE72;border-radius:10px;padding:11px 13px;font-size:12px;color:#63501A;line-height:1.95}
+  .link-box b{color:#9A6D0C;font-weight:600}
+  .link-box u{text-decoration:underline}
+  .stop-card{text-align:center}
+  .flow-mark{color:#9A6D0C;font-weight:600}
+  .quiz-group-sub{font-size:11px;font-weight:500;color:#5F5528}
+  /* --- 복습 탭 --- */
+  .rv-stats{display:flex;gap:8px;margin-bottom:14px}
+  .rv-box{flex:1;background:#fff;border:1px solid #D7E1EE;border-radius:14px;padding:12px 8px;text-align:center}
+  .rv-box span{display:block;font-size:10px;font-weight:700;letter-spacing:.05em;color:#ACA893;text-transform:uppercase;margin-bottom:5px}
+  .rv-box b{font-size:19px;font-weight:700;color:#6B5D18}
+  .chip-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{border:1px solid #D0C486;background:#fff;color:#5F5528;font-size:12px;font-weight:600;padding:7px 13px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all .15s}
+  .chip:hover{background:#F4F1E3}
+  .chip.active{background:#E6DDA6;border-color:#6B5D18;color:#3E360A}
+  .chip.wrong-chip{background:#FCEBEB;border-color:#E8C3C3;color:#791F1F}
+  .chip.wrong-chip.active{background:#E5484D;border-color:#791F1F;color:#fff}
+  .rv-actions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .rv-actions .quiz-check{flex:1;min-width:140px}
+  .rv-actions .quiz-reveal{flex:1;min-width:120px}
+  .rv-label{font-size:12px;color:#71859A;margin-bottom:12px;line-height:1.7}
+  .rv-label b{color:#3E360A;font-weight:600}
+  .rv-empty{background:#fff;border:1px solid #D7E1EE;border-radius:16px;text-align:center;font-size:13px;color:#71859A;padding:30px 16px;line-height:1.9}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('review',this)">🔁 복습</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- ============ TAB 1 · 수업 카드 ============ -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd"><div class="song-icon">🏡</div><div><h2>The Suburbs</h2><p>Ruel · Good Morning Pops</p></div><span class="song-badge">오늘 수업</span></div>
+    <div class="intro-box">
+      <p class="intro-p">🏡 <b>Ruel(루엘)</b>이 복잡한 세상을 잠시 내려놓고 사랑하는 사람과 조용한 교외 생활을 꿈꾸는 노래예요. 2025년 8월 공개되어 두 번째 정규 앨범 <i>Kicking My Feet</i>에 실렸습니다.</p>
+      <p class="intro-p">👏 <b>영어 세 문장은 모두 실제 가사와 정확히 일치</b>하고, 한국어도 의미를 아주 잘 살렸습니다. 1번의 <b>머리속 → 머릿속</b>만 맞춤법에 맞게 다듬었어요.</p>
+      <p class="intro-p">🌇 복잡한 머릿속에서 시작해, 멀리 가지 않아도 되는 삶과 뜻밖의 자기 변화로 나아가는 흐름을 느껴 보세요.</p>
+    </div>
+    <p class="section-label">가사 체크</p>
+    <div class="check-card"><div class="check-top"><div class="num-fix">1</div><div class="check-body">
+      <p class="check-meaning">머릿속이 너무도 복잡하네요</p><div class="sent-row"><span class="sent-wrong">머리속이 너무도 복잡하네요</span><span class="sent-right">It’s crowded in my head.</span></div>
+      <span class="pill-ok">영어는 실제 가사와 정확히 일치 ✓</span><span class="pill-fix">머리속 → 머릿속</span>
+      <p class="note-text">✏️ <b>머릿속</b>은 ‘머리의 속’에서 사이시옷이 들어간 표준 표기예요.<br>⭐ <b>crowded</b>를 “너무도 복잡하다”로 옮겨, 생각이 빽빽한 느낌을 자연스럽게 살렸습니다.<br>💡 <b>be crowded with + 명사</b>는 “~로 가득 차다”라는 뜻으로도 자주 씁니다.</p>
+    </div></div></div>
+    <div class="check-card"><div class="check-top"><div class="num-ok">2</div><div class="check-body">
+      <p class="check-meaning">우린 그리 멀리 갈 필요도 없어요</p><div class="sent-row"><span class="sent-right">We don’t have to drive too far.</span></div>
+      <span class="pill-ok">가사·번역 모두 정확 ✓</span>
+      <p class="note-text">⭐ <b>too far</b>의 뉘앙스를 “그리 멀리”로 부드럽게 잘 옮겼습니다.<br>💡 <b>don’t have to + 동사원형</b> = “~할 필요가 없다.” <b>must not</b>처럼 금지를 뜻하지 않아요.<br>📌 여기서 <b>drive</b>는 차를 몰고 이동한다는 뜻입니다.</p>
+    </div></div></div>
+    <div class="check-card"><div class="check-top"><div class="num-ok">3</div><div class="check-body">
+      <p class="check-meaning">내가 그런 사람이 될 거라곤 절대로 생각하지 못했어요</p><div class="sent-row"><span class="sent-right">I never thought I’d be that person.</span></div>
+      <span class="pill-ok">가사·번역 모두 정확 ✓</span><span class="pill-note">I’d = I would</span>
+      <p class="note-text">⭐ <b>never thought</b>의 강한 뜻을 “절대로 생각하지 못했다”로 정확히 살렸습니다.<br>💡 <b>I’d</b>는 여기서 <b>I would</b>의 축약형이며, 과거의 관점에서 예상한 미래를 나타냅니다.<br>📌 <b>that person</b>은 앞에서 그리던 교외의 단순한 삶을 원하는 사람을 가리켜요.</p>
+    </div></div></div>
+    <hr class="divider"><p class="section-label">오늘의 표현</p>
+    <div class="expr-card" onclick="toggleEx(1)"><p class="expr-en">crowded in my head</p><p class="expr-ko">머릿속이 복잡한, 생각이 가득한</p><span class="expr-tag">장소뿐 아니라 마음에도 crowded</span><button class="expand-btn" id="btn1">예문 보기 ▾</button><div class="ex-box" id="ex1" style="display:none">
+      <p><b>It gets crowded in my head when I have too many decisions to make.</b><br>결정할 일이 너무 많으면 머릿속이 복잡해져요.</p>
+      <p><b>My head feels crowded, so I’m going for a quiet walk.</b><br>머릿속이 복잡해서 조용히 산책하러 가려고요.</p>
+      <p class="ex-note">💡 <b>crowded</b>는 사람이 붐비는 장소에도 쓰고, 생각이 빽빽한 마음 상태에도 비유적으로 씁니다. <b>confused</b>는 무엇을 이해하지 못해 혼란스러운 상태에 더 가까워요.</p>
+    </div></div>
+    <div class="expr-card" onclick="toggleEx(2)"><p class="expr-en">don’t have to + 동사원형</p><p class="expr-ko">~할 필요가 없다</p><span class="expr-tag">선택 가능 · 금지 아님</span><button class="expand-btn" id="btn2">예문 보기 ▾</button><div class="ex-box" id="ex2" style="display:none">
+      <p><b>You don’t have to answer right away.</b><br>당장 대답할 필요는 없어요.</p>
+      <p><b>We don’t have to leave early tomorrow.</b><br>우리는 내일 일찍 떠날 필요가 없어요.</p>
+      <p class="ex-note">💡 <b>don’t have to</b>는 “안 해도 된다”, <b>mustn’t</b>는 “하면 안 된다”입니다. You don’t have to go는 선택, You mustn’t go는 금지예요.</p>
+    </div></div>
+    <div class="expr-card" onclick="toggleEx(3)"><p class="expr-en">I never thought I’d + 동사원형</p><p class="expr-ko">내가 ~할 줄은 전혀 몰랐다</p><span class="expr-tag">뜻밖의 변화·결과</span><button class="expand-btn" id="btn3">예문 보기 ▾</button><div class="ex-box" id="ex3" style="display:none">
+      <p><b>I never thought I’d enjoy waking up this early.</b><br>내가 이렇게 일찍 일어나는 걸 좋아하게 될 줄은 몰랐어요.</p>
+      <p><b>She never thought she’d live by the sea.</b><br>그녀는 자신이 바닷가에서 살게 될 줄은 전혀 몰랐어요.</p>
+      <p class="ex-note">💡 <b>I thought I would</b>는 과거의 예상, <b>I never thought I would</b>는 그 예상 밖의 결과를 강조합니다. 현재의 단순한 의견인 <b>I don’t think</b>와 구별하세요.</p>
+    </div></div>
+    <hr class="divider"><p class="section-label">한 번에 정리</p>
+    <div class="summary-box">① <span>crowded in my head</span> — 머릿속이 생각으로 복잡하다<br>② <span>don’t have to + 동사원형</span> — ~할 필요가 없다 (금지 아님)<br>③ <span>I never thought I’d ~</span> — 내가 ~할 줄은 전혀 몰랐다</div>
+  </div>
+
+  <!-- ============ TAB 2 · 곡 이야기 ============ -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd"><div class="song-icon">🌇</div><div><h2>곡 이야기</h2><p>The Suburbs · Ruel</p></div></div>
+    <div class="story-wrap">
+      <div class="story-section"><span class="story-tag">이 곡은?</span>
+        <p class="story-p"><b>Ruel</b>은 호주 싱어송라이터 Ruel Vincent Van Dijk의 활동명입니다. <b>The Suburbs</b>는 2025년 8월 공개된 싱글로, 같은 해 10월 발표된 두 번째 정규 앨범 <i>Kicking My Feet</i>에 수록됐어요.</p>
+        <p class="story-p">곡은 Ruel, Elias Danielsen, Chelsea Lena, Fran Hall, Mark Landon(M-Phazes)이 함께 썼고, <b>Elias Danielsen과 M-Phazes</b>가 프로듀싱했습니다. Recess Records와 Giant Music을 통해 공개됐습니다.</p>
+        <p class="story-p">따뜻한 화음과 추진력 있는 리듬 위에, 복잡한 도시를 떠나 사랑하는 사람과 단순한 생활을 꾸리고 싶은 마음을 담았습니다. 이 곡은 2025 Vanda &amp; Young Global Songwriting Competition에서 1위를 차지했습니다.</p>
+      </div>
+      <div class="story-section"><span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item"><div class="flow-num">1</div><div class="flow-txt"><b>Verse 1</b> — 계속 달리지만 제자리인 듯한 일상과 복잡한 머릿속을 고백합니다 <span class="flow-mark">(오늘 첫 문장!)</span>.</div></div>
+        <div class="flow-item"><div class="flow-num">2</div><div class="flow-txt"><b>Pre-Chorus</b> — 사랑하는 사람 곁에서는 비로소 집에 온 듯 편안하다고 느낍니다.</div></div>
+        <div class="flow-item"><div class="flow-num">3</div><div class="flow-txt"><b>Chorus</b> — 고속도로를 빠져나와 교외에서 세상을 뒤로하고 단순한 삶을 꾸리는 모습을 상상합니다.</div></div>
+        <div class="flow-item"><div class="flow-num">4</div><div class="flow-txt"><b>Post-Chorus</b> — 뒷마당의 일요일 밤이면 충분하고, 멀리 운전할 필요도 없다고 말합니다 <span class="flow-mark">(오늘 둘째 문장!)</span>.</div></div>
+        <div class="flow-item"><div class="flow-num">5</div><div class="flow-txt"><b>Post-Chorus 후반</b> — 자신이 이런 삶을 꿈꾸는 사람이 될 줄 몰랐지만, 그 사람과 함께라면 낙원처럼 들린다고 고백합니다 <span class="flow-mark">(오늘 셋째 문장!)</span>.</div></div>
+        <div class="flow-item"><div class="flow-num">6</div><div class="flow-txt"><b>Bridge &amp; Outro</b> — 언젠가 함께 이곳을 떠날 수 있다는 희망을 반복하며 교외의 꿈으로 돌아갑니다.</div></div>
+      </div>
+      <div class="story-section"><span class="story-tag">이 곡의 매력 ✨</span><div class="twist-box">
+        이 곡의 핵심 장치는 <b>속도와 거리의 축소</b>입니다.<br><br>
+        처음에는 계속 달리고 회전문에 갇힌 듯한 삶을 말하지만, 후렴에서는 고속도로를 빠져나와 천천히 달립니다. 행복을 찾으러 아주 멀리 갈 필요도 없어요. <b>세상을 크게 바꾸려던 시선이 둘만의 뒷마당으로 좁아질수록 마음은 오히려 넓어집니다.</b><br><br>
+        오늘의 세 문장도 같은 이동을 보여 줘요. <b>복잡한 머릿속 → 멀리 갈 필요가 없는 생활 → 그런 삶을 원하는 사람으로 변한 나</b>. 장소를 노래하는 듯하지만, 실제로는 사랑 때문에 삶의 기준이 바뀌는 순간을 담은 곡입니다. 🏡
+      </div></div>
+      <div class="story-section"><span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line"><p class="learn-en">It’s crowded in my head.</p><p class="learn-ko">머릿속이 너무도 복잡하네요.</p></div>
+        <div class="learn-line"><p class="learn-en">We don’t have to drive too far.</p><p class="learn-ko">우린 그리 멀리 갈 필요도 없어요.</p></div>
+        <div class="learn-line"><p class="learn-en">I never thought I’d be that person.</p><p class="learn-ko">내가 그런 사람이 될 거라곤 절대로 생각하지 못했어요.</p></div>
+      </div>
+      <div style="text-align:center"><a class="lyrics-btn" href="https://www.google.com/search?q=Ruel+The+Suburbs+lyrics" target="_blank" rel="noopener">🔎 전체 가사 검색하기</a><p class="note-small">전체 가사는 저작권 보호를 받으므로 이 카드에는 학습 문장만 실었습니다.<br>정식 음원 서비스에서 전체 가사를 확인해 주세요.<br>© Ruel / Recess Records / Giant Music</p></div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 3 · 발음 가이드 ============ -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd"><div class="song-icon">🗣️</div><div><h2>발음 가이드</h2><p>강세는 <span class="stress">주황색</span>으로 표시했어요</p></div></div>
+    <div class="ref-table"><div class="ref-row header"><div class="ref-col-label">단어</div><div class="ref-col-label">IPA</div><div class="ref-col-label">한글</div><div class="ref-col-label">뜻</div></div>
+      <div class="ref-row"><div class="ref-en">crowded</div><div class="ref-ipa">/ˈkraʊ.dɪd/</div><div class="ref-kr"><span class="s">크라</span>우딛</div><div class="ref-mean">붐비는, 복잡한</div></div>
+      <div class="ref-row"><div class="ref-en">head</div><div class="ref-ipa">/hed/</div><div class="ref-kr"><span class="s">헤</span>드</div><div class="ref-mean">머리</div></div>
+      <div class="ref-row"><div class="ref-en">have to</div><div class="ref-ipa">/ˈhæf tə/</div><div class="ref-kr"><span class="s">해프</span>터</div><div class="ref-mean">~해야 하다</div></div>
+      <div class="ref-row"><div class="ref-en">drive</div><div class="ref-ipa">/draɪv/</div><div class="ref-kr"><span class="s">드라</span>이브</div><div class="ref-mean">운전하다</div></div>
+      <div class="ref-row"><div class="ref-en">thought</div><div class="ref-ipa">/θɔːt/</div><div class="ref-kr"><span class="s">쏘</span>트</div><div class="ref-mean">생각했다</div></div>
+      <div class="ref-row"><div class="ref-en">person</div><div class="ref-ipa">/ˈpɝː.sən/</div><div class="ref-kr"><span class="s">퍼</span>슨</div><div class="ref-mean">사람</div></div>
+    </div>
+    <p class="section-label">⚠️ 오늘의 발음 핵심</p>
+    <div class="word-card"><div class="word-top"><div><div class="word-en">It’s crowded</div><div class="word-mean">자음이 자연스럽게 연결</div></div><span class="word-tag">최중요</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">또박또박</div><div class="pron-kr">잇츠 크라우딛</div></div><div class="pron-box"><div class="pron-box-label">실제 소리</div><div class="pron-kr">잇스크라우딛</div></div></div><div class="tip-box">🔸 <b>It’s</b> 끝의 /ts/가 빠르게 약해져 crowded로 붙습니다.<br>🔸 crowded의 강세는 첫 음절 <b>CROWD-</b>에 있어요.<br>🔸 같은 연결: <b>it’s clear</b>, <b>it’s crazy</b>, <b>that’s great</b></div></div>
+    <div class="word-card"><div class="word-top"><div><div class="word-en">in my head</div><div class="word-mean">n + m 연결</div></div><span class="word-tag">연음</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">또박또박</div><div class="pron-kr">인 마이 헤드</div></div><div class="pron-box"><div class="pron-box-label">실제 소리</div><div class="pron-kr">인마이헫</div></div></div><div class="tip-box">🔸 <b>in my</b>는 쉬지 않고 한 덩어리로 이어집니다.<br>🔸 head 끝의 d는 문장 끝에서 약하게 닫혀요.<br>🔸 같은 연결: <b>in my room</b>, <b>on my mind</b>, <b>in my life</b></div></div>
+    <div class="word-card"><div class="word-top"><div><div class="word-en">don’t have to</div><div class="word-mean">have의 v가 f로</div></div><span class="word-tag">자음 변화</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">철자대로</div><div class="pron-kr">돈트 해브 투</div></div><div class="pron-box"><div class="pron-box-label">실제 소리</div><div class="pron-kr">도운 해프터</div></div></div><div class="tip-box">🔸 <b>have to</b>에서 v는 뒤의 무성음 t 영향으로 <b>f</b>가 됩니다.<br>🔸 don’t 끝 t는 다음 자음 앞에서 거의 들리지 않아요.<br>🔸 같은 규칙: <b>has to</b> → 해스터, <b>used to</b> → 유스터, <b>supposed to</b> → 서포우스터</div></div>
+    <div class="word-card"><div class="word-top"><div><div class="word-en">thought I’d</div><div class="word-mean">t + 모음 연결</div></div><span class="word-tag">연음</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">또박또박</div><div class="pron-kr">쏘트 아이드</div></div><div class="pron-box"><div class="pron-box-label">실제 소리</div><div class="pron-kr">쏘라읻</div></div></div><div class="tip-box">🔸 미국식에서 thought의 t가 I와 만나 <b>ㄹ</b>에 가까워집니다.<br>🔸 I’d는 한 음절처럼 짧게 붙여 말해요.<br>🔸 같은 규칙: <b>thought about</b>, <b>got it</b>, <b>not at all</b></div></div>
+    <div class="word-card"><div class="word-top"><div><div class="word-en">that person</div><div class="word-mean">t 탈락과 강세</div></div><span class="word-tag">리듬</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">또박또박</div><div class="pron-kr">댓 퍼슨</div></div><div class="pron-box"><div class="pron-box-label">실제 소리</div><div class="pron-kr">대퍼슨</div></div></div><div class="tip-box">🔸 that의 끝 t는 p 앞에서 막기만 하고 거의 터뜨리지 않습니다.<br>🔸 person은 첫 음절 <b>PER-</b>에 강세가 있어요.<br>🔸 같은 규칙: <b>that place</b>, <b>last person</b>, <b>right person</b></div></div>
+  </div>
+
+  <!-- ============ TAB 4 · 발음 연습 ============ -->
+  <div id="panel-listen" class="panel"><div class="song-hd"><div class="song-icon">🔊</div><div><h2>발음 연습</h2><p>🐢 천천히 → 🗣 자연스럽게 → 🔥 원어민</p></div></div><div class="listen-intro">🔥 <b>원어민 버튼</b>은 연음·축약을 반영한 별도 텍스트로 읽어 줍니다. 각 카드의 설명을 보며 3단계로 따라 해 보세요.</div>
+    <div class="listen-group">📝 오늘의 세 문장 <span>· 실제 가사</span></div>
+    <div class="listen-card" id="lc1" data-en="It’s crowded in my head." data-native="Its crowdedin my head."><p class="listen-en">It’s crowded in my head.</p><p class="listen-ko">머릿속이 너무도 복잡하네요.<br><span class="listen-ipa">/ɪts ˈkraʊdɪd ɪn maɪ hed/</span></p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc1',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc1',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc1',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc1')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• It’s crowded → <b>잇스크라우딛</b><br>• in my → <b>인마이</b><br>👉 통째로 <b>“잇스크라우디딘마이헫”</b></div></div>
+    <div class="listen-card" id="lc2" data-en="We don’t have to drive too far." data-native="We don hafta drive too far."><p class="listen-en">We don’t have to drive too far.</p><p class="listen-ko">우린 그리 멀리 갈 필요도 없어요.<br><span class="listen-ipa">/wi doʊnt hæf tə draɪv tuː fɑːr/</span></p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc2',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc2',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc2',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc2')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• don’t have to → <b>도운 해프터</b><br>• drive too → <b>드라이브투</b><br>👉 통째로 <b>“위 도운 해프터 드라이브투 파”</b></div></div>
+    <div class="listen-card" id="lc3" data-en="I never thought I’d be that person." data-native="I never thod-I’d be tha person."><p class="listen-en">I never thought I’d be that person.</p><p class="listen-ko">내가 그런 사람이 될 거라곤 절대로 생각하지 못했어요.<br><span class="listen-ipa">/aɪ ˈnevər θɔːt aɪd bi ðæt ˈpɝːsən/</span></p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc3',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc3',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc3',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc3')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• thought I’d → <b>쏘라읻</b><br>• that person → <b>대퍼슨</b><br>👉 통째로 <b>“아이 네버 쏘라읻 비 대퍼슨”</b></div></div>
+    <div class="listen-group">🔹 crowded in my head <span>· 머릿속이 복잡한</span></div>
+    <div class="listen-card" id="lc4" data-en="It gets crowded in my head when I have too many decisions to make." data-native="It gets crowdedin my head when I have too many decisions ta make."><p class="listen-en">It gets crowded in my head when I have too many decisions to make.</p><p class="listen-ko">결정할 일이 너무 많으면 머릿속이 복잡해져요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc4',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc4',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc4',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc4')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• gets crowded → <b>겟스크라우딛</b> · in my → <b>인마이</b><br>💡 <b>decisions to make</b>는 “내려야 할 결정들”입니다.</div></div>
+    <div class="listen-card" id="lc5" data-en="My head feels crowded, so I’m going for a quiet walk." data-native="My head feels crowded, so Im going fer a quiet walk."><p class="listen-en">My head feels crowded, so I’m going for a quiet walk.</p><p class="listen-ko">머릿속이 복잡해서 조용히 산책하러 가려고요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc5',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc5',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc5',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc5')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• feels crowded → <b>필스크라우딛</b> · for a → <b>퍼러</b><br>💡 <b>go for a walk</b>는 “산책하러 가다”입니다.</div></div>
+    <div class="listen-group">🔹 don’t have to <span>· ~할 필요가 없다</span></div>
+    <div class="listen-card" id="lc6" data-en="You don’t have to answer right away." data-native="You don hafta answer right away."><p class="listen-en">You don’t have to answer right away.</p><p class="listen-ko">당장 대답할 필요는 없어요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc6',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc6',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc6',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc6')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• don’t have to → <b>도운 해프터</b> · to answer → <b>터랜서</b><br>💡 의무가 없다는 뜻이며 금지가 아닙니다.</div></div>
+    <div class="listen-card" id="lc7" data-en="We don’t have to leave early tomorrow." data-native="We don hafta leave early tomorrow."><p class="listen-en">We don’t have to leave early tomorrow.</p><p class="listen-ko">우리는 내일 일찍 떠날 필요가 없어요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc7',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc7',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc7',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc7')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• have to → <b>해프터</b> · leave early → <b>리벌리</b><br>💡 <b>early tomorrow</b>는 “내일 일찍”입니다.</div></div>
+    <div class="listen-group">🔹 I never thought I’d ~ <span>· ~할 줄은 몰랐다</span></div>
+    <div class="listen-card" id="lc8" data-en="I never thought I’d enjoy waking up this early." data-native="I never thod-I’d enjoy wakingup this early."><p class="listen-en">I never thought I’d enjoy waking up this early.</p><p class="listen-ko">내가 이렇게 일찍 일어나는 걸 좋아하게 될 줄은 몰랐어요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc8',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc8',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc8',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc8')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• thought I’d → <b>쏘라읻</b> · waking up → <b>웨이키넙</b><br>💡 예상 밖에 좋아하게 된 변화를 말합니다.</div></div>
+    <div class="listen-card" id="lc9" data-en="She never thought she’d live by the sea." data-native="She never thought shed live by the sea."><p class="listen-en">She never thought she’d live by the sea.</p><p class="listen-ko">그녀는 자신이 바닷가에서 살게 될 줄은 전혀 몰랐어요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc9',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc9',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc9',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc9')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• thought she’d → <b>쏫쉬드</b> · by the → <b>바이더</b><br>💡 주어가 she이면 <b>she’d</b>로 바꿉니다.</div></div>
+    <div class="listen-card stop-card"><button class="play-all-btn" onclick="stopSpeaking()">⏹ 재생 정지</button><p class="listen-note">소리가 겹치거나 멈추지 않으면 이 버튼을 눌러 주세요.</p></div>
+  </div>
+
+  <!-- ============ TAB 5 · 문장 암기 ============ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div>
+        <h2>문장 암기</h2>
+        <p>빈칸을 채워 오늘의 아홉 문장을 완성하세요</p>
+      </div>
+    </div>
+
+    <div class="quiz-intro">
+      난이도를 고르면 빈칸 개수가 자동으로 바뀝니다. 빈칸에 <b>영어 단어를 직접 입력</b>하고 <b>Enter</b> 또는 <b>✓ 정답 확인</b>을 누르세요.<br>
+      대소문자·문장부호는 채점에 반영되지 않아요. 각 카드의 🔊 버튼으로 발음도 함께 확인하세요.
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">Level 1 · 정답 확인을 누르면 점수가 표시돼요</div>
+      <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" onclick="setLevel(1,this)">🟢 쉬움<span>빈칸 20%</span></button>
+      <button class="level-btn" onclick="setLevel(2,this)">🟡 보통<span>빈칸 40%</span></button>
+      <button class="level-btn" onclick="setLevel(3,this)">🔴 어려움<span>빈칸 65%</span></button>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" style="margin-top:14px" onclick="stopSpeaking()">⏹ 재생 정지</button>
+  </div>
+
+  <!-- ============ TAB 6 · 복습 ============ -->
+  <div id="panel-review" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔁</div>
+      <div>
+        <h2>누적 복습</h2>
+        <p>지금까지 배운 15곡 60문장</p>
+      </div>
+    </div>
+
+    <div class="quiz-intro">
+      GMP에서 함께 공부한 <b>모든 곡</b>을 한자리에서 다시 풀어 볼 수 있어요. 틀린 문장은 <b>오답 노트</b>에 자동으로 쌓이고, 다시 맞히면 지워집니다.<br>
+      기록은 이 브라우저에 저장되니, 파일을 <b>기기에 내려받아 두시면</b> 다음에 열어도 이어집니다.
+    </div>
+
+    <div class="rv-stats">
+      <div class="rv-box"><span>이번 점수</span><b id="rv-score">— / —</b></div>
+      <div class="rv-box"><span>누적 정답률</span><b id="rv-rate">—</b></div>
+      <div class="rv-box"><span>오답 노트</span><b id="rv-wrong">0</b></div>
+    </div>
+
+    <div class="chip-row" id="rv-chips"></div>
+
+    <div class="rv-actions">
+      <button class="quiz-check" onclick="rvScoreAll()">📊 이번 점수 계산</button>
+      <button class="quiz-reveal" onclick="rvRender('wrong')">❌ 오답만 다시 풀기</button>
+      <button class="quiz-reveal" onclick="rvReset()">🗑 기록 초기화</button>
+    </div>
+
+    <p class="rv-label" id="rv-label">곡을 골라 복습을 시작해 보세요.</p>
+    <div id="review-body"></div>
+  </div>
+
+  <!-- ============ TAB 7 · 카카오 공유 ============ -->
+  <div id="panel-kakao" class="panel"><div class="song-hd"><div class="song-icon">💬</div><div><h2>카카오 공유</h2><p>복사해서 그대로 붙여넣으세요</p></div></div><div class="kakao-wrap"><pre class="kakao-pre" id="kakao-text">[Good Morning Pops] The Suburbs — Ruel 🏡
+
+① crowded in my head : 머릿속이 생각으로 복잡한
+② don’t have to + 동사원형 : ~할 필요가 없다
+③ I never thought I’d ~ : 내가 ~할 줄은 몰랐다
+
+📌 오늘의 표현
+
+1. It’s crowded in my head.
+머릿속이 너무도 복잡하네요.
+✏️ 머리속 → 머릿속
+영어 문장은 실제 가사와 정확히 일치합니다.
+crowded in my head = 머릿속이 생각으로 복잡한
+· It gets crowded in my head when I have too many decisions to make.
+결정할 일이 너무 많으면 머릿속이 복잡해져요.
+· My head feels crowded, so I’m going for a quiet walk.
+머릿속이 복잡해서 조용히 산책하러 가려고요.
+💡 crowded는 붐비는 장소뿐 아니라 복잡한 마음에도 쓸 수 있어요.
+
+2. We don’t have to drive too far.
+우린 그리 멀리 갈 필요도 없어요.
+가사와 번역 모두 정확합니다.
+don’t have to = ~할 필요가 없다
+· You don’t have to answer right away.
+당장 대답할 필요는 없어요.
+· We don’t have to leave early tomorrow.
+우리는 내일 일찍 떠날 필요가 없어요.
+💡 don’t have to는 선택, mustn’t는 금지예요.
+
+3. I never thought I’d be that person.
+내가 그런 사람이 될 거라곤 절대로 생각하지 못했어요.
+가사와 번역 모두 정확합니다.
+I never thought I’d ~ = 내가 ~할 줄은 몰랐다
+· I never thought I’d enjoy waking up this early.
+내가 이렇게 일찍 일어나는 걸 좋아하게 될 줄은 몰랐어요.
+· She never thought she’d live by the sea.
+그녀는 자신이 바닷가에서 살게 될 줄은 전혀 몰랐어요.
+💡 I’d는 여기서 I would의 축약형입니다.
+
+🔊 발음 포인트
+· It’s crowded → 잇스크라우딛
+· don’t have to → 도운 해프터
+· thought I’d → 쏘라읻
+
+✨ 이 곡의 매력
+복잡한 머릿속에서 출발해, 멀리 가지 않아도 되는 둘만의 삶을 꿈꾸고, 그런 사람으로 변한 자신을 발견합니다. 삶의 속도와 거리를 줄일수록 마음이 넓어지는 노래예요.
+
+🎵 The Suburbs · Ruel
+2025년 발표 · Kicking My Feet 수록
+작사: Ruel, Elias Danielsen, Chelsea Lena, Fran Hall, Mark Landon
+프로듀싱: Elias Danielsen, M-Phazes
+
+#GoodMorningPops #TheSuburbs #Ruel #팝송영어 #영어회화</pre><button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button></div></div>
+
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+  stopSpeaking();
+  if(id === 'review') rvRender();
+  window.scrollTo(0,0);
+}
+
+function toggleEx(idx){
+  var box = document.getElementById('ex'+idx);
+  var btn = document.getElementById('btn'+idx);
+  var open = box.style.display === 'block';
+  box.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '예문 보기 ▾' : '예문 닫기 ▴';
+}
+
+function copyText(){
+  var text = document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(function(){
+    var btn = document.getElementById('copy-btn');
+    btn.textContent = '복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(function(){ btn.textContent = '복사하기'; btn.classList.remove('done'); }, 2500);
+  });
+}
+
+/* ===== 공통 유틸 ===== */
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return String(s).toLowerCase().replace(/[.,!?'"\u2014\u2013\u2018\u2019\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level === 1) target = Math.max(1, Math.round(n*0.20));
+  else if(level === 2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  (keyWords || []).forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+function splitParts(w){
+  var m = w.match(/^([^A-Za-z0-9'\u2019]*)([\s\S]*?)([^A-Za-z0-9'\u2019]*)$/);
+  var pre = m ? m[1] : '';
+  var core = (m && m[2]) ? m[2] : w;
+  var post = m ? m[3] : '';
+  return [pre, core, post];
+}
+
+/* attrName: 'data-q' (문장 암기) 또는 'data-r' (복습) */
+function blankSentence(words, blankIdx, attrName, keyVal, enterCall){
+  var html = '<p class="quiz-sentence">';
+  words.forEach(function(w, wi){
+    if(blankIdx.indexOf(wi) >= 0){
+      var p = splitParts(w);
+      var size = Math.max(p[1].length, 4);
+      if(p[0]) html += '<span class="quiz-word">' + p[0] + '</span>';
+      html += '<input class="quiz-blank" ' + attrName + '="' + keyVal + '" data-w="' + wi + '"'
+           +  ' data-ans="' + encodeURIComponent(p[1]) + '" size="' + size + '"'
+           +  ' autocomplete="off" autocapitalize="off" spellcheck="false"'
+           +  ' onkeydown="if(event.key===&#39;Enter&#39;)' + enterCall + '">';
+      if(p[2]) html += '<span class="quiz-word">' + p[2] + '</span>';
+    } else {
+      html += '<span class="quiz-word">' + w + '</span>';
+    }
+    html += ' ';
+  });
+  return html + '</p>';
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  { title: "\uD83D\uDCDD 오늘의 세 문장", items: [
+    { ko:"머릿속이 너무도 복잡하네요.", en:"It’s crowded in my head.", key:["crowded","head"] },
+    { ko:"우린 그리 멀리 갈 필요도 없어요.", en:"We don’t have to drive too far.", key:["have","drive","far"] },
+    { ko:"내가 그런 사람이 될 거라곤 절대로 생각하지 못했어요.", en:"I never thought I’d be that person.", key:["never","thought","person"] }
+  ]},
+  { title: "\uD83D\uDD39 crowded in my head", items: [
+    { ko:"결정할 일이 너무 많으면 머릿속이 복잡해져요.", en:"It gets crowded in my head when I have too many decisions to make.", key:["crowded","head","decisions","make"] },
+    { ko:"머릿속이 복잡해서 조용히 산책하러 가려고요.", en:"My head feels crowded, so I’m going for a quiet walk.", key:["head","crowded","quiet","walk"] }
+  ]},
+  { title: "\uD83D\uDD39 don’t have to", items: [
+    { ko:"당장 대답할 필요는 없어요.", en:"You don’t have to answer right away.", key:["have","answer","right","away"] },
+    { ko:"우리는 내일 일찍 떠날 필요가 없어요.", en:"We don’t have to leave early tomorrow.", key:["have","leave","early","tomorrow"] }
+  ]},
+  { title: "\uD83D\uDD39 I never thought I’d ~", items: [
+    { ko:"내가 이렇게 일찍 일어나는 걸 좋아하게 될 줄은 몰랐어요.", en:"I never thought I’d enjoy waking up this early.", key:["never","thought","enjoy","waking","early"] },
+    { ko:"그녀는 자신이 바닷가에서 살게 될 줄은 전혀 몰랐어요.", en:"She never thought she’d live by the sea.", key:["never","thought","live","sea"] }
+  ]}
+];
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  if(!body) return;
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">' + item.ko + '</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 (' + blankIdx.length + '칸)</p>';
+      html += blankSentence(words, blankIdx, 'data-q', qi, 'checkOne(' + qi + ')');
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne(' + qi + ')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne(' + qi + ')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',0.7)">🐢 천천히</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',0.95)">🗣 자연</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',1.15)">🔥 원어민</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr' + qi + '"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="' + qi + '"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="' + qi + '"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr' + qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="' + qi + '"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr' + qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">' + getQuizText(qi) + '</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi = 0; qi < total; qi++){ if(checkOne(qi)) correct++; }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1) label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  else if(ratio >= 0.7) label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  else if(ratio >= 0.4) label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  else label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+}
+
+/* ===== 🔁 누적 복습 데이터 ===== */
+var REVIEW_BANK = [
+  { song:"Undressed", artist:"sombr", icon:"\uD83D\uDD6F\uFE0F", items:[
+    { id:"und1", ko:"당신은 나에게 의지했죠.", en:"You looked to me.", key:["looked"] },
+    { id:"und2", ko:"당신의 눈빛은 나에게 다른 걸 말하고 있네요.", en:"The glimmer in your eyes is telling me other things.", key:["glimmer","telling","things"] },
+    { id:"und3", ko:"옷을 벗고 싶지 않아요.", en:"I don't wanna get undressed.", key:["wanna","undressed"] },
+    { id:"und4", ko:"작별을 고하는 순간에도 그녀의 눈빛엔 희미한 희망이 있었어.", en:"There was a glimmer of hope in her eyes even as she said goodbye.", key:["glimmer","hope","goodbye"] }
+  ]},
+  { song:"Memories We'll Never Make", artist:"Michael Minelli", icon:"\uD83E\uDD43", items:[
+    { id:"mem1", ko:"난 다시 허공에 이야기 하고 있네요.", en:"I'm talking to the wind again.", key:["talking","wind","again"] },
+    { id:"mem2", ko:"지금 당신 마음속에 누가 있는지 궁금하네요.", en:"I wonder who's in your heart now.", key:["wonder","heart"] },
+    { id:"mem3", ko:"이번 생에 내가 기회를 놓쳤네요.", en:"I dropped the ball this lifetime.", key:["dropped","ball","lifetime"] },
+    { id:"mem4", ko:"계속 조언해 주는데, 난 그냥 벽에 대고 말하는 거야.", en:"I keep giving him advice, but I'm just talking to the wind.", key:["advice","talking","wind"] }
+  ]},
+  { song:"Every Summertime", artist:"NIKI", icon:"\uD83C\uDF38", items:[
+    { id:"sum1", ko:"우리는 수업에 가지도 못했어요.", en:"We never made it to class.", key:["never","made","class"] },
+    { id:"sum2", ko:"맹세컨대 목련들이 살짝 미소를 보냈어요.", en:"I swear the magnolias flashed a smile.", key:["swear","magnolias","flashed"] },
+    { id:"sum3", ko:"우리는 큰 길을 거닐죠.", en:"We're strolling down the boulevard.", key:["strolling","boulevard"] },
+    { id:"sum4", ko:"그녀는 나를 향해 살짝 웃어 보이고는 걸어갔어.", en:"She flashed a smile at me before walking away.", key:["flashed","smile","walking"] }
+  ]},
+  { song:"The Drum", artist:"Alan Walker", icon:"\uD83E\uDD41", items:[
+    { id:"drm1", ko:"정신이 없네요.", en:"My head's in a spin.", key:["head","spin"] },
+    { id:"drm2", ko:"기분이 너무 좋아서 날아갈 거 같아요.", en:"The ceiling can't hold us.", key:["ceiling","hold"] },
+    { id:"drm3", ko:"당신은 오랫동안 나를 사로잡았죠.", en:"You got me for days.", key:["got","days"] },
+    { id:"drm4", ko:"그 소식을 듣고, 하루 종일 정신이 하나도 없었어.", en:"After hearing the news, my head was in a spin all day.", key:["hearing","head","spin"] }
+  ]},
+  { song:"Gorilla Grip", artist:"Greg Shilling", icon:"\uD83E\uDD8D", items:[
+    { id:"gor1", ko:"내가 잘못을 저지른 것 같아요.", en:"I think that I did a bad thing.", key:["think","did","bad","thing"] },
+    { id:"gor2", ko:"난 평정을 잃죠.", en:"I lose composure.", key:["lose","composure"] },
+    { id:"gor3", ko:"당신은 내 진심을 다 받을 자격이 있어요.", en:"You deserve my heart on the table.", key:["deserve","heart","table"] },
+    { id:"gor4", ko:"그는 인터뷰 도중 평정심을 잃고 소리치기 시작했다.", en:"He lost his composure during the interview and started shouting.", key:["lost","composure","interview","shouting"] }
+  ]},
+  { song:"On My Mind", artist:"Common Jack", icon:"\uD83C\uDF09", items:[
+    { id:"omm1", ko:"이제 가 볼게요.", en:"I've got to go.", key:["got","go"] },
+    { id:"omm2", ko:"나는 지금 제정신이 아니에요.", en:"I'm losing my head now.", key:["losing","head"] },
+    { id:"omm3", ko:"귀가 윙윙거려요.", en:"Ears are ringing like a bell.", key:["Ears","ringing","bell"] },
+    { id:"omm4", ko:"미안하지만 이제 가 봐야 해요, 아침에 회의가 있거든요.", en:"I'm sorry, but I've got to go now, I have a meeting in the morning.", key:["sorry","got","meeting","morning"] }
+  ]},
+  { song:"Gato", artist:"Maya Delilah", icon:"\uD83D\uDC08", items:[
+    { id:"gat1", ko:"모든 게 나에게서 달아나는 것 같아요.", en:"Everything seems to run away from me.", key:["Everything","run","away"] },
+    { id:"gat2", ko:"그냥 누워 있어야겠어요.", en:"I should just lie down.", key:["just","lie","down"] },
+    { id:"gat3", ko:"우리 이거 쉽게 가요.", en:"Let me make this easy.", key:["make","easy"] },
+    { id:"gat4", ko:"자정이 넘도록 깨어 거리를 헤매고 다녀요.", en:"I stay up past midnight wandering round the streets.", key:["stay","midnight","wandering","streets"] }
+  ]},
+  { song:"Things We Left Unsaid", artist:"Young Gun Silver Fox", icon:"\uD83C\uDF04", items:[
+    { id:"twl1", ko:"살다 보면 다시 돌아가고 싶은 순간들이 있죠.", en:"In life there are times you wanna go back.", key:["times","wanna","back"] },
+    { id:"twl2", ko:"당신 생각에 잠을 이루지 못했죠.", en:"I lay awake thinking of you.", key:["lay","awake","thinking"] },
+    { id:"twl3", ko:"그 말들이 내 머릿속에서 계속 맴도네요.", en:"They go round and round inside my head.", key:["round","inside","head"] },
+    { id:"twl4", ko:"우리가 끝내 하지 못한 말들이 아직도 마음에 걸려요.", en:"All the things we left unsaid still weigh on my mind.", key:["unsaid","weigh","mind"] }
+  ]},
+  { song:"Gotta Know", artist:"Purples n' Oranges", icon:"\uD83C\uDF4A", items:[
+    { id:"gtk1", ko:"내가 알아야 하는 게 있어?", en:"Is there something that I should know?", key:["there","something","should"] },
+    { id:"gtk2", ko:"난 꼭 알아야 해.", en:"I just gotta know.", key:["just","gotta","know"] },
+    { id:"gtk3", ko:"천천히 가자.", en:"Take it slow.", key:["Take","slow"] },
+    { id:"gtk4", ko:"당신에게 직접 듣기 전까지는 믿지 않을 거예요.", en:"I won't believe it's true unless I hear it straight from you.", key:["believe","unless","straight"] }
+  ]},
+  { song:"Abracadabra", artist:"Lady Gaga", icon:"\uD83E\uDE84", items:[
+    { id:"abr1", ko:"이 공허한 싸움에서 날 구해 줘요.", en:"Save me from this empty fight.", key:["Save","empty","fight"] },
+    { id:"abr2", ko:"이제 당신 둘 다 최면에 빠졌죠.", en:"Now you're both in a trance.", key:["both","trance"] },
+    { id:"abr3", ko:"감정에 시간을 낭비하지 말아요.", en:"Don't waste time on a feeling.", key:["waste","time","feeling"] },
+    { id:"abr4", ko:"붉은 조명 아래에서 무용수가 움직이자 관객들은 넋을 잃었어요.", en:"The crowd was in a trance as the dancer moved under the red spotlight.", key:["crowd","trance","dancer","spotlight"] }
+  ]},
+  { song:"Better Late Than Sooner", artist:"Fly By Midnight", icon:"\uD83C\uDF19", items:[
+    { id:"blt1", ko:"다음엔 어떤 일이 일어날까요?", en:"So what happens next?", key:["what","happens","next"] },
+    { id:"blt2", ko:"모든 게 완벽히 맞아떨어질까요?", en:"Do the stars and moon align?", key:["stars","moon","align"] },
+    { id:"blt3", ko:"그 상황이 너무 아이러니해서 웃음이 나오네요.", en:"And I can't stop laughing at the irony.", key:["stop","laughing","irony"] },
+    { id:"blt4", ko:"몇 년째 만나 보려고 애썼는데, 이번 여름에 드디어 모든 게 딱 맞아떨어졌어요.", en:"We had been trying to meet for years, and this summer the stars finally aligned.", key:["trying","years","stars","aligned"] }
+  ]},
+  { song:"Backwards", artist:"Jonas Brothers", icon:"\u23EA", items:[
+    { id:"bkw1", ko:"이제 그런 것에 익숙해질 만도 한데요.", en:"I should get used to it now.", key:["should","used","now"] },
+    { id:"bkw2", ko:"난 자꾸만 뒤로 돌아가고 있네요.", en:"I keep going backwards.", key:["keep","going","backwards"] },
+    { id:"bkw3", ko:"난 내가 했던 말을 계속 되짚어 보고 있어요.", en:"I'm replaying every word I said.", key:["replaying","every","word"] },
+    { id:"bkw4", ko:"집에 오는 내내 그 대화를 머릿속에서 계속 돌려 봤어요.", en:"I kept replaying the conversation in my head all the way home.", key:["kept","replaying","conversation","head"] }
+  ]},
+  { song:"Sweet Escape", artist:"Velvet Funk", icon:"\uD83C\uDF19", items:[
+    { id:"swe1", ko:"숨을 돌릴 시간이 필요해요.", en:"I need to breathe.", key:["need","breathe"] },
+    { id:"swe2", ko:"리듬에 몸을 맡겨요.", en:"Let the rhythm take control.", key:["rhythm","take","control"] },
+    { id:"swe3", ko:"달콤한 일탈을 떠나요.", en:"Let's make a sweet escape.", key:["make","sweet","escape"] },
+    { id:"swe4", ko:"생각은 그만하고 딱 하룻밤만 음악에 몸을 맡겨 봐요.", en:"Stop overthinking and let the music take control for just one night.", key:["overthinking","music","control","night"] }
+  ]},
+  { song:"What A Day", artist:"Luke Noa", icon:"\uD83C\uDF3E", items:[
+    { id:"wad1", ko:"내 정신은 완전히 메말라 버렸죠.", en:"My mind had dried out.", key:["mind","dried"] },
+    { id:"wad2", ko:"정말 대단한 하루네!", en:"What a day!", key:["What","day"] },
+    { id:"wad3", ko:"내가 어딜 가든 상황은 똑같아요.", en:"It is the same wherever I go.", key:["same","wherever"] },
+    { id:"wad4", ko:"제가 어디서 일하든 똑같은 문제가 저를 따라다녀요.", en:"The same problem follows me wherever I work.", key:["same","problem","follows","wherever"] }
+  ]},
+  { song:"The Suburbs", artist:"Ruel", icon:"\uD83C\uDFE1", items:[
+    { id:"sub1", ko:"머릿속이 너무도 복잡하네요.", en:"It’s crowded in my head.", key:["crowded","head"] },
+    { id:"sub2", ko:"우린 그리 멀리 갈 필요도 없어요.", en:"We don’t have to drive too far.", key:["have","drive","far"] },
+    { id:"sub3", ko:"내가 그런 사람이 될 거라곤 절대로 생각하지 못했어요.", en:"I never thought I’d be that person.", key:["never","thought","person"] },
+    { id:"sub4", ko:"당장 대답할 필요는 없어요.", en:"You don’t have to answer right away.", key:["have","answer","right","away"] }
+  ]}
+];
+
+var RV_KEY = 'gmp_review_v1';
+var __rvMem = null;
+var rvFilter = 'all';
+
+function rvLoad(){
+  var data = null;
+  try {
+    var raw = window.localStorage.getItem(RV_KEY);
+    if(raw) data = JSON.parse(raw);
+  } catch(e){ data = null; }
+  if(!data && __rvMem) data = __rvMem;
+  if(!data) data = { wrong:{}, attempts:0, correct:0 };
+  if(!data.wrong) data.wrong = {};
+  return data;
+}
+
+function rvSave(data){
+  __rvMem = data;
+  try { window.localStorage.setItem(RV_KEY, JSON.stringify(data)); } catch(e){}
+}
+
+function rvAllItems(){
+  var out = [];
+  REVIEW_BANK.forEach(function(g){
+    g.items.forEach(function(it){
+      out.push({ id:it.id, ko:it.ko, en:it.en, key:it.key, song:g.song, artist:g.artist, icon:g.icon });
+    });
+  });
+  return out;
+}
+
+function rvFindItem(id){
+  var all = rvAllItems();
+  for(var i=0;i<all.length;i++){ if(all[i].id === id) return all[i]; }
+  return null;
+}
+
+function rvStats(){
+  var data = rvLoad();
+  var rate = data.attempts ? Math.round(data.correct / data.attempts * 100) + '%' : '—';
+  var r = document.getElementById('rv-rate');
+  var w = document.getElementById('rv-wrong');
+  if(r) r.textContent = rate;
+  if(w) w.textContent = Object.keys(data.wrong).length;
+}
+
+function rvChips(){
+  var row = document.getElementById('rv-chips');
+  if(!row) return;
+  var data = rvLoad();
+  var wrongCount = Object.keys(data.wrong).length;
+  var html = '<button class="chip' + (rvFilter === 'all' ? ' active' : '') + '" onclick="rvRender(\'all\')">\uD83D\uDCDA 전체</button>';
+  REVIEW_BANK.forEach(function(g, gi){
+    var f = 'g' + gi;
+    html += '<button class="chip' + (rvFilter === f ? ' active' : '') + '" onclick="rvRender(\'' + f + '\')">' + g.icon + ' ' + g.song + '</button>';
+  });
+  html += '<button class="chip wrong-chip' + (rvFilter === 'wrong' ? ' active' : '') + '" onclick="rvRender(\'wrong\')">\u274C 오답 노트 (' + wrongCount + ')</button>';
+  row.innerHTML = html;
+}
+
+function rvItemsFor(filter){
+  var data = rvLoad();
+  if(filter === 'all') return rvAllItems();
+  if(filter === 'wrong') return rvAllItems().filter(function(it){ return !!data.wrong[it.id]; });
+  var gi = parseInt(filter.replace('g',''), 10);
+  var g = REVIEW_BANK[gi];
+  if(!g) return rvAllItems();
+  return g.items.map(function(it){
+    return { id:it.id, ko:it.ko, en:it.en, key:it.key, song:g.song, artist:g.artist, icon:g.icon };
+  });
+}
+
+function rvBlankIdx(words, keyWords){
+  var keySet = {};
+  (keyWords || []).forEach(function(k){ keySet[norm(k)] = true; });
+  var idx = [];
+  words.forEach(function(w, i){ if(keySet[norm(w)]) idx.push(i); });
+  if(!idx.length) idx = computeBlanks(words, keyWords, 1);
+  return idx;
+}
+
+function rvRender(filter){
+  if(filter) rvFilter = filter;
+  var body = document.getElementById('review-body');
+  if(!body) return;
+  var items = rvItemsFor(rvFilter);
+  rvChips();
+  rvStats();
+  var sc = document.getElementById('rv-score');
+  if(sc) sc.textContent = '— / —';
+
+  if(!items.length){
+    if(rvFilter === 'wrong'){
+      body.innerHTML = '<div class="rv-empty">\uD83C\uDF89 오답 노트가 비어 있어요!<br>모든 문장을 다 맞히셨네요. 훌륭해요!</div>';
+      document.getElementById('rv-label').innerHTML = '오답 노트가 비어 있어요. <b>전체</b>로 다시 도전해 보세요!';
+    } else {
+      body.innerHTML = '<div class="rv-empty">문제가 없어요.</div>';
+    }
+    return;
+  }
+
+  var html = '';
+  var lastSong = '';
+  items.forEach(function(item){
+    if(item.song !== lastSong){
+      html += '<div class="quiz-group">' + item.icon + ' ' + item.song + ' <span class="quiz-group-sub">· ' + item.artist + '</span></div>';
+      lastSong = item.song;
+    }
+    var words = item.en.split(' ');
+    var blanks = rvBlankIdx(words, item.key);
+    html += '<div class="quiz-card" data-rid="' + item.id + '" data-full="' + item.en.replace(/"/g,'&quot;') + '">';
+    html += '<p class="quiz-ko">' + item.ko + '</p>';
+    html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 (' + blanks.length + '칸)</p>';
+    html += blankSentence(words, blanks, 'data-r', item.id, "rvCheckId('" + item.id + "')");
+    html += '<div class="quiz-btns">';
+    html += '<button class="quiz-check" onclick="rvCheck(this)">✓ 정답 확인</button>';
+    html += '<button class="quiz-reveal" onclick="rvShow(this)">👁 정답 보기</button>';
+    html += '</div>';
+    html += '<div class="quiz-say-row">';
+    html += '<span class="quiz-say-label">🔊 발음</span>';
+    html += '<button class="quiz-say" onclick="rvSay(this,0.7)">🐢 천천히</button>';
+    html += '<button class="quiz-say" onclick="rvSay(this,0.95)">🗣 자연</button>';
+    html += '<button class="quiz-say" onclick="rvSay(this,1.15)">🔥 원어민</button>';
+    html += '</div>';
+    html += '<div class="quiz-result" id="rr-' + item.id + '"></div>';
+    html += '</div>';
+  });
+  body.innerHTML = html;
+  document.getElementById('rv-label').innerHTML = '총 <b>' + items.length + '문장</b> · 정답 확인을 누르면 오답 노트에 자동 기록돼요';
+}
+
+function rvCheckId(id){
+  var card = document.querySelector('.quiz-card[data-rid="' + id + '"]');
+  if(card) rvCheck(card.querySelector('.quiz-check'));
+}
+
+function rvCheck(btn){
+  var card = btn.closest('.quiz-card');
+  var id = card.getAttribute('data-rid');
+  var inputs = card.querySelectorAll('.quiz-blank');
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+
+  var data = rvLoad();
+  if(!card.getAttribute('data-counted')){
+    data.attempts = (data.attempts || 0) + 1;
+    if(allCorrect) data.correct = (data.correct || 0) + 1;
+    card.setAttribute('data-counted','1');
+  }
+  if(allCorrect) delete data.wrong[id];
+  else data.wrong[id] = 1;
+  rvSave(data);
+  rvStats();
+  rvChips();
+
+  var res = document.getElementById('rr-' + id);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답! 오답 노트에서 지웠어요.';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 오답 노트에 저장했어요.';
+  }
+  card.setAttribute('data-result', allCorrect ? '1' : '0');
+}
+
+function rvShow(btn){
+  var card = btn.closest('.quiz-card');
+  var id = card.getAttribute('data-rid');
+  card.querySelectorAll('.quiz-blank').forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var data = rvLoad();
+  data.wrong[id] = 1;
+  rvSave(data);
+  rvStats();
+  rvChips();
+  var res = document.getElementById('rr-' + id);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">' + card.getAttribute('data-full') + '</span>';
+  card.setAttribute('data-result','0');
+}
+
+function rvSay(btn, rate){
+  var card = btn.closest('.quiz-card');
+  var text = card.getAttribute('data-full');
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function rvScoreAll(){
+  var cards = document.querySelectorAll('#review-body .quiz-card');
+  var done = 0, right = 0;
+  for(var i=0;i<cards.length;i++){
+    var r = cards[i].getAttribute('data-result');
+    if(r !== null){ done++; if(r === '1') right++; }
+  }
+  var sc = document.getElementById('rv-score');
+  if(sc) sc.textContent = done ? (right + ' / ' + done) : '— / —';
+  var label = document.getElementById('rv-label');
+  if(!done) label.innerHTML = '아직 채점한 문장이 없어요. 각 문장의 <b>정답 확인</b>을 눌러 주세요!';
+  else if(right === done) label.innerHTML = '🏆 채점한 ' + done + '문장을 모두 맞혔어요!';
+  else label.innerHTML = done + '문장 중 <b>' + right + '개</b> 정답 · <b>❌ 오답만 다시 풀기</b>로 복습해 보세요!';
+}
+
+function rvReset(){
+  if(!window.confirm('누적 점수와 오답 노트를 모두 지울까요?')) return;
+  rvSave({ wrong:{}, attempts:0, correct:0 });
+  try { window.localStorage.removeItem(RV_KEY); } catch(e){}
+  __rvMem = null;
+  rvFilter = 'all';
+  rvRender('all');
+}
+
+/* ===== 발음 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  if(!synth) return null;
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en') === 0; });
+  var enUS = en.filter(function(x){ return x.lang === 'en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name || '').toLowerCase();
+    return femaleNames.some(function(f){ return n.indexOf(f) >= 0; });
+  }
+  function isMale(v){
+    var n = (v.name || '').toLowerCase();
+    return maleNames.some(function(m){ return n.indexOf(m) >= 0; });
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){ el.classList.remove('playing'); });
+}
+
+/* 발음 연습 카드: data-en(정자체) / data-native(연음 반영) */
+function sayCard(btn, cardId, rate, isNative){
+  var card = document.getElementById(cardId);
+  if(!card || !synth) return;
+  var text = isNative ? (card.getAttribute('data-native') || card.getAttribute('data-en'))
+                      : card.getAttribute('data-en');
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayCard3(btn, cardId){
+  var card = document.getElementById(cardId);
+  if(!card || !synth) return;
+  var en = card.getAttribute('data-en');
+  var na = card.getAttribute('data-native') || en;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var steps = [[en,0.7],[en,0.95],[na,1.15]];
+  var i = 0;
+  function next(){
+    if(i >= steps.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(steps[i][0], steps[i][1]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  if(synth) synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+
+document.addEventListener('DOMContentLoaded', function(){ renderQuiz(); rvRender('all'); });
+if(document.readyState !== 'loading'){ renderQuiz(); rvRender('all'); }
+</script>
+<!-- GMP-TTS-FIX:start -->
+<script>
+/* ===== 안드로이드 음성 호환 보정 (GMP TTS FIX v1) =====
+   아이폰에서는 나던 소리가 안드로이드(삼성)에서 안 나는 원인을 보정한다.
+   카드의 기존 함수는 그대로 두고 speechSynthesis 자체를 감싼다. */
+(function(){
+  if(!window.speechSynthesis || window.__gmpTtsFix) return;
+  window.__gmpTtsFix = true;
+
+  var synth = window.speechSynthesis;
+  var rawSpeak  = synth.speak.bind(synth);
+  var rawCancel = synth.cancel.bind(synth);
+
+  var lastCancel = 0;
+  var voices = [];
+  var warned = false;
+  var keepAlive = null;
+
+  /* --- 1. 목소리 목록 캐싱 ---
+     안드로이드 크롬은 getVoices()가 처음엔 빈 배열을 준다. */
+  function loadVoices(){
+    try { var v = synth.getVoices(); if(v && v.length) voices = v; } catch(e){}
+  }
+  loadVoices();
+  try { synth.addEventListener('voiceschanged', loadVoices); } catch(e){
+    synth.onvoiceschanged = loadVoices;
+  }
+  setTimeout(loadVoices, 300);
+  setTimeout(loadVoices, 1200);
+  setTimeout(checkEnglish, 2500);
+
+  function englishVoices(){
+    return voices.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf('en') === 0; });
+  }
+
+  /* 카드는 여성 영어 음성을 기준으로 만들어졌다.
+     보정이 개입할 때도 같은 결을 유지해야 학습 자료가 들쭉날쭉해지지 않는다. */
+  var FEMALE = ['samantha','victoria','allison','ava','susan','zira','aria','jenny',
+    'michelle','joanna','salli','kendra','kimberly','google us english','karen','moira',
+    'tessa','fiona','serena','female','woman','zoe','nicky','vicki','eddy','flo'];
+  var MALE = ['albert','bad news','bahh','bells','boing','bubbles','cellos','david',
+    'mark','alex','daniel','fred','male','man','guy','tom','george','james','oliver',
+    'arthur','microsoft david','junior','ralph','organ','trinoids','whisper','wobble',
+    'jester','superstar','grandpa','rocko','reed','sandy','shelley','good news'];
+  function nameHas(v, list){
+    var n = (v.name || '').toLowerCase();
+    return list.some(function(k){ return n.indexOf(k) >= 0; });
+  }
+  function bestEnglish(){
+    var en = englishVoices();
+    if(!en.length) return null;
+    var us = en.filter(function(v){ return v.lang === 'en-US'; });
+    var pool = us.length ? us : en;
+    return pool.filter(function(v){ return nameHas(v, FEMALE); })[0]
+        || pool.filter(function(v){ return !nameHas(v, MALE); })[0]
+        || pool[0];
+  }
+
+  /* --- 2. 영어 목소리가 아예 없으면 알려준다 ---
+     삼성 기기에서 구글 TTS 영어 데이터가 없으면 소리가 안 난다.
+     이때는 조용히 실패하지 말고 무엇을 해야 하는지 보여 준다. */
+  function checkEnglish(){
+    if(warned || !voices.length) return;
+    if(englishVoices().length) return;
+    warned = true;
+    var box = document.createElement('div');
+    box.setAttribute('role','status');
+    box.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;'
+      + 'background:#3A2317;color:#FFF3E4;border-radius:12px;padding:13px 15px;'
+      + 'font:14px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;'
+      + 'box-shadow:0 6px 24px rgba(0,0,0,.3);max-width:520px;margin:0 auto';
+    box.innerHTML = '🔇 <b>이 기기에 영어 음성이 없어 소리가 나지 않습니다.</b><br>'
+      + '설정 → 일반 → <b>접근성 → 텍스트 음성 변환</b>에서 '
+      + '<b>Google 음성 인식 및 합성</b>을 선택하고, 언어에 <b>English</b>를 내려받아 주세요.'
+      + '<div style="text-align:right;margin-top:8px">'
+      + '<button style="background:#FFF3E4;color:#3A2317;border:0;border-radius:999px;'
+      + 'padding:6px 14px;font-size:13px;font-weight:600">닫기</button></div>';
+    box.querySelector('button').onclick = function(){ box.remove(); };
+    document.body.appendChild(box);
+  }
+
+  /* --- 3. 안드로이드 크롬은 재생 중 스스로 멈추는 버그가 있다 --- */
+  function startKeepAlive(){
+    if(keepAlive) return;
+    keepAlive = setInterval(function(){
+      if(!synth.speaking){ stopKeepAlive(); return; }
+      if(synth.paused){ try { synth.resume(); } catch(e){} }
+    }, 3000);
+  }
+  function stopKeepAlive(){
+    if(keepAlive){ clearInterval(keepAlive); keepAlive = null; }
+  }
+
+  /* --- 4. cancel() 시각을 기록한다 ---
+     cancel() 직후 같은 순간에 speak()를 부르면 안드로이드는 그 발화를 조용히 버린다.
+     아이폰은 버리지 않기 때문에 아이폰에서만 소리가 났던 것이다. */
+  synth.cancel = function(){
+    lastCancel = Date.now();
+    stopKeepAlive();
+    return rawCancel();
+  };
+
+  /* --- 5. 발화 보정 후 재생 --- */
+  function fixUtterance(u){
+    // 영어 문장인데 한국어 목소리가 붙으면 안드로이드는 발음하지 못한다.
+    var wantEn = !u.lang || u.lang.toLowerCase().indexOf('en') === 0;
+    if(wantEn){
+      var bad = u.voice && u.voice.lang && u.voice.lang.toLowerCase().indexOf('en') !== 0;
+      if(bad) u.voice = null;
+      if(!u.voice){
+        var pick = bestEnglish();
+        if(pick){ u.voice = pick; u.lang = pick.lang; }
+      }
+      if(!u.lang) u.lang = 'en-US';
+    }
+    // 일부 안드로이드 TTS는 극단적인 속도를 무시하거나 무음으로 처리한다
+    if(typeof u.rate === 'number'){
+      if(u.rate < 0.5) u.rate = 0.5;
+      if(u.rate > 1.8) u.rate = 1.8;
+    }
+    return u;
+  }
+
+  synth.speak = function(u){
+    if(!u) return;
+    fixUtterance(u);
+
+    // onend가 끝내 오지 않아도 다음 단계로 넘어가게 한다 (3단계 연속 듣기 대비)
+    var done = false;
+    var userEnd = u.onend;
+    var userErr = u.onerror;
+    function finish(ev){
+      if(done) return;
+      done = true;
+      stopKeepAlive();
+      if(typeof userEnd === 'function'){ try { userEnd.call(u, ev || {}); } catch(e){} }
+    }
+    u.onend = function(ev){ finish(ev); };
+    u.onerror = function(ev){
+      if(done) return;
+      done = true;
+      stopKeepAlive();
+      if(typeof userErr === 'function'){ try { userErr.call(u, ev); } catch(e){} }
+      else if(typeof userEnd === 'function'){ try { userEnd.call(u, ev); } catch(e){} }
+    };
+
+    var words = String(u.text || '').split(/\s+/).length;
+    var estimate = Math.max(2500, (words / Math.max(0.5, u.rate || 1)) * 700 + 2500);
+
+    var wait = Math.max(0, 260 - (Date.now() - lastCancel));
+    setTimeout(function(){
+      loadVoices();
+      if(!u.voice) fixUtterance(u);
+      try { rawSpeak(u); } catch(e){ finish(); return; }
+      startKeepAlive();
+      setTimeout(function(){ if(!done && !synth.speaking) finish(); }, estimate);
+    }, wait);
+  };
+
+  /* --- 6. 첫 터치에서 음성 엔진을 깨운다 ---
+     일부 안드로이드 브라우저는 사용자 조작 없이는 음성 엔진을 준비하지 않는다. */
+  function unlock(){
+    loadVoices();
+    try {
+      var u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      rawSpeak(u);
+    } catch(e){}
+    document.removeEventListener('touchstart', unlock, true);
+    document.removeEventListener('click', unlock, true);
+  }
+  document.addEventListener('touchstart', unlock, true);
+  document.addEventListener('click', unlock, true);
+})();
+
+</script>
+<!-- GMP-TTS-FIX:end -->
+</body>
+</html>
