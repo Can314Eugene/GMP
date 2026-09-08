@@ -1,0 +1,1103 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Know Somebody — Ava Max | Good Morning Pops</title><style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FBE9EC;min-height:100vh;padding:20px;color:#1F0A0D}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #A63A4A;font-size:13px;cursor:pointer;background:#fff;color:#8C6169;transition:all .15s;font-weight:500}
+  .tab.active{background:#EBB8C2;border-color:#7A1F2B;color:#4A0E16}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #DE96A3}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#EBB8C2;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1F0A0D;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#8C6169}
+  .song-badge{background:#EBB8C2;color:#4A0E16;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#B98A93;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #F0C7CE;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#AD7D85;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1F0A0D}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#F3DCE0;color:#7A2A3A;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#8C6169;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#451319;font-weight:600}
+  .divider{border:none;border-top:1px solid #F0C7CE;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #F0C7CE;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#7A1F2B}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1F0A0D;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#8C6169;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#EBB8C2;color:#4A0E16;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#FBE9EC;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #DE96A3}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#6B4249;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1F0A0D;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#B98A93!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#B98A93;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #F0C7CE}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#4A0E16}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #F0C7CE;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #FBE9EC;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#FBE9EC;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#B98A93;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1F0A0D;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#4A0E16;font-size:12px}
+  .ref-kr{font-weight:600;color:#1F0A0D;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#8C6169}
+  .word-card{background:#fff;border:1px solid #F0C7CE;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1F0A0D}
+  .word-mean{font-size:12px;color:#B98A93;margin-top:3px}
+  .word-tag{font-size:11px;background:#EBB8C2;color:#4A0E16;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#FBE9EC;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#7A1F2B;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#4A0E16;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1F0A0D;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #F0C7CE;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1F0A0D;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#EBB8C2;color:#4A0E16;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#DE96A3}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #F0C7CE;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#7A1F2B;background:#EBB8C2;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#5C3138;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#4A0E16;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #FBE9EC;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#EBB8C2;color:#4A0E16;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#6B4249;line-height:1.7}
+  .flow-txt b{color:#1F0A0D;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1F0A0D;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#8C6169}
+  .note-small{font-size:11px;color:#B98A93;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#FBE9EC;border-left:3px solid #7A1F2B;border-radius:10px;padding:12px 14px;font-size:13px;color:#7A1F2B;line-height:1.8}
+  .twist-box b{color:#4A0E16;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#EBB8C2;color:#4A0E16;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #A63A4A}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #F0C7CE;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1F0A0D;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#AD7D85;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #DE96A3;background:#FBE9EC;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#EBB8C2;border-color:#A63A4A}
+  .speed-btn.playing{background:#EBB8C2;border-color:#7A1F2B;box-shadow:0 0 0 2px #EBB8C2}
+  .speed-label{font-size:13px;font-weight:600;color:#4A0E16;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#EBB8C2;color:#4A0E16;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#DE96A3}
+  .play-all-btn.playing{background:#7A1F2B;color:#fff}
+  .listen-note{font-size:11px;color:#B98A93;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#7A1F2B;background:#EBB8C2;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#6B1F2C;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #DE96A3;background:#fff;color:#6B1F2C;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#EBB8C2;border-color:#7A1F2B;color:#4A0E16}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#A63A4A;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#7A1F2B;background:#EBB8C2;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #F0C7CE;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#4A0E16;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#B98A93;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1F0A0D;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #A63A4A;background:#FBE9EC;font-size:15px;font-family:inherit;font-weight:600;color:#7A1F2B;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#EBB8C2;border-bottom-color:#7A1F2B}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#EBB8C2;color:#4A0E16;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#DE96A3}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #DE96A3;background:#fff;color:#6B1F2C;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#FBE9EC}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#B98A93;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #DE96A3;background:#FBE9EC;color:#4A0E16;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#EBB8C2;border-color:#A63A4A}
+  .quiz-say.playing{background:#EBB8C2;border-color:#7A1F2B;box-shadow:0 0 0 2px #EBB8C2}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #F0C7CE;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#7A1F2B}
+  .score-label{font-size:12px;color:#8C6169;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#7A1F2B;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#4A0E16}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+
+  /* --- intro box --- */
+  .intro-box{background:#fff;border:1px solid #F0C7CE;border-left:3px solid #7A1F2B;border-radius:14px;padding:14px 16px;margin-bottom:20px}
+  .intro-fix{font-size:12.5px;color:#791F1F;background:#FCEBEB;border-radius:8px;padding:8px 11px;margin-bottom:9px;line-height:1.7}
+  .intro-fix s{color:#B07272}
+  .intro-p{font-size:12.5px;color:#6B4249;line-height:1.8;margin-bottom:6px}
+  .intro-p:last-child{margin-bottom:0}
+  .intro-p b{color:#4A0E16;font-weight:600}
+  /* --- 사용자 창작 문장용 --- */
+  .num-add{min-width:26px;height:26px;border-radius:50%;background:#E6F0FC;color:#14427A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .pill-add{display:inline-block;background:#E6F0FC;color:#14427A;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  /* --- listen tab 보조 --- */
+  .listen-ipa{font-family:'SF Mono',monospace;font-size:11.5px;color:#A63A4A;letter-spacing:.02em}
+  .link-box{margin-top:12px;background:#FDF0F2;border:1px dashed #E3A0AC;border-radius:10px;padding:11px 13px;font-size:12px;color:#7A3A42;line-height:1.95}
+  .link-box b{color:#8C2635;font-weight:600}
+  .link-box u{text-decoration:underline}
+  .stop-card{text-align:center}
+  .flow-mark{color:#8C2635;font-weight:600}
+  .quiz-group-sub{font-size:11px;font-weight:500;color:#6B1F2C}
+  /* --- 복습 탭 --- */
+  .rv-stats{display:flex;gap:8px;margin-bottom:14px}
+  .rv-box{flex:1;background:#fff;border:1px solid #F0C7CE;border-radius:14px;padding:12px 8px;text-align:center}
+  .rv-box span{display:block;font-size:10px;font-weight:700;letter-spacing:.05em;color:#B98A93;text-transform:uppercase;margin-bottom:5px}
+  .rv-box b{font-size:19px;font-weight:700;color:#7A1F2B}
+  .chip-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{border:1px solid #DE96A3;background:#fff;color:#6B1F2C;font-size:12px;font-weight:600;padding:7px 13px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all .15s}
+  .chip:hover{background:#FBE9EC}
+  .chip.active{background:#EBB8C2;border-color:#7A1F2B;color:#4A0E16}
+  .chip.wrong-chip{background:#FCEBEB;border-color:#E8C3C3;color:#791F1F}
+  .chip.wrong-chip.active{background:#E5484D;border-color:#791F1F;color:#fff}
+  .rv-actions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .rv-actions .quiz-check{flex:1;min-width:140px}
+  .rv-actions .quiz-reveal{flex:1;min-width:120px}
+  .rv-label{font-size:12px;color:#8C6169;margin-bottom:12px;line-height:1.7}
+  .rv-label b{color:#4A0E16;font-weight:600}
+  .rv-empty{background:#fff;border:1px solid #F0C7CE;border-radius:16px;text-align:center;font-size:13px;color:#8C6169;padding:30px 16px;line-height:1.9}
+
+@media(max-width:480px){body{padding:12px}.ref-row{padding:10px 8px;gap:5px}.ref-en{font-size:12px}.ref-ipa{font-size:11px}.word-en{font-size:20px}.tab{padding:8px 11px}}button:focus-visible,a:focus-visible{outline:3px solid #D07B3F;outline-offset:3px}</style></head><body><div class="container"><div class="tab-row"><button class="tab active" onclick="showTab('lesson',this)">수업 카드</button><button class="tab" onclick="showTab('story',this)">곡 이야기</button><button class="tab" onclick="showTab('pron',this)">발음 가이드</button><button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button><button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button><button class="tab" onclick="showTab('review',this)">🔁 복습</button><button class="tab" onclick="showTab('kakao',this)">카카오 공유</button></div><div id="panel-lesson" class="panel active"><div class="song-hd"><div class="song-icon">🌠</div><div><h2>Know Somebody — Ava Max</h2><p>Good Morning Pops · 에이바 맥스</p></div><span class="song-badge">오늘 수업</span></div><div class="intro-box"><p class="intro-p">밤새 서성이며 잠 못 이루다가도, 결국 스스로를 다독이고 설득하게 되는 마음을 그린 노래예요. 오늘의 세 문장으로 그 흐름을 따라가 봅니다.</p><p class="intro-p">👏 <b>1번과 2번 문장은 실제 가사와 정확히 일치</b>해요. 3번은 주어와 문장부호를 가사에 맞게 다듬었습니다.</p></div><div class="check-card"><div class="check-top"><div class="num-ok">1</div><div class="check-body"><p class="check-meaning">난 아침이 될 때까지 계속 서성이고 있어요.</p><div class="sent-row"><span class="sent-right">I&#x27;m pacing back and forth &#x27;til morning.</span></div><span class="pill-ok">가사 일치</span><span class="pill-note">철자 참고: till → &#x27;til</span><p class="note-text">⭐ 뜻을 잘 살렸어요.<br>💡 pace는 불안하거나 초조해서 좁은 공간을 왔다갔다 걷는다는 뜻이에요. till과 &#x27;til은 같은 말의 다른 표기이고, 가사에서는 &#x27;til을 썼어요.</p></div></div></div><div class="check-card"><div class="check-top"><div class="num-ok">2</div><div class="check-body"><p class="check-meaning">당신은 누군가를 잘 안다고 생각하죠.</p><div class="sent-row"><span class="sent-right">You think you really know somebody.</span></div><span class="pill-ok">가사 일치</span><p class="note-text">⭐ 뜻을 정확하게 살렸어요.<br>💡 really가 동사 know 바로 앞에 놓여 “정말로 안다”는 확신을 강조해요.</p></div></div></div><div class="check-card"><div class="check-top"><div class="num-fix">3</div><div class="check-body"><p class="check-meaning">그게 당신이 필요한 것이라고 스스로를 설득하죠.</p><div class="sent-row"><span class="sent-wrong">You convince yourself that&#x27;s what you need?</span><span class="sent-right">Convince yourself that&#x27;s what you need.</span></div><span class="pill-ok">가사 일치</span><span class="pill-fix">표현 교정</span><p class="note-text">✏️ You convince ~ need? → <b>Convince yourself that&#x27;s what you need.</b> (주어 You 삭제, 물음표 → 마침표)<br>💡 이 문장은 질문이 아니라 스스로에게 되뇌는 말이에요. 한국어 번역은 원래도 서술문으로 정확했어요.</p></div></div></div><hr class="divider"><p class="section-label">오늘의 표현</p><div class="expr-card" onclick="toggleEx(1)"><p class="expr-en">pace back and forth</p><p class="expr-ko">왔다갔다 서성이다</p><span class="expr-tag">전치사 없이 back and forth 그대로</span><button class="expand-btn" id="btn1">예문 보기 ▾</button><div class="ex-box" id="ex1" style="display:none"><p><b>She paced back and forth in the waiting room, checking her phone every few seconds.</b><br>그녀는 대기실에서 서성이며 몇 초마다 휴대폰을 확인했어요.</p><p><b>He&#x27;d been pacing back and forth outside the interview room for twenty minutes.</b><br>그는 면접실 밖에서 20분째 서성이고 있었어요.</p><p class="ex-note">💡 walk around(정처 없이 돌아다니다)와 달리, pace back and forth는 불안하거나 초조해서 좁은 공간을 왔다갔다 하는 느낌이에요.</p></div></div><div class="expr-card" onclick="toggleEx(2)"><p class="expr-en">think you really know somebody</p><p class="expr-ko">누군가를 정말 안다고 생각하다</p><span class="expr-tag">really는 동사 바로 앞에</span><button class="expand-btn" id="btn2">예문 보기 ▾</button><div class="ex-box" id="ex2" style="display:none"><p><b>You think you really know your best friend until something like this happens.</b><br>이런 일이 생기기 전까진 가장 친한 친구를 정말 잘 안다고 생각하죠.</p><p><b>I thought I really understood him, but I was wrong.</b><br>난 그를 정말 이해한다고 생각했지만 틀렸어요.</p><p class="ex-note">💡 know somebody(그 사람 자체를 안다)와 know about somebody(그 사람에 대한 정보만 안다)는 뜻이 달라요.</p></div></div><div class="expr-card" onclick="toggleEx(3)"><p class="expr-en">convince yourself that ...</p><p class="expr-ko">그렇다고 스스로를 설득하다</p><span class="expr-tag">convince 뒤엔 재귀대명사 + that절</span><button class="expand-btn" id="btn3">예문 보기 ▾</button><div class="ex-box" id="ex3" style="display:none"><p><b>Don&#x27;t convince yourself that staying was the right choice when it clearly wasn&#x27;t.</b><br>명백히 아니었는데도 머무는 게 옳았다고 스스로를 설득하지 마세요.</p><p><b>She convinced herself that everything would go back to normal.</b><br>그녀는 모든 게 다시 원래대로 돌아갈 거라고 스스로를 설득했어요.</p><p class="ex-note">💡 convince someone(남을 설득하다)은 목적어가 다른 사람, convince yourself(스스로를 납득시키다)는 목적어가 재귀대명사예요.</p></div></div><div class="summary-box">① <span>pace back and forth</span> — 전치사 없이 통째로<br>② <span>really know</span> — really는 동사 바로 앞<br>③ <span>convince yourself</span> — 재귀대명사 + that절</div></div><div id="panel-story" class="panel"><div class="song-hd"><div class="song-icon">🌌</div><div><h2>곡 이야기</h2><p>Know Somebody · 확신과 의심 사이에서</p></div></div><div class="story-wrap"><div class="story-section"><div class="story-tag">이 곡은?</div><p class="story-p">Ava Max의 세 번째 정규 앨범 <i>Don&#x27;t Click Play</i>(2025년 8월 22일, Atlantic Records) 7번 트랙입니다. 작사·작곡에는 Ava Max 본인을 비롯해 Ammo, Federico Vindver, JBACH, Kiddo A.I., Michael Pollack, Pink Slip가 참여했고, 프로듀싱은 Ammo와 Federico Vindver가 맡았습니다.</p><p class="story-p">Ava Max는 이 앨범을 “완전한 리셋”이라고 부릅니다. 2023년 여름 큰 충격을 받은 뒤 자신을 잃어버렸다고 느꼈고, 그 감정을 담아낸 곡 중 하나가 이 트랙이에요. 발매 직전엔 SNS에서 한동안 자취를 감췄다가 “Busy over here evolving(여기서 한창 진화 중)”이라는 짧은 글로 돌아오기도 했습니다.</p></div><div class="story-section"><div class="story-tag">이야기의 흐름</div><div class="flow-item"><div class="flow-num">1</div><div class="flow-txt"><b>도입</b> — 밤새 잠들지 못하고 서성이는 장면으로 문을 열어요. <span class="flow-mark">(오늘 첫 문장!)</span></div></div><div class="flow-item"><div class="flow-num">2</div><div class="flow-txt"><b>확신</b> — 누군가를 잘 안다고 믿는 순간을 짚어요. <span class="flow-mark">(오늘 두 번째 문장!)</span></div></div><div class="flow-item"><div class="flow-num">3</div><div class="flow-txt"><b>자기 설득</b> — 그게 정말 필요했던 거라고 스스로에게 되뇌는 장면이에요. <span class="flow-mark">(오늘 세 번째 문장!)</span></div></div><div class="flow-item"><div class="flow-num">4</div><div class="flow-txt"><b>후렴</b> — 제목구 “Know Somebody”가 반복되며 확신과 의심 사이를 오갑니다.</div></div><div class="flow-item"><div class="flow-num">5</div><div class="flow-txt"><b>뒤쪽 절</b> — 헤어진 뒤에도 남은 미련과 그 관계를 다시 들여다보는 마음이 이어져요.</div></div><div class="flow-item"><div class="flow-num">6</div><div class="flow-txt"><b>마무리</b> — 처음의 서성임으로 돌아오며, 안다고 믿었던 것이 흔들리는 여운을 남깁니다.</div></div></div><div class="story-section"><div class="story-tag">이 곡의 매력 ✨</div><div class="twist-box">이 곡의 장치는 <b>확신과 의심을 오가는 반복 구조</b>예요. 첫 문장은 잠 못 들고 서성이는 밤의 장면, 두 번째는 “안다고 생각한다”는 확신, 세 번째는 그 확신을 스스로에게 납득시키려는 안간힘을 보여줍니다. 장면 → 확신 → 자기 설득으로 이어 들으면, 제목의 “Know Somebody”가 사실은 물음표에 더 가깝다는 게 느껴져요. 이는 가사의 구조를 바탕으로 한 감상입니다.</div></div><div class="story-section"><div class="story-tag">오늘 학습한 세 문장</div><div class="learn-line"><div class="learn-en">I&#x27;m pacing back and forth &#x27;til morning.</div><div class="learn-ko">난 아침이 될 때까지 계속 서성이고 있어요.</div></div><div class="learn-line"><div class="learn-en">You think you really know somebody.</div><div class="learn-ko">당신은 누군가를 잘 안다고 생각하죠.</div></div><div class="learn-line"><div class="learn-en">Convince yourself that&#x27;s what you need.</div><div class="learn-ko">그게 당신이 필요한 것이라고 스스로를 설득하죠.</div></div></div></div><div style="text-align:center"><a class="lyrics-btn" href="https://www.google.com/search?q=Ava+Max+Know+Somebody+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener">🔎 전체 가사 검색하기</a><p class="note-small">전체 가사는 저작권 보호를 받으므로 정식 음원 서비스에서 확인해 주세요.<br>© 해당 작사·작곡 및 음원 권리자. 추가 예문은 학습용 창작입니다.</p><p class="note-small">출처: <a href="https://en.wikipedia.org/wiki/Don%27t_Click_Play">앨범·트랙 크레딧</a> · <a href="https://www.grammy.com/news/ava-max-dont-click-play-new-album-interview-reset/">GRAMMY 인터뷰·2025년 리셋</a></p></div></div><div id="panel-pron" class="panel"><div class="song-hd"><div class="song-icon">🗣</div><div><h2>발음 가이드</h2><p>미국식 기준 · 한글 표기는 소리를 돕는 근사치</p></div></div><div class="ref-table"><div class="ref-row header"><div class="ref-col-label">단어</div><div class="ref-col-label">IPA</div><div class="ref-col-label">한글</div><div class="ref-col-label">뜻</div></div><div class="ref-row"><div class="ref-en">pacing</div><div class="ref-ipa">/ˈpeɪsɪŋ/</div><div class="ref-kr"><span class="s">페</span>이싱</div><div class="ref-mean">서성이는</div></div><div class="ref-row"><div class="ref-en">morning</div><div class="ref-ipa">/ˈmɔrnɪŋ/</div><div class="ref-kr"><span class="s">모</span>닝</div><div class="ref-mean">아침</div></div><div class="ref-row"><div class="ref-en">really</div><div class="ref-ipa">/ˈriːəli/</div><div class="ref-kr"><span class="s">리</span>얼리</div><div class="ref-mean">정말로</div></div><div class="ref-row"><div class="ref-en">somebody</div><div class="ref-ipa">/ˈsʌmbʌdi/</div><div class="ref-kr"><span class="s">섬</span>바디</div><div class="ref-mean">누군가</div></div><div class="ref-row"><div class="ref-en">convince</div><div class="ref-ipa">/kənˈvɪns/</div><div class="ref-kr">컨<span class="s">빈</span>스</div><div class="ref-mean">설득하다</div></div><div class="ref-row"><div class="ref-en">yourself</div><div class="ref-ipa">/jʊrˈsɛlf/</div><div class="ref-kr">유어<span class="s">셀</span>프</div><div class="ref-mean">너 자신</div></div></div><div class="word-card"><div class="word-top"><div><div class="word-en">pace back and forth</div><div class="word-mean">왔다갔다 서성이다</div></div><span class="word-tag">연음</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">단어별</div><div class="pron-kr">페이스 · 백 · 앤드 · 포스</div></div><div class="pron-box"><div class="pron-box-label">연결하면</div><div class="pron-kr">페이스백은포스</div></div></div><div class="tip-box">🔸 back and forth는 한 덩어리로 빠르게 이어 읽어요. and의 /d/는 거의 들리지 않아요.<br>🔸 pace와 back 둘 다에 강세가 있어요.<br>🔸 to and fro(왔다갔다)도 비슷한 뜻의 표현이에요.</div></div><div class="word-card"><div class="word-top"><div><div class="word-en">morning / mourning</div><div class="word-mean">아침 / 애도</div></div><span class="word-tag">동음이의어</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">morning</div><div class="pron-kr">/ˈmɔrnɪŋ/ · 아침</div></div><div class="pron-box"><div class="pron-box-label">mourning</div><div class="pron-kr">/ˈmɔrnɪŋ/ · 애도</div></div></div><div class="tip-box">🔸 두 단어는 발음이 완전히 같아서 문맥으로 구별해요.<br>🔸 -ing의 ng는 코로 내보내는 소리이고, n으로 끝내지 않아요.<br>🔸 warning, morning도 같은 -orning 소리예요.</div></div><div class="word-card"><div class="word-top"><div><div class="word-en">really know</div><div class="word-mean">정말로 알다</div></div><span class="word-tag">강세 위치</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">really</div><div class="pron-kr">/ˈriːəli/ 리얼리</div></div><div class="pron-box"><div class="pron-box-label">know</div><div class="pron-kr">/noʊ/ 노우</div></div></div><div class="tip-box">🔸 really는 REAL에 강세, 뒤의 -ly는 가볍게 읽어요.<br>🔸 두 단어를 이을 땐 really 뒤를 살짝 끊고 know를 분명히 발음해요.<br>🔸 actually, truly도 동사 앞 같은 자리에 자주 놓여요.</div></div><div class="word-card"><div class="word-top"><div><div class="word-en">convince yourself</div><div class="word-mean">스스로를 설득하다</div></div><span class="word-tag">연음</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">단어별</div><div class="pron-kr">컨빈스 · 유어셀프</div></div><div class="pron-box"><div class="pron-box-label">연결하면</div><div class="pron-kr">컨빈스유어셀프</div></div></div><div class="tip-box">🔸 convince는 둘째 음절 VINCE에 강세가 있어요.<br>🔸 yourself의 /f/는 윗니를 아랫입술에 대고 바람을 내보내요.<br>🔸 remind yourself, ask yourself도 같은 재귀대명사 구조예요.</div></div><div class="word-card"><div class="word-top"><div><div class="word-en">somebody</div><div class="word-mean">누군가</div></div><span class="word-tag">강세</span></div><div class="pron-grid"><div class="pron-box"><div class="pron-box-label">강세</div><div class="pron-kr">SOME /sʌm/</div></div><div class="pron-box"><div class="pron-box-label">약한 뒷부분</div><div class="pron-kr">-body /bʌdi/</div></div></div><div class="tip-box">🔸 SOME에 강세를 두고 -body는 가볍게 흘려요.<br>🔸 anybody, everybody도 첫 음절에 강세가 있어요.<br>🔸 두 단어 some body(시체)와 헷갈리지 않게 붙여서 발음해요.</div></div></div><div id="panel-listen" class="panel"><div class="song-hd"><div class="song-icon">🔊</div><div><h2>발음 연습</h2><p>오늘의 세 문장 + 예문 6개 · 세 단계로 따라 읽기</p></div></div><div class="listen-intro">🐢 천천히 0.7 → 🗣 자연스럽게 0.95 → 🔥 원어민 1.15<br>영어 여성 음성을 우선 사용합니다. 마지막 단계는 연음 표기를 반영한 합성 음성이며, 기기별로 소리가 달라질 수 있어요. 한글은 근사치입니다.</div><div class="listen-group">📝 오늘의 세 문장</div><div class="listen-card" id="lc1" data-en="I&#x27;m pacing back and forth &#x27;til morning." data-native="I&#x27;m paycing back n forth til mornin."><p class="listen-en">I&#x27;m pacing back and forth &#x27;til morning.</p><p class="listen-ko">난 아침이 될 때까지 계속 서성이고 있어요.<br><span class="listen-ipa">/aɪm ˈpeɪsɪŋ bæk ənd fɔrθ tɪl ˈmɔrnɪŋ/</span></p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc1',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc1',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc1',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc1')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• pacing back → 페이싱백 · and forth → 은포스(and의 d 거의 안 들림)<br>👉 통째로 “아임 페이싱 백은 포스 틸 모닝”</div></div><div class="listen-card" id="lc2" data-en="You think you really know somebody." data-native="You think you really know somebody."><p class="listen-en">You think you really know somebody.</p><p class="listen-ko">당신은 누군가를 잘 안다고 생각하죠.<br><span class="listen-ipa">/juː θɪŋk juː ˈriːəli noʊ ˈsʌmbʌdi/</span></p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc2',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc2',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc2',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc2')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• think you → 씽큐(구어체에서 가능) · really know는 끊어서 분명히<br>👉 통째로 “유 씽큐 리얼리 노우 섬바디”</div></div><div class="listen-card" id="lc3" data-en="Convince yourself that&#x27;s what you need." data-native="Convince yerself thats whatchu need."><p class="listen-en">Convince yourself that&#x27;s what you need.</p><p class="listen-ko">그게 당신이 필요한 것이라고 스스로를 설득하죠.<br><span class="listen-ipa">/kənˈvɪns jʊrˈsɛlf ðæts wʌt juː niːd/</span></p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc3',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc3',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc3',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc3')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• yourself → 여어셀프(빠르게) · what you → 왓츄(구어체에서 가능)<br>👉 통째로 “컨빈스 유어셀프 댓츠 왓츄 니드”</div></div><div class="listen-group">🔹 pace back and forth</div><div class="listen-card" id="lc4" data-en="She paced back and forth in the waiting room, checking her phone every few seconds." data-native="She paced back n forth in the waiting room, checkin her phone every few seconds."><p class="listen-en">She paced back and forth in the waiting room, checking her phone every few seconds.</p><p class="listen-ko">그녀는 대기실에서 서성이며 몇 초마다 휴대폰을 확인했어요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc4',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc4',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc4',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc4')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• back and forth → 백큰포스 · checking her → 체킹널(연음)<br>💡 pace는 걷다보다 좁은 공간을 왔다갔다 한다는 뜻이 강해요.</div></div><div class="listen-card" id="lc5" data-en="He&#x27;d been pacing back and forth outside the interview room for twenty minutes." data-native="He&#x27;d been paycing back n forth outside the interview room fer twenny minutes."><p class="listen-en">He&#x27;d been pacing back and forth outside the interview room for twenty minutes.</p><p class="listen-ko">그는 면접실 밖에서 20분째 서성이고 있었어요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc5',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc5',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc5',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc5')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• outside the → 아웃사이드디(연음) · twenty → 트웨니(t가 약해짐)<br>💡 He&#x27;d been -ing는 그 시점까지 계속 진행 중이었다는 뜻이에요.</div></div><div class="listen-group">🔹 really know</div><div class="listen-card" id="lc6" data-en="You think you really know your best friend until something like this happens." data-native="You think you really know yer best friend until somethin like this happens."><p class="listen-en">You think you really know your best friend until something like this happens.</p><p class="listen-ko">이런 일이 생기기 전까진 가장 친한 친구를 정말 잘 안다고 생각하죠.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc6',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc6',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc6',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc6')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• really know → 리얼리노우(끊지 않기) · until something → 언틸섬씽<br>💡 until은 그 시점까지 계속된다는 뜻으로, 이 문장에선 “그 전까지는”으로 해석돼요.</div></div><div class="listen-card" id="lc7" data-en="I thought I really understood him, but I was wrong." data-native="I thought I really understood him, but I was rawng."><p class="listen-en">I thought I really understood him, but I was wrong.</p><p class="listen-ko">난 그를 정말 이해한다고 생각했지만 틀렸어요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc7',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc7',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc7',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc7')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• thought I → 쏘라이(연음) · understood him → 언더스투딤<br>💡 understood는 understand의 과거형이에요.</div></div><div class="listen-group">🔹 convince yourself</div><div class="listen-card" id="lc8" data-en="Don&#x27;t convince yourself that staying was the right choice when it clearly wasn&#x27;t." data-native="Don&#x27;t convince yerself that stayin was the right choice when it clearly wuznt."><p class="listen-en">Don&#x27;t convince yourself that staying was the right choice when it clearly wasn&#x27;t.</p><p class="listen-ko">명백히 아니었는데도 머무는 게 옳았다고 스스로를 설득하지 마세요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc8',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc8',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc8',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc8')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• convince yourself → 컨빈스유어셀프 · wasn&#x27;t → 워즌(t 거의 안 들림)<br>💡 clearly는 문장 중간에서 “명백히”라는 뜻으로 자연스럽게 끼어들어요.</div></div><div class="listen-card" id="lc9" data-en="She convinced herself that everything would go back to normal." data-native="She convinced herself that everythin would go back ta normal."><p class="listen-en">She convinced herself that everything would go back to normal.</p><p class="listen-ko">그녀는 모든 게 다시 원래대로 돌아갈 거라고 스스로를 설득했어요.</p><div class="speed-row"><button class="speed-btn" onclick="sayCard(this,'lc9',0.7,false)"><span class="speed-label">🐢 천천히</span></button><button class="speed-btn" onclick="sayCard(this,'lc9',0.95,false)"><span class="speed-label">🗣 자연스럽게</span></button><button class="speed-btn" onclick="sayCard(this,'lc9',1.15,true)"><span class="speed-label">🔥 원어민</span></button></div><button class="play-all-btn" onclick="sayCard3(this,'lc9')">▶ 3단계 연속 듣기</button><div class="link-box">🔗 <b>실제로는 이렇게 들려요</b><br>• would go → 우드고우 · back to → 백터(구어체에서 가능)<br>💡 convince herself는 3인칭 재귀대명사로, 문장의 주어(she)와 목적어가 같아요.</div></div><div class="listen-card stop-card"><button class="play-all-btn" onclick="stopSpeaking()">⏹ 재생 정지</button><p class="listen-note">소리가 겹치거나 멈추지 않으면 이 버튼을 눌러 주세요.</p></div></div><div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div>
+        <h2>문장 암기</h2>
+        <p>빈칸을 채워 오늘의 아홉 문장을 완성하세요</p>
+      </div>
+    </div>
+
+    <div class="quiz-intro">
+      난이도를 고르면 빈칸 개수가 자동으로 바뀝니다. 빈칸에 <b>영어 단어를 직접 입력</b>하고 <b>Enter</b> 또는 <b>✓ 정답 확인</b>을 누르세요.<br>
+      대소문자·문장부호는 채점에 반영되지 않아요. 각 카드의 🔊 버튼으로 발음도 함께 확인하세요.
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">Level 1 · 정답 확인을 누르면 점수가 표시돼요</div>
+      <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" onclick="setLevel(1,this)">🟢 쉬움<span>빈칸 20%</span></button>
+      <button class="level-btn" onclick="setLevel(2,this)">🟡 보통<span>빈칸 40%</span></button>
+      <button class="level-btn" onclick="setLevel(3,this)">🔴 어려움<span>빈칸 65%</span></button>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" style="margin-top:14px" onclick="stopSpeaking()">⏹ 재생 정지</button>
+  </div><div id="panel-review" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔁</div>
+      <div>
+        <h2>누적 복습</h2>
+        <p>지금까지 배운 16곡 64문장</p>
+      </div>
+    </div>
+
+    <div class="quiz-intro">
+      GMP에서 함께 공부한 <b>모든 곡</b>을 한자리에서 다시 풀어 볼 수 있어요. 틀린 문장은 <b>오답 노트</b>에 자동으로 쌓이고, 다시 맞히면 지워집니다.<br>
+      기록은 같은 브라우저의 저장소에 보관됩니다. 파일 위치·브라우저 변경이나 비공개 모드에서는 기록이 이어지지 않을 수 있어요. 총 <b>16곡 64문항</b>입니다.
+    </div>
+
+    <div class="rv-stats">
+      <div class="rv-box"><span>이번 점수</span><b id="rv-score">— / —</b></div>
+      <div class="rv-box"><span>누적 정답률</span><b id="rv-rate">—</b></div>
+      <div class="rv-box"><span>오답 노트</span><b id="rv-wrong">0</b></div>
+    </div>
+
+    <div class="chip-row" id="rv-chips"></div>
+
+    <div class="rv-actions">
+      <button class="quiz-check" onclick="rvScoreAll()">📊 이번 점수 계산</button>
+      <button class="quiz-reveal" onclick="rvRender('wrong')">❌ 오답만 다시 풀기</button>
+      <button class="quiz-reveal" onclick="rvReset()">🗑 기록 초기화</button>
+    </div>
+
+    <p class="rv-label" id="rv-label">곡을 골라 복습을 시작해 보세요.</p>
+    <div id="review-body"></div>
+  </div><div id="panel-kakao" class="panel"><div class="song-hd"><div class="song-icon">💬</div><div><h2>카카오 공유</h2><p>오늘 배운 표현을 함께 나눠 보세요</p></div></div><div class="kakao-wrap"><pre class="kakao-pre" id="kakao-text">[Good Morning Pops] Know Somebody — Ava Max
+
+① I&#x27;m pacing back and forth &#x27;til morning. — 난 아침이 될 때까지 계속 서성이고 있어요.
+② You think you really know somebody. — 당신은 누군가를 잘 안다고 생각하죠.
+③ Convince yourself that&#x27;s what you need. — 그게 당신이 필요한 것이라고 스스로를 설득하죠.
+
+📌 오늘의 표현
+
+pace back and forth
+pace는 불안하거나 초조해서 좁은 공간을 왔다갔다 걷는다는 뜻이에요. 가사 표현과 뜻이 잘 맞아요.
+She paced back and forth in the waiting room, checking her phone every few seconds.
+그녀는 대기실에서 서성이며 몇 초마다 휴대폰을 확인했어요.
+
+He&#x27;d been pacing back and forth outside the interview room for twenty minutes.
+그는 면접실 밖에서 20분째 서성이고 있었어요.
+💡 walk around(정처 없이 돌아다니다)와 달리, pace back and forth는 불안해서 좁은 공간을 왔다갔다 하는 느낌이에요.
+
+think you really know somebody
+really가 동사 know 바로 앞에 놓여 “정말로 안다”는 확신을 강조해요.
+You think you really know your best friend until something like this happens.
+이런 일이 생기기 전까진 가장 친한 친구를 정말 잘 안다고 생각하죠.
+
+I thought I really understood him, but I was wrong.
+난 그를 정말 이해한다고 생각했지만 틀렸어요.
+💡 know somebody(그 사람 자체를 안다)와 know about somebody(정보만 안다)는 뜻이 달라요.
+
+convince yourself that ...
+표현 교정: You convince ~ need? → Convince yourself that&#x27;s what you need. (주어 삭제, 질문 → 서술문)
+Don&#x27;t convince yourself that staying was the right choice when it clearly wasn&#x27;t.
+명백히 아니었는데도 머무는 게 옳았다고 스스로를 설득하지 마세요.
+
+She convinced herself that everything would go back to normal.
+그녀는 모든 게 다시 원래대로 돌아갈 거라고 스스로를 설득했어요.
+💡 convince someone(남을 설득하다)은 목적어가 다른 사람, convince yourself는 재귀대명사예요.
+
+🔊 발음 포인트
+pace back and forth는 이어서, really know는 끊어서 분명히, convince yourself의 f는 아랫입술로.
+
+✨ 이 곡의 매력
+잠 못 들고 서성이는 밤 → 안다고 믿는 확신 → 그걸 스스로에게 납득시키는 안간힘. 세 문장을 연결하면 확신보다 의심에 더 가까운 마음이 들려요.
+
+🎵 Know Somebody — Ava Max · 앨범 Don&#x27;t Click Play(2025)
+#GMP #KnowSomebody #AvaMax #팝송영어</pre><button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button></div></div></div><script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+  stopSpeaking();
+  if(id === 'review') rvRender();
+  window.scrollTo(0,0);
+}
+
+function toggleEx(idx){
+  var box = document.getElementById('ex'+idx);
+  var btn = document.getElementById('btn'+idx);
+  var open = box.style.display === 'block';
+  box.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '예문 보기 ▾' : '예문 닫기 ▴';
+}
+
+async function copyText(){
+ var el=document.getElementById('kakao-text'),btn=document.getElementById('copy-btn');
+ try{await navigator.clipboard.writeText(el.innerText);btn.textContent='복사 완료! ✓';}
+ catch(e){var r=document.createRange();r.selectNodeContents(el);var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);btn.textContent='선택된 글을 직접 복사해 주세요';}
+}
+
+/* ===== 공통 유틸 ===== */
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return String(s).toLowerCase().replace(/[.,!?'"\u2014\u2013\u2018\u2019\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level === 1) target = Math.max(1, Math.round(n*0.20));
+  else if(level === 2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  (keyWords || []).forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+function splitParts(w){
+  var m = w.match(/^([^A-Za-z0-9'\u2019]*)([\s\S]*?)([^A-Za-z0-9'\u2019]*)$/);
+  var pre = m ? m[1] : '';
+  var core = (m && m[2]) ? m[2] : w;
+  var post = m ? m[3] : '';
+  return [pre, core, post];
+}
+
+/* attrName: 'data-q' (문장 암기) 또는 'data-r' (복습) */
+function blankSentence(words, blankIdx, attrName, keyVal, enterCall){
+  var html = '<p class="quiz-sentence">';
+  words.forEach(function(w, wi){
+    if(blankIdx.indexOf(wi) >= 0){
+      var p = splitParts(w);
+      var size = Math.max(p[1].length, 4);
+      if(p[0]) html += '<span class="quiz-word">' + p[0] + '</span>';
+      html += '<input class="quiz-blank" ' + attrName + '="' + keyVal + '" data-w="' + wi + '"'
+           +  ' data-ans="' + encodeURIComponent(p[1]) + '" size="' + size + '"'
+           +  ' autocomplete="off" autocapitalize="off" spellcheck="false"'
+           +  ' onkeydown="if(event.key===&#39;Enter&#39;)' + enterCall + '">';
+      if(p[2]) html += '<span class="quiz-word">' + p[2] + '</span>';
+    } else {
+      html += '<span class="quiz-word">' + w + '</span>';
+    }
+    html += ' ';
+  });
+  return html + '</p>';
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  { title: "📝 오늘의 세 문장", items: [
+    { ko:"난 아침이 될 때까지 계속 서성이고 있어요.", en:"I'm pacing back and forth 'til morning.", key:["pacing", "forth", "morning"] },
+    { ko:"당신은 누군가를 잘 안다고 생각하죠.", en:"You think you really know somebody.", key:["really", "know", "somebody"] },
+    { ko:"그게 당신이 필요한 것이라고 스스로를 설득하죠.", en:"Convince yourself that's what you need.", key:["Convince", "yourself", "need"] }
+  ] },
+  { title: "🔹 pace back and forth", items: [
+    { ko:"그녀는 대기실에서 서성이며 몇 초마다 휴대폰을 확인했어요.", en:"She paced back and forth in the waiting room, checking her phone every few seconds.", key:["paced", "back", "forth", "checking"] },
+    { ko:"그는 면접실 밖에서 20분째 서성이고 있었어요.", en:"He'd been pacing back and forth outside the interview room for twenty minutes.", key:["pacing", "outside", "interview", "twenty"] }
+  ] },
+  { title: "🔹 really know", items: [
+    { ko:"이런 일이 생기기 전까진 가장 친한 친구를 정말 잘 안다고 생각하죠.", en:"You think you really know your best friend until something like this happens.", key:["really", "know", "friend", "happens"] },
+    { ko:"난 그를 정말 이해한다고 생각했지만 틀렸어요.", en:"I thought I really understood him, but I was wrong.", key:["really", "understood", "wrong"] }
+  ] },
+  { title: "🔹 convince yourself", items: [
+    { ko:"명백히 아니었는데도 머무는 게 옳았다고 스스로를 설득하지 마세요.", en:"Don't convince yourself that staying was the right choice when it clearly wasn't.", key:["convince", "yourself", "clearly", "wasn't"] },
+    { ko:"그녀는 모든 게 다시 원래대로 돌아갈 거라고 스스로를 설득했어요.", en:"She convinced herself that everything would go back to normal.", key:["convinced", "herself", "normal"] }
+  ] }
+];
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  if(!body) return;
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">' + item.ko + '</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 (' + blankIdx.length + '칸)</p>';
+      html += blankSentence(words, blankIdx, 'data-q', qi, 'checkOne(' + qi + ')');
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne(' + qi + ')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne(' + qi + ')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',0.7)">🐢 천천히</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',0.95)">🗣 자연</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,' + qi + ',1.15)">🔥 원어민</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr' + qi + '"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="' + qi + '"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  speechRun++;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="' + qi + '"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr' + qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="' + qi + '"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr' + qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">' + getQuizText(qi) + '</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi = 0; qi < total; qi++){ if(checkOne(qi)) correct++; }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1) label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  else if(ratio >= 0.7) label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  else if(ratio >= 0.4) label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  else label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+}
+
+/* ===== 🔁 누적 복습 데이터 ===== */
+var REVIEW_BANK = [
+  { song:"Undressed", artist:"sombr", icon:"\uD83D\uDD6F\uFE0F", items:[
+    { id:"und1", ko:"당신은 나에게 의지했죠.", en:"You looked to me.", key:["looked"] },
+    { id:"und2", ko:"당신의 눈빛은 나에게 다른 걸 말하고 있네요.", en:"The glimmer in your eyes is telling me other things.", key:["glimmer","telling","things"] },
+    { id:"und3", ko:"옷을 벗고 싶지 않아요.", en:"I don't wanna get undressed.", key:["wanna","undressed"] },
+    { id:"und4", ko:"작별을 고하는 순간에도 그녀의 눈빛엔 희미한 희망이 있었어.", en:"There was a glimmer of hope in her eyes even as she said goodbye.", key:["glimmer","hope","goodbye"] }
+  ]},
+  { song:"Memories We'll Never Make", artist:"Michael Minelli", icon:"\uD83E\uDD43", items:[
+    { id:"mem1", ko:"난 다시 허공에 이야기 하고 있네요.", en:"I'm talking to the wind again.", key:["talking","wind","again"] },
+    { id:"mem2", ko:"지금 당신 마음속에 누가 있는지 궁금하네요.", en:"I wonder who's in your heart now.", key:["wonder","heart"] },
+    { id:"mem3", ko:"이번 생에 내가 기회를 놓쳤네요.", en:"I dropped the ball this lifetime.", key:["dropped","ball","lifetime"] },
+    { id:"mem4", ko:"계속 조언해 주는데, 난 그냥 벽에 대고 말하는 거야.", en:"I keep giving him advice, but I'm just talking to the wind.", key:["advice","talking","wind"] }
+  ]},
+  { song:"Every Summertime", artist:"NIKI", icon:"\uD83C\uDF38", items:[
+    { id:"sum1", ko:"우리는 수업에 가지도 못했어요.", en:"We never made it to class.", key:["never","made","class"] },
+    { id:"sum2", ko:"맹세컨대 목련들이 살짝 미소를 보냈어요.", en:"I swear the magnolias flashed a smile.", key:["swear","magnolias","flashed"] },
+    { id:"sum3", ko:"우리는 큰 길을 거닐죠.", en:"We're strolling down the boulevard.", key:["strolling","boulevard"] },
+    { id:"sum4", ko:"그녀는 나를 향해 살짝 웃어 보이고는 걸어갔어.", en:"She flashed a smile at me before walking away.", key:["flashed","smile","walking"] }
+  ]},
+  { song:"The Drum", artist:"Alan Walker", icon:"\uD83E\uDD41", items:[
+    { id:"drm1", ko:"정신이 없네요.", en:"My head's in a spin.", key:["head","spin"] },
+    { id:"drm2", ko:"기분이 너무 좋아서 날아갈 거 같아요.", en:"The ceiling can't hold us.", key:["ceiling","hold"] },
+    { id:"drm3", ko:"당신은 오랫동안 나를 사로잡았죠.", en:"You got me for days.", key:["got","days"] },
+    { id:"drm4", ko:"그 소식을 듣고, 하루 종일 정신이 하나도 없었어.", en:"After hearing the news, my head was in a spin all day.", key:["hearing","head","spin"] }
+  ]},
+  { song:"Gorilla Grip", artist:"Greg Shilling", icon:"\uD83E\uDD8D", items:[
+    { id:"gor1", ko:"내가 잘못을 저지른 것 같아요.", en:"I think that I did a bad thing.", key:["think","did","bad","thing"] },
+    { id:"gor2", ko:"난 평정을 잃죠.", en:"I lose composure.", key:["lose","composure"] },
+    { id:"gor3", ko:"당신은 내 진심을 다 받을 자격이 있어요.", en:"You deserve my heart on the table.", key:["deserve","heart","table"] },
+    { id:"gor4", ko:"그는 인터뷰 도중 평정심을 잃고 소리치기 시작했다.", en:"He lost his composure during the interview and started shouting.", key:["lost","composure","interview","shouting"] }
+  ]},
+  { song:"On My Mind", artist:"Common Jack", icon:"\uD83C\uDF09", items:[
+    { id:"omm1", ko:"이제 가 볼게요.", en:"I've got to go.", key:["got","go"] },
+    { id:"omm2", ko:"나는 지금 제정신이 아니에요.", en:"I'm losing my head now.", key:["losing","head"] },
+    { id:"omm3", ko:"귀가 윙윙거려요.", en:"Ears are ringing like a bell.", key:["Ears","ringing","bell"] },
+    { id:"omm4", ko:"미안하지만 이제 가 봐야 해요, 아침에 회의가 있거든요.", en:"I'm sorry, but I've got to go now, I have a meeting in the morning.", key:["sorry","got","meeting","morning"] }
+  ]},
+  { song:"Gato", artist:"Maya Delilah", icon:"\uD83D\uDC08", items:[
+    { id:"gat1", ko:"모든 게 나에게서 달아나는 것 같아요.", en:"Everything seems to run away from me.", key:["Everything","run","away"] },
+    { id:"gat2", ko:"그냥 누워 있어야겠어요.", en:"I should just lie down.", key:["just","lie","down"] },
+    { id:"gat3", ko:"우리 이거 쉽게 가요.", en:"Let me make this easy.", key:["make","easy"] },
+    { id:"gat4", ko:"자정이 넘도록 깨어 거리를 헤매고 다녀요.", en:"I stay up past midnight wandering round the streets.", key:["stay","midnight","wandering","streets"] }
+  ]},
+  { song:"Things We Left Unsaid", artist:"Young Gun Silver Fox", icon:"\uD83C\uDF04", items:[
+    { id:"twl1", ko:"살다 보면 다시 돌아가고 싶은 순간들이 있죠.", en:"In life there are times you wanna go back.", key:["times","wanna","back"] },
+    { id:"twl2", ko:"당신 생각에 잠을 이루지 못했죠.", en:"I lay awake thinking of you.", key:["lay","awake","thinking"] },
+    { id:"twl3", ko:"그 말들이 내 머릿속에서 계속 맴도네요.", en:"They go round and round inside my head.", key:["round","inside","head"] },
+    { id:"twl4", ko:"우리가 끝내 하지 못한 말들이 아직도 마음에 걸려요.", en:"All the things we left unsaid still weigh on my mind.", key:["unsaid","weigh","mind"] }
+  ]},
+  { song:"Gotta Know", artist:"Purples n' Oranges", icon:"\uD83C\uDF4A", items:[
+    { id:"gtk1", ko:"내가 알아야 하는 게 있어?", en:"Is there something that I should know?", key:["there","something","should"] },
+    { id:"gtk2", ko:"난 꼭 알아야 해.", en:"I just gotta know.", key:["just","gotta","know"] },
+    { id:"gtk3", ko:"천천히 가자.", en:"Take it slow.", key:["Take","slow"] },
+    { id:"gtk4", ko:"당신에게 직접 듣기 전까지는 믿지 않을 거예요.", en:"I won't believe it's true unless I hear it straight from you.", key:["believe","unless","straight"] }
+  ]},
+  { song:"Abracadabra", artist:"Lady Gaga", icon:"\uD83E\uDE84", items:[
+    { id:"abr1", ko:"이 공허한 싸움에서 날 구해 줘요.", en:"Save me from this empty fight.", key:["Save","empty","fight"] },
+    { id:"abr2", ko:"이제 당신 둘 다 최면에 빠졌죠.", en:"Now you're both in a trance.", key:["both","trance"] },
+    { id:"abr3", ko:"감정에 시간을 낭비하지 말아요.", en:"Don't waste time on a feeling.", key:["waste","time","feeling"] },
+    { id:"abr4", ko:"붉은 조명 아래에서 무용수가 움직이자 관객들은 넋을 잃었어요.", en:"The crowd was in a trance as the dancer moved under the red spotlight.", key:["crowd","trance","dancer","spotlight"] }
+  ]},
+  { song:"Better Late Than Sooner", artist:"Fly By Midnight", icon:"\uD83C\uDF19", items:[
+    { id:"blt1", ko:"다음엔 어떤 일이 일어날까요?", en:"So what happens next?", key:["what","happens","next"] },
+    { id:"blt2", ko:"모든 게 완벽히 맞아떨어질까요?", en:"Do the stars and moon align?", key:["stars","moon","align"] },
+    { id:"blt3", ko:"그 상황이 너무 아이러니해서 웃음이 나오네요.", en:"And I can't stop laughing at the irony.", key:["stop","laughing","irony"] },
+    { id:"blt4", ko:"몇 년째 만나 보려고 애썼는데, 이번 여름에 드디어 모든 게 딱 맞아떨어졌어요.", en:"We had been trying to meet for years, and this summer the stars finally aligned.", key:["trying","years","stars","aligned"] }
+  ]},
+  { song:"Backwards", artist:"Jonas Brothers", icon:"\u23EA", items:[
+    { id:"bkw1", ko:"이제 그런 것에 익숙해질 만도 한데요.", en:"I should get used to it now.", key:["should","used","now"] },
+    { id:"bkw2", ko:"난 자꾸만 뒤로 돌아가고 있네요.", en:"I keep going backwards.", key:["keep","going","backwards"] },
+    { id:"bkw3", ko:"난 내가 했던 말을 계속 되짚어 보고 있어요.", en:"I'm replaying every word I said.", key:["replaying","every","word"] },
+    { id:"bkw4", ko:"집에 오는 내내 그 대화를 머릿속에서 계속 돌려 봤어요.", en:"I kept replaying the conversation in my head all the way home.", key:["kept","replaying","conversation","head"] }
+  ]},
+  { song:"Sweet Escape", artist:"Velvet Funk", icon:"\uD83C\uDF19", items:[
+    { id:"swe1", ko:"숨을 돌릴 시간이 필요해요.", en:"I need to breathe.", key:["need","breathe"] },
+    { id:"swe2", ko:"리듬에 몸을 맡겨요.", en:"Let the rhythm take control.", key:["rhythm","take","control"] },
+    { id:"swe3", ko:"달콤한 일탈을 떠나요.", en:"Let's make a sweet escape.", key:["make","sweet","escape"] },
+    { id:"swe4", ko:"생각은 그만하고 딱 하룻밤만 음악에 몸을 맡겨 봐요.", en:"Stop overthinking and let the music take control for just one night.", key:["overthinking","music","control","night"] }
+  ]},
+  { song:"What A Day", artist:"Luke Noa", icon:"\uD83C\uDF3E", items:[
+    { id:"wad1", ko:"내 정신은 완전히 메말라 버렸죠.", en:"My mind had dried out.", key:["mind","dried"] },
+    { id:"wad2", ko:"정말 대단한 하루네!", en:"What a day!", key:["What","day"] },
+    { id:"wad3", ko:"내가 어딜 가든 상황은 똑같아요.", en:"It is the same wherever I go.", key:["same","wherever"] },
+    { id:"wad4", ko:"제가 어디서 일하든 똑같은 문제가 저를 따라다녀요.", en:"The same problem follows me wherever I work.", key:["same","problem","follows","wherever"] }
+  ]},
+  { song:"No Roots", artist:"Alice Merton", icon:"\uD83E\uDDF3", items:[
+    { id:"nrt1", ko:"그런 다음 짐을 상자에 싸요.", en:"Then pack it up in boxes.", key:["pack", "boxes"] },
+    { id:"nrt2", ko:"난 한곳에 뿌리를 내리지 않아요.", en:"I've got no roots.", key:["roots"] },
+    { id:"nrt3", ko:"그건 그저 희망만 담긴 계획일 뿐이에요.", en:"That's just a wishful plan.", key:["wishful", "plan"] },
+    { id:"nrt4", ko:"내일 이사하니까 그것을 조심히 포장하고 상자에 이름표를 붙여요.", en:"We are moving tomorrow, so pack it up carefully and label the box.", key:["pack", "carefully", "label"] }
+  ]},
+  { song:"Know Somebody", artist:"Ava Max", icon:"🌠", items:[
+    { id:"kso1", ko:"난 아침이 될 때까지 계속 서성이고 있어요.", en:"I'm pacing back and forth 'til morning.", key:["pacing","forth","morning"] },
+    { id:"kso2", ko:"당신은 누군가를 잘 안다고 생각하죠.", en:"You think you really know somebody.", key:["really","know","somebody"] },
+    { id:"kso3", ko:"그게 당신이 필요한 것이라고 스스로를 설득하죠.", en:"Convince yourself that's what you need.", key:["Convince","yourself","need"] },
+    { id:"kso4", ko:"그녀는 대기실에서 서성이며 몇 초마다 휴대폰을 확인했어요.", en:"She paced back and forth in the waiting room, checking her phone every few seconds.", key:["paced","back","forth","checking"] }
+  ]}
+];
+
+var RV_KEY = 'gmp_review_v1';
+var __rvMem = null;
+var rvFilter = 'all';
+
+function rvLoad(){
+  var data = null;
+  try {
+    var raw = window.localStorage.getItem(RV_KEY);
+    if(raw) data = JSON.parse(raw);
+  } catch(e){ data = null; }
+  if(!data && __rvMem) data = __rvMem;
+  if(!data) data = { wrong:{}, attempts:0, correct:0 };
+  if(!data.wrong) data.wrong = {};
+  return data;
+}
+
+function rvSave(data){
+  __rvMem = data;
+  try { window.localStorage.setItem(RV_KEY, JSON.stringify(data)); } catch(e){}
+}
+
+function rvAllItems(){
+  var out = [];
+  REVIEW_BANK.forEach(function(g){
+    g.items.forEach(function(it){
+      out.push({ id:it.id, ko:it.ko, en:it.en, key:it.key, song:g.song, artist:g.artist, icon:g.icon });
+    });
+  });
+  return out;
+}
+
+function rvFindItem(id){
+  var all = rvAllItems();
+  for(var i=0;i<all.length;i++){ if(all[i].id === id) return all[i]; }
+  return null;
+}
+
+function rvStats(){
+  var data = rvLoad();
+  var rate = data.attempts ? Math.round(data.correct / data.attempts * 100) + '%' : '—';
+  var r = document.getElementById('rv-rate');
+  var w = document.getElementById('rv-wrong');
+  if(r) r.textContent = rate;
+  if(w) w.textContent = Object.keys(data.wrong).length;
+}
+
+function rvChips(){
+  var row = document.getElementById('rv-chips');
+  if(!row) return;
+  var data = rvLoad();
+  var wrongCount = Object.keys(data.wrong).length;
+  var html = '<button class="chip' + (rvFilter === 'all' ? ' active' : '') + '" onclick="rvRender(\'all\')">\uD83D\uDCDA 전체</button>';
+  REVIEW_BANK.forEach(function(g, gi){
+    var f = 'g' + gi;
+    html += '<button class="chip' + (rvFilter === f ? ' active' : '') + '" onclick="rvRender(\'' + f + '\')">' + g.icon + ' ' + g.song + '</button>';
+  });
+  html += '<button class="chip wrong-chip' + (rvFilter === 'wrong' ? ' active' : '') + '" onclick="rvRender(\'wrong\')">\u274C 오답 노트 (' + wrongCount + ')</button>';
+  row.innerHTML = html;
+}
+
+function rvItemsFor(filter){
+  var data = rvLoad();
+  if(filter === 'all') return rvAllItems();
+  if(filter === 'wrong') return rvAllItems().filter(function(it){ return !!data.wrong[it.id]; });
+  var gi = parseInt(filter.replace('g',''), 10);
+  var g = REVIEW_BANK[gi];
+  if(!g) return rvAllItems();
+  return g.items.map(function(it){
+    return { id:it.id, ko:it.ko, en:it.en, key:it.key, song:g.song, artist:g.artist, icon:g.icon };
+  });
+}
+
+function rvBlankIdx(words, keyWords){
+  var keySet = {};
+  (keyWords || []).forEach(function(k){ keySet[norm(k)] = true; });
+  var idx = [];
+  words.forEach(function(w, i){ if(keySet[norm(w)]) idx.push(i); });
+  if(!idx.length) idx = computeBlanks(words, keyWords, 1);
+  return idx;
+}
+
+function rvRender(filter){
+  if(filter) rvFilter = filter;
+  var body = document.getElementById('review-body');
+  if(!body) return;
+  var items = rvItemsFor(rvFilter);
+  rvChips();
+  rvStats();
+  var sc = document.getElementById('rv-score');
+  if(sc) sc.textContent = '— / —';
+
+  if(!items.length){
+    if(rvFilter === 'wrong'){
+      body.innerHTML = '<div class="rv-empty">\uD83C\uDF89 오답 노트가 비어 있어요!<br>모든 문장을 다 맞히셨네요. 훌륭해요!</div>';
+      document.getElementById('rv-label').innerHTML = '오답 노트가 비어 있어요. <b>전체</b>로 다시 도전해 보세요!';
+    } else {
+      body.innerHTML = '<div class="rv-empty">문제가 없어요.</div>';
+    }
+    return;
+  }
+
+  var html = '';
+  var lastSong = '';
+  items.forEach(function(item){
+    if(item.song !== lastSong){
+      html += '<div class="quiz-group">' + item.icon + ' ' + item.song + ' <span class="quiz-group-sub">· ' + item.artist + '</span></div>';
+      lastSong = item.song;
+    }
+    var words = item.en.split(' ');
+    var blanks = rvBlankIdx(words, item.key);
+    html += '<div class="quiz-card" data-rid="' + item.id + '" data-full="' + item.en.replace(/"/g,'&quot;') + '">';
+    html += '<p class="quiz-ko">' + item.ko + '</p>';
+    html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 (' + blanks.length + '칸)</p>';
+    html += blankSentence(words, blanks, 'data-r', item.id, "rvCheckId('" + item.id + "')");
+    html += '<div class="quiz-btns">';
+    html += '<button class="quiz-check" onclick="rvCheck(this)">✓ 정답 확인</button>';
+    html += '<button class="quiz-reveal" onclick="rvShow(this)">👁 정답 보기</button>';
+    html += '</div>';
+    html += '<div class="quiz-say-row">';
+    html += '<span class="quiz-say-label">🔊 발음</span>';
+    html += '<button class="quiz-say" onclick="rvSay(this,0.7)">🐢 천천히</button>';
+    html += '<button class="quiz-say" onclick="rvSay(this,0.95)">🗣 자연</button>';
+    html += '<button class="quiz-say" onclick="rvSay(this,1.15)">🔥 원어민</button>';
+    html += '</div>';
+    html += '<div class="quiz-result" id="rr-' + item.id + '"></div>';
+    html += '</div>';
+  });
+  body.innerHTML = html;
+  document.getElementById('rv-label').innerHTML = '총 <b>' + items.length + '문장</b> · 정답 확인을 누르면 오답 노트에 자동 기록돼요';
+}
+
+function rvCheckId(id){
+  var card = document.querySelector('.quiz-card[data-rid="' + id + '"]');
+  if(card) rvCheck(card.querySelector('.quiz-check'));
+}
+
+function rvCheck(btn){
+  var card = btn.closest('.quiz-card');
+  var id = card.getAttribute('data-rid');
+  var inputs = card.querySelectorAll('.quiz-blank');
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+
+  var data = rvLoad();
+  if(!card.getAttribute('data-counted')){
+    data.attempts = (data.attempts || 0) + 1;
+    if(allCorrect) data.correct = (data.correct || 0) + 1;
+    card.setAttribute('data-counted','1');
+  }
+  if(allCorrect) delete data.wrong[id];
+  else data.wrong[id] = 1;
+  rvSave(data);
+  rvStats();
+  rvChips();
+
+  var res = document.getElementById('rr-' + id);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답! 오답 노트에서 지웠어요.';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 오답 노트에 저장했어요.';
+  }
+  card.setAttribute('data-result', allCorrect ? '1' : '0');
+}
+
+function rvShow(btn){
+  var card = btn.closest('.quiz-card');
+  var id = card.getAttribute('data-rid');
+  card.querySelectorAll('.quiz-blank').forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var data = rvLoad();
+  data.wrong[id] = 1;
+  rvSave(data);
+  rvStats();
+  rvChips();
+  var res = document.getElementById('rr-' + id);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">' + card.getAttribute('data-full') + '</span>';
+  card.setAttribute('data-result','0');
+}
+
+function rvSay(btn, rate){
+  var card = btn.closest('.quiz-card');
+  var text = card.getAttribute('data-full');
+  if(!text) return;
+  speechRun++;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function rvScoreAll(){
+  var cards = document.querySelectorAll('#review-body .quiz-card');
+  var done = 0, right = 0;
+  for(var i=0;i<cards.length;i++){
+    var r = cards[i].getAttribute('data-result');
+    if(r !== null){ done++; if(r === '1') right++; }
+  }
+  var sc = document.getElementById('rv-score');
+  if(sc) sc.textContent = done ? (right + ' / ' + done) : '— / —';
+  var label = document.getElementById('rv-label');
+  if(!done) label.innerHTML = '아직 채점한 문장이 없어요. 각 문장의 <b>정답 확인</b>을 눌러 주세요!';
+  else if(right === done) label.innerHTML = '🏆 채점한 ' + done + '문장을 모두 맞혔어요!';
+  else label.innerHTML = done + '문장 중 <b>' + right + '개</b> 정답 · <b>❌ 오답만 다시 풀기</b>로 복습해 보세요!';
+}
+
+function rvReset(){
+  if(!window.confirm('누적 점수와 오답 노트를 모두 지울까요?')) return;
+  rvSave({ wrong:{}, attempts:0, correct:0 });
+  try { window.localStorage.removeItem(RV_KEY); } catch(e){}
+  __rvMem = null;
+  rvFilter = 'all';
+  rvRender('all');
+}
+
+/* ===== 발음 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+var speechRun = 0;
+
+function pickVoice(){
+  if(!synth) return null;
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en') === 0; });
+  var enUS = en.filter(function(x){ return x.lang === 'en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name || '').toLowerCase();
+    return femaleNames.some(function(f){ return n.indexOf(f) >= 0; });
+  }
+  function isMale(v){
+    var n = (v.name || '').toLowerCase();
+    return maleNames.some(function(m){ return n.indexOf(m) >= 0; });
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){ el.classList.remove('playing'); });
+}
+
+/* 발음 연습 카드: data-en(정자체) / data-native(연음 반영) */
+function sayCard(btn, cardId, rate, isNative){
+  var card = document.getElementById(cardId);
+  if(!card || !synth) return;
+  var text = isNative ? (card.getAttribute('data-native') || card.getAttribute('data-en'))
+                      : card.getAttribute('data-en');
+  speechRun++;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayCard3(btn, cardId){
+  var card = document.getElementById(cardId);
+  if(!card || !synth) return;
+  var en = card.getAttribute('data-en');
+  var na = card.getAttribute('data-native') || en;
+  speechRun++;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var run = speechRun;
+  var steps = [[en,0.7],[en,0.95],[na,1.15]];
+  var i = 0;
+  function next(){
+    if(run !== speechRun) return;
+    if(i >= steps.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(steps[i][0], steps[i][1]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  speechRun++;
+  if(synth) synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+
+document.addEventListener('DOMContentLoaded', function(){ renderQuiz(); rvRender('all'); });
+if(document.readyState !== 'loading'){ renderQuiz(); rvRender('all'); }
+</script><!-- GMP-TTS-FIX:start -->
+<script>
+/* ===== 안드로이드 음성 호환 보정 (GMP TTS FIX v1) =====
+   아이폰에서는 나던 소리가 안드로이드(삼성)에서 안 나는 원인을 보정한다.
+   카드의 기존 함수는 그대로 두고 speechSynthesis 자체를 감싼다. */
+(function(){
+  if(!window.speechSynthesis || window.__gmpTtsFix) return;
+  window.__gmpTtsFix = true;
+
+  var synth = window.speechSynthesis;
+  var rawSpeak  = synth.speak.bind(synth);
+  var rawCancel = synth.cancel.bind(synth);
+
+  var lastCancel = 0;
+  var voices = [];
+  var warned = false;
+  var keepAlive = null;
+
+  /* --- 1. 목소리 목록 캐싱 ---
+     안드로이드 크롬은 getVoices()가 처음엔 빈 배열을 준다. */
+  function loadVoices(){
+    try { var v = synth.getVoices(); if(v && v.length) voices = v; } catch(e){}
+  }
+  loadVoices();
+  try { synth.addEventListener('voiceschanged', loadVoices); } catch(e){
+    synth.onvoiceschanged = loadVoices;
+  }
+  setTimeout(loadVoices, 300);
+  setTimeout(loadVoices, 1200);
+  setTimeout(checkEnglish, 2500);
+
+  function englishVoices(){
+    return voices.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf('en') === 0; });
+  }
+
+  /* 카드는 여성 영어 음성을 기준으로 만들어졌다.
+     보정이 개입할 때도 같은 결을 유지해야 학습 자료가 들쭉날쭉해지지 않는다. */
+  var FEMALE = ['samantha','victoria','allison','ava','susan','zira','aria','jenny',
+    'michelle','joanna','salli','kendra','kimberly','google us english','karen','moira',
+    'tessa','fiona','serena','female','woman','zoe','nicky','vicki','eddy','flo'];
+  var MALE = ['albert','bad news','bahh','bells','boing','bubbles','cellos','david',
+    'mark','alex','daniel','fred','male','man','guy','tom','george','james','oliver',
+    'arthur','microsoft david','junior','ralph','organ','trinoids','whisper','wobble',
+    'jester','superstar','grandpa','rocko','reed','sandy','shelley','good news'];
+  function nameHas(v, list){
+    var n = (v.name || '').toLowerCase();
+    return list.some(function(k){ return n.indexOf(k) >= 0; });
+  }
+  function bestEnglish(){
+    var en = englishVoices();
+    if(!en.length) return null;
+    var us = en.filter(function(v){ return v.lang === 'en-US'; });
+    var pool = us.length ? us : en;
+    return pool.filter(function(v){ return nameHas(v, FEMALE); })[0]
+        || pool.filter(function(v){ return !nameHas(v, MALE); })[0]
+        || pool[0];
+  }
+
+  /* --- 2. 영어 목소리가 아예 없으면 알려준다 ---
+     삼성 기기에서 구글 TTS 영어 데이터가 없으면 소리가 안 난다.
+     이때는 조용히 실패하지 말고 무엇을 해야 하는지 보여 준다. */
+  function checkEnglish(){
+    if(warned || !voices.length) return;
+    if(englishVoices().length) return;
+    warned = true;
+    var box = document.createElement('div');
+    box.setAttribute('role','status');
+    box.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;'
+      + 'background:#3A2317;color:#FFF3E4;border-radius:12px;padding:13px 15px;'
+      + 'font:14px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;'
+      + 'box-shadow:0 6px 24px rgba(0,0,0,.3);max-width:520px;margin:0 auto';
+    box.innerHTML = '🔇 <b>이 기기에 영어 음성이 없어 소리가 나지 않습니다.</b><br>'
+      + '설정 → 일반 → <b>접근성 → 텍스트 음성 변환</b>에서 '
+      + '<b>Google 음성 인식 및 합성</b>을 선택하고, 언어에 <b>English</b>를 내려받아 주세요.'
+      + '<div style="text-align:right;margin-top:8px">'
+      + '<button style="background:#FFF3E4;color:#3A2317;border:0;border-radius:999px;'
+      + 'padding:6px 14px;font-size:13px;font-weight:600">닫기</button></div>';
+    box.querySelector('button').onclick = function(){ box.remove(); };
+    document.body.appendChild(box);
+  }
+
+  /* --- 3. 안드로이드 크롬은 재생 중 스스로 멈추는 버그가 있다 --- */
+  function startKeepAlive(){
+    if(keepAlive) return;
+    keepAlive = setInterval(function(){
+      if(!synth.speaking){ stopKeepAlive(); return; }
+      if(synth.paused){ try { synth.resume(); } catch(e){} }
+    }, 3000);
+  }
+  function stopKeepAlive(){
+    if(keepAlive){ clearInterval(keepAlive); keepAlive = null; }
+  }
+
+  /* --- 4. cancel() 시각을 기록한다 ---
+     cancel() 직후 같은 순간에 speak()를 부르면 안드로이드는 그 발화를 조용히 버린다.
+     아이폰은 버리지 않기 때문에 아이폰에서만 소리가 났던 것이다. */
+  synth.cancel = function(){
+    lastCancel = Date.now();
+    stopKeepAlive();
+    return rawCancel();
+  };
+
+  /* --- 5. 발화 보정 후 재생 --- */
+  function fixUtterance(u){
+    // 영어 문장인데 한국어 목소리가 붙으면 안드로이드는 발음하지 못한다.
+    var wantEn = !u.lang || u.lang.toLowerCase().indexOf('en') === 0;
+    if(wantEn){
+      var bad = u.voice && u.voice.lang && u.voice.lang.toLowerCase().indexOf('en') !== 0;
+      if(bad) u.voice = null;
+      if(!u.voice){
+        var pick = bestEnglish();
+        if(pick){ u.voice = pick; u.lang = pick.lang; }
+      }
+      if(!u.lang) u.lang = 'en-US';
+    }
+    // 일부 안드로이드 TTS는 극단적인 속도를 무시하거나 무음으로 처리한다
+    if(typeof u.rate === 'number'){
+      if(u.rate < 0.5) u.rate = 0.5;
+      if(u.rate > 1.8) u.rate = 1.8;
+    }
+    return u;
+  }
+
+  synth.speak = function(u){
+    if(!u) return;
+    fixUtterance(u);
+
+    // onend가 끝내 오지 않아도 다음 단계로 넘어가게 한다 (3단계 연속 듣기 대비)
+    var done = false;
+    var userEnd = u.onend;
+    var userErr = u.onerror;
+    function finish(ev){
+      if(done) return;
+      done = true;
+      stopKeepAlive();
+      if(typeof userEnd === 'function'){ try { userEnd.call(u, ev || {}); } catch(e){} }
+    }
+    u.onend = function(ev){ finish(ev); };
+    u.onerror = function(ev){
+      if(done) return;
+      done = true;
+      stopKeepAlive();
+      if(typeof userErr === 'function'){ try { userErr.call(u, ev); } catch(e){} }
+      else if(typeof userEnd === 'function'){ try { userEnd.call(u, ev); } catch(e){} }
+    };
+
+    var words = String(u.text || '').split(/\s+/).length;
+    var estimate = Math.max(2500, (words / Math.max(0.5, u.rate || 1)) * 700 + 2500);
+
+    var wait = Math.max(0, 260 - (Date.now() - lastCancel));
+    setTimeout(function(){
+      loadVoices();
+      if(!u.voice) fixUtterance(u);
+      try { rawSpeak(u); } catch(e){ finish(); return; }
+      startKeepAlive();
+      setTimeout(function(){ if(!done && !synth.speaking) finish(); }, estimate);
+    }, wait);
+  };
+
+  /* --- 6. 첫 터치에서 음성 엔진을 깨운다 ---
+     일부 안드로이드 브라우저는 사용자 조작 없이는 음성 엔진을 준비하지 않는다. */
+  function unlock(){
+    loadVoices();
+    try {
+      var u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      rawSpeak(u);
+    } catch(e){}
+    document.removeEventListener('touchstart', unlock, true);
+    document.removeEventListener('click', unlock, true);
+  }
+  document.addEventListener('touchstart', unlock, true);
+  document.addEventListener('click', unlock, true);
+})();
+
+</script>
+<!-- GMP-TTS-FIX:end -->
+</body></html>
