@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Falling In Love · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>Falling In Love</h1>
+    <p class="artist">SakaZan feat. Natalie Major</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p class="en">오늘의 곡은 SakaZan feat. Natalie Major의 Falling In Love.</p><p>제목 그대로, 이유도 모른 채 마음이 기울어 가는 그 순간의 설렘을 담은 곡이에요. 💕</p><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다. ☕🎧</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">give me a sign</p><p class="phrase-ko">나에게 신호를 줘</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Give me a sign.</p><p class="gloss">→ 나에게 신호를 보내줘요.</p></div><div class="blk"><p>여기서 꼭 기억할 포인트는 이것입니다.</p><p class="point">👉 sign (g 묵음!)</p></div><div class="blk"><p>예를 들어,</p><p class="en">Tell me you want me, give me a sign, just look in my eyes.</p><p class="gloss">→ 날 원한다고 말해줘, 신호를 보내줘, 그냥 내 눈을 바라봐줘.</p></div><div class="blk"><p>또,</p><p class="en">If you ever need my help, just give me a sign and I&#x27;ll be there.</p><p class="gloss">→ 도움이 필요하면 언제든 신호만 줘, 그럼 내가 달려갈게.</p></div><div class="blk"><p class="tip">💡 sign은 g가 소리 나지 않아 &quot;사인&quot;으로 읽습니다. 철자 하나 차이인 sing[싱](노래하다)과는 뜻도 발음도 완전히 다르니 주의하세요.</p></div><div class="blk"><p>마음은 있는데 상대가 도통 표현을 안 할 때, 속으로 이 말이 절로 나오죠. Give me a sign.</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">be willing to ~</p><p class="phrase-ko">기꺼이 ~하려 하다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">You can tell that she&#x27;s willing to try.</p><p class="gloss">→ 그녀가 노력하는 걸 알 수 있죠.</p></div><div class="blk"><p>여기서 꼭 기억할 포인트는 이것입니다.</p><p class="point">👉 can tell = 알 수 있다</p></div><div class="blk"><p>예를 들어,</p><p class="en">You can tell that she&#x27;s willing to try, even if it scares her a little.</p><p class="gloss">→ 조금 두려워하면서도, 그녀가 기꺼이 해보려 한다는 걸 알 수 있어.</p></div><div class="blk"><p>또,</p><p class="en">I&#x27;m willing to give it another shot if you are too.</p><p class="gloss">→ 너만 괜찮다면 나도 기꺼이 한 번 더 해볼 의향이 있어.</p></div><div class="blk"><p class="tip">💡 can tell (that)는 &quot;말하다&quot;가 아니라 &quot;알아차리다&quot;입니다. be willing to + 동사원형은 &quot;기꺼이 ~하려 하다&quot;는 뜻으로, 마지못해 하는 것과는 결이 다릅니다.</p></div><div class="blk"><p>월요일 아침, 오늘 하루도 일단 한 번 해보겠다는 마음 하나면 충분합니다. I&#x27;m willing to try.</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">I don&#x27;t know what happened</p><p class="phrase-ko">무슨 일이 생겼는지 모르겠어</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I don&#x27;t know what happened.</p><p class="gloss">→ 무슨 일이 생겼는지 모르겠어요.</p></div><div class="blk"><p>여기서 꼭 기억할 포인트는 이것입니다.</p><p class="point">👉 간접의문문</p></div><div class="blk"><p>예를 들어,</p><p class="en">Nothing&#x27;s the same, I don&#x27;t know what happened, but I feel completely different.</p><p class="gloss">→ 모든 게 달라졌어, 무슨 일이 생겼는지 모르겠지만, 난 완전히 달라진 기분이야.</p></div><div class="blk"><p>또,</p><p class="en">One minute we were fine, and then, I don&#x27;t know what happened between us.</p><p class="gloss">→ 방금 전까지 괜찮았는데, 그러다가, 우리 사이에 무슨 일이 있었는지 모르겠어.</p></div><div class="blk"><p class="tip">💡 간접의문문은 의문사(what) 뒤에 주어+동사 어순을 그대로 씁니다. &quot;What happened?&quot;이 문장 속으로 들어가도 어순은 바뀌지 않아요.</p></div><div class="blk"><p>정신없이 하루를 보내고 나면 저도 모르게 이 말이 나옵니다. I don&#x27;t know what happened today.</p></div></section><section class="sec"><h2>☕ 30초 복습</h2><div class="blk"><p>오늘은 딱 세 개만 가져갑니다.</p></div><div class="blk"><p class="numbered">① give me a sign</p><p class="gloss">→ 나에게 신호를 줘</p><p class="numbered">② be willing to ~</p><p class="gloss">→ 기꺼이 ~하려 하다</p><p class="numbered">③ I don&#x27;t know what happened</p><p class="gloss">→ 무슨 일이 생겼는지 모르겠어</p></div><div class="blk"><p>한 문장으로 연결해 볼까요?</p><p>신호를 기다리다가, 기꺼이 마음을 열어 보기로 하고, 정신 차려보면 이미 사랑에 빠져 있습니다. 이유는 나중에 생각해도 늦지 않아요.</p></div></section><section class="sec"><h2>🔊 발음도 한 줄만</h2><div class="blk"><p class="bullet">· sign → 사인 (g 묵음, design·align도 마찬가지)</p><p class="bullet">· mirror → 미러 (r 소리 살려서)</p><p class="bullet">· happened → 해쁜드 (-ed는 &quot;드&quot;로)</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>오늘 하나만 기억한다면 저는</p><p class="en">I don&#x27;t know what happened</p><p>을 고르겠습니다.</p></div><div class="blk"><p>사랑에 빠지는 순간은 원래 설명이 잘 안 되잖아요. 정신 차려보면 이미 마음이 기울어 있고, 이유를 대라면 딱히 할 말이 없습니다.</p><p>그 얼떨떨하고 설레는 느낌을 가장 잘 담은 표현이라 골랐습니다.</p></div></section><section class="sec sec-turn"><h2>✍️ YOUR TURN</h2><div class="blk"><p>아래 문장을 완성해 보세요.</p><p class="en">I don&#x27;t know what happened, but ________.</p><p>예를 들면,</p><p class="en">I don&#x27;t know what happened, but I can&#x27;t stop smiling.</p><p>무슨 일이 있었는지 모르겠지만, 웃음이 멈추질 않아요.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨보세요. 😊</p><p>영어는 많이 읽는 것도 좋지만</p><p>내 이야기를 영어로 한 번 만들어 볼 때 훨씬 오래 기억됩니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/falling_in_love_sakazan.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/falling_in_love_sakazan.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div></section><section class="sec sec-end"><h2>🌞 내일 아침에도 Good Morning Pops와 함께</h2><div class="blk"><p>하루 세 표현.</p><p>그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다. ☕🎧</p></div></section>
+
+  <p class="tags">#GoodMorningPops #FallingInLove #SakaZan #NatalieMajor #팝송영어 #영어회화 #영어공부 #하루한문장</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝송] Falling In Love — SakaZan feat. Natalie Major | give me a sign · be willing to ~ · I don&#x27;t know what happened</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝송] Falling In Love — SakaZan feat. Natalie Major | give me a sign · be willing to ~ · I don&#x27;t know what happened
+
+🎧 Good Morning Pops
+Falling In Love — SakaZan feat. Natalie Major
+
+오늘의 곡은 SakaZan feat. Natalie Major의 Falling In Love.
+제목 그대로, 이유도 모른 채 마음이 기울어 가는 그 순간의 설렘을 담은 곡이에요. 💕
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다. ☕🎧
+
+📌 오늘의 영어 ①
+give me a sign
+나에게 신호를 줘
+
+오늘 문장에서는:
+Give me a sign.
+→ 나에게 신호를 보내줘요.
+
+여기서 꼭 기억할 포인트는 이것입니다.
+👉 sign (g 묵음!)
+
+예를 들어,
+Tell me you want me, give me a sign, just look in my eyes.
+→ 날 원한다고 말해줘, 신호를 보내줘, 그냥 내 눈을 바라봐줘.
+
+또,
+If you ever need my help, just give me a sign and I&#x27;ll be there.
+→ 도움이 필요하면 언제든 신호만 줘, 그럼 내가 달려갈게.
+
+💡 sign은 g가 소리 나지 않아 &quot;사인&quot;으로 읽습니다. 철자 하나 차이인 sing[싱](노래하다)과는 뜻도 발음도 완전히 다르니 주의하세요.
+
+마음은 있는데 상대가 도통 표현을 안 할 때, 속으로 이 말이 절로 나오죠. Give me a sign.
+
+📌 오늘의 영어 ②
+be willing to ~
+기꺼이 ~하려 하다
+
+오늘 문장에서는:
+You can tell that she&#x27;s willing to try.
+→ 그녀가 노력하는 걸 알 수 있죠.
+
+여기서 꼭 기억할 포인트는 이것입니다.
+👉 can tell = 알 수 있다
+
+예를 들어,
+You can tell that she&#x27;s willing to try, even if it scares her a little.
+→ 조금 두려워하면서도, 그녀가 기꺼이 해보려 한다는 걸 알 수 있어.
+
+또,
+I&#x27;m willing to give it another shot if you are too.
+→ 너만 괜찮다면 나도 기꺼이 한 번 더 해볼 의향이 있어.
+
+💡 can tell (that)는 &quot;말하다&quot;가 아니라 &quot;알아차리다&quot;입니다. be willing to + 동사원형은 &quot;기꺼이 ~하려 하다&quot;는 뜻으로, 마지못해 하는 것과는 결이 다릅니다.
+
+월요일 아침, 오늘 하루도 일단 한 번 해보겠다는 마음 하나면 충분합니다. I&#x27;m willing to try.
+
+📌 오늘의 영어 ③
+I don&#x27;t know what happened
+무슨 일이 생겼는지 모르겠어
+
+오늘 문장에서는:
+I don&#x27;t know what happened.
+→ 무슨 일이 생겼는지 모르겠어요.
+
+여기서 꼭 기억할 포인트는 이것입니다.
+👉 간접의문문
+
+예를 들어,
+Nothing&#x27;s the same, I don&#x27;t know what happened, but I feel completely different.
+→ 모든 게 달라졌어, 무슨 일이 생겼는지 모르겠지만, 난 완전히 달라진 기분이야.
+
+또,
+One minute we were fine, and then, I don&#x27;t know what happened between us.
+→ 방금 전까지 괜찮았는데, 그러다가, 우리 사이에 무슨 일이 있었는지 모르겠어.
+
+💡 간접의문문은 의문사(what) 뒤에 주어+동사 어순을 그대로 씁니다. &quot;What happened?&quot;이 문장 속으로 들어가도 어순은 바뀌지 않아요.
+
+정신없이 하루를 보내고 나면 저도 모르게 이 말이 나옵니다. I don&#x27;t know what happened today.
+
+☕ 30초 복습
+오늘은 딱 세 개만 가져갑니다.
+
+① give me a sign
+→ 나에게 신호를 줘
+② be willing to ~
+→ 기꺼이 ~하려 하다
+③ I don&#x27;t know what happened
+→ 무슨 일이 생겼는지 모르겠어
+
+한 문장으로 연결해 볼까요?
+신호를 기다리다가, 기꺼이 마음을 열어 보기로 하고, 정신 차려보면 이미 사랑에 빠져 있습니다. 이유는 나중에 생각해도 늦지 않아요.
+
+🔊 발음도 한 줄만
+· sign → 사인 (g 묵음, design·align도 마찬가지)
+· mirror → 미러 (r 소리 살려서)
+· happened → 해쁜드 (-ed는 &quot;드&quot;로)
+
+⭐ 오늘 딱 한 표현
+오늘 하나만 기억한다면 저는
+I don&#x27;t know what happened
+을 고르겠습니다.
+
+사랑에 빠지는 순간은 원래 설명이 잘 안 되잖아요. 정신 차려보면 이미 마음이 기울어 있고, 이유를 대라면 딱히 할 말이 없습니다.
+그 얼떨떨하고 설레는 느낌을 가장 잘 담은 표현이라 골랐습니다.
+
+✍️ YOUR TURN
+아래 문장을 완성해 보세요.
+I don&#x27;t know what happened, but ________.
+예를 들면,
+I don&#x27;t know what happened, but I can&#x27;t stop smiling.
+무슨 일이 있었는지 모르겠지만, 웃음이 멈추질 않아요.
+
+댓글에 여러분의 문장 하나 남겨보세요. 😊
+영어는 많이 읽는 것도 좋지만
+내 이야기를 영어로 한 번 만들어 볼 때 훨씬 오래 기억됩니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/falling_in_love_sakazan.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+🌞 내일 아침에도 Good Morning Pops와 함께
+하루 세 표현.
+그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다. ☕🎧
+
+#GoodMorningPops #FallingInLove #SakaZan #NatalieMajor #팝송영어 #영어회화 #영어공부 #하루한문장
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
