@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>No Contact — Bruklin</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#E7F1F0;min-height:100vh;padding:20px;color:#1A1A2E}
+  .container{max-width:640px;margin:0 auto}
+  .tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .tab{padding:8px 16px;border-radius:20px;border:1px solid #2A8078;font-size:13px;cursor:pointer;background:#fff;color:#888;transition:all .15s;font-weight:500}
+  .tab.active{background:#BFE2DE;border-color:#0E4A47;color:#08302E}
+  .panel{display:none}.panel.active{display:block}
+  .song-hd{display:flex;align-items:center;gap:12px;margin-bottom:22px;background:#fff;border-radius:16px;padding:16px 18px;border:1px solid #9BD5CF}
+  .song-icon{width:46px;height:46px;border-radius:12px;background:#BFE2DE;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px}
+  .song-hd h2{font-size:17px;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .song-hd p{font-size:12px;color:#888}
+  .song-badge{background:#BFE2DE;color:#08302E;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0}
+  .section-label{font-size:11px;font-weight:700;letter-spacing:.07em;color:#AAA;text-transform:uppercase;margin:0 0 10px}
+  .check-card{background:#fff;border:1px solid #A9DAD4;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .check-top{display:flex;align-items:flex-start;gap:10px}
+  .num-ok{min-width:26px;height:26px;border-radius:50%;background:#E1F5EE;color:#085041;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .num-fix{min-width:26px;height:26px;border-radius:50%;background:#FCEBEB;color:#791F1F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .check-body{flex:1}
+  .check-meaning{font-size:12px;color:#999;margin:0 0 8px}
+  .sent-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .sent-wrong{font-size:13px;font-family:'SF Mono',monospace;color:#C94040;text-decoration:line-through}
+  .sent-right{font-size:14px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E}
+  .pill-fix{display:inline-block;background:#FCEBEB;color:#791F1F;font-size:11px;padding:2px 9px;border-radius:10px;font-family:monospace;margin:3px 4px 3px 0}
+  .pill-ok{display:inline-block;background:#E1F5EE;color:#085041;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0}
+  .pill-note{display:inline-block;background:#FAEEDA;color:#633806;font-size:11px;padding:2px 9px;border-radius:10px;margin:3px 0 3px 4px}
+  .note-text{margin-top:8px;font-size:12px;color:#888;line-height:1.65}
+  .note-text b{font-family:'SF Mono',monospace;color:#333;font-weight:600}
+  .divider{border:none;border-top:1px solid #A9DAD4;margin:20px 0}
+  .expr-card{background:#fff;border:1px solid #A9DAD4;border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+  .expr-card:hover{border-color:#0E4A47}
+  .expr-en{font-size:14px;font-weight:600;font-family:'SF Mono',monospace;color:#1A1A2E;margin-bottom:3px}
+  .expr-ko{font-size:12px;color:#888;margin-bottom:10px}
+  .expr-tag{font-size:11px;background:#BFE2DE;color:#08302E;padding:3px 10px;border-radius:10px;display:inline-block;font-weight:500}
+  .ex-box{background:#E7F1F0;border-radius:10px;padding:12px 14px;margin-top:12px;border:1px solid #9BD5CF}
+  .ex-box p{margin:0 0 10px;font-size:13px;color:#555;line-height:1.7}
+  .ex-box p:last-child{margin:0}
+  .ex-box b{font-family:'SF Mono',monospace;color:#1A1A2E;font-weight:600}
+  .ex-note{margin-top:10px!important;font-size:11px!important;color:#AAA!important;line-height:1.6}
+  .expand-btn{background:none;border:none;font-size:12px;color:#AAA;cursor:pointer;padding:0;margin-top:8px}
+  .summary-box{background:#fff;border-radius:14px;padding:16px 18px;font-size:14px;line-height:2.3;border:1px solid #A9DAD4}
+  .summary-box span{font-family:'SF Mono',monospace;font-weight:600;color:#08302E}
+  .ref-table{background:#fff;border-radius:16px;overflow:hidden;border:1px solid #A9DAD4;margin-bottom:16px}
+  .ref-row{display:grid;grid-template-columns:1.3fr 1.2fr 1fr 1.3fr;padding:11px 16px;border-bottom:1px solid #E7F1F0;align-items:center;gap:8px}
+  .ref-row:last-child{border-bottom:none}
+  .ref-row.header{background:#E7F1F0;padding:8px 16px}
+  .ref-col-label{font-size:10px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.05em}
+  .ref-en{font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-ipa{font-family:'SF Mono',monospace;color:#08302E;font-size:12px}
+  .ref-kr{font-weight:600;color:#1A1A2E;font-size:14px}
+  .ref-kr .s{color:#E05C00}
+  .ref-mean{font-size:12px;color:#888}
+  .word-card{background:#fff;border:1px solid #A9DAD4;border-radius:16px;padding:18px 20px;margin-bottom:12px}
+  .word-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .word-en{font-size:22px;font-family:'SF Mono',monospace;font-weight:700;color:#1A1A2E}
+  .word-mean{font-size:12px;color:#AAA;margin-top:3px}
+  .word-tag{font-size:11px;background:#BFE2DE;color:#08302E;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+  .pron-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pron-box{background:#E7F1F0;border-radius:10px;padding:10px 12px}
+  .pron-box-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#0E4A47;text-transform:uppercase;margin-bottom:5px}
+  .pron-ipa{font-size:14px;color:#08302E;font-family:'SF Mono',monospace;letter-spacing:.04em}
+  .pron-kr{font-size:18px;color:#1A1A2E;font-weight:600;letter-spacing:.04em}
+  .stress{color:#E05C00}
+  .tip-box{background:#FFF8F0;border-radius:10px;padding:10px 14px;font-size:13px;color:#854F0B;line-height:1.65;border-left:3px solid #EF9F27}
+  .tip-box b{font-weight:600}
+  .kakao-wrap{background:#fff;border:1px solid #A9DAD4;border-radius:16px;padding:20px}
+  .kakao-pre{font-size:13.5px;line-height:2.05;color:#1A1A2E;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .copy-btn{margin-top:16px;width:100%;padding:12px;border-radius:12px;border:none;background:#BFE2DE;color:#08302E;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+  .copy-btn:hover{background:#9BD5CF}
+  .copy-btn.done{background:#E1F5EE;color:#085041}
+  /* Story tab */
+  .story-wrap{background:#fff;border:1px solid #A9DAD4;border-radius:16px;padding:20px}
+  .story-section{margin-bottom:22px}
+  .story-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;color:#0E4A47;background:#BFE2DE;padding:3px 10px;border-radius:8px;margin-bottom:10px;text-transform:uppercase}
+  .story-p{font-size:13.5px;color:#444;line-height:1.85;margin-bottom:8px}
+  .story-p b{color:#08302E;font-weight:600}
+  .flow-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #E7F1F0;align-items:flex-start}
+  .flow-item:last-child{border-bottom:none}
+  .flow-num{min-width:24px;height:24px;border-radius:50%;background:#BFE2DE;color:#08302E;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .flow-txt{font-size:13px;color:#555;line-height:1.7}
+  .flow-txt b{color:#1A1A2E;font-weight:600}
+  .learn-line{background:#FFF9E6;border:1px solid #EFD98C;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+  .learn-en{font-size:13.5px;font-family:'SF Mono',monospace;font-weight:600;color:#1A1A2E;margin-bottom:3px}
+  .learn-ko{font-size:12px;color:#888}
+  .note-small{font-size:11px;color:#AAA;text-align:center;margin-top:10px;line-height:1.7}
+  .twist-box{background:#E7F1F0;border-left:3px solid #0E4A47;border-radius:10px;padding:12px 14px;font-size:13px;color:#0E4A47;line-height:1.8}
+  .twist-box b{color:#08302E;font-weight:600}
+  .lyrics-btn{display:inline-block;background:#BFE2DE;color:#08302E;text-decoration:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid #2A8078}
+  /* Listen tab */
+  .listen-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .listen-card{background:#fff;border:1px solid #A9DAD4;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .listen-en{font-size:15.5px;font-weight:600;color:#1A1A2E;line-height:1.55;margin-bottom:5px}
+  .listen-ko{font-size:12.5px;color:#999;margin-bottom:14px;line-height:1.6}
+  .speed-row{display:flex;gap:8px;flex-wrap:wrap}
+  .speed-btn{flex:1;min-width:80px;border:1px solid #9BD5CF;background:#E7F1F0;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+  .speed-btn:hover{background:#BFE2DE;border-color:#2A8078}
+  .speed-btn.playing{background:#BFE2DE;border-color:#0E4A47;box-shadow:0 0 0 2px #BFE2DE}
+  .speed-label{font-size:13px;font-weight:600;color:#08302E;display:block}
+  .play-all-btn{width:100%;margin-top:10px;border:none;background:#BFE2DE;color:#08302E;border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .play-all-btn:hover{background:#9BD5CF}
+  .play-all-btn.playing{background:#0E4A47;color:#fff}
+  .listen-note{font-size:11px;color:#AAA;text-align:center;margin-top:6px;line-height:1.7}
+  .listen-group{font-size:13px;font-weight:700;color:#0E4A47;background:#BFE2DE;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .listen-group span{font-size:11px;color:#1C645E;font-weight:500}
+  /* Quiz tab */
+  .quiz-intro{background:#FFF8F0;border:1px solid #EF9F27;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#854F0B;line-height:1.7}
+  .level-row{display:flex;gap:8px;margin-bottom:18px}
+  .level-btn{flex:1;padding:10px 6px;border-radius:12px;border:1px solid #9BD5CF;background:#fff;color:#1C645E;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+  .level-btn.active{background:#BFE2DE;border-color:#0E4A47;color:#08302E}
+  .level-btn span{display:block;font-size:10px;font-weight:500;color:#2A8078;margin-top:2px}
+  .quiz-group{font-size:13px;font-weight:700;color:#0E4A47;background:#BFE2DE;border-radius:10px;padding:9px 14px;margin:20px 0 12px;letter-spacing:.02em}
+  .quiz-card{background:#fff;border:1px solid #A9DAD4;border-radius:16px;padding:18px 20px;margin-bottom:14px}
+  .quiz-ko{font-size:14px;color:#08302E;font-weight:600;margin-bottom:4px;line-height:1.6}
+  .quiz-hint{font-size:11px;color:#AAA;margin-bottom:14px}
+  .quiz-sentence{font-size:15px;line-height:2.4;color:#1A1A2E;font-weight:500}
+  .quiz-word{display:inline}
+  .quiz-blank{border:none;border-bottom:2px solid #2A8078;background:#E7F1F0;font-size:15px;font-family:inherit;font-weight:600;color:#0E4A47;text-align:center;padding:2px 4px;margin:0 2px;border-radius:4px 4px 0 0;transition:all .15s;min-width:70px}
+  .quiz-blank:focus{outline:none;background:#BFE2DE;border-bottom-color:#0E4A47}
+  .quiz-blank.correct{background:#E1F5EE;border-bottom-color:#22A06B;color:#085041}
+  .quiz-blank.wrong{background:#FCEBEB;border-bottom-color:#E5484D;color:#791F1F}
+  .quiz-btns{display:flex;gap:8px;margin-top:16px}
+  .quiz-check{flex:1;padding:11px;border-radius:12px;border:none;background:#BFE2DE;color:#08302E;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+  .quiz-check:hover{background:#9BD5CF}
+  .quiz-reveal{padding:11px 16px;border-radius:12px;border:1px solid #9BD5CF;background:#fff;color:#1C645E;font-size:13px;font-weight:600;cursor:pointer}
+  .quiz-reveal:hover{background:#E7F1F0}
+  .quiz-say-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .quiz-say-label{font-size:11px;color:#AAA;flex-shrink:0}
+  .quiz-say{flex:1;padding:9px 6px;border-radius:10px;border:1px solid #9BD5CF;background:#E7F1F0;color:#08302E;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+  .quiz-say:hover{background:#BFE2DE;border-color:#2A8078}
+  .quiz-say.playing{background:#BFE2DE;border-color:#0E4A47;box-shadow:0 0 0 2px #BFE2DE}
+  .quiz-result{margin-top:12px;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;line-height:1.6}
+  .quiz-result.ok{background:#E1F5EE;color:#085041;display:block}
+  .quiz-result.no{background:#FFF4E5;color:#854F0B;display:block}
+  .quiz-answer{font-family:'SF Mono',monospace;font-weight:600}
+  .score-box{background:#fff;border:1px solid #A9DAD4;border-radius:16px;padding:18px 20px;text-align:center;margin-bottom:14px}
+  .score-num{font-size:28px;font-weight:700;color:#0E4A47}
+  .score-label{font-size:12px;color:#888;margin-top:2px}
+  .quiz-allcheck{width:100%;padding:13px;border-radius:12px;border:none;background:#0E4A47;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;transition:background .15s}
+  .quiz-allcheck:hover{background:#08302E}
+  @media(max-width:480px){.pron-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="tab-row">
+    <button class="tab active" onclick="showTab('lesson',this)">수업 카드</button>
+    <button class="tab" onclick="showTab('story',this)">곡 이야기</button>
+    <button class="tab" onclick="showTab('pron',this)">발음 가이드</button>
+    <button class="tab" onclick="showTab('listen',this)">🔊 발음 연습</button>
+    <button class="tab" onclick="showTab('quiz',this)">✏️ 문장 암기</button>
+    <button class="tab" onclick="showTab('kakao',this)">카카오 공유</button>
+  </div>
+
+  <!-- LESSON -->
+  <div id="panel-lesson" class="panel active">
+    <div class="song-hd">
+      <div class="song-icon">📵</div>
+      <div>
+        <h2>No Contact</h2>
+        <p>Bruklin · 2024 &nbsp;·&nbsp; Good Morning Pops</p>
+      </div>
+      <span class="song-badge">오늘 수업</span>
+    </div>
+
+    <div style="background:#E7F1F0;border:1px solid #2A8078;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#08302E;line-height:1.7">
+      📵 <b>가수명 확인:</b> 브루클린 → <b>Bruklin (브루클린)</b><br>
+      2008년생 알바니아 출신 미국 싱어송라이터예요. 이 곡 <b>"No Contact"</b>는 2024년 9월 발매됐고, <b>Oak Felder</b> 프로듀싱 · <b>Sebastian Kole</b> 작사예요.<br>
+      헤어진 뒤에도 <b>완전히 연락을 끊지는 못하는</b> 미련과 갈등을 노래한 곡이에요 📱<br>
+      👏 <b>아포스트로피 하나만 다듬으면 완벽해요!</b>
+    </div>
+
+    <p class="section-label">가사 체크</p>
+
+    <!-- 1 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">1</div>
+        <div class="check-body">
+          <p class="check-meaning">어쩌면 우리는 이것에 대해 충분히 이야기해야 할지도 몰라요</p>
+          <div class="sent-row">
+            <span class="sent-right">Maybe we should talk this out.</span>
+          </div>
+          <span class="pill-ok">문법적으로 완벽해요 ✓</span>
+          <p class="note-text">
+            💡 <b>talk ~ out</b> = ~을 (끝까지) 대화로 풀다, 충분히 논의해서 해결하다<br>
+            &nbsp;&nbsp;<b>out</b>이 "끝까지, 완전히"라는 뉘앙스를 더해줘요 — 그냥 talk about보다 <b>문제를 매듭짓는</b> 느낌!<br>
+            &nbsp;&nbsp;<b>talk this out / talk it out</b> 둘 다 자주 쓰는 형태예요<br>
+            &nbsp;&nbsp;<b>maybe we should ~</b> = 어쩌면 우리 ~해야 할지도 몰라 (조심스러운 제안!) 💬
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-ok">2</div>
+        <div class="check-body">
+          <p class="check-meaning">완전히 연락을 끊고 지낼 순 없어요</p>
+          <div class="sent-row">
+            <span class="sent-right">I can't go no contact.</span>
+          </div>
+          <span class="pill-ok">구어체로 자연스러워요 ✓</span>
+          <span class="pill-note">노래·구어에서 흔한 이중부정</span>
+          <p class="note-text">
+            💡 <b>go no contact</b> = 연락을 완전히 끊다, 무연락 상태로 지내다 (현대 관계 용어!)<br>
+            &nbsp;&nbsp;<b>go + 형용사/상태</b> = ~한 상태가 되다 (go silent, go dark처럼!)<br>
+            &nbsp;&nbsp;📌 <b>can't ~ no</b>는 문법책상 이중부정이지만, <b>노래·구어체에서는 아주 흔한 강조법</b>이에요<br>
+            &nbsp;&nbsp;격식체로 바꾸면: <b>I can't go no contact</b> → I can't go completely no-contact / I can't cut off all contact 💔
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="check-card">
+      <div class="check-top">
+        <div class="num-fix">3</div>
+        <div class="check-body">
+          <p class="check-meaning">내 휴대폰은 보통 방해금지 모드로 해두죠</p>
+          <div class="sent-row">
+            <span class="sent-wrong">My phones normally on do not disturb.</span>
+            <span style="color:#CCC;font-size:13px">→</span>
+            <span class="sent-right">My phone's normally on do not disturb.</span>
+          </div>
+          <span class="pill-fix">phones → phone's</span>
+          <p class="note-text">
+            ⚠️ <b>phone's</b>에 아포스트로피(')가 필요해요! <b>phone's = phone is</b>의 줄임<br>
+            &nbsp;&nbsp;💡 아포스트로피가 없으면 <b>phones</b>(휴대폰들, 복수)가 되어 동사가 없는 어색한 문장이 돼요<br>
+            &nbsp;&nbsp;<b>My phone's on ~</b> = 내 휴대폰은 ~ 상태다 (be동사 is의 축약!)<br>
+            &nbsp;&nbsp;<b>on do not disturb</b> = 방해금지(DND) 모드로 설정된 — 전치사 <b>on</b>이 "(기능이) 켜진" 상태를 나타내요 📵
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">오늘의 표현 — 클릭해서 예문 보기</p>
+
+    <div class="expr-card" onclick="toggleEx(0)">
+      <p class="expr-en">talk ~ out</p>
+      <p class="expr-ko">대화로 풀다, 충분히 논의하다</p>
+      <span class="expr-tag">out = 끝까지</span>
+      <div class="ex-box" id="ex0" style="display:none">
+        <p><b>Maybe we should talk this out before we make any decisions we'll regret.</b><br>→ 후회할 결정을 내리기 전에, 어쩌면 우리 이걸 충분히 이야기해봐야 할지도 몰라.</p>
+        <p><b>Instead of ignoring each other, let's just talk it out like adults.</b><br>→ 서로 무시하는 대신, 어른답게 대화로 풀어보자.</p>
+        <p class="ex-note">💡 <b>talk ~ out</b> = 문제를 끝까지 대화로 풀어 해결하다<br><b>out</b>이 "완전히, 끝까지"라는 뉘앙스를 더해줘요 💬<br>📌 <b>talk it out / talk this out</b> 둘 다 자주 써요<br>비슷한 표현: <b>work it out</b>(해결하다), <b>hash it out</b>(논의해서 결론 내다)</p>
+      </div>
+      <button class="expand-btn" id="btn0">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(1)">
+      <p class="expr-en">go no contact</p>
+      <p class="expr-ko">연락을 완전히 끊다</p>
+      <span class="expr-tag">go + 상태</span>
+      <div class="ex-box" id="ex1" style="display:none">
+        <p><b>After the breakup, she decided to go no contact to protect her own peace.</b><br>→ 이별 후, 그녀는 자신의 마음의 평화를 지키기 위해 연락을 완전히 끊기로 했어.</p>
+        <p><b>I know it's healthier to go no contact, but I can't quite bring myself to do it.</b><br>→ 연락을 끊는 게 더 건강하다는 걸 알지만, 도무지 그렇게 할 수가 없어.</p>
+        <p class="ex-note">💡 <b>go no contact</b> = 연락을 완전히 끊고 지내다 (관계 정리 용어)<br><b>go + 형용사/상태</b> = ~한 상태가 되다 (go silent 침묵하다, go dark 잠적하다)<br>📌 노래 속 <b>I can't go no contact</b>의 이중부정은 구어체 강조 — 격식체는 <b>can't cut off all contact</b><br>비슷한 표현: <b>cut ties</b>(관계를 끊다), <b>block someone</b>(차단하다)</p>
+      </div>
+      <button class="expand-btn" id="btn1">예문 보기 ▾</button>
+    </div>
+
+    <div class="expr-card" onclick="toggleEx(2)">
+      <p class="expr-en">on do not disturb</p>
+      <p class="expr-ko">방해금지(DND) 모드로</p>
+      <span class="expr-tag">phone's = phone is</span>
+      <div class="ex-box" id="ex2" style="display:none">
+        <p><b>My phone's normally on do not disturb, so I might miss your call.</b><br>→ 내 휴대폰은 보통 방해금지 모드라, 네 전화를 놓칠 수도 있어.</p>
+        <p><b>I put my phone on do not disturb whenever I need to focus on work.</b><br>→ 나는 일에 집중해야 할 때마다 휴대폰을 방해금지 모드로 해둬.</p>
+        <p class="ex-note">💡 <b>phone's = phone is</b> — 아포스트로피는 be동사 축약! (phones 복수와 구별)<br><b>on do not disturb</b> = 방해금지(DND) 모드가 켜진 상태 — 전치사 <b>on</b>이 "기능이 켜짐"을 나타내요 📵<br>📌 <b>put ~ on do not disturb</b> = ~을 방해금지로 설정하다<br>비슷한 표현: <b>on silent</b>(무음으로), <b>on airplane mode</b>(비행기 모드로)</p>
+      </div>
+      <button class="expand-btn" id="btn2">예문 보기 ▾</button>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">한 번에 정리</p>
+    <div class="summary-box">
+      <span>Maybe we should talk this out.</span> → 어쩌면 우리는 이것에 대해 충분히 이야기해야 할지도 몰라요.<br>
+      <span>I can't go no contact.</span> → 완전히 연락을 끊고 지낼 순 없어요.<br>
+      <span>My phone's normally on do not disturb.</span> → 내 휴대폰은 보통 방해금지 모드로 해두죠.
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="panel-story" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">📵</div>
+      <div><h2>곡 이야기</h2><p>No Contact · Bruklin</p></div>
+    </div>
+    <div class="story-wrap">
+
+      <div class="story-section">
+        <span class="story-tag">이 곡은?</span>
+        <p class="story-p">
+          <b>Bruklin (브루클린, 본명 Bruklin Muca)</b>은 <b>2008년생 알바니아 출신 미국 싱어송라이터</b>예요. 2024년부터 음악을 발표하기 시작한 신예죠.
+        </p>
+        <p class="story-p">
+          <b>"No Contact"</b>는 2024년 9월 발매된 곡으로, 유명 프로듀서 <b>Oak Felder</b>가 프로듀싱하고 <b>Sebastian Kole</b>가 작사에 참여했어요. "Stay Friends", "Magic Show", "Good Cry" 등과 함께 그녀의 초기 대표곡이에요 🎧
+        </p>
+        <p class="story-p">
+          제목 <b>"No Contact"</b>는 현대 관계에서 <b>이별 후 완전히 연락을 끊는 것</b>을 뜻해요. 이 곡은 그렇게 하는 게 맞다는 걸 알면서도, <b>차마 그러지 못하는 미련</b>을 노래해요 💔
+        </p>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이야기의 흐름</span>
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <p class="flow-txt"><b>Verse — 대화로 풀어야 할까</b><br><b>어쩌면 우리 이걸 충분히 이야기해봐야 할지도 몰라요</b>(오늘 첫 문장!). 무시하는 게 답이 아니라는 걸 알면서도, 어떻게 다가가야 할지 모르는 혼란스러운 마음을 그려요. 💬</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <p class="flow-txt"><b>Pre-Chorus — 끊어야 하는데</b><br>헤어졌으면 연락을 끊는 게 맞다는 걸 알아요. 그런데 <b>완전히 연락을 끊고 지낼 순 없어요</b>(두 번째 문장!). 머리로는 알지만 마음이 따라주지 않는, 미련의 갈등이 드러나요. 💔</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <p class="flow-txt"><b>Chorus — 방해금지 모드</b><br><b>내 휴대폰은 보통 방해금지 모드로 해둬요</b>(세 번째 문장!). 세상과 거리를 두고 싶은 마음, 하지만 그 사람의 연락만은 놓치고 싶지 않은 이중적인 마음을 휴대폰 설정에 빗대어 표현해요. 📵</p>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <p class="flow-txt"><b>전체 정서 — 놓지 못하는 미련</b><br>이 곡 전체는 <b>"연락을 끊어야 한다는 이성"</b>과 <b>"끊지 못하는 감정"</b> 사이의 줄다리기예요. 현대 젊은 세대의 이별 방식을 솔직하게 담아냈어요. 🌙</p>
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">이 곡의 매력 ✨</span>
+        <div class="twist-box">
+          📵 <b>"No Contact"라는 현대적 언어</b><br><br>
+          이 곡의 제목이자 핵심인 <b>no contact(무연락)</b>는 요즘 관계에서 아주 흔히 쓰는 표현이에요. 이별 후 <b>상대를 차단하고 연락을 완전히 끊어</b> 마음을 정리하는 방식을 뜻하죠.<br><br>
+          그리고 <b>do not disturb(방해금지)</b>라는 휴대폰 기능이 곡의 감정을 상징적으로 보여줘요. 세상 모든 알림을 꺼두면서도, <b>단 한 사람의 연락만은 기다리는</b> 모순된 마음 — 휴대폰 설정만큼 현대적인 은유가 또 있을까요?<br><br>
+          이성적으로는 <b>go no contact</b>(연락 끊기)가 답이라는 걸 알지만, <b>talk this out</b>(대화로 풀기)을 놓지 못하는 — 그 사이에서 흔들리는 진솔한 마음이 이 곡의 매력이에요 💔
+        </div>
+      </div>
+
+      <div class="story-section">
+        <span class="story-tag">오늘 학습한 세 문장</span>
+        <div class="learn-line">
+          <p class="learn-en">① Maybe we should talk this out</p>
+          <p class="learn-ko">어쩌면 우리는 이것에 대해 충분히 이야기해야 할지도 몰라요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">② I can't go no contact</p>
+          <p class="learn-ko">완전히 연락을 끊고 지낼 순 없어요</p>
+        </div>
+        <div class="learn-line">
+          <p class="learn-en">③ My phone's normally on do not disturb</p>
+          <p class="learn-ko">내 휴대폰은 보통 방해금지 모드로 해두죠</p>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <a href="https://www.google.com/search?q=Bruklin+No+Contact+%EA%B0%80%EC%82%AC" target="_blank" rel="noopener" class="lyrics-btn">
+          🔎 &nbsp;No Contact 가사 보러 가기
+        </a>
+      </div>
+
+      <p class="note-small">
+        🎧 <b>전체 가사</b>는 위 버튼(구글 검색) 또는<br>Melon · 지니 · Spotify · Apple Music 등 정식 음원 서비스에서 확인해 주세요!<br>
+        ※ 가사 저작권은 Bruklin · Sebastian Kole · Oak Felder 등 저작권자에게 있습니다
+      </p>
+    </div>
+  </div>
+
+  <!-- PRONUNCIATION -->
+  <div id="panel-pron" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">📵</div>
+      <div><h2>핵심 단어 발음</h2><p>No Contact · Bruklin</p></div>
+    </div>
+
+    <p class="section-label">한눈에 보기</p>
+    <div class="ref-table">
+      <div class="ref-row header">
+        <span class="ref-col-label">단어</span>
+        <span class="ref-col-label">IPA</span>
+        <span class="ref-col-label">한글</span>
+        <span class="ref-col-label">뜻</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">contact</span>
+        <span class="ref-ipa">[ˈkɑːntækt]</span>
+        <span class="ref-kr"><span class="s">칸</span>택트</span>
+        <span class="ref-mean">연락 (앞 강세!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">disturb</span>
+        <span class="ref-ipa">[dɪˈstɜːrb]</span>
+        <span class="ref-kr">디<span class="s">스터</span>ㅂ</span>
+        <span class="ref-mean">방해하다 (뒤 강세!)</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">normally</span>
+        <span class="ref-ipa">[ˈnɔːrməli]</span>
+        <span class="ref-kr"><span class="s">노</span>ㄹ멀리</span>
+        <span class="ref-mean">보통, 대개</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">phone's</span>
+        <span class="ref-ipa">[foʊnz]</span>
+        <span class="ref-kr"><span class="s">포</span>운즈</span>
+        <span class="ref-mean">phone is 축약</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">maybe</span>
+        <span class="ref-ipa">[ˈmeɪbi]</span>
+        <span class="ref-kr"><span class="s">메</span>이비</span>
+        <span class="ref-mean">어쩌면</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-en">should</span>
+        <span class="ref-ipa">[ʃʊd]</span>
+        <span class="ref-kr"><span class="s">슈</span>드</span>
+        <span class="ref-mean">~해야 한다 (l 묵음!)</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#AAA;margin-top:-8px;margin-bottom:20px">🟠 주황색 = 강세 음절</p>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ① — contact vs disturb (강세 대비!)</p>
+
+    <div class="word-card" style="border-color:#B8EDD9">
+      <div class="word-top">
+        <div><p class="word-en" style="color:#085041">contact / disturb</p><p class="word-mean">연락 / 방해하다</p></div>
+        <span class="word-tag" style="background:#E1F5EE;color:#085041">✓ 강세 위치 반대!</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈkɑːntækt] / [dɪˈstɜːrb]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">칸</span>택트 / 디<span class="stress">스터</span>ㅂ</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>contact</b>: <b>앞</b> 음절 강세! "<b>칸</b>택트" — o가 "아" 소리<br>
+        🔸 <b>disturb</b>: <b>뒤</b> 음절 강세! "디<b>스터</b>ㅂ" — ur가 "어ㄹ" 소리<br>
+        🔸 ⚠️ <b>contact</b>는 명사·동사 모두 앞 강세로 발음해요 (일부 동사만 뒤 강세)<br>
+        🔸 <b>disturb</b>의 <b>b</b>는 살짝만 — "디스터브"보다 "디스터ㅂ"에 가깝게<br>
+        🔸 <b>do not disturb</b>: "두 낫 디스터ㅂ" 📵
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">⚠️ 발음 핵심 ② — phone's (phone is 축약)</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">phone's</p><p class="word-mean">phone is의 축약</p></div>
+        <span class="word-tag">o = 오우</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[foʊnz]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">포</span>운즈</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>pho-</b>: "포우" [foʊ] — o가 "오우" 이중모음! ph = "f"<br>
+        🔸 <b>-ne's</b>: "운즈" [nz] — 끝의 's는 "즈" [z] 소리!<br>
+        🔸 📌 발음상 <b>phone's</b>(phone is)와 <b>phones</b>(복수)는 <b>소리가 같아요</b> — 아포스트로피는 글로 쓸 때만 구별!<br>
+        🔸 <b>my phone's on</b>: "마이 포운즈 온" — 내 휴대폰은 ~ 상태다 📱
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">단어별 상세 발음</p>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">talk this out</p><p class="word-mean">대화로 풀다</p></div>
+        <span class="word-tag">l 묵음 + 연음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[tɔːk ðɪs aʊt]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">토</span>크 디<span class="stress">사</span>웃</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>talk</b>: "토크" [tɔːk] — <b>l은 묵음</b>! "톡크"(✗) → "토크"(✓)<br>
+        🔸 <b>this out</b>: "디사웃" — s + out 연음!<br>
+        🔸 같은 l 묵음: <b>wal</b>k[워크], <b>hal</b>f[해프], <b>cal</b>m[캄]<br>
+        🔸 <b>talk this out</b>: "토크 디사웃" 💬
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">should</p><p class="word-mean">~해야 한다</p></div>
+        <span class="word-tag">l 묵음</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ʃʊd]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">슈</span>드</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>l은 묵음</b>! "슐드"(✗) → "슈드"(✓)<br>
+        🔸 <b>ou</b>: "우" [ʊ] — 짧게!<br>
+        🔸 같은 묵음 l: <b>could</b>[쿠드], <b>would</b>[우드], <b>should</b>[슈드]<br>
+        🔸 <b>we should talk</b>: "위 슈드 토크" — 우리 ~해야 해
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-top">
+        <div><p class="word-en">normally</p><p class="word-mean">보통, 대개</p></div>
+        <span class="word-tag">NOR에 강세</span>
+      </div>
+      <div class="pron-grid">
+        <div class="pron-box"><p class="pron-box-label">IPA</p><p class="pron-ipa">[ˈnɔːrməli]</p></div>
+        <div class="pron-box"><p class="pron-box-label">한글</p><p class="pron-kr"><span class="stress">노</span>ㄹ멀리</p></div>
+      </div>
+      <div class="tip-box">
+        🔸 <b>nor-</b>: "노ㄹ" [nɔːr] — NOR에 강세, or이 "오ㄹ"!<br>
+        🔸 <b>-mally</b>: "멀리" [məli] — 약하게<br>
+        🔸 3음절 "노ㄹ멀리" — "노말리"(✗)보다 첫 음절에 힘!<br>
+        🔸 <b>normally on do not disturb</b>: "노ㄹ멀리 온 두낫 디스터ㅂ" 📵
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div id="panel-listen" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">🔊</div>
+      <div><h2>발음 연습</h2><p>듣고 따라 하기 · No Contact</p></div>
+    </div>
+
+    <div class="listen-intro">
+      🔊 <b>듣고 따라 하기</b> — 각 문장을 <b>2회 반복</b>으로 들려드려요!<br>
+      ① <b>보통</b> 속도 (따라 말하기) → ② <b>원어민</b> 속도 (자연스러운 실제 속도)<br>
+      각 속도 버튼을 눌러 개별 재생하거나, <b>"2회 반복 듣기"</b>로 한 번에 연습하세요.<br>
+      💡 소리가 안 나면 기기 음량을 확인하고, 크롬(Chrome) 브라우저를 권장해요!<br>
+      🎙️ <b>여성 아나운서 음성</b>으로 재생됩니다 (기기에 여성 영어 음성이 있을 때)
+    </div>
+
+    <div class="listen-group">🔹 talk ~ out <span>· 대화로 풀다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">Maybe we should talk this out before we make any decisions we'll regret.</p>
+      <p class="listen-ko">후회할 결정을 내리기 전에, 어쩌면 우리 이걸 충분히 이야기해봐야 할지도 몰라.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Maybe we should talk this out before we make any decisions we'll regret.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Maybe we should talk this out before we make any decisions we'll regret.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;Maybe we should talk this out before we make any decisions we'll regret.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">Instead of ignoring each other, let's just talk it out like adults.</p>
+      <p class="listen-ko">서로 무시하는 대신, 어른답게 대화로 풀어보자.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;Instead of ignoring each other, let's just talk it out like adults.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;Instead of ignoring each other, let's just talk it out like adults.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;Instead of ignoring each other, let's just talk it out like adults.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-group">🔹 go no contact <span>· 연락을 완전히 끊다</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">After the breakup, she decided to go no contact to protect her own peace.</p>
+      <p class="listen-ko">이별 후, 그녀는 자신의 마음의 평화를 지키기 위해 연락을 완전히 끊기로 했어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'After the breakup, she decided to go no contact to protect her own peace.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'After the breakup, she decided to go no contact to protect her own peace.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'After the breakup, she decided to go no contact to protect her own peace.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">I know it's healthier to go no contact, but I can't quite bring myself to do it.</p>
+      <p class="listen-ko">연락을 끊는 게 더 건강하다는 걸 알지만, 도무지 그렇게 할 수가 없어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;I know it's healthier to go no contact, but I can't quite bring myself to do it.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;I know it's healthier to go no contact, but I can't quite bring myself to do it.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;I know it's healthier to go no contact, but I can't quite bring myself to do it.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-group">🔹 on do not disturb <span>· 방해금지 모드로</span></div>
+
+    <div class="listen-card">
+      <p class="listen-en">My phone's normally on do not disturb, so I might miss your call.</p>
+      <p class="listen-ko">내 휴대폰은 보통 방해금지 모드라, 네 전화를 놓칠 수도 있어.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,&quot;My phone's normally on do not disturb, so I might miss your call.&quot;,0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,&quot;My phone's normally on do not disturb, so I might miss your call.&quot;,1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,&quot;My phone's normally on do not disturb, so I might miss your call.&quot;)">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card">
+      <p class="listen-en">I put my phone on do not disturb whenever I need to focus on work.</p>
+      <p class="listen-ko">나는 일에 집중해야 할 때마다 휴대폰을 방해금지 모드로 해둬.</p>
+      <div class="speed-row">
+        <div class="speed-btn" onclick="say(this,'I put my phone on do not disturb whenever I need to focus on work.',0.8)"><span class="speed-label">🚶 보통</span></div>
+        <div class="speed-btn" onclick="say(this,'I put my phone on do not disturb whenever I need to focus on work.',1.0)"><span class="speed-label">🏃 원어민</span></div>
+      </div>
+      <button class="play-all-btn" onclick="say2(this,'I put my phone on do not disturb whenever I need to focus on work.')">▶ 2회 반복 듣기</button>
+    </div>
+
+    <div class="listen-card" style="background:#E7F1F0;margin-top:20px">
+      <p class="listen-en" style="font-size:14px">⏹ 재생 정지</p>
+      <p class="listen-ko">재생 중인 음성을 멈춰요</p>
+      <button class="play-all-btn" onclick="stopSpeaking()" style="background:#fff;color:#0E4A47;border:1px solid #9BD5CF">⏹ 정지</button>
+    </div>
+
+    <p class="listen-note">🎙️ 여성 아나운서 음성으로 재생됩니다 (인터넷 연결 불필요)<br>기기에 여성 영어 음성이 없으면 기본 음성으로 재생될 수 있어요</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="panel-quiz" class="panel">
+    <div class="song-hd">
+      <div class="song-icon">✏️</div>
+      <div><h2>문장 암기</h2><p>빈칸 채우기 + 발음 연습 · No Contact</p></div>
+    </div>
+
+    <div class="quiz-intro">
+      ✏️ <b>빈칸에 알맞은 영어 단어를 직접 입력</b>해서 오늘 배운 문장을 통째로 외워봐요!<br>
+      <b>오늘의 세 문장 + 표현별 예문</b>까지 전부 연습할 수 있어요.<br>
+      난이도를 골라 도전하세요 — <b>Level 1</b>(쉬움) → <b>Level 2</b>(보통) → <b>Level 3</b>(어려움)<br>
+      💡 각 칸을 채우고 <b>"정답 확인"</b>(또는 Enter)을 누르면 채점돼요.<br>
+      🔊 문장마다 <b>발음 듣기 버튼</b>이 있어요 — 듣고 따라 하면 더 빨리 외워져요!
+    </div>
+
+    <div class="level-row">
+      <button class="level-btn active" id="lv1" onclick="setLevel(1,this)">Level 1<span>핵심 단어</span></button>
+      <button class="level-btn" id="lv2" onclick="setLevel(2,this)">Level 2<span>표현 위주</span></button>
+      <button class="level-btn" id="lv3" onclick="setLevel(3,this)">Level 3<span>거의 전체</span></button>
+    </div>
+
+    <div class="score-box">
+      <div class="score-num" id="score-num">— / —</div>
+      <div class="score-label" id="score-label">정답 확인을 누르면 점수가 표시돼요</div>
+    </div>
+
+    <div id="quiz-body"></div>
+
+    <button class="quiz-allcheck" onclick="checkAll()">📝 전체 정답 확인</button>
+
+    <div class="quiz-card" style="background:#E7F1F0;margin-top:14px">
+      <p class="quiz-ko">⏹ 재생 정지</p>
+      <p class="quiz-hint">재생 중인 음성을 멈춰요</p>
+      <button class="quiz-check" onclick="stopSpeaking()" style="background:#fff;color:#0E4A47;border:1px solid #9BD5CF;width:100%">⏹ 정지</button>
+    </div>
+  </div>
+
+  <!-- KAKAO -->
+  <div id="panel-kakao" class="panel">
+    <div class="kakao-wrap">
+      <pre class="kakao-pre" id="kakao-text">📵 [Good Morning Pops] No Contact
+— Bruklin
+
+🎵 가수명: 브루클린 → Bruklin (브루클린)
+   2008년생 알바니아 출신 미국 싱어송라이터
+   2024년 9월 발매 · Oak Felder 프로듀싱
+
+   이별 후에도 완전히 연락을 끊지는 못하는
+   미련과 갈등을 노래한 곡 📱
+
+👏 아포스트로피 하나만 다듬으면 완벽해요!
+   phones → phone's (phone is 축약!)
+
+——————————————————
+
+📌 오늘의 표현
+
+🔹 talk ~ out
+   대화로 풀다, 충분히 논의하다
+   • Maybe we should talk this out before
+     we make any decisions we'll regret.
+     (후회할 결정을 내리기 전에, 어쩌면
+      우리 이걸 충분히 이야기해봐야 할지도 몰라.)
+   • Instead of ignoring each other,
+     let's just talk it out like adults.
+     (서로 무시하는 대신,
+      어른답게 대화로 풀어보자.)
+💡 out이 "끝까지, 완전히" 뉘앙스를 더해요
+   talk it out / talk this out 둘 다 OK
+   비슷한 표현: work it out / hash it out
+
+🔹 go no contact
+   연락을 완전히 끊다
+   • After the breakup, she decided to go
+     no contact to protect her own peace.
+     (이별 후, 그녀는 자신의 마음의 평화를
+      지키기 위해 연락을 완전히 끊기로 했어.)
+   • I know it's healthier to go no contact,
+     but I can't quite bring myself to do it.
+     (연락을 끊는 게 더 건강하다는 걸
+      알지만, 도무지 그렇게 할 수가 없어.)
+💡 go + 상태 = ~한 상태가 되다
+   (go silent 침묵하다, go dark 잠적하다)
+   can't go no~는 구어체 이중부정 강조!
+   비슷한 표현: cut ties / block someone
+
+🔹 on do not disturb
+   방해금지(DND) 모드로
+   • My phone's normally on do not disturb,
+     so I might miss your call.
+     (내 휴대폰은 보통 방해금지 모드라,
+      네 전화를 놓칠 수도 있어.)
+   • I put my phone on do not disturb
+     whenever I need to focus on work.
+     (나는 일에 집중해야 할 때마다
+      휴대폰을 방해금지 모드로 해둬.)
+💡 phone's = phone is (아포스트로피=be 축약!)
+   전치사 on = "(기능이) 켜진" 상태
+   비슷한 표현: on silent / on airplane mode
+
+🔊 발음 팁
+   • contact = [칸]택트 (앞 강세!)
+     disturb = 디[스터]ㅂ (뒤 강세!) — 대비!
+   • talk = [토]크 (l 묵음! "톡크" ✗)
+     should[슈드]도 l 묵음
+   • phone's = [포]운즈 (phones 복수와 소리 같음)
+   • normally = [노]ㄹ멀리 (3음절, 앞 강세)
+
+——————————————————
+#GoodMorningPops #팝송영어 #NoContact #Bruklin</pre>
+      <button class="copy-btn" id="copy-btn" onclick="copyText()">복사하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toggleEx(idx){
+  const box=document.getElementById('ex'+idx);
+  const btn=document.getElementById('btn'+idx);
+  const open=box.style.display==='block';
+  box.style.display=open?'none':'block';
+  btn.textContent=open?'예문 보기 ▾':'예문 닫기 ▴';
+}
+function copyText(){
+  const text=document.getElementById('kakao-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='복사 완료! ✓';
+    btn.classList.add('done');
+    setTimeout(()=>{btn.textContent='복사하기';btn.classList.remove('done');},2500);
+  });
+}
+
+/* ===== 문장 암기 퀴즈 ===== */
+var QUIZ_GROUPS = [
+  {
+    title: "📝 오늘의 세 문장",
+    items: [
+      { ko:"어쩌면 우리는 이것에 대해 충분히 이야기해야 할지도 몰라요.", en:"Maybe we should talk this out.", key:["Maybe","talk","out"] },
+      { ko:"완전히 연락을 끊고 지낼 순 없어요.", en:"I can't go no contact.", key:["go","contact"] },
+      { ko:"내 휴대폰은 보통 방해금지 모드로 해두죠.", en:"My phone's normally on do not disturb.", key:["phone's","normally","disturb"] }
+    ]
+  },
+  {
+    title: "🔹 talk ~ out",
+    items: [
+      { ko:"후회할 결정을 내리기 전에, 어쩌면 우리 이걸 충분히 이야기해봐야 할지도 몰라.", en:"Maybe we should talk this out before we make any decisions we'll regret.", key:["talk","decisions","regret"] },
+      { ko:"서로 무시하는 대신, 어른답게 대화로 풀어보자.", en:"Instead of ignoring each other, let's just talk it out like adults.", key:["ignoring","talk","adults"] }
+    ]
+  },
+  {
+    title: "🔹 go no contact",
+    items: [
+      { ko:"이별 후, 그녀는 자신의 마음의 평화를 지키기 위해 연락을 완전히 끊기로 했어.", en:"After the breakup, she decided to go no contact to protect her own peace.", key:["breakup","contact","protect"] },
+      { ko:"연락을 끊는 게 더 건강하다는 걸 알지만, 도무지 그렇게 할 수가 없어.", en:"I know it's healthier to go no contact, but I can't quite bring myself to do it.", key:["healthier","contact","bring"] }
+    ]
+  },
+  {
+    title: "🔹 on do not disturb",
+    items: [
+      { ko:"내 휴대폰은 보통 방해금지 모드라, 네 전화를 놓칠 수도 있어.", en:"My phone's normally on do not disturb, so I might miss your call.", key:["phone's","disturb","miss"] },
+      { ko:"나는 일에 집중해야 할 때마다 휴대폰을 방해금지 모드로 해둬.", en:"I put my phone on do not disturb whenever I need to focus on work.", key:["phone","disturb","focus"] }
+    ]
+  }
+];
+
+var STOPW = {"a":1,"an":1,"the":1,"to":1,"of":1,"in":1,"on":1,"at":1,"is":1,"it":1,"i":1,"we":1,"and":1,"if":1};
+
+function norm(s){
+  return s.toLowerCase().replace(/[.,!?'"\u2014\u2013\-]/g,"").replace(/\s+/g,"").trim();
+}
+
+function computeBlanks(words, keyWords, level){
+  var n = words.length, target;
+  if(level===1) target = Math.max(1, Math.round(n*0.20));
+  else if(level===2) target = Math.max(2, Math.round(n*0.40));
+  else target = Math.max(3, Math.round(n*0.65));
+  target = Math.min(target, n);
+
+  var keySet = {};
+  keyWords.forEach(function(k){ keySet[norm(k)] = true; });
+
+  var scored = words.map(function(w, i){
+    var nw = norm(w), score = 0;
+    if(keySet[nw]) score += 100;
+    if(!STOPW[nw]) score += 10;
+    score += Math.min(nw.length, 9);
+    return { i:i, score:score };
+  });
+  scored.sort(function(a,b){ return b.score - a.score || a.i - b.i; });
+  var chosen = scored.slice(0, target).map(function(x){ return x.i; });
+  chosen.sort(function(a,b){ return a-b; });
+  return chosen;
+}
+
+var curLevel = 1;
+
+function renderQuiz(){
+  var body = document.getElementById('quiz-body');
+  body.innerHTML = '';
+  var counter = 0;
+  QUIZ_GROUPS.forEach(function(group){
+    var gh = document.createElement('div');
+    gh.className = 'quiz-group';
+    gh.textContent = group.title;
+    body.appendChild(gh);
+
+    group.items.forEach(function(item){
+      var qi = counter++;
+      var words = item.en.split(' ');
+      var blankIdx = computeBlanks(words, item.key, curLevel);
+      var card = document.createElement('div');
+      card.className = 'quiz-card';
+      var html = '<p class="quiz-ko">'+ item.ko +'</p>';
+      html += '<p class="quiz-hint">빈칸에 영어 단어를 입력하세요 ('+ blankIdx.length +'칸)</p>';
+      html += '<p class="quiz-sentence">';
+      words.forEach(function(w, wi){
+        if(blankIdx.indexOf(wi) >= 0){
+          var m = w.match(/^([^A-Za-z0-9']*)([\s\S]*?)([^A-Za-z0-9']*)$/);
+          var pre = m ? m[1] : '';
+          var core = m && m[2] ? m[2] : w;
+          var post = m ? m[3] : '';
+          var size = Math.max(core.length, 4);
+          if(pre) html += '<span class="quiz-word">'+ pre +'</span>';
+          html += '<input class="quiz-blank" data-q="'+qi+'" data-w="'+wi+'" data-ans="'+encodeURIComponent(core)+'" size="'+size+'" autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')checkOne('+qi+')">';
+          if(post) html += '<span class="quiz-word">'+ post +'</span>';
+        } else {
+          html += '<span class="quiz-word">'+ w +'</span>';
+        }
+        html += ' ';
+      });
+      html += '</p>';
+      html += '<div class="quiz-btns">';
+      html += '<button class="quiz-check" onclick="checkOne('+qi+')">✓ 정답 확인</button>';
+      html += '<button class="quiz-reveal" onclick="revealOne('+qi+')">👁 정답 보기</button>';
+      html += '</div>';
+      html += '<div class="quiz-say-row">';
+      html += '<span class="quiz-say-label">🔊 발음</span>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',0.8)">🚶 보통</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz(this,'+qi+',1.0)">🏃 원어민</button>';
+      html += '<button class="quiz-say" onclick="sayQuiz2(this,'+qi+')">▶ 2회 반복</button>';
+      html += '</div>';
+      html += '<div class="quiz-result" id="qr'+qi+'"></div>';
+      card.innerHTML = html;
+      card.setAttribute('data-full', item.en);
+      card.setAttribute('data-qi', qi);
+      body.appendChild(card);
+    });
+  });
+  window.__quizTotal = counter;
+  document.getElementById('score-num').textContent = '— / —';
+  document.getElementById('score-label').textContent = 'Level ' + curLevel + ' · 정답 확인을 누르면 점수가 표시돼요';
+}
+
+function setLevel(lv, btn){
+  curLevel = lv;
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderQuiz();
+}
+
+function getQuizText(qi){
+  var card = document.querySelector('.quiz-card[data-qi="'+qi+'"]');
+  return card ? card.getAttribute('data-full') : '';
+}
+
+function sayQuiz(btn, qi, rate){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function sayQuiz2(btn, qi){
+  var text = getQuizText(qi);
+  if(!text) return;
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function checkOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  if(!inputs.length) return true;
+  var allCorrect = true;
+  inputs.forEach(function(inp){
+    var ans = decodeURIComponent(inp.getAttribute('data-ans'));
+    if(norm(inp.value) === norm(ans) && inp.value.trim() !== ''){
+      inp.classList.add('correct'); inp.classList.remove('wrong');
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  var res = document.getElementById('qr'+qi);
+  if(allCorrect){
+    res.className = 'quiz-result ok';
+    res.innerHTML = '🎉 정답이에요! 완벽해요!';
+  } else {
+    res.className = 'quiz-result no';
+    res.innerHTML = '💪 아쉬워요! 다시 도전하거나 <b>정답 보기</b>를 눌러보세요.';
+  }
+  return allCorrect;
+}
+
+function revealOne(qi){
+  var inputs = document.querySelectorAll('.quiz-blank[data-q="'+qi+'"]');
+  inputs.forEach(function(inp){
+    inp.value = decodeURIComponent(inp.getAttribute('data-ans'));
+    inp.classList.add('correct'); inp.classList.remove('wrong');
+  });
+  var res = document.getElementById('qr'+qi);
+  res.className = 'quiz-result ok';
+  res.innerHTML = '👁 정답: <span class="quiz-answer">'+ getQuizText(qi) +'</span>';
+}
+
+function checkAll(){
+  var total = window.__quizTotal || 0;
+  var correct = 0;
+  for(var qi=0; qi<total; qi++){
+    if(checkOne(qi)) correct++;
+  }
+  document.getElementById('score-num').textContent = correct + ' / ' + total;
+  var label = document.getElementById('score-label');
+  var ratio = total ? correct/total : 0;
+  if(ratio === 1){
+    label.textContent = '🏆 만점! 모든 문장을 완벽하게 외우셨어요!';
+  } else if(ratio >= 0.7){
+    label.textContent = '👍 훌륭해요! 거의 다 왔어요!';
+  } else if(ratio >= 0.4){
+    label.textContent = '💪 잘하고 있어요! 조금만 더 연습해요!';
+  } else {
+    label.textContent = '🌱 괜찮아요! 반복하면 금방 외워져요!';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderQuiz);
+if(document.readyState !== 'loading') renderQuiz();
+
+/* ===== 발음 연습 (Web Speech API) ===== */
+var synth = window.speechSynthesis;
+
+function pickVoice(){
+  var voices = synth.getVoices();
+  if(!voices || !voices.length) return null;
+  var en = voices.filter(function(x){ return x.lang && x.lang.indexOf('en')===0; });
+  var enUS = en.filter(function(x){ return x.lang==='en-US'; });
+  var pool = enUS.length ? enUS : en;
+  if(!pool.length) pool = voices;
+  var femaleNames = ['samantha','victoria','allison','ava','susan','zira','aria',
+    'jenny','michelle','joanna','salli','kendra','kimberly','google us english',
+    'karen','moira','tessa','fiona','serena','female','woman','zoe','nicky','vicki'];
+  var maleNames = ['david','mark','alex','daniel','fred','male','man','guy','tom',
+    'george','james','oliver','arthur','microsoft david'];
+  function isFemale(v){
+    var n = (v.name||'').toLowerCase();
+    return femaleNames.some(function(f){return n.indexOf(f)>=0;});
+  }
+  function isMale(v){
+    var n = (v.name||'').toLowerCase();
+    return maleNames.some(function(m){return n.indexOf(m)>=0;});
+  }
+  var female = pool.find(isFemale);
+  if(female) return female;
+  var notMale = pool.find(function(v){ return !isMale(v); });
+  if(notMale) return notMale;
+  return pool[0];
+}
+
+function makeUtter(text, rate){
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate;
+  u.pitch = 1.0;
+  var v = pickVoice();
+  if(v) u.voice = v;
+  return u;
+}
+
+function clearPlaying(){
+  document.querySelectorAll('.speed-btn.playing, .play-all-btn.playing, .quiz-say.playing')
+    .forEach(function(el){el.classList.remove('playing');});
+}
+
+function say(btn, text, rate){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var u = makeUtter(text, rate);
+  u.onend = function(){ btn.classList.remove('playing'); };
+  synth.speak(u);
+}
+
+function say2(btn, text){
+  synth.cancel();
+  clearPlaying();
+  btn.classList.add('playing');
+  var rates = [0.8, 1.0];
+  var i = 0;
+  function next(){
+    if(i >= rates.length){ btn.classList.remove('playing'); return; }
+    var u = makeUtter(text, rates[i]);
+    i++;
+    u.onend = next;
+    synth.speak(u);
+  }
+  next();
+}
+
+function stopSpeaking(){
+  synth.cancel();
+  clearPlaying();
+}
+
+if(synth && typeof synth.onvoiceschanged !== 'undefined'){
+  synth.onvoiceschanged = pickVoice;
+}
+</script>
+</body>
+</html>
