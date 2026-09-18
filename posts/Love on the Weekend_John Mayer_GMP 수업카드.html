@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love on the Weekend · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>Love on the Weekend</h1>
+    <p class="artist">John Mayer</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p class="en">오늘의 곡은 John Mayer의 Love on the Weekend.</p><p>John Mayer(존 메이어)가 주말에 사랑하는 사람을 만나러 달려가는 설렘을 담은 2016년 싱글입니다. 2017년 앨범 The Search for Everything에도 실렸어요.</p><p>제목만 봐도 금요일 퇴근길, 창문 내리고 달려가는 그 기분이 그대로 그려지죠. 🚗</p><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다. ☕🎧</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">make it</p><p class="phrase-ko">해내다, 제시간에 도착하다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">We finally made it.</p><p class="gloss">→ 우리가 드디어 해냈네요.</p></div><div class="blk"><p>여기서 꼭 기억할 포인트는 이것입니다.</p><p class="point">👉 in 없이 통째로!</p></div><div class="blk"><p>예를 들어,</p><p class="en">We made it just before the doors closed.</p><p class="gloss">→ 문이 닫히기 직전에 도착했어요.</p></div><div class="blk"><p>또,</p><p class="en">I knew you could make it.</p><p class="gloss">→ 네가 해낼 줄 알았어.</p></div><div class="blk"><p class="tip">💡 make it은 성공·도착, make it to는 구체적인 장소나 행사에 도착한다는 뜻입니다.</p></div><div class="blk"><p>늦잠 잔 날 지하철을 딱 맞춰 탔을 때, 속으로 이 한마디가 절로 나오죠. We made it.</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">love every minute of it</p><p class="phrase-ko">매 순간을 정말 즐기다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I’m loving every minute of it.</p><p class="gloss">→ 난 그 모든 순간을 마음껏 즐기고 있어요.</p></div><div class="blk"><p>여기서 꼭 기억할 포인트는 이것입니다.</p><p class="point">👉 강한 만족을 표현</p></div><div class="blk"><p>예를 들어,</p><p class="en">The trip was exhausting, but I loved every minute of it.</p><p class="gloss">→ 여행은 힘들었지만 매 순간이 좋았어요.</p></div><div class="blk"><p>또,</p><p class="en">She’s loving every minute of her new job.</p><p class="gloss">→ 그녀는 새 직장의 모든 순간을 즐기고 있어요.</p></div><div class="blk"><p class="tip">💡 평소 상태에는 love, 지금의 생생한 경험을 강조할 때 회화에서 be loving도 씁니다.</p></div><div class="blk"><p>오랜만에 잡힌 주말 약속을 앞두고 있다면, &quot;나 요즘 이 약속 loving every minute of it이야&quot; 하고 말해도 딱 맞습니다.</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">put your feet up</p><p class="phrase-ko">발 뻗고 편히 쉬다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">You put your feet up.</p><p class="gloss">→ 당신은 편하게 쉬어요.</p></div><div class="blk"><p>여기서 꼭 기억할 포인트는 이것입니다.</p><p class="point">👉 편안한 휴식의 관용 표현</p></div><div class="blk"><p>예를 들어,</p><p class="en">Come in and put your feet up.</p><p class="gloss">→ 들어와서 편하게 쉬어요.</p></div><div class="blk"><p>또,</p><p class="en">After dinner, I put my feet up and watched a movie.</p><p class="gloss">→ 저녁 식사 후에 편히 쉬며 영화를 봤어요.</p></div><div class="blk"><p class="tip">💡 put your feet up은 쉬는 것, stand on your own two feet는 자립하는 것이어서 뜻이 전혀 달라요.</p></div><div class="blk"><p>퇴근하고 소파에 몸을 던지듯 앉는 순간, 딱 이 표현이죠. 오늘 하루도 애쓰셨다면 스스로에게 이 말 한마디 건네보세요.</p></div></section><section class="sec"><h2>☕ 30초 복습</h2><div class="blk"><p>오늘은 딱 세 개만 가져갑니다.</p></div><div class="blk"><p class="numbered">① make it</p><p class="gloss">→ 해내다, 제시간에 도착하다</p><p class="numbered">② love every minute of it</p><p class="gloss">→ 매 순간을 정말 즐기다</p><p class="numbered">③ put your feet up</p><p class="gloss">→ 발 뻗고 편히 쉬다</p></div><div class="blk"><p>한 문장으로 연결해 볼까요?</p><p>상대를 만나러 계속 움직이지만 목적은 함께 편히 쉬는 것입니다. 평범한 금요일과 차 안의 순간이 낭만이 되는 노래예요.</p></div></section><section class="sec"><h2>🔊 발음도 한 줄만</h2><div class="blk"><p class="bullet">· made it → 메이딧</p><p class="bullet">· minute of it → 미니러빗</p><p class="bullet">· feet up → 피럽</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>오늘 하나만 기억한다면 저는</p><p class="en">put your feet up</p><p>을 고르겠습니다.</p><p>하루 종일 달려가는 이유는 결국 편히 쉴 수 있는 순간을 만나기 위해서니까요. 일도, 관계도 다르지 않다고 생각해요. 애쓰는 시간의 끝에는 발 뻗고 쉴 수 있는 여유가 있어야 한다는 걸, 이 표현 하나가 알려주네요.</p></div></section><section class="sec sec-turn"><h2>✍️ YOUR TURN</h2><div class="blk"><p>아래 문장을 완성해 보세요.</p><p class="en">After this long week, all I want to do is ________.</p><p>예를 들면,</p><p class="en">After this long week, all I want to do is put my feet up and do nothing.</p><p>이 긴 한 주가 끝나면, 그냥 발 뻗고 아무것도 안 하고 쉬고 싶어요.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨보세요. 😊</p><p>영어는 많이 읽는 것도 좋지만</p><p>내 이야기를 영어로 한 번 만들어 볼 때 훨씬 오래 기억됩니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/Love%20on%20the%20Weekend_John%20Mayer_GMP%20%EC%88%98%EC%9E%85%EC%B9%B4%EB%93%9C.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/Love%20on%20the%20Weekend_John%20Mayer_GMP%20%EC%88%98%EC%9E%85%EC%B9%B4%EB%93%9C.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div></section><section class="sec sec-end"><h2>🌞 내일 아침에도 Good Morning Pops와 함께</h2><div class="blk"><p>하루 세 표현.</p><p>그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다. ☕🎧</p></div></section>
+
+  <p class="tags">#GoodMorningPops #LoveOnTheWeekend #JohnMayer #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝송] Love on the Weekend — John Mayer | 오늘의 영어 세 표현</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝송] Love on the Weekend — John Mayer | 오늘의 영어 세 표현
+
+🎧 Good Morning Pops
+Love on the Weekend — John Mayer
+
+오늘의 곡은 John Mayer의 Love on the Weekend.
+John Mayer(존 메이어)가 주말에 사랑하는 사람을 만나러 달려가는 설렘을 담은 2016년 싱글입니다. 2017년 앨범 The Search for Everything에도 실렸어요.
+제목만 봐도 금요일 퇴근길, 창문 내리고 달려가는 그 기분이 그대로 그려지죠. 🚗
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다. ☕🎧
+
+📌 오늘의 영어 ①
+make it
+해내다, 제시간에 도착하다
+
+오늘 문장에서는:
+We finally made it.
+→ 우리가 드디어 해냈네요.
+
+여기서 꼭 기억할 포인트는 이것입니다.
+👉 in 없이 통째로!
+
+예를 들어,
+We made it just before the doors closed.
+→ 문이 닫히기 직전에 도착했어요.
+
+또,
+I knew you could make it.
+→ 네가 해낼 줄 알았어.
+
+💡 make it은 성공·도착, make it to는 구체적인 장소나 행사에 도착한다는 뜻입니다.
+
+늦잠 잔 날 지하철을 딱 맞춰 탔을 때, 속으로 이 한마디가 절로 나오죠. We made it.
+
+📌 오늘의 영어 ②
+love every minute of it
+매 순간을 정말 즐기다
+
+오늘 문장에서는:
+I’m loving every minute of it.
+→ 난 그 모든 순간을 마음껏 즐기고 있어요.
+
+여기서 꼭 기억할 포인트는 이것입니다.
+👉 강한 만족을 표현
+
+예를 들어,
+The trip was exhausting, but I loved every minute of it.
+→ 여행은 힘들었지만 매 순간이 좋았어요.
+
+또,
+She’s loving every minute of her new job.
+→ 그녀는 새 직장의 모든 순간을 즐기고 있어요.
+
+💡 평소 상태에는 love, 지금의 생생한 경험을 강조할 때 회화에서 be loving도 씁니다.
+
+오랜만에 잡힌 주말 약속을 앞두고 있다면, &quot;나 요즘 이 약속 loving every minute of it이야&quot; 하고 말해도 딱 맞습니다.
+
+📌 오늘의 영어 ③
+put your feet up
+발 뻗고 편히 쉬다
+
+오늘 문장에서는:
+You put your feet up.
+→ 당신은 편하게 쉬어요.
+
+여기서 꼭 기억할 포인트는 이것입니다.
+👉 편안한 휴식의 관용 표현
+
+예를 들어,
+Come in and put your feet up.
+→ 들어와서 편하게 쉬어요.
+
+또,
+After dinner, I put my feet up and watched a movie.
+→ 저녁 식사 후에 편히 쉬며 영화를 봤어요.
+
+💡 put your feet up은 쉬는 것, stand on your own two feet는 자립하는 것이어서 뜻이 전혀 달라요.
+
+퇴근하고 소파에 몸을 던지듯 앉는 순간, 딱 이 표현이죠. 오늘 하루도 애쓰셨다면 스스로에게 이 말 한마디 건네보세요.
+
+☕ 30초 복습
+오늘은 딱 세 개만 가져갑니다.
+
+① make it
+→ 해내다, 제시간에 도착하다
+② love every minute of it
+→ 매 순간을 정말 즐기다
+③ put your feet up
+→ 발 뻗고 편히 쉬다
+
+한 문장으로 연결해 볼까요?
+상대를 만나러 계속 움직이지만 목적은 함께 편히 쉬는 것입니다. 평범한 금요일과 차 안의 순간이 낭만이 되는 노래예요.
+
+🔊 발음도 한 줄만
+· made it → 메이딧
+· minute of it → 미니러빗
+· feet up → 피럽
+
+⭐ 오늘 딱 한 표현
+오늘 하나만 기억한다면 저는
+put your feet up
+을 고르겠습니다.
+하루 종일 달려가는 이유는 결국 편히 쉴 수 있는 순간을 만나기 위해서니까요. 일도, 관계도 다르지 않다고 생각해요. 애쓰는 시간의 끝에는 발 뻗고 쉴 수 있는 여유가 있어야 한다는 걸, 이 표현 하나가 알려주네요.
+
+✍️ YOUR TURN
+아래 문장을 완성해 보세요.
+After this long week, all I want to do is ________.
+예를 들면,
+After this long week, all I want to do is put my feet up and do nothing.
+이 긴 한 주가 끝나면, 그냥 발 뻗고 아무것도 안 하고 쉬고 싶어요.
+
+댓글에 여러분의 문장 하나 남겨보세요. 😊
+영어는 많이 읽는 것도 좋지만
+내 이야기를 영어로 한 번 만들어 볼 때 훨씬 오래 기억됩니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/Love%20on%20the%20Weekend_John%20Mayer_GMP%20%EC%88%98%EC%9E%85%EC%B9%B4%EB%93%9C.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+🌞 내일 아침에도 Good Morning Pops와 함께
+하루 세 표현.
+그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다. ☕🎧
+
+#GoodMorningPops #LoveOnTheWeekend #JohnMayer #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
