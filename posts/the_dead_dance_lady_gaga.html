@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Dead Dance · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>The Dead Dance</h1>
+    <p class="artist">Lady Gaga</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p class="en">오늘의 곡은 Lady Gaga의 The Dead Dance입니다.</p><p>Lady Gaga(레이디 가가)가 2025년 공개한 곡으로, Netflix Wednesday 시즌 2와 함께 나왔습니다. 이별로 죽은 듯한 마음이 음악과 춤을 통해 다시 살아나는 과정을 노래합니다.</p><p>제목에는 죽음이 들어 있는데, 곡은 끝까지 춤추게 만드는 쪽입니다.</p></div><div class="blk"><p>🎥 오늘 노래 먼저 들어보기</p><p class="url"><a href="https://www.youtube.com/watch?v=xGaZBfJOyAc" target="_blank" rel="noopener">https://www.youtube.com/watch?v=xGaZBfJOyAc</a></p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 내 생각을 먼저 말해 버린 사람에게, 나를 다시 살려 주는 것에 대해, 누군가를 어떤 상태로 만드는 것에 대해 말하는 표현들입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">steal someone’s thoughts</p><p class="phrase-ko">누구의 생각을 훔치다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">You stole my thoughts before I dreamed them.</p><p class="gloss">→ 당신은 내가 꿈꾸기도 전에 내 생각을 훔쳤죠.</p></div><div class="blk"><p>생각을 빼앗거나 먼저 말해 버렸을 때 씁니다. steal의 과거형은 stole입니다.</p></div><div class="blk"><p class="en">You stole my thoughts—I was about to say that.</p><p class="gloss">→ 내 생각을 훔쳤네요. 나도 막 그 말을 하려던 참이었어요.</p></div><div class="blk"><p class="en">It felt as if he had stolen every thought from my mind.</p><p class="gloss">→ 그가 내 머릿속의 모든 생각을 훔쳐 간 것 같았어요.</p></div><div class="blk"><p class="tip">💡 일상에서는 같은 생각을 먼저 말한 사람에게 장난스럽게 쓸 수도 있습니다.</p></div><div class="blk"><p>점심 메뉴를 고민하는데 동료가 먼저 &quot;국밥 어때요?&quot; 할 때 딱입니다. &quot;You stole my thoughts.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">bring someone back</p><p class="phrase-ko">누구를 되돌아오게 하다, 회복시키다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Yeah, the music’s gonna bring me back from death.</p><p class="gloss">→ 음악이 나를 죽음에서 다시 살려낼 거예요.</p></div><div class="blk"><p>생기·기억·상태를 되찾을 때 씁니다. 여기서는 음악으로 마음의 생기를 되찾는다는 비유입니다. music’s는 music is의 축약형입니다.</p></div><div class="blk"><p class="en">This song brings me back to my childhood.</p><p class="gloss">→ 이 노래를 들으면 어린 시절로 돌아간 기분이 들어요.</p></div><div class="blk"><p class="en">A good night’s sleep brought her back to life.</p><p class="gloss">→ 푹 자고 나니 그녀가 다시 생기를 되찾았어요.</p></div><div class="blk"><p class="tip">💡 bring back은 사람·감정·기억을 되돌리는 여러 상황에 씁니다.</p></div><div class="blk"><p>야근 다음 날 아침, 첫 커피 한 모금에 어울리는 문장입니다. &quot;This coffee brings me back to life.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">make someone + 동사원형</p><p class="phrase-ko">누구를 ~하게 만들다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">This goodbye won’t make me cry.</p><p class="gloss">→ 이 작별은 날 울리지 않을 거예요.</p></div><div class="blk"><p>원인과 결과를 말하는 사역 구조입니다. 바로 앞 가사 This goodbye is no surprise와 짝을 이루는 문장입니다.</p></div><div class="blk"><p class="en">That movie always makes me cry.</p><p class="gloss">→ 그 영화는 언제나 나를 울게 해요.</p></div><div class="blk"><p class="en">Her jokes made everyone laugh.</p><p class="gloss">→ 그녀의 농담이 모두를 웃게 했어요.</p></div><div class="blk"><p class="tip">💡 make 뒤 목적어 다음에는 to 없이 동사원형을 씁니다.</p></div><div class="blk"><p>월요일 회의가 길어질 때 속으로 한 번 떠올려 볼 만합니다. &quot;Long meetings make me sleepy.&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① steal someone’s thoughts — 누구의 생각을 훔치다</p><p class="numbered">② bring someone back — 누구를 되돌아오게 하다, 회복시키다</p><p class="numbered">③ make someone + 동사원형 — 누구를 ~하게 만들다</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>내 생각까지 빼앗아 간 사람과 헤어졌지만(①), 음악이 나를 다시 살려 내고(②), 이 작별이 나를 울리지는 못한다는(③) 이야기입니다.</p><p>작별에 울지 않고 댄스 플로어에서 다시 살아나는 곡입니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· stole my → 스토울마이</p><p class="bullet">· music’s gonna → 뮤직스거너</p><p class="bullet">· bring me back → 브링미백</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>하나만 고른다면 make someone + 동사원형입니다.</p><p>하루를 돌아보면 나를 웃게 한 것, 지치게 한 것, 다시 힘나게 한 것이 있습니다.</p><p>이 구조 하나면 그 원인을 그대로 말할 수 있습니다. 무엇이 나를 움직이는지 알면 내일 무엇을 더 가까이 둘지도 정해집니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">________ always makes me smile.</p></div><div class="blk"><p>예를 들면,</p><p class="en">A text from an old friend always makes me smile.</p><p>오랜 친구의 문자는 늘 나를 웃게 해요.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/the_dead_dance_lady_gaga.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/the_dead_dance_lady_gaga.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #TheDeadDance #LadyGaga #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 10월 6일] The Dead Dance — Lady Gaga | steal someone’s thoughts</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 10월 6일] The Dead Dance — Lady Gaga | steal someone’s thoughts
+
+🎧 Good Morning Pops
+The Dead Dance — Lady Gaga
+
+오늘의 곡은 Lady Gaga의 The Dead Dance입니다.
+Lady Gaga(레이디 가가)가 2025년 공개한 곡으로, Netflix Wednesday 시즌 2와 함께 나왔습니다. 이별로 죽은 듯한 마음이 음악과 춤을 통해 다시 살아나는 과정을 노래합니다.
+제목에는 죽음이 들어 있는데, 곡은 끝까지 춤추게 만드는 쪽입니다.
+
+🎥 오늘 노래 먼저 들어보기
+https://www.youtube.com/watch?v=xGaZBfJOyAc
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 내 생각을 먼저 말해 버린 사람에게, 나를 다시 살려 주는 것에 대해, 누군가를 어떤 상태로 만드는 것에 대해 말하는 표현들입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+steal someone’s thoughts
+누구의 생각을 훔치다
+
+오늘 문장에서는:
+You stole my thoughts before I dreamed them.
+→ 당신은 내가 꿈꾸기도 전에 내 생각을 훔쳤죠.
+
+생각을 빼앗거나 먼저 말해 버렸을 때 씁니다. steal의 과거형은 stole입니다.
+
+You stole my thoughts—I was about to say that.
+→ 내 생각을 훔쳤네요. 나도 막 그 말을 하려던 참이었어요.
+
+It felt as if he had stolen every thought from my mind.
+→ 그가 내 머릿속의 모든 생각을 훔쳐 간 것 같았어요.
+
+💡 일상에서는 같은 생각을 먼저 말한 사람에게 장난스럽게 쓸 수도 있습니다.
+
+점심 메뉴를 고민하는데 동료가 먼저 &quot;국밥 어때요?&quot; 할 때 딱입니다. &quot;You stole my thoughts.&quot;
+
+📌 오늘의 영어 ②
+bring someone back
+누구를 되돌아오게 하다, 회복시키다
+
+오늘 문장에서는:
+Yeah, the music’s gonna bring me back from death.
+→ 음악이 나를 죽음에서 다시 살려낼 거예요.
+
+생기·기억·상태를 되찾을 때 씁니다. 여기서는 음악으로 마음의 생기를 되찾는다는 비유입니다. music’s는 music is의 축약형입니다.
+
+This song brings me back to my childhood.
+→ 이 노래를 들으면 어린 시절로 돌아간 기분이 들어요.
+
+A good night’s sleep brought her back to life.
+→ 푹 자고 나니 그녀가 다시 생기를 되찾았어요.
+
+💡 bring back은 사람·감정·기억을 되돌리는 여러 상황에 씁니다.
+
+야근 다음 날 아침, 첫 커피 한 모금에 어울리는 문장입니다. &quot;This coffee brings me back to life.&quot;
+
+📌 오늘의 영어 ③
+make someone + 동사원형
+누구를 ~하게 만들다
+
+오늘 문장에서는:
+This goodbye won’t make me cry.
+→ 이 작별은 날 울리지 않을 거예요.
+
+원인과 결과를 말하는 사역 구조입니다. 바로 앞 가사 This goodbye is no surprise와 짝을 이루는 문장입니다.
+
+That movie always makes me cry.
+→ 그 영화는 언제나 나를 울게 해요.
+
+Her jokes made everyone laugh.
+→ 그녀의 농담이 모두를 웃게 했어요.
+
+💡 make 뒤 목적어 다음에는 to 없이 동사원형을 씁니다.
+
+월요일 회의가 길어질 때 속으로 한 번 떠올려 볼 만합니다. &quot;Long meetings make me sleepy.&quot;
+
+30초 복습
+
+① steal someone’s thoughts — 누구의 생각을 훔치다
+② bring someone back — 누구를 되돌아오게 하다, 회복시키다
+③ make someone + 동사원형 — 누구를 ~하게 만들다
+
+한 문장으로 연결하면 이렇습니다.
+내 생각까지 빼앗아 간 사람과 헤어졌지만(①), 음악이 나를 다시 살려 내고(②), 이 작별이 나를 울리지는 못한다는(③) 이야기입니다.
+작별에 울지 않고 댄스 플로어에서 다시 살아나는 곡입니다.
+
+발음도 한 줄만
+· stole my → 스토울마이
+· music’s gonna → 뮤직스거너
+· bring me back → 브링미백
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 make someone + 동사원형입니다.
+하루를 돌아보면 나를 웃게 한 것, 지치게 한 것, 다시 힘나게 한 것이 있습니다.
+이 구조 하나면 그 원인을 그대로 말할 수 있습니다. 무엇이 나를 움직이는지 알면 내일 무엇을 더 가까이 둘지도 정해집니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+________ always makes me smile.
+
+예를 들면,
+A text from an old friend always makes me smile.
+오랜 친구의 문자는 늘 나를 웃게 해요.
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/the_dead_dance_lady_gaga.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #TheDeadDance #LadyGaga #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
