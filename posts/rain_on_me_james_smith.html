@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rain On Me · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>Rain On Me</h1>
+    <p class="artist">James Smith</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p class="en">오늘의 곡은 James Smith의 Rain On Me입니다.</p><p>2025년 7월 11일에 싱글로 나온 곡으로, James Smith가 Jesse Bluu, Adam Yaron과 함께 썼습니다.</p><p>불과 벽의 이미지로 고통과 막막함을 표현하고, 비를 통해 벗어남을 바라는 노래입니다.</p><p>제목은 &quot;내게 비를 내려 줘&quot;인데, 여기서 비는 피하고 싶은 것이 아니라 기다리는 것입니다.</p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 어딘가에서 끌어낸다고 말하고, 무언가를 조각낸다고 말하고, 누군가를 믿는다고 말하는 표현들입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">drag A out of B</p><p class="phrase-ko">A를 B에서 끌어내다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Won’t you drag me out of the fire?</p><p class="gloss">→ 이 고통 속에서 날 끌어내 주지 않겠어요?</p></div><div class="blk"><p>drag에는 힘을 주어 끄는 느낌이 있습니다. Won’t you…?는 여기서 도움을 바라는 간청입니다.</p></div><div class="blk"><p class="en">She dragged me out of bed.</p><p class="gloss">→ 그녀가 나를 침대에서 끌어냈어요.</p></div><div class="blk"><p class="en">His encouragement dragged me out of despair.</p><p class="gloss">→ 그의 격려가 나를 절망에서 끌어냈어요.</p></div><div class="blk"><p class="tip">💡 pull보다 억지로 끌거나 힘들게 끌어내는 느낌이 강합니다. 실제 이동과 비유적 상황 모두에 쓸 수 있어요.</p></div><div class="blk"><p>월요일 아침 알람을 세 번 끄고 겨우 일어났다면 이렇게 말할 수 있습니다. &quot;I had to drag myself out of bed this morning.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">break A into pieces</p><p class="phrase-ko">A를 여러 조각으로 부수다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Wanna break these walls into pieces.</p><p class="gloss">→ 이 벽들을 산산조각 내고 싶어요.</p></div><div class="blk"><p>동사 변화는 break → broke → broken입니다. 가사는 Wanna…로 시작하고, 회화에서는 I wanna…도 자연스럽습니다.</p></div><div class="blk"><p class="en">I broke the chocolate into pieces.</p><p class="gloss">→ 초콜릿을 여러 조각으로 나눴어요.</p></div><div class="blk"><p class="en">The vase broke into pieces when it fell.</p><p class="gloss">→ 꽃병은 떨어지면서 산산조각 났어요.</p></div><div class="blk"><p class="tip">💡 break A into pieces는 A를 부수는 동작, A breaks into pieces는 A가 부서지는 일입니다. 초콜릿처럼 의도적으로 나눌 때는 반드시 ‘산산조각’으로 번역하지 않아도 됩니다.</p></div><div class="blk"><p class="en">큰 프로젝트가 막막할 때는 이렇게 시작해 보세요. &quot;Let’s break this project into small pieces.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">believe in someone</p><p class="phrase-ko">그 사람·능력·가능성을 믿다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I want someone I can believe in.</p><p class="gloss">→ 난 내가 믿을 수 있는 누군가를 원해요.</p></div><div class="blk"><p>someone (that/who) I can believe in에서 관계대명사가 생략됐습니다. 끝의 in까지 한 덩어리로 익히면 됩니다.</p></div><div class="blk"><p class="en">I believe in you, even when you doubt yourself.</p><p class="gloss">→ 네가 스스로를 의심할 때도 나는 너를 믿어.</p></div><div class="blk"><p class="en">I want someone I can trust.</p><p class="gloss">→ 내가 믿을 수 있는 누군가를 원해요.</p></div><div class="blk"><p class="tip">💡 I believe you는 보통 ‘네 말을 믿어’, I believe in you는 ‘너라는 사람이나 가능성을 믿어’입니다. trust는 사람의 정직함·신뢰성을 믿고 의지한다는 뜻과 겹칩니다.</p></div><div class="blk"><p>첫 발표를 앞둔 동료에게 건넬 한마디로 충분합니다. &quot;You’ve got this. I believe in you.&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① drag A out of B — A를 B에서 끌어내다</p><p class="numbered">② break A into pieces — A를 여러 조각으로 부수다</p><p class="numbered">③ believe in someone — 그 사람·능력·가능성을 믿다</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>불 속에서 끌어내 달라고 부탁하고(①), 앞을 막은 벽을 부수고 싶어 하며(②), 끝내 믿을 수 있는 누군가를 찾는(③) 이야기입니다.</p><p>불과 벽은 고통과 장벽, 비는 위로와 정화의 이미지로 읽을 수 있습니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· won’t you → 워운츄</p><p class="bullet">· out of → 아우터브</p><p class="bullet">· believe in → 빌리빈</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p class="en">하나만 고른다면 believe in someone입니다.</p><p>in 하나가 붙으면 &quot;네 말을 믿어&quot;가 &quot;너라는 사람을 믿어&quot;로 바뀝니다.</p><p>일이 잘 풀릴 때보다 막힐 때, 결과가 아니라 사람을 믿어 주는 한마디가 더 오래 남습니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">I believe in ________.</p></div><div class="blk"><p>예를 들면,</p><p class="en">I believe in small daily habits.</p><p>나는 작은 하루 습관의 힘을 믿어요.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/rain_on_me_james_smith.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/rain_on_me_james_smith.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #RainOnMe #JamesSmith #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 10월 12일] Rain On Me — James Smith | drag A out of B</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 10월 12일] Rain On Me — James Smith | drag A out of B
+
+🎧 Good Morning Pops
+Rain On Me — James Smith
+
+오늘의 곡은 James Smith의 Rain On Me입니다.
+2025년 7월 11일에 싱글로 나온 곡으로, James Smith가 Jesse Bluu, Adam Yaron과 함께 썼습니다.
+불과 벽의 이미지로 고통과 막막함을 표현하고, 비를 통해 벗어남을 바라는 노래입니다.
+제목은 &quot;내게 비를 내려 줘&quot;인데, 여기서 비는 피하고 싶은 것이 아니라 기다리는 것입니다.
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 어딘가에서 끌어낸다고 말하고, 무언가를 조각낸다고 말하고, 누군가를 믿는다고 말하는 표현들입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+drag A out of B
+A를 B에서 끌어내다
+
+오늘 문장에서는:
+Won’t you drag me out of the fire?
+→ 이 고통 속에서 날 끌어내 주지 않겠어요?
+
+drag에는 힘을 주어 끄는 느낌이 있습니다. Won’t you…?는 여기서 도움을 바라는 간청입니다.
+
+She dragged me out of bed.
+→ 그녀가 나를 침대에서 끌어냈어요.
+
+His encouragement dragged me out of despair.
+→ 그의 격려가 나를 절망에서 끌어냈어요.
+
+💡 pull보다 억지로 끌거나 힘들게 끌어내는 느낌이 강합니다. 실제 이동과 비유적 상황 모두에 쓸 수 있어요.
+
+월요일 아침 알람을 세 번 끄고 겨우 일어났다면 이렇게 말할 수 있습니다. &quot;I had to drag myself out of bed this morning.&quot;
+
+📌 오늘의 영어 ②
+break A into pieces
+A를 여러 조각으로 부수다
+
+오늘 문장에서는:
+Wanna break these walls into pieces.
+→ 이 벽들을 산산조각 내고 싶어요.
+
+동사 변화는 break → broke → broken입니다. 가사는 Wanna…로 시작하고, 회화에서는 I wanna…도 자연스럽습니다.
+
+I broke the chocolate into pieces.
+→ 초콜릿을 여러 조각으로 나눴어요.
+
+The vase broke into pieces when it fell.
+→ 꽃병은 떨어지면서 산산조각 났어요.
+
+💡 break A into pieces는 A를 부수는 동작, A breaks into pieces는 A가 부서지는 일입니다. 초콜릿처럼 의도적으로 나눌 때는 반드시 ‘산산조각’으로 번역하지 않아도 됩니다.
+
+큰 프로젝트가 막막할 때는 이렇게 시작해 보세요. &quot;Let’s break this project into small pieces.&quot;
+
+📌 오늘의 영어 ③
+believe in someone
+그 사람·능력·가능성을 믿다
+
+오늘 문장에서는:
+I want someone I can believe in.
+→ 난 내가 믿을 수 있는 누군가를 원해요.
+
+someone (that/who) I can believe in에서 관계대명사가 생략됐습니다. 끝의 in까지 한 덩어리로 익히면 됩니다.
+
+I believe in you, even when you doubt yourself.
+→ 네가 스스로를 의심할 때도 나는 너를 믿어.
+
+I want someone I can trust.
+→ 내가 믿을 수 있는 누군가를 원해요.
+
+💡 I believe you는 보통 ‘네 말을 믿어’, I believe in you는 ‘너라는 사람이나 가능성을 믿어’입니다. trust는 사람의 정직함·신뢰성을 믿고 의지한다는 뜻과 겹칩니다.
+
+첫 발표를 앞둔 동료에게 건넬 한마디로 충분합니다. &quot;You’ve got this. I believe in you.&quot;
+
+30초 복습
+
+① drag A out of B — A를 B에서 끌어내다
+② break A into pieces — A를 여러 조각으로 부수다
+③ believe in someone — 그 사람·능력·가능성을 믿다
+
+한 문장으로 연결하면 이렇습니다.
+불 속에서 끌어내 달라고 부탁하고(①), 앞을 막은 벽을 부수고 싶어 하며(②), 끝내 믿을 수 있는 누군가를 찾는(③) 이야기입니다.
+불과 벽은 고통과 장벽, 비는 위로와 정화의 이미지로 읽을 수 있습니다.
+
+발음도 한 줄만
+· won’t you → 워운츄
+· out of → 아우터브
+· believe in → 빌리빈
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 believe in someone입니다.
+in 하나가 붙으면 &quot;네 말을 믿어&quot;가 &quot;너라는 사람을 믿어&quot;로 바뀝니다.
+일이 잘 풀릴 때보다 막힐 때, 결과가 아니라 사람을 믿어 주는 한마디가 더 오래 남습니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+I believe in ________.
+
+예를 들면,
+I believe in small daily habits.
+나는 작은 하루 습관의 힘을 믿어요.
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/rain_on_me_james_smith.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #RainOnMe #JamesSmith #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
