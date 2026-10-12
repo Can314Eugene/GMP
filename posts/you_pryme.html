@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>you. · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>you.</h1>
+    <p class="artist">pryme!</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p>오늘의 곡은 pryme!(프라임)의 you.입니다.</p><p>2024년 12월 15일에 싱글로 나온 곡으로, Gabe Dungca가 쓰고 Dami4k가 프로듀싱했습니다.</p><p>제목은 소문자 한 단어에 마침표 하나. 짧은 제목이 오히려 한 사람에게만 향하는 노래라는 느낌을 줍니다.</p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 상대의 속셈을 알아챈다고 말하고, 내 감정을 숨기지 않는다고 말하고, 누군가가 바로 그 사람일지도 모른다고 말하는 표현들입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">see through someone’s disguise</p><p class="phrase-ko">위장 뒤의 진짜 모습이나 속셈을 간파하다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I can see through your disguise.</p><p class="gloss">→ 난 당신의 속셈을 간파할 수 있어요.</p></div><div class="blk"><p>see through는 겉모습 너머를 알아보는 느낌입니다. 노래에서는 앞에 But이 붙어 이어집니다.</p></div><div class="blk"><p class="en">I can see through his excuses.</p><p class="gloss">→ 난 그의 변명이 거짓임을 간파할 수 있어요.</p></div><div class="blk"><p class="en">You can’t fool me.</p><p class="gloss">→ 당신은 나를 속일 수 없어요.</p></div><div class="blk"><p class="tip">💡 disguise 자체의 기본 뜻은 변장·위장입니다. 속셈을 간파한다는 의미는 see through와 문맥에서 생깁니다. see through glass처럼 실제로 투명한 물체를 통해 본다는 뜻도 있습니다.</p></div><div class="blk"><p>지각한 이유가 매번 달라지는 동료에게는 이렇게 웃으며 말할 수 있습니다. &quot;I can see through that excuse.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">wear one’s heart on one’s sleeve</p><p class="phrase-ko">감정을 숨기지 않고 솔직하게 드러내다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I wear my heart on my sleeve.</p><p class="gloss">→ 난 내 감정을 숨기지 않고 솔직하게 드러내요.</p></div><div class="blk"><p>마음을 소매 위에 내놓아 누구나 알아볼 수 있다는 비유입니다. 소유격을 주어에 맞춥니다. my/my, her/her.</p></div><div class="blk"><p class="en">She wears her heart on her sleeve.</p><p class="gloss">→ 그녀는 감정을 숨기지 않고 드러내요.</p></div><div class="blk"><p class="en">I don’t hide my feelings.</p><p class="gloss">→ 난 내 감정을 숨기지 않아요.</p></div><div class="blk"><p class="tip">💡 I wear my heart on my sleeve와 She wears her heart on her sleeve처럼 소유격과 동사를 주어에 맞춥니다. keep one’s feelings to oneself는 감정을 혼자 간직한다는 뜻입니다. sleeve는 단수입니다.</p></div><div class="blk"><p>기분이 얼굴에 바로 드러나는 편이라면 자기소개 한 줄로도 쓸 수 있습니다. &quot;I tend to wear my heart on my sleeve.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">could be the one to + 동사원형</p><p class="phrase-ko">~할 바로 그 사람일지도 모른다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">You could be the one to save me.</p><p class="gloss">→ 당신이 날 구해줄 바로 그 사람일지도 몰라요.</p></div><div class="blk"><p>could는 여기서 과거의 능력이 아니라 가능성입니다. the one to save me는 ‘나를 구해줄 바로 그 사람’입니다.</p></div><div class="blk"><p class="en">You could be the one to lead the team.</p><p class="gloss">→ 당신이 팀을 이끌 바로 그 사람일지도 몰라요.</p></div><div class="blk"><p class="en">She might be the person who can help us.</p><p class="gloss">→ 그녀가 우리를 도와줄 사람일지도 몰라요.</p></div><div class="blk"><p class="tip">💡 could be는 확신하지 않은 가능성을 나타냅니다. You are the one은 단정적인 표현이고, You might be the person who can…은 비슷한 뜻을 풀어 쓴 표현입니다.</p></div><div class="blk"><p>새 프로젝트 담당자를 고민하는 회의에서 후배를 추천하며 이렇게 말해 볼 수 있습니다. &quot;You could be the one to make this work.&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① see through someone’s disguise — 위장 뒤의 진짜 모습이나 속셈을 간파하다</p><p class="numbered">② wear one’s heart on one’s sleeve — 감정을 숨기지 않고 솔직하게 드러내다</p><p class="numbered">③ could be the one to + 동사원형 — ~할 바로 그 사람일지도 모른다</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>상대의 위장은 알아보지만(①) 자신의 감정은 숨기지 않는(②) 화자가, 그래도 당신이 나를 구해줄 사람일지 모른다고(③) 말하는 노래입니다.</p><p>사랑의 확신과 버림받을까 하는 불안이 함께 담겨 있습니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· I can → 아이컨</p><p class="bullet">· disguise → 디스가이즈 (뒤에 강세)</p><p class="bullet">· heart on → 하러언</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>하나만 고른다면 could be the one to입니다.</p><p>You are the one은 단정이지만, could be는 가능성을 열어 둡니다.</p><p>사람을 처음 믿어 볼 때도, 새 일을 맡길 때도, 확신보다 &quot;그럴지도 몰라&quot;에서 관계가 시작되는 경우가 많습니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">You could be the one to ________.</p></div><div class="blk"><p>예를 들면,</p><p class="en">You could be the one to change this team.</p><p>당신이 이 팀을 바꿀 바로 그 사람일지도 몰라요.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/you_pryme.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/you_pryme.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #you #pryme #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 10월 13일] you. — pryme! | see through someone’s disguise</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 10월 13일] you. — pryme! | see through someone’s disguise
+
+🎧 Good Morning Pops
+you. — pryme!
+
+오늘의 곡은 pryme!(프라임)의 you.입니다.
+2024년 12월 15일에 싱글로 나온 곡으로, Gabe Dungca가 쓰고 Dami4k가 프로듀싱했습니다.
+제목은 소문자 한 단어에 마침표 하나. 짧은 제목이 오히려 한 사람에게만 향하는 노래라는 느낌을 줍니다.
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 상대의 속셈을 알아챈다고 말하고, 내 감정을 숨기지 않는다고 말하고, 누군가가 바로 그 사람일지도 모른다고 말하는 표현들입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+see through someone’s disguise
+위장 뒤의 진짜 모습이나 속셈을 간파하다
+
+오늘 문장에서는:
+I can see through your disguise.
+→ 난 당신의 속셈을 간파할 수 있어요.
+
+see through는 겉모습 너머를 알아보는 느낌입니다. 노래에서는 앞에 But이 붙어 이어집니다.
+
+I can see through his excuses.
+→ 난 그의 변명이 거짓임을 간파할 수 있어요.
+
+You can’t fool me.
+→ 당신은 나를 속일 수 없어요.
+
+💡 disguise 자체의 기본 뜻은 변장·위장입니다. 속셈을 간파한다는 의미는 see through와 문맥에서 생깁니다. see through glass처럼 실제로 투명한 물체를 통해 본다는 뜻도 있습니다.
+
+지각한 이유가 매번 달라지는 동료에게는 이렇게 웃으며 말할 수 있습니다. &quot;I can see through that excuse.&quot;
+
+📌 오늘의 영어 ②
+wear one’s heart on one’s sleeve
+감정을 숨기지 않고 솔직하게 드러내다
+
+오늘 문장에서는:
+I wear my heart on my sleeve.
+→ 난 내 감정을 숨기지 않고 솔직하게 드러내요.
+
+마음을 소매 위에 내놓아 누구나 알아볼 수 있다는 비유입니다. 소유격을 주어에 맞춥니다. my/my, her/her.
+
+She wears her heart on her sleeve.
+→ 그녀는 감정을 숨기지 않고 드러내요.
+
+I don’t hide my feelings.
+→ 난 내 감정을 숨기지 않아요.
+
+💡 I wear my heart on my sleeve와 She wears her heart on her sleeve처럼 소유격과 동사를 주어에 맞춥니다. keep one’s feelings to oneself는 감정을 혼자 간직한다는 뜻입니다. sleeve는 단수입니다.
+
+기분이 얼굴에 바로 드러나는 편이라면 자기소개 한 줄로도 쓸 수 있습니다. &quot;I tend to wear my heart on my sleeve.&quot;
+
+📌 오늘의 영어 ③
+could be the one to + 동사원형
+~할 바로 그 사람일지도 모른다
+
+오늘 문장에서는:
+You could be the one to save me.
+→ 당신이 날 구해줄 바로 그 사람일지도 몰라요.
+
+could는 여기서 과거의 능력이 아니라 가능성입니다. the one to save me는 ‘나를 구해줄 바로 그 사람’입니다.
+
+You could be the one to lead the team.
+→ 당신이 팀을 이끌 바로 그 사람일지도 몰라요.
+
+She might be the person who can help us.
+→ 그녀가 우리를 도와줄 사람일지도 몰라요.
+
+💡 could be는 확신하지 않은 가능성을 나타냅니다. You are the one은 단정적인 표현이고, You might be the person who can…은 비슷한 뜻을 풀어 쓴 표현입니다.
+
+새 프로젝트 담당자를 고민하는 회의에서 후배를 추천하며 이렇게 말해 볼 수 있습니다. &quot;You could be the one to make this work.&quot;
+
+30초 복습
+
+① see through someone’s disguise — 위장 뒤의 진짜 모습이나 속셈을 간파하다
+② wear one’s heart on one’s sleeve — 감정을 숨기지 않고 솔직하게 드러내다
+③ could be the one to + 동사원형 — ~할 바로 그 사람일지도 모른다
+
+한 문장으로 연결하면 이렇습니다.
+상대의 위장은 알아보지만(①) 자신의 감정은 숨기지 않는(②) 화자가, 그래도 당신이 나를 구해줄 사람일지 모른다고(③) 말하는 노래입니다.
+사랑의 확신과 버림받을까 하는 불안이 함께 담겨 있습니다.
+
+발음도 한 줄만
+· I can → 아이컨
+· disguise → 디스가이즈 (뒤에 강세)
+· heart on → 하러언
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 could be the one to입니다.
+You are the one은 단정이지만, could be는 가능성을 열어 둡니다.
+사람을 처음 믿어 볼 때도, 새 일을 맡길 때도, 확신보다 &quot;그럴지도 몰라&quot;에서 관계가 시작되는 경우가 많습니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+You could be the one to ________.
+
+예를 들면,
+You could be the one to change this team.
+당신이 이 팀을 바꿀 바로 그 사람일지도 몰라요.
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/you_pryme.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #you #pryme #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
