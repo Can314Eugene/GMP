@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Out Of Control · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>Out Of Control</h1>
+    <p class="artist">Gloria Tells</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p class="en">오늘의 곡은 Gloria Tells의 Out Of Control입니다.</p><p>2018년 10월 12일 발매된 동명 앨범의 수록곡으로, 사랑이 넘쳐흐르는 느낌을 노래합니다.</p><p>제목은 통제 불능이지만, 위험하다기보다 주체할 수 없이 벅찬 감정에 가깝습니다.</p></div><div class="blk"><p>🎥 오늘 노래 먼저 들어보기</p><p class="url"><a href="https://www.youtube.com/watch?v=ogI5bRISFHw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=ogI5bRISFHw</a></p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 다음 단계를 묻고, 감당이 안 되는 상황을 말하고, 좋은 순간에 머물고 싶다고 말하는 표현들입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">Where do we go (from here)?</p><p class="phrase-ko">어디로 갈까요? · 앞으로 어떻게 나아갈까요?</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">So where do we go?</p><p class="gloss">→ 그럼 우린 어디로 가죠?</p></div><div class="blk"><p>실제로 어디로 이동할지 물을 때도, 상황이나 관계의 다음 단계를 물을 때도 씁니다. from here를 붙이면 ‘이제 여기서부터’라는 느낌이 더해집니다.</p></div><div class="blk"><p class="en">Where do we go from here?</p><p class="gloss">→ 이제 여기서 어떻게 나아가죠?</p></div><div class="blk"><p class="en">What do we do now?</p><p class="gloss">→ 이제 우리 뭐 하죠?</p></div><div class="blk"><p class="tip">💡 방향을 물을 때는 go, 다음에 할 행동을 물을 때는 do를 씁니다. Where do we go now?도 완전하고 자연스러운 질문입니다.</p></div><div class="blk"><p>회의에서 문제를 다 짚고 난 뒤 다음 단계로 넘어갈 때 쓰기 좋습니다. &quot;Okay, where do we go from here?&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">out of control</p><p class="phrase-ko">통제할 수 없는 · 주체할 수 없는</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">It’s out of control.</p><p class="gloss">→ 통제할 수가 없어요. 주체할 수가 없어요.</p></div><div class="blk"><p>상황이나 감정을 통제하기 어려운 상태입니다. 이 노래에서는 위험보다 사랑의 벅찬 감정을 나타냅니다.</p></div><div class="blk"><p class="en">The situation is getting out of control.</p><p class="gloss">→ 상황이 통제 불능이 되어 가고 있어요.</p></div><div class="blk"><p class="en">My emotions got the best of me.</p><p class="gloss">→ 감정이 나를 압도했어요.</p></div><div class="blk"><p class="tip">💡 be out of control은 상태, get out of control은 그렇게 변해 가는 과정입니다. 반대말은 under control입니다.</p></div><div class="blk"><p>주문이 한꺼번에 몰린 날, 상황을 공유할 때 이렇게 말합니다. &quot;Orders are getting out of control today.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">stay in this feeling</p><p class="phrase-ko">지금의 감정 속에 머물다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I wanna stay in this feeling.</p><p class="gloss">→ 이 감정 속에 머물고 싶어요.</p></div><div class="blk"><p>지금 느끼는 감정을 계속 느끼고 싶다는 시적인 표현입니다. wanna는 want to의 편한 말투이고, 격식 있는 글에서는 want to를 씁니다.</p></div><div class="blk"><p class="en">I want to hold on to this feeling.</p><p class="gloss">→ 이 감정을 꼭 붙들고 있고 싶어요.</p></div><div class="blk"><p class="en">I wish this moment could last forever.</p><p class="gloss">→ 이 순간이 영원히 이어지면 좋겠어요.</p></div><div class="blk"><p class="tip">💡 hold on to 뒤에는 목적어가 옵니다. hold on만 쓰면 ‘기다려’, ‘버텨’라는 뜻이 됩니다.</p></div><div class="blk"><p>긴 한 주를 끝내고 맞은 금요일 저녁이라면 이 말이 딱 맞습니다. &quot;I just want to stay in this feeling.&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① Where do we go (from here)? — 앞으로 어떻게 나아갈까요?</p><p class="numbered">② out of control — 통제할 수 없는 · 주체할 수 없는</p><p class="numbered">③ stay in this feeling — 지금의 감정 속에 머물다</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>우리는 어디로 가는지 묻고(①), 감정은 주체할 수 없지만(②), 이 감정 속에 계속 머물고 싶다는(③) 노래입니다.</p><p>사랑의 몽롱함에 취하면서도 상대 곁의 안전함을 바라는 마음이 함께 담겨 있습니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· where do we → 웨어더위</p><p class="bullet">· out of → 아우러브</p><p class="bullet">· wanna → 워너</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p class="en">하나만 고른다면 Where do we go from here?입니다.</p><p>일이 꼬였을 때 누구 탓인지 따지기보다 이 질문 하나로 대화를 앞으로 돌릴 수 있습니다.</p><p>회의, 협상, 관계까지, 멈춘 자리에서 다음 걸음을 묻는 문장입니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">We ________. So where do we go from here?</p></div><div class="blk"><p>예를 들면,</p><p class="en">We missed the deadline. So where do we go from here?</p><p>마감을 놓쳤어요. 그럼 이제 어떻게 해야 할까요?</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/out_of_control_gloria_tells.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/out_of_control_gloria_tells.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #OutOfControl #GloriaTells #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 10월 21일] Out Of Control — Gloria Tells | Where do we go (from here)?</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 10월 21일] Out Of Control — Gloria Tells | Where do we go (from here)?
+
+🎧 Good Morning Pops
+Out Of Control — Gloria Tells
+
+오늘의 곡은 Gloria Tells의 Out Of Control입니다.
+2018년 10월 12일 발매된 동명 앨범의 수록곡으로, 사랑이 넘쳐흐르는 느낌을 노래합니다.
+제목은 통제 불능이지만, 위험하다기보다 주체할 수 없이 벅찬 감정에 가깝습니다.
+
+🎥 오늘 노래 먼저 들어보기
+https://www.youtube.com/watch?v=ogI5bRISFHw
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 다음 단계를 묻고, 감당이 안 되는 상황을 말하고, 좋은 순간에 머물고 싶다고 말하는 표현들입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+Where do we go (from here)?
+어디로 갈까요? · 앞으로 어떻게 나아갈까요?
+
+오늘 문장에서는:
+So where do we go?
+→ 그럼 우린 어디로 가죠?
+
+실제로 어디로 이동할지 물을 때도, 상황이나 관계의 다음 단계를 물을 때도 씁니다. from here를 붙이면 ‘이제 여기서부터’라는 느낌이 더해집니다.
+
+Where do we go from here?
+→ 이제 여기서 어떻게 나아가죠?
+
+What do we do now?
+→ 이제 우리 뭐 하죠?
+
+💡 방향을 물을 때는 go, 다음에 할 행동을 물을 때는 do를 씁니다. Where do we go now?도 완전하고 자연스러운 질문입니다.
+
+회의에서 문제를 다 짚고 난 뒤 다음 단계로 넘어갈 때 쓰기 좋습니다. &quot;Okay, where do we go from here?&quot;
+
+📌 오늘의 영어 ②
+out of control
+통제할 수 없는 · 주체할 수 없는
+
+오늘 문장에서는:
+It’s out of control.
+→ 통제할 수가 없어요. 주체할 수가 없어요.
+
+상황이나 감정을 통제하기 어려운 상태입니다. 이 노래에서는 위험보다 사랑의 벅찬 감정을 나타냅니다.
+
+The situation is getting out of control.
+→ 상황이 통제 불능이 되어 가고 있어요.
+
+My emotions got the best of me.
+→ 감정이 나를 압도했어요.
+
+💡 be out of control은 상태, get out of control은 그렇게 변해 가는 과정입니다. 반대말은 under control입니다.
+
+주문이 한꺼번에 몰린 날, 상황을 공유할 때 이렇게 말합니다. &quot;Orders are getting out of control today.&quot;
+
+📌 오늘의 영어 ③
+stay in this feeling
+지금의 감정 속에 머물다
+
+오늘 문장에서는:
+I wanna stay in this feeling.
+→ 이 감정 속에 머물고 싶어요.
+
+지금 느끼는 감정을 계속 느끼고 싶다는 시적인 표현입니다. wanna는 want to의 편한 말투이고, 격식 있는 글에서는 want to를 씁니다.
+
+I want to hold on to this feeling.
+→ 이 감정을 꼭 붙들고 있고 싶어요.
+
+I wish this moment could last forever.
+→ 이 순간이 영원히 이어지면 좋겠어요.
+
+💡 hold on to 뒤에는 목적어가 옵니다. hold on만 쓰면 ‘기다려’, ‘버텨’라는 뜻이 됩니다.
+
+긴 한 주를 끝내고 맞은 금요일 저녁이라면 이 말이 딱 맞습니다. &quot;I just want to stay in this feeling.&quot;
+
+30초 복습
+
+① Where do we go (from here)? — 앞으로 어떻게 나아갈까요?
+② out of control — 통제할 수 없는 · 주체할 수 없는
+③ stay in this feeling — 지금의 감정 속에 머물다
+
+한 문장으로 연결하면 이렇습니다.
+우리는 어디로 가는지 묻고(①), 감정은 주체할 수 없지만(②), 이 감정 속에 계속 머물고 싶다는(③) 노래입니다.
+사랑의 몽롱함에 취하면서도 상대 곁의 안전함을 바라는 마음이 함께 담겨 있습니다.
+
+발음도 한 줄만
+· where do we → 웨어더위
+· out of → 아우러브
+· wanna → 워너
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 Where do we go from here?입니다.
+일이 꼬였을 때 누구 탓인지 따지기보다 이 질문 하나로 대화를 앞으로 돌릴 수 있습니다.
+회의, 협상, 관계까지, 멈춘 자리에서 다음 걸음을 묻는 문장입니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+We ________. So where do we go from here?
+
+예를 들면,
+We missed the deadline. So where do we go from here?
+마감을 놓쳤어요. 그럼 이제 어떻게 해야 할까요?
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/out_of_control_gloria_tells.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #OutOfControl #GloriaTells #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
