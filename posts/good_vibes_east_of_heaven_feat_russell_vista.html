@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Good Vibes · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>Good Vibes</h1>
+    <p class="artist">East of Heaven feat. Russell Vista</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p class="en">오늘의 곡은 East of Heaven feat. Russell Vista의 Good Vibes입니다.</p><p>2020년 4월 3일 발매된 EP Weak for You의 수록곡으로, 고민이 있는 상대에게 칭찬과 위로를 건네는 노래입니다.</p><p>멋지다는 칭찬 뒤에 숨은 걱정까지 알아봐 주는 노래라, 한 주를 마무리하는 금요일 아침에 잘 어울립니다.</p></div><div class="blk"><p>🎥 오늘 노래 먼저 들어보기</p><p class="url"><a href="https://www.youtube.com/watch?v=1_mylbb0v6k" target="_blank" rel="noopener">https://www.youtube.com/watch?v=1_mylbb0v6k</a></p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 칭찬하고, 걱정을 덜어 주고, 마음을 묻는 표현들입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">look like a million bucks</p><p class="phrase-ko">정말 멋져 보이다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">You look like a million bucks.</p><p class="gloss">→ 당신 정말 멋져 보여요.</p></div><div class="blk"><p>bucks는 dollar의 구어체입니다. 백만 달러짜리처럼 보인다는 말로, 재산이나 가격이 아니라 외모가 아주 멋지다는 칭찬입니다.</p></div><div class="blk"><p class="en">You look amazing.</p><p class="gloss">→ 당신 정말 멋져 보여요.</p></div><div class="blk"><p class="en">You look stunning in that outfit.</p><p class="gloss">→ 그 옷을 입으니 정말 눈부시게 멋져요.</p></div><div class="blk"><p class="tip">💡 look 대신 feel을 쓴 feel like a million bucks는 기분이나 몸 상태가 아주 좋다는 뜻입니다.</p></div><div class="blk"><p>새 정장을 입고 출근한 동료에게 건네기 좋은 한마디입니다. &quot;You look like a million bucks today.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">will fade</p><p class="phrase-ko">점점 희미해지거나 사라질 것이다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">All your problems will fade.</p><p class="gloss">→ 당신의 모든 걱정은 점점 사라질 거예요.</p></div><div class="blk"><p>fade는 한순간에 없어지는 게 아니라 점차 희미해지는 변화입니다. 여기서는 위로의 말로 쓰인 미래형입니다.</p></div><div class="blk"><p class="en">Things will get better.</p><p class="gloss">→ 상황이 나아질 거예요.</p></div><div class="blk"><p class="en">My worries faded as we talked.</p><p class="gloss">→ 이야기를 나누면서 걱정이 차츰 사라졌어요.</p></div><div class="blk"><p class="tip">💡 fade는 색·소리·기억·감정이 약해지는 데 씁니다. 문제를 해결한다는 solve a problem과 달리, fade는 문제가 옅어지는 변화를 그립니다.</p></div><div class="blk"><p>힘든 일을 겪은 친구에게는 해결책보다 이 한 문장이 먼저일 때가 있습니다. &quot;This too will fade.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">Do you know how much + 주어 + 동사?</p><p class="phrase-ko">~가 얼마나 …하는지 알아요?</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Do you know how much I love you?</p><p class="gloss">→ 내가 당신을 얼마나 사랑하는지 알아요?</p></div><div class="blk"><p>Do you know 안에 how much I love you가 들어간 구조입니다. how much가 사랑이나 고마움의 정도를 강조합니다.</p></div><div class="blk"><p class="en">Do you know how much I miss you?</p><p class="gloss">→ 내가 당신을 얼마나 그리워하는지 알아요?</p></div><div class="blk"><p class="en">Do you know how much your support means to me?</p><p class="gloss">→ 당신의 응원이 내게 얼마나 큰 의미인지 알아요?</p></div><div class="blk"><p class="tip">💡 how much 뒤에는 주어 + 동사 순서가 옵니다. how much do I love you를 그대로 넣지 않습니다.</p></div><div class="blk"><p>한 해 동안 도와준 거래처나 동료에게 감사 메시지를 쓸 때 이렇게 시작할 수 있습니다. &quot;Do you know how much your help meant to us this year?&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① look like a million bucks — 정말 멋져 보이다</p><p class="numbered">② will fade — 점점 희미해지거나 사라질 것이다</p><p class="numbered">③ Do you know how much + 주어 + 동사? — ~가 얼마나 …하는지 알아요?</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>정말 멋져 보인다고 칭찬하고(①), 걱정은 점점 사라질 거라고 다독이고(②), 내가 얼마나 사랑하는지 아느냐고 묻는(③) 노래입니다.</p><p>미소 뒤에 숨은 고민을 알아보고 함께 즐거움을 되찾으려는 다정한 위로가 중심인 곡입니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· like a → 라이커</p><p class="bullet">· do you → 듀 / 쥬</p><p class="bullet">· much I love you → 머차이 러뷰</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>하나만 고른다면 Do you know how much + 주어 + 동사?입니다.</p><p>고마움은 마음에만 두면 상대에게 닿지 않습니다.</p><p>how much 하나로 그 크기까지 전할 수 있어서, 가족에게도 일터에서도 오래 쓸 수 있는 문장입니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">Do you know how much ________?</p></div><div class="blk"><p>예를 들면,</p><p class="en">Do you know how much I appreciate you?</p><p>내가 당신에게 얼마나 고마워하는지 알아요?</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/good_vibes_east_of_heaven_feat_russell_vista.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/good_vibes_east_of_heaven_feat_russell_vista.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #GoodVibes #EastOfHeaven #RussellVista #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 10월 23일] Good Vibes — East of Heaven feat. Russell Vista | look like a million bucks</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 10월 23일] Good Vibes — East of Heaven feat. Russell Vista | look like a million bucks
+
+🎧 Good Morning Pops
+Good Vibes — East of Heaven feat. Russell Vista
+
+오늘의 곡은 East of Heaven feat. Russell Vista의 Good Vibes입니다.
+2020년 4월 3일 발매된 EP Weak for You의 수록곡으로, 고민이 있는 상대에게 칭찬과 위로를 건네는 노래입니다.
+멋지다는 칭찬 뒤에 숨은 걱정까지 알아봐 주는 노래라, 한 주를 마무리하는 금요일 아침에 잘 어울립니다.
+
+🎥 오늘 노래 먼저 들어보기
+https://www.youtube.com/watch?v=1_mylbb0v6k
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 칭찬하고, 걱정을 덜어 주고, 마음을 묻는 표현들입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+look like a million bucks
+정말 멋져 보이다
+
+오늘 문장에서는:
+You look like a million bucks.
+→ 당신 정말 멋져 보여요.
+
+bucks는 dollar의 구어체입니다. 백만 달러짜리처럼 보인다는 말로, 재산이나 가격이 아니라 외모가 아주 멋지다는 칭찬입니다.
+
+You look amazing.
+→ 당신 정말 멋져 보여요.
+
+You look stunning in that outfit.
+→ 그 옷을 입으니 정말 눈부시게 멋져요.
+
+💡 look 대신 feel을 쓴 feel like a million bucks는 기분이나 몸 상태가 아주 좋다는 뜻입니다.
+
+새 정장을 입고 출근한 동료에게 건네기 좋은 한마디입니다. &quot;You look like a million bucks today.&quot;
+
+📌 오늘의 영어 ②
+will fade
+점점 희미해지거나 사라질 것이다
+
+오늘 문장에서는:
+All your problems will fade.
+→ 당신의 모든 걱정은 점점 사라질 거예요.
+
+fade는 한순간에 없어지는 게 아니라 점차 희미해지는 변화입니다. 여기서는 위로의 말로 쓰인 미래형입니다.
+
+Things will get better.
+→ 상황이 나아질 거예요.
+
+My worries faded as we talked.
+→ 이야기를 나누면서 걱정이 차츰 사라졌어요.
+
+💡 fade는 색·소리·기억·감정이 약해지는 데 씁니다. 문제를 해결한다는 solve a problem과 달리, fade는 문제가 옅어지는 변화를 그립니다.
+
+힘든 일을 겪은 친구에게는 해결책보다 이 한 문장이 먼저일 때가 있습니다. &quot;This too will fade.&quot;
+
+📌 오늘의 영어 ③
+Do you know how much + 주어 + 동사?
+~가 얼마나 …하는지 알아요?
+
+오늘 문장에서는:
+Do you know how much I love you?
+→ 내가 당신을 얼마나 사랑하는지 알아요?
+
+Do you know 안에 how much I love you가 들어간 구조입니다. how much가 사랑이나 고마움의 정도를 강조합니다.
+
+Do you know how much I miss you?
+→ 내가 당신을 얼마나 그리워하는지 알아요?
+
+Do you know how much your support means to me?
+→ 당신의 응원이 내게 얼마나 큰 의미인지 알아요?
+
+💡 how much 뒤에는 주어 + 동사 순서가 옵니다. how much do I love you를 그대로 넣지 않습니다.
+
+한 해 동안 도와준 거래처나 동료에게 감사 메시지를 쓸 때 이렇게 시작할 수 있습니다. &quot;Do you know how much your help meant to us this year?&quot;
+
+30초 복습
+
+① look like a million bucks — 정말 멋져 보이다
+② will fade — 점점 희미해지거나 사라질 것이다
+③ Do you know how much + 주어 + 동사? — ~가 얼마나 …하는지 알아요?
+
+한 문장으로 연결하면 이렇습니다.
+정말 멋져 보인다고 칭찬하고(①), 걱정은 점점 사라질 거라고 다독이고(②), 내가 얼마나 사랑하는지 아느냐고 묻는(③) 노래입니다.
+미소 뒤에 숨은 고민을 알아보고 함께 즐거움을 되찾으려는 다정한 위로가 중심인 곡입니다.
+
+발음도 한 줄만
+· like a → 라이커
+· do you → 듀 / 쥬
+· much I love you → 머차이 러뷰
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 Do you know how much + 주어 + 동사?입니다.
+고마움은 마음에만 두면 상대에게 닿지 않습니다.
+how much 하나로 그 크기까지 전할 수 있어서, 가족에게도 일터에서도 오래 쓸 수 있는 문장입니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+Do you know how much ________?
+
+예를 들면,
+Do you know how much I appreciate you?
+내가 당신에게 얼마나 고마워하는지 알아요?
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/good_vibes_east_of_heaven_feat_russell_vista.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #GoodVibes #EastOfHeaven #RussellVista #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
