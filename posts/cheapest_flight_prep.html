@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheapest Flight · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>Cheapest Flight</h1>
+    <p class="artist">PREP</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p>이 글은 제가 만든 수업 카드를 바탕으로 AI의 도움을 받아 정리했습니다.</p></div><div class="blk"><p class="en">오늘의 곡은 PREP(프렙)의 Cheapest Flight입니다.</p><p>2015년 온라인에 공개됐고, 2016년 EP Futures에 실렸습니다.</p><p>제목은 가장 싼 항공편이지만, 오늘은 이 노래의 표현을 제가 일하는 코플레이트 고양센터의 하루에 붙여 봤습니다.</p></div><div class="blk"><p>🎥 오늘 노래 먼저 들어보기</p><p class="url"><a href="https://www.youtube.com/watch?v=rqvA7T5FUTQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=rqvA7T5FUTQ</a></p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 일정에 쫓길 때, 무언가를 예약할 때, 팀이 기운 빠질 때 쓰는 표현들입니다.</p><p>센터 업무 예문은 학습을 위해 가정한 상황입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">have one’s back against the wall</p><p class="phrase-ko">궁지에 몰리다 · 선택의 여지가 없다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Back against the wall.</p><p class="gloss">→ 궁지에 몰린 채.</p></div><div class="blk"><p>등이 벽에 닿아 더 물러설 곳이 없는 모습입니다. 가사는 주어와 동사를 생략한 구절이라, 문장으로 말할 때는 Our backs are against the wall.처럼 씁니다.</p></div><div class="blk"><p class="en">With two urgent orders due tomorrow, our backs are against the wall.</p><p class="gloss">→ 내일까지 처리해야 할 긴급 주문 두 건 때문에 우리도 궁지에 몰렸어요.</p></div><div class="blk"><p class="en">We’re in a tight spot, so let’s review the production schedule.</p><p class="gloss">→ 상황이 빠듯하니 생산 일정을 다시 살펴봅시다.</p></div><div class="blk"><p class="tip">💡 압박이 강하게 느껴지는 말이라 내부 회의에서 씁니다. 고객에게는 We’re working with a tight schedule.처럼 차분하게 설명하는 편이 낫습니다.</p></div><div class="blk"><p class="en">마감이 겹친 월요일 아침 회의라면 이렇게 시작할 수 있습니다. &quot;Our backs are against the wall this week, so let’s plan carefully.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">book + 예약 대상</p><p class="phrase-ko">항공편·시설·생산 시간대·배송 시간대를 예약하다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Then book the cheapest flight.</p><p class="gloss">→ 그다음 가장 저렴한 항공편을 예약할 거예요.</p></div><div class="blk"><p>가사에서는 앞의 I’ll과 이어져 화자가 앞으로 할 행동을 말합니다. 따로 떼어 보면 명령문처럼 보이지만, 여기서는 ‘예약할 거예요’입니다.</p></div><div class="blk"><p class="en">I’ll book a production slot once the schedule is confirmed.</p><p class="gloss">→ 일정이 확정되면 생산 시간대를 예약하겠습니다.</p></div><div class="blk"><p class="en">Let’s compare the costs and book a delivery slot.</p><p class="gloss">→ 비용을 비교하고 배송 시간대를 예약합시다.</p></div><div class="blk"><p class="tip">💡 일할 때는 flight 대신 a production slot, a delivery slot, a tour처럼 예약할 대상을 바꿔 넣으면 됩니다.</p></div><div class="blk"><p>출장 일정을 잡을 때는 노래 그대로 쓰면 됩니다. &quot;I’ll book the cheapest flight to Jeju.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">bring someone down</p><p class="phrase-ko">누군가를 낙담시키다 · 기운 빠지게 하다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Love can’t bring me down.</p><p class="gloss">→ 사랑은 날 무너뜨릴 수 없죠.</p></div><div class="blk"><p>bring down은 무너뜨린다는 뜻 외에 기분을 가라앉히거나 낙담시킨다는 뜻도 있습니다. 그래서 팀을 다독일 때 쓰기 좋습니다.</p></div><div class="blk"><p class="en">One complaint won’t bring the team down.</p><p class="gloss">→ 클레임 한 건 때문에 팀이 기운을 잃지는 않을 거예요.</p></div><div class="blk"><p class="en">We won’t let this setback bring us down.</p><p class="gloss">→ 이번 차질 때문에 의기소침해지지는 맙시다.</p></div><div class="blk"><p class="tip">💡 목적어에 따라 뜻이 바뀝니다. bring costs down은 비용을 낮춘다는 뜻입니다.</p></div><div class="blk"><p>일이 꼬인 날 저녁, 동료에게 건넬 한마디입니다. &quot;Don’t let today bring you down.&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① have one’s back against the wall — 궁지에 몰리다 · 선택의 여지가 없다</p><p class="numbered">② book + 예약 대상 — 시설·생산·배송 시간대를 예약하다</p><p class="numbered">③ bring someone down — 낙담시키다 · 기운 빠지게 하다</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>일정에 몰리면(①) 차분히 다음 일정을 예약하고(②), 차질이 생겨도 기운을 잃지 않는(③) 하루입니다.</p><p>강한 압박은 팀 안에서 나누고, 고객에게는 확인 가능한 일정과 다음 조치를 안내하는 것까지가 오늘의 표현입니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· back against → 배커겐스트</p><p class="bullet">· book a → 부커</p><p class="bullet">· bring us → 브링어스</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p class="en">하나만 고른다면 bring someone down입니다.</p><p>일을 하다 보면 클레임 한 건, 일정 차질 하나에 하루 분위기가 가라앉을 때가 있습니다.</p><p>그때 &quot;이걸로 우리가 무너지진 않는다&quot;고 먼저 말해 주는 사람이 있으면 다음 조치가 빨라집니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">We won’t let ________ bring us down.</p></div><div class="blk"><p>예를 들면,</p><p class="en">We won’t let one bad review bring us down.</p><p>나쁜 후기 하나 때문에 기운 잃지 맙시다.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/cheapest_flight_prep.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/cheapest_flight_prep.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #CheapestFlight #PREP #실무영어 #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 10월 26일] Cheapest Flight — PREP | have one’s back against the wall</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 10월 26일] Cheapest Flight — PREP | have one’s back against the wall
+
+🎧 Good Morning Pops
+Cheapest Flight — PREP
+
+이 글은 제가 만든 수업 카드를 바탕으로 AI의 도움을 받아 정리했습니다.
+
+오늘의 곡은 PREP(프렙)의 Cheapest Flight입니다.
+2015년 온라인에 공개됐고, 2016년 EP Futures에 실렸습니다.
+제목은 가장 싼 항공편이지만, 오늘은 이 노래의 표현을 제가 일하는 코플레이트 고양센터의 하루에 붙여 봤습니다.
+
+🎥 오늘 노래 먼저 들어보기
+https://www.youtube.com/watch?v=rqvA7T5FUTQ
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 일정에 쫓길 때, 무언가를 예약할 때, 팀이 기운 빠질 때 쓰는 표현들입니다.
+센터 업무 예문은 학습을 위해 가정한 상황입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+have one’s back against the wall
+궁지에 몰리다 · 선택의 여지가 없다
+
+오늘 문장에서는:
+Back against the wall.
+→ 궁지에 몰린 채.
+
+등이 벽에 닿아 더 물러설 곳이 없는 모습입니다. 가사는 주어와 동사를 생략한 구절이라, 문장으로 말할 때는 Our backs are against the wall.처럼 씁니다.
+
+With two urgent orders due tomorrow, our backs are against the wall.
+→ 내일까지 처리해야 할 긴급 주문 두 건 때문에 우리도 궁지에 몰렸어요.
+
+We’re in a tight spot, so let’s review the production schedule.
+→ 상황이 빠듯하니 생산 일정을 다시 살펴봅시다.
+
+💡 압박이 강하게 느껴지는 말이라 내부 회의에서 씁니다. 고객에게는 We’re working with a tight schedule.처럼 차분하게 설명하는 편이 낫습니다.
+
+마감이 겹친 월요일 아침 회의라면 이렇게 시작할 수 있습니다. &quot;Our backs are against the wall this week, so let’s plan carefully.&quot;
+
+📌 오늘의 영어 ②
+book + 예약 대상
+항공편·시설·생산 시간대·배송 시간대를 예약하다
+
+오늘 문장에서는:
+Then book the cheapest flight.
+→ 그다음 가장 저렴한 항공편을 예약할 거예요.
+
+가사에서는 앞의 I’ll과 이어져 화자가 앞으로 할 행동을 말합니다. 따로 떼어 보면 명령문처럼 보이지만, 여기서는 ‘예약할 거예요’입니다.
+
+I’ll book a production slot once the schedule is confirmed.
+→ 일정이 확정되면 생산 시간대를 예약하겠습니다.
+
+Let’s compare the costs and book a delivery slot.
+→ 비용을 비교하고 배송 시간대를 예약합시다.
+
+💡 일할 때는 flight 대신 a production slot, a delivery slot, a tour처럼 예약할 대상을 바꿔 넣으면 됩니다.
+
+출장 일정을 잡을 때는 노래 그대로 쓰면 됩니다. &quot;I’ll book the cheapest flight to Jeju.&quot;
+
+📌 오늘의 영어 ③
+bring someone down
+누군가를 낙담시키다 · 기운 빠지게 하다
+
+오늘 문장에서는:
+Love can’t bring me down.
+→ 사랑은 날 무너뜨릴 수 없죠.
+
+bring down은 무너뜨린다는 뜻 외에 기분을 가라앉히거나 낙담시킨다는 뜻도 있습니다. 그래서 팀을 다독일 때 쓰기 좋습니다.
+
+One complaint won’t bring the team down.
+→ 클레임 한 건 때문에 팀이 기운을 잃지는 않을 거예요.
+
+We won’t let this setback bring us down.
+→ 이번 차질 때문에 의기소침해지지는 맙시다.
+
+💡 목적어에 따라 뜻이 바뀝니다. bring costs down은 비용을 낮춘다는 뜻입니다.
+
+일이 꼬인 날 저녁, 동료에게 건넬 한마디입니다. &quot;Don’t let today bring you down.&quot;
+
+30초 복습
+
+① have one’s back against the wall — 궁지에 몰리다 · 선택의 여지가 없다
+② book + 예약 대상 — 시설·생산·배송 시간대를 예약하다
+③ bring someone down — 낙담시키다 · 기운 빠지게 하다
+
+한 문장으로 연결하면 이렇습니다.
+일정에 몰리면(①) 차분히 다음 일정을 예약하고(②), 차질이 생겨도 기운을 잃지 않는(③) 하루입니다.
+강한 압박은 팀 안에서 나누고, 고객에게는 확인 가능한 일정과 다음 조치를 안내하는 것까지가 오늘의 표현입니다.
+
+발음도 한 줄만
+· back against → 배커겐스트
+· book a → 부커
+· bring us → 브링어스
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 bring someone down입니다.
+일을 하다 보면 클레임 한 건, 일정 차질 하나에 하루 분위기가 가라앉을 때가 있습니다.
+그때 &quot;이걸로 우리가 무너지진 않는다&quot;고 먼저 말해 주는 사람이 있으면 다음 조치가 빨라집니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+We won’t let ________ bring us down.
+
+예를 들면,
+We won’t let one bad review bring us down.
+나쁜 후기 하나 때문에 기운 잃지 맙시다.
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/cheapest_flight_prep.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #CheapestFlight #PREP #실무영어 #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
