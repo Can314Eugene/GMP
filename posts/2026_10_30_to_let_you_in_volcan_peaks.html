@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To Let You In · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>To Let You In</h1>
+    <p class="artist">Volcan Peaks feat. Cody Francis</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p>이 글은 제가 만든 수업 카드를 바탕으로 AI의 도움을 받아 정리했습니다.</p></div><div class="blk"><p class="en">오늘의 곡은 Volcan Peaks feat. Cody Francis의 To Let You In입니다.</p><p>2019년 5월 31일 싱글로 나온 곡으로, 자기 생각 속에 갇혀 망설이는 마음과 상대를 받아들이고 싶은 마음을 함께 노래합니다.</p><p>머릿속에서만 되풀이하던 이야기를 멈추고 한 걸음 내딛는 노래라, 금요일 아침에 듣기 좋습니다.</p></div><div class="blk"><p>🎥 오늘 노래 먼저 들어보기</p><p class="url"><a href="https://www.youtube.com/watch?v=VQf02BXQLAY" target="_blank" rel="noopener">https://www.youtube.com/watch?v=VQf02BXQLAY</a></p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 반복되는 문제를 말하고, 먼저 나서고, 들은 말을 곱씹는 표현들입니다.</p><p>코플레이트 고양센터 업무 예문은 학습을 위해 가정한 상황입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">the same old story</p><p class="phrase-ko">늘 반복되는 뻔한 상황</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">It’s the same old story.</p><p class="gloss">→ 늘 똑같은 이야기예요.</p></div><div class="blk"><p>여기서 old는 오래됐다는 뜻보다 ‘또 그거’라는 느낌입니다. 같은 일이나 실망스러운 상황이 반복된다는 뉘앙스가 있습니다.</p></div><div class="blk"><p class="en">It’s the same old story: the delivery date keeps changing.</p><p class="gloss">→ 늘 같은 상황이에요. 납품 날짜가 계속 바뀌네요.</p></div><div class="blk"><p class="en">We keep running into the same scheduling issue.</p><p class="gloss">→ 같은 일정 문제에 계속 부딪히고 있어요.</p></div><div class="blk"><p class="tip">💡 불평처럼 들릴 수 있어 내부 회의에서 씁니다. 고객에게는 We’re seeing the same issue again.처럼 관찰한 사실로 말합니다.</p></div><div class="blk"><p>월요일마다 같은 핑계로 운동을 미룬다면 스스로에게 이렇게 말할 수 있습니다. &quot;It’s the same old story. Time to change it.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">make a move / take action</p><p class="phrase-ko">행동에 나서다 / 조치를 취하다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Make a move.</p><p class="gloss">→ 행동에 나서요.</p></div><div class="blk"><p>가사에서는 친구들이 화자에게 기회를 잡고 먼저 다가가라고 하는 말입니다. make the first move라고 하면 ‘먼저 나서다’가 더 분명해집니다.</p></div><div class="blk"><p class="en">Let’s make the first move and contact the supplier.</p><p class="gloss">→ 우리가 먼저 나서서 공급사에 연락합시다.</p></div><div class="blk"><p class="en">Let’s take action before the production schedule is affected.</p><p class="gloss">→ 생산 일정에 영향이 생기기 전에 조치합시다.</p></div><div class="blk"><p class="tip">💡 일할 때는 make the first move 뒤에 연락하기, 확인하기처럼 할 행동을 붙입니다. take action은 ‘조치하다’입니다.</p></div><div class="blk"><p>연락이 뜸해진 지인이 생각난다면 오늘 이렇게 해 보면 됩니다. &quot;I’ll make the first move and send a message.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">can’t stop + -ing</p><p class="phrase-ko">~하는 것을 멈출 수 없다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I can’t stop thinking about what you said.</p><p class="gloss">→ 당신이 했던 말이 계속 생각나요.</p></div><div class="blk"><p>can’t stop thinking about은 생각이 계속 난다는 뜻입니다. what you said는 ‘당신이 했던 말’입니다.</p></div><div class="blk"><p class="en">I can’t stop thinking about the feedback from our last meeting.</p><p class="gloss">→ 지난 회의에서 받은 의견이 계속 생각나요.</p></div><div class="blk"><p class="en">I’ve been thinking about your suggestion. Can we discuss it?</p><p class="gloss">→ 제안해 주신 내용을 생각해 봤어요. 함께 논의할 수 있을까요?</p></div><div class="blk"><p class="tip">💡 stop talking은 말하기를 멈추는 것, stop to talk는 하던 일을 멈추고 이야기하는 것입니다. can’t가 빠지면 뜻이 반대가 되니 주의합니다.</p></div><div class="blk"><p>좋은 강의를 듣고 온 다음 날이라면 이렇게 말할 수 있습니다. &quot;I can’t stop thinking about yesterday’s talk.&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① the same old story — 늘 반복되는 뻔한 상황</p><p class="numbered">② make a move / take action — 행동에 나서다 / 조치를 취하다</p><p class="numbered">③ can’t stop + -ing — ~하는 것을 멈출 수 없다</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>머릿속에서 늘 같은 이야기만 되풀이하고(①), 친구들은 행동에 나서라고 하고(②), 나는 당신이 한 말이 계속 생각나는(③) 노래입니다.</p><p>생각 속의 반복과 실제 행동을 맞세우며, 상대를 받아들이기 위해 마음을 여는 이야기입니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· same old → 세이몰(드)</p><p class="bullet">· make a move → 메이커무브</p><p class="bullet">· what you said → 왓츄 세드</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>하나만 고른다면 make a move입니다.</p><p>생각을 오래 한다고 상황이 바뀌지는 않습니다.</p><p>같은 이야기를 머릿속에서 열 번 돌리는 것보다, 연락 한 통을 먼저 보내는 쪽이 대개 더 빨리 답을 줍니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">I’ll make the first move and ________.</p></div><div class="blk"><p>예를 들면,</p><p class="en">I’ll make the first move and call my old friend tonight.</p><p>오늘 밤 제가 먼저 옛 친구에게 전화해 볼게요.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습 · 말하기 훈련까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/to_let_you_in_volcan_peaks.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/to_let_you_in_volcan_peaks.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #ToLetYouIn #VolcanPeaks #CodyFrancis #말하기영어 #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 10월 30일] To Let You In — Volcan Peaks feat. Cody Francis | the same old story</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 10월 30일] To Let You In — Volcan Peaks feat. Cody Francis | the same old story
+
+🎧 Good Morning Pops
+To Let You In — Volcan Peaks feat. Cody Francis
+
+이 글은 제가 만든 수업 카드를 바탕으로 AI의 도움을 받아 정리했습니다.
+
+오늘의 곡은 Volcan Peaks feat. Cody Francis의 To Let You In입니다.
+2019년 5월 31일 싱글로 나온 곡으로, 자기 생각 속에 갇혀 망설이는 마음과 상대를 받아들이고 싶은 마음을 함께 노래합니다.
+머릿속에서만 되풀이하던 이야기를 멈추고 한 걸음 내딛는 노래라, 금요일 아침에 듣기 좋습니다.
+
+🎥 오늘 노래 먼저 들어보기
+https://www.youtube.com/watch?v=VQf02BXQLAY
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 반복되는 문제를 말하고, 먼저 나서고, 들은 말을 곱씹는 표현들입니다.
+코플레이트 고양센터 업무 예문은 학습을 위해 가정한 상황입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+the same old story
+늘 반복되는 뻔한 상황
+
+오늘 문장에서는:
+It’s the same old story.
+→ 늘 똑같은 이야기예요.
+
+여기서 old는 오래됐다는 뜻보다 ‘또 그거’라는 느낌입니다. 같은 일이나 실망스러운 상황이 반복된다는 뉘앙스가 있습니다.
+
+It’s the same old story: the delivery date keeps changing.
+→ 늘 같은 상황이에요. 납품 날짜가 계속 바뀌네요.
+
+We keep running into the same scheduling issue.
+→ 같은 일정 문제에 계속 부딪히고 있어요.
+
+💡 불평처럼 들릴 수 있어 내부 회의에서 씁니다. 고객에게는 We’re seeing the same issue again.처럼 관찰한 사실로 말합니다.
+
+월요일마다 같은 핑계로 운동을 미룬다면 스스로에게 이렇게 말할 수 있습니다. &quot;It’s the same old story. Time to change it.&quot;
+
+📌 오늘의 영어 ②
+make a move / take action
+행동에 나서다 / 조치를 취하다
+
+오늘 문장에서는:
+Make a move.
+→ 행동에 나서요.
+
+가사에서는 친구들이 화자에게 기회를 잡고 먼저 다가가라고 하는 말입니다. make the first move라고 하면 ‘먼저 나서다’가 더 분명해집니다.
+
+Let’s make the first move and contact the supplier.
+→ 우리가 먼저 나서서 공급사에 연락합시다.
+
+Let’s take action before the production schedule is affected.
+→ 생산 일정에 영향이 생기기 전에 조치합시다.
+
+💡 일할 때는 make the first move 뒤에 연락하기, 확인하기처럼 할 행동을 붙입니다. take action은 ‘조치하다’입니다.
+
+연락이 뜸해진 지인이 생각난다면 오늘 이렇게 해 보면 됩니다. &quot;I’ll make the first move and send a message.&quot;
+
+📌 오늘의 영어 ③
+can’t stop + -ing
+~하는 것을 멈출 수 없다
+
+오늘 문장에서는:
+I can’t stop thinking about what you said.
+→ 당신이 했던 말이 계속 생각나요.
+
+can’t stop thinking about은 생각이 계속 난다는 뜻입니다. what you said는 ‘당신이 했던 말’입니다.
+
+I can’t stop thinking about the feedback from our last meeting.
+→ 지난 회의에서 받은 의견이 계속 생각나요.
+
+I’ve been thinking about your suggestion. Can we discuss it?
+→ 제안해 주신 내용을 생각해 봤어요. 함께 논의할 수 있을까요?
+
+💡 stop talking은 말하기를 멈추는 것, stop to talk는 하던 일을 멈추고 이야기하는 것입니다. can’t가 빠지면 뜻이 반대가 되니 주의합니다.
+
+좋은 강의를 듣고 온 다음 날이라면 이렇게 말할 수 있습니다. &quot;I can’t stop thinking about yesterday’s talk.&quot;
+
+30초 복습
+
+① the same old story — 늘 반복되는 뻔한 상황
+② make a move / take action — 행동에 나서다 / 조치를 취하다
+③ can’t stop + -ing — ~하는 것을 멈출 수 없다
+
+한 문장으로 연결하면 이렇습니다.
+머릿속에서 늘 같은 이야기만 되풀이하고(①), 친구들은 행동에 나서라고 하고(②), 나는 당신이 한 말이 계속 생각나는(③) 노래입니다.
+생각 속의 반복과 실제 행동을 맞세우며, 상대를 받아들이기 위해 마음을 여는 이야기입니다.
+
+발음도 한 줄만
+· same old → 세이몰(드)
+· make a move → 메이커무브
+· what you said → 왓츄 세드
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 make a move입니다.
+생각을 오래 한다고 상황이 바뀌지는 않습니다.
+같은 이야기를 머릿속에서 열 번 돌리는 것보다, 연락 한 통을 먼저 보내는 쪽이 대개 더 빨리 답을 줍니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+I’ll make the first move and ________.
+
+예를 들면,
+I’ll make the first move and call my old friend tonight.
+오늘 밤 제가 먼저 옛 친구에게 전화해 볼게요.
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습 · 말하기 훈련까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/to_let_you_in_volcan_peaks.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #ToLetYouIn #VolcanPeaks #CodyFrancis #말하기영어 #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
