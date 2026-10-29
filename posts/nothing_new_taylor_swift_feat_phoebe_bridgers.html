@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nothing New · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>Nothing New</h1>
+    <p class="artist">Taylor Swift feat. Phoebe Bridgers</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p>이 글은 제가 만든 수업 카드를 바탕으로 AI의 도움을 받아 정리했습니다.</p></div><div class="blk"><p class="en">오늘의 곡은 Taylor Swift feat. Phoebe Bridgers의 Nothing New입니다.</p><p>2021년 11월 12일 발매된 Red (Taylor’s Version)에 실린 곡으로, 젊음과 새로움이 사라진 뒤에도 사람들이 나를 봐 줄지 걱정하는 노래입니다.</p><p>두 목소리가 번갈아 같은 불안을 털어놓는데, 그 질문들이 의외로 일할 때 쓰기 좋은 문장입니다.</p></div><div class="blk"><p>🎥 오늘 노래 먼저 들어보기</p><p class="url"><a href="https://www.youtube.com/watch?v=m3fWCRvz5JA" target="_blank" rel="noopener">https://www.youtube.com/watch?v=m3fWCRvz5JA</a></p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 앞으로 어떻게 될지 묻고, 한밤중의 걱정을 말하고, 얼마나 걸리는지 묻는 표현들입니다.</p><p>코플레이트 고양센터 업무 예문은 학습을 위해 가정한 상황입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">What will become of…?</p><p class="phrase-ko">~은 어떻게 될까요?</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">What will become of me?</p><p class="gloss">→ 저는 어떻게 되는 걸까요?</p></div><div class="blk"><p>become of 뒤에 사람이나 사물을 넣으면 그 뒤의 운명이나 처지를 묻는 말이 됩니다. 걱정이 담긴 질문입니다.</p></div><div class="blk"><p class="en">What will become of the booking if we change the production date?</p><p class="gloss">→ 생산 날짜를 바꾸면 그 예약은 어떻게 되는 걸까요?</p></div><div class="blk"><p class="en">What will happen to our reservation if the delivery is delayed?</p><p class="gloss">→ 납품이 지연되면 우리 예약은 어떻게 되나요?</p></div><div class="blk"><p class="tip">💡 예약이나 주문을 문의할 때는 What will happen to…?가 더 일반적입니다. What will you become?은 어떤 사람이 될지 묻는 다른 구조입니다.</p></div><div class="blk"><p>새 프로젝트를 시작하는 날, 기존 업무가 걱정된다면 이렇게 묻습니다. &quot;What will become of my current tasks?&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">in the middle of + 명사</p><p class="phrase-ko">~의 한가운데에 · ~하는 도중에</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I wake up in the middle of the night.</p><p class="gloss">→ 저는 한밤중에 잠에서 깨요.</p></div><div class="blk"><p class="en">in the middle of the night는 한밤중에, in the middle of a meeting은 회의 도중에입니다. 반복되는 습관이라 현재형 wake up을 썼습니다.</p></div><div class="blk"><p class="en">I woke up in the middle of the night worrying about the production schedule.</p><p class="gloss">→ 생산 일정이 걱정돼 한밤중에 잠에서 깼어요.</p></div><div class="blk"><p class="en">Please check with the team before changing the plan in the middle of a shift.</p><p class="gloss">→ 근무 도중 계획을 바꾸기 전에 팀에 확인해 주세요.</p></div><div class="blk"><p class="tip">💡 wake up은 잠이 깨는 것, get up은 침대에서 일어나는 것입니다. 지난밤 한 번 있었던 일은 I woke up이라고 합니다.</p></div><div class="blk"><p class="en">통화 중에 다른 전화가 걸려 왔다면 이렇게 양해를 구합니다. &quot;Sorry, I’m in the middle of a call. Can I call you back?&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">How long will…?</p><p class="phrase-ko">언제까지 ~할까요? · 얼마나 걸릴까요?</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">How long will it be cute?</p><p class="gloss">→ 그게 언제까지 귀여울까요?</p></div><div class="blk"><p>여기서 it은 방에서 우는 행동을 가리킵니다. 그 모습을 아직 어리고 귀엽게 받아 주는 시선이 언제까지 이어질지 묻는 말입니다.</p></div><div class="blk"><p class="en">How long will this time slot be available?</p><p class="gloss">→ 이 시간대는 언제까지 예약할 수 있나요?</p></div><div class="blk"><p class="en">How long will it take to confirm the revised schedule?</p><p class="gloss">→ 변경 일정을 확정하는 데 얼마나 걸릴까요?</p></div><div class="blk"><p class="tip">💡 How long will it be…?는 어떤 상태가 얼마나 이어지는지, How long will it take to…?는 일을 마치는 데 걸리는 시간을 묻습니다.</p></div><div class="blk"><p>택배 문의 전화에서 가장 먼저 나오는 질문입니다. &quot;How long will it take to arrive?&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① What will become of…? — ~은 어떻게 될까요?</p><p class="numbered">② in the middle of + 명사 — ~의 한가운데에 · ~하는 도중에</p><p class="numbered">③ How long will…? — 언제까지 ~할까요? · 얼마나 걸릴까요?</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>나는 어떻게 될지 묻고(①), 한밤중에 잠에서 깨고(②), 이 모습이 언제까지 귀엽게 받아들여질지 걱정하는(③) 노래입니다.</p><p>미래와 시간의 흐름을 질문으로 이어 가며, 새로움이 사라질 때의 불안을 두 목소리로 나눈 곡입니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· become of → 비커머브</p><p class="bullet">· middle of the → 미들러브더</p><p class="bullet">· will it → 윌릿</p></div><div class="blk"><p>카드에 새로 더한 것</p><p>이번 카드부터 말하기 훈련 칸을 넣었습니다.</p><p>오늘 표현으로 내 문장 세 개를 만들고, 키워드 세 개만 보고 1분 말한 뒤, 교정을 받고 같은 내용을 2분, 90초, 60초로 줄여 다시 말하는 순서입니다.</p><p>카드 안에 질문 듣기와 타이머가 있으니, 눈으로 읽고 끝내지 말고 한 번 소리 내어 말해 보세요.</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>하나만 고른다면 What will become of…?입니다.</p><p>변화가 생기면 사람들은 대개 ‘그럼 내 것은 어떻게 되지?’부터 궁금해합니다.</p><p>그 질문을 먼저 꺼내 주는 사람이 있으면 회의도, 상담도 훨씬 빨리 본론으로 들어갑니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">What will become of ________ if ________?</p></div><div class="blk"><p>예를 들면,</p><p class="en">What will become of our weekend plans if it rains?</p><p>비가 오면 우리 주말 계획은 어떻게 될까요?</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/nothing_new_taylor_swift_feat_phoebe_bridgers.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/nothing_new_taylor_swift_feat_phoebe_bridgers.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #NothingNew #TaylorSwift #PhoebeBridgers #말하기영어 #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 10월 29일] Nothing New — Taylor Swift feat. Phoebe Bridgers | What will become of…?</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 10월 29일] Nothing New — Taylor Swift feat. Phoebe Bridgers | What will become of…?
+
+🎧 Good Morning Pops
+Nothing New — Taylor Swift feat. Phoebe Bridgers
+
+이 글은 제가 만든 수업 카드를 바탕으로 AI의 도움을 받아 정리했습니다.
+
+오늘의 곡은 Taylor Swift feat. Phoebe Bridgers의 Nothing New입니다.
+2021년 11월 12일 발매된 Red (Taylor’s Version)에 실린 곡으로, 젊음과 새로움이 사라진 뒤에도 사람들이 나를 봐 줄지 걱정하는 노래입니다.
+두 목소리가 번갈아 같은 불안을 털어놓는데, 그 질문들이 의외로 일할 때 쓰기 좋은 문장입니다.
+
+🎥 오늘 노래 먼저 들어보기
+https://www.youtube.com/watch?v=m3fWCRvz5JA
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 앞으로 어떻게 될지 묻고, 한밤중의 걱정을 말하고, 얼마나 걸리는지 묻는 표현들입니다.
+코플레이트 고양센터 업무 예문은 학습을 위해 가정한 상황입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+What will become of…?
+~은 어떻게 될까요?
+
+오늘 문장에서는:
+What will become of me?
+→ 저는 어떻게 되는 걸까요?
+
+become of 뒤에 사람이나 사물을 넣으면 그 뒤의 운명이나 처지를 묻는 말이 됩니다. 걱정이 담긴 질문입니다.
+
+What will become of the booking if we change the production date?
+→ 생산 날짜를 바꾸면 그 예약은 어떻게 되는 걸까요?
+
+What will happen to our reservation if the delivery is delayed?
+→ 납품이 지연되면 우리 예약은 어떻게 되나요?
+
+💡 예약이나 주문을 문의할 때는 What will happen to…?가 더 일반적입니다. What will you become?은 어떤 사람이 될지 묻는 다른 구조입니다.
+
+새 프로젝트를 시작하는 날, 기존 업무가 걱정된다면 이렇게 묻습니다. &quot;What will become of my current tasks?&quot;
+
+📌 오늘의 영어 ②
+in the middle of + 명사
+~의 한가운데에 · ~하는 도중에
+
+오늘 문장에서는:
+I wake up in the middle of the night.
+→ 저는 한밤중에 잠에서 깨요.
+
+in the middle of the night는 한밤중에, in the middle of a meeting은 회의 도중에입니다. 반복되는 습관이라 현재형 wake up을 썼습니다.
+
+I woke up in the middle of the night worrying about the production schedule.
+→ 생산 일정이 걱정돼 한밤중에 잠에서 깼어요.
+
+Please check with the team before changing the plan in the middle of a shift.
+→ 근무 도중 계획을 바꾸기 전에 팀에 확인해 주세요.
+
+💡 wake up은 잠이 깨는 것, get up은 침대에서 일어나는 것입니다. 지난밤 한 번 있었던 일은 I woke up이라고 합니다.
+
+통화 중에 다른 전화가 걸려 왔다면 이렇게 양해를 구합니다. &quot;Sorry, I’m in the middle of a call. Can I call you back?&quot;
+
+📌 오늘의 영어 ③
+How long will…?
+언제까지 ~할까요? · 얼마나 걸릴까요?
+
+오늘 문장에서는:
+How long will it be cute?
+→ 그게 언제까지 귀여울까요?
+
+여기서 it은 방에서 우는 행동을 가리킵니다. 그 모습을 아직 어리고 귀엽게 받아 주는 시선이 언제까지 이어질지 묻는 말입니다.
+
+How long will this time slot be available?
+→ 이 시간대는 언제까지 예약할 수 있나요?
+
+How long will it take to confirm the revised schedule?
+→ 변경 일정을 확정하는 데 얼마나 걸릴까요?
+
+💡 How long will it be…?는 어떤 상태가 얼마나 이어지는지, How long will it take to…?는 일을 마치는 데 걸리는 시간을 묻습니다.
+
+택배 문의 전화에서 가장 먼저 나오는 질문입니다. &quot;How long will it take to arrive?&quot;
+
+30초 복습
+
+① What will become of…? — ~은 어떻게 될까요?
+② in the middle of + 명사 — ~의 한가운데에 · ~하는 도중에
+③ How long will…? — 언제까지 ~할까요? · 얼마나 걸릴까요?
+
+한 문장으로 연결하면 이렇습니다.
+나는 어떻게 될지 묻고(①), 한밤중에 잠에서 깨고(②), 이 모습이 언제까지 귀엽게 받아들여질지 걱정하는(③) 노래입니다.
+미래와 시간의 흐름을 질문으로 이어 가며, 새로움이 사라질 때의 불안을 두 목소리로 나눈 곡입니다.
+
+발음도 한 줄만
+· become of → 비커머브
+· middle of the → 미들러브더
+· will it → 윌릿
+
+카드에 새로 더한 것
+이번 카드부터 말하기 훈련 칸을 넣었습니다.
+오늘 표현으로 내 문장 세 개를 만들고, 키워드 세 개만 보고 1분 말한 뒤, 교정을 받고 같은 내용을 2분, 90초, 60초로 줄여 다시 말하는 순서입니다.
+카드 안에 질문 듣기와 타이머가 있으니, 눈으로 읽고 끝내지 말고 한 번 소리 내어 말해 보세요.
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 What will become of…?입니다.
+변화가 생기면 사람들은 대개 ‘그럼 내 것은 어떻게 되지?’부터 궁금해합니다.
+그 질문을 먼저 꺼내 주는 사람이 있으면 회의도, 상담도 훨씬 빨리 본론으로 들어갑니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+What will become of ________ if ________?
+
+예를 들면,
+What will become of our weekend plans if it rains?
+비가 오면 우리 주말 계획은 어떻게 될까요?
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/nothing_new_taylor_swift_feat_phoebe_bridgers.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #NothingNew #TaylorSwift #PhoebeBridgers #말하기영어 #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
