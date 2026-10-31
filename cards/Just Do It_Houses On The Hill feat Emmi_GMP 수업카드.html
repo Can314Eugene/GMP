@@ -1071,7 +1071,7 @@ if(document.readyState !== 'loading'){ renderQuiz(); rvRender('all'); }
 /* ===== 안드로이드 음성 호환 보정 (GMP TTS FIX v2) =====
    아이폰에서는 나던 소리가 안드로이드(삼성)에서 안 나는 원인을 보정한다.
    카드의 기존 함수는 그대로 두고 speechSynthesis 자체를 감싼다.
-   v2: 네이버·카카오 같은 앱 안 브라우저에서 열리면 크롬으로 여는 안내를 띄운다. */
+   v2: 네이버·카카오 같은 앱 안 브라우저에서 열리면 크롬·삼성 인터넷·엣지로 여는 안내를 띄운다. */
 (function(){
   if(window.__gmpTtsFix) return;
   window.__gmpTtsFix = true;
@@ -1086,26 +1086,33 @@ if(document.readyState !== 'loading'){ renderQuiz(); rvRender('all'); }
   var isInApp = isAndroid && (isKakao || /NAVER\(inapp|DaumApps|Instagram|FBAN|FBAV|Line\/|everytimeApp|; wv\)/i.test(ua));
   var banner = null;
 
-  function openInChrome(){
+  /* 안드로이드 intent 주소로 지정한 브라우저 앱에서 같은 페이지를 연다.
+     그 브라우저가 설치돼 있지 않으면 플레이 스토어 설치 화면으로 보낸다. */
+  var BROWSERS = {
+    chrome:  'com.android.chrome',
+    samsung: 'com.sec.android.app.sbrowser',
+    edge:    'com.microsoft.emmx'
+  };
+  function openIn(key){
     var url = location.href;
-    if(isKakao){
-      location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
-      return;
-    }
+    var pkg = BROWSERS[key];
     location.href = 'intent://' + url.replace(/^https?:\/\//, '')
       + '#Intent;scheme=' + (location.protocol === 'http:' ? 'http' : 'https')
-      + ';package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+      + ';action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE'
+      + ';package=' + pkg
+      + ';S.browser_fallback_url=' + encodeURIComponent('https://play.google.com/store/apps/details?id=' + pkg)
+      + ';end';
   }
   function copyUrl(btn){
     var url = location.href;
     function ok(){ btn.textContent = '복사됨'; }
     try {
       if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(url).then(ok, function(){ prompt('주소를 복사해 크롬에 붙여 넣으세요', url); });
+        navigator.clipboard.writeText(url).then(ok, function(){ prompt('주소를 복사해 다른 브라우저에 붙여 넣으세요', url); });
         return;
       }
     } catch(e){}
-    prompt('주소를 복사해 크롬에 붙여 넣으세요', url);
+    prompt('주소를 복사해 다른 브라우저에 붙여 넣으세요', url);
   }
   function showBanner(kind){
     if(banner || !document.body) return;
@@ -1115,7 +1122,7 @@ if(document.readyState !== 'loading'){ renderQuiz(); rvRender('all'); }
       + 'background:#3A2317;color:#FFF3E4;border-radius:12px;padding:13px 15px;'
       + 'font:14px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;'
       + 'box-shadow:0 6px 24px rgba(0,0,0,.3);max-width:520px;margin:0 auto';
-    var btn = 'border:0;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;margin-left:6px;';
+    var btn = 'border:0;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;';
     var msg;
     if(kind === 'voice'){
       msg = '🔇 <b>이 기기에 영어 음성이 없어 소리가 나지 않습니다.</b><br>'
@@ -1123,16 +1130,20 @@ if(document.readyState !== 'loading'){ renderQuiz(); rvRender('all'); }
         + '<b>Google 음성 인식 및 합성</b>을 선택하고, 언어에 <b>English</b>를 내려받아 주세요.';
     } else {
       msg = '🔇 <b>앱 안에서 열면 발음 소리가 나지 않을 수 있어요.</b><br>'
-        + '<b>크롬에서 열기</b>를 누르면 소리가 납니다. 안 열리면 주소를 복사해 크롬에 붙여 넣으세요.';
+        + '아래 브라우저 중 하나로 열면 소리가 납니다. 안 열리면 주소를 복사해 붙여 넣으세요.';
     }
-    banner.innerHTML = msg + '<div style="text-align:right;margin-top:9px">'
+    var open = 'background:#F2A541;color:#3A2317;';
+    banner.innerHTML = msg
+      + '<div style="display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;margin-top:9px">'
       + (kind === 'voice' ? '' :
-         '<button data-act="chrome" style="' + btn + 'background:#F2A541;color:#3A2317">크롬에서 열기</button>'
+         '<button data-act="chrome" style="' + btn + open + '">크롬</button>'
+       + '<button data-act="samsung" style="' + btn + open + '">삼성 인터넷</button>'
+       + '<button data-act="edge" style="' + btn + open + '">엣지</button>'
        + '<button data-act="copy" style="' + btn + 'background:#5A3D2B;color:#FFF3E4">주소 복사</button>')
       + '<button data-act="close" style="' + btn + 'background:#FFF3E4;color:#3A2317">닫기</button></div>';
     banner.addEventListener('click', function(ev){
       var act = ev.target && ev.target.getAttribute && ev.target.getAttribute('data-act');
-      if(act === 'chrome') openInChrome();
+      if(BROWSERS[act]) openIn(act);
       else if(act === 'copy') copyUrl(ev.target);
       else if(act === 'close'){ banner.remove(); }
     });
