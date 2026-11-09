@@ -923,7 +923,7 @@ function renderExercise(){
     setTimeout(function(){ speak(ex.en, 0.95); }, 250);
   }
   document.getElementById('ex').innerHTML = h;
-  if(ex.type==='type'){ var tb=document.getElementById('typebox'); if(tb){ tb.focus(); tb.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); if(tb.value.trim()) checkAnswer(); } }); } }
+  if(ex.type==='type'){ var tb=document.getElementById('typebox'); if(tb){ tb.focus(); tb.addEventListener('keydown', function(e){ if(e.key==='Enter' && !e.isComposing){ e.preventDefault(); checkAnswer(); } }); } }
 }
 
 /* --- 입력 핸들러 --- */
@@ -981,14 +981,25 @@ function selfSpeak(){ grade(true, '좋아요! 소리 내어 말한 문장은 기
 
 /* --- 채점 --- */
 function checkAnswer(){
-  var ex=currentEx(); if(G.answer===null || (Array.isArray(G.answer)&&!G.answer.length)) return;
+  if(!G || document.getElementById('feedback').classList.contains('show')) return;
+  var ex=currentEx();
+  if(!ex) return;
+  // Writing answers live in the textarea, unlike choices and word tiles.
+  var typed='';
+  if(ex.type==='type'){
+    var field=document.getElementById('typebox');
+    if(!field || !(typed=field.value.trim())) return;
+    field.blur();
+  } else if(G.answer===null || (Array.isArray(G.answer)&&!G.answer.length)){
+    return;
+  }
   var ok=false, note=null;
   if(ex.type==='choice'){ ok = G.answer===ex.answer;
     document.querySelectorAll('.opt').forEach(function(o,k){ o.disabled=true; if(k===ex.answer) o.classList.add('ok'); else if(k===G.answer) o.classList.add('no'); });
   }
   else if(ex.type==='tiles'||ex.type==='listen'){ var made=G.answer.map(function(i){ return ex.tiles[i]; }).join(' '); ok = norm(made)===norm(ex.en); if(!ok && norm(made).replace(/ /g,'')===norm(ex.en).replace(/ /g,'')) ok=true; }
   else if(ex.type==='blank'){ ok = norm(ex.chips[G.answer])===norm(ex.answer); }
-  else if(ex.type==='type'){ var v=document.getElementById('typebox').value; var nv=norm(v), ne=norm(ex.en); ok = nv===ne; if(!ok){ var alt = ne.replace(/\b(theyre|weve|lets|were)\b/g, function(m){ return {theyre:'they are', weve:'we have', lets:'let us', were:'we are'}[m]||m; }); if(nv===alt) ok=true; } if(!ok && typoClose(nv,ne)){ ok=true; note='오타가 하나 있지만 정답으로 인정! 정확한 문장: '+ex.en; } }
+  else if(ex.type==='type'){ var nv=norm(typed), ne=norm(ex.en); ok = nv===ne; if(!ok){ var alt = ne.replace(/\b(theyre|weve|lets|were)\b/g, function(m){ return {theyre:'they are', weve:'we have', lets:'let us', were:'we are'}[m]||m; }); if(nv===alt) ok=true; } if(!ok && typoClose(nv,ne)){ ok=true; note='오타가 하나 있지만 정답으로 인정! 정확한 문장: '+ex.en; } }
   grade(ok, note);
 }
 function typoClose(a,b){ if(Math.abs(a.length-b.length)>1) return false; var d=0,i=0,j=0; while(i<a.length&&j<b.length){ if(a[i]===b[j]){i++;j++;} else { d++; if(d>1) return false; if(a.length>b.length) i++; else if(b.length>a.length) j++; else {i++;j++;} } } return d+(a.length-i)+(b.length-j)<=1; }
