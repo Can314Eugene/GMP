@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>코플레이트 식품기계 가이드</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* 레이아웃: 한 단 안내서. 먼저 '사기 전 확인', 다음 공정별 업체 카드 격자 */
+:root{--bg:#f6f7f5;--panel:#fff;--fg:#1d2621;--muted:#5d6b63;--line:#dfe5e0;--accent:#2f6b4f;--accent-soft:#e3efe8;--warn:#9a5b12;--warn-soft:#fbf0dd;
+--sans:'Noto Sans KR',system-ui,-apple-system,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121815;--panel:#1a221e;--fg:#e5ece8;--muted:#9aa9a1;--line:#2c3832;--accent:#7cc39e;--accent-soft:#1f3329;--warn:#e6b26a;--warn-soft:#33281a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121815;--panel:#1a221e;--fg:#e5ece8;--muted:#9aa9a1;--line:#2c3832;--accent:#7cc39e;--accent-soft:#1f3329;--warn:#e6b26a;--warn-soft:#33281a;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.65;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 48px}
+main{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:clamp(24px,5vw,32px);font-weight:800;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:18px;margin:0 0 12px;text-wrap:balance}
+.lead{color:var(--muted);margin:6px 0 0;max-width:62ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.check{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.check ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.spec{font-family:var(--mono);font-variant-numeric:tabular-nums;background:var(--accent-soft);color:var(--accent);padding:0 6px;border-radius:4px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card h3{margin:0;font-size:16px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:1px 8px;color:var(--muted)}
+a.go{margin-top:auto;color:var(--accent);font-weight:600;text-decoration:none;font-size:14px}
+a.go:hover,a.go:focus-visible{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.note{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:12px 16px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+.tw{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:13px}
+footer{color:var(--muted);font-size:13px}
+</style>
+</head><body>
+<main>
+  <header>
+    <div class="eyebrow">COPLATE 고양센터 · 입주사 안내</div>
+    <h1>식품기계, 어디서 비교하고 사나요?</h1>
+    <p class="lead">신품·중고 가격을 비교할 곳과 공정별 전문 업체를 모았습니다. 장비를 고르기 전에 아래 '고양센터에서 먼저 확인할 것'부터 맞춰 보세요.</p>
+  </header>
+
+  <section class="check">
+    <h2>고양센터에서 먼저 확인할 것</h2>
+    <ul>
+      <li>전기: 생산실마다 3상 4선식 <span class="spec">380V / 220V</span>, 생산실 차단기 <span class="spec">40A</span>. 동시에 켜 두는 장비 합계 <span class="spec">18kW 이하</span>가 적정입니다.</li>
+      <li>3상 장비 회로는 <span class="spec">20A</span>(약 10kW까지), 콘센트 회로는 <span class="spec">20A</span>(회로당 3.5kW까지)입니다. 큰 장비는 전용 회로가 필요합니다.</li>
+      <li>반입: 출입문 폭 <span class="spec">약 73cm</span>(8·9호실 실측). 이보다 넓은 장비는 분해 반입을 확인하세요.</li>
+      <li>HACCP: 식품 접촉부 재질, 분해 세척, 이물 방지, 공정 기록이 가능한지 확인합니다. 금속검출기는 외포장실 공용 장비를 씁니다.</li>
+      <li>견적: 장비값만 보지 말고 운송·설치·시운전·전기공사·A/S·부가세를 포함한 총액으로 비교하세요.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>가격 비교·중고 장터</h2>
+    <div class="grid">
+      <article class="card"><h3>다아라기계장터</h3><p>신품·중고 식품기계, 포장기, 충진기, 믹서 등을 판매처별로 비교. 처음 볼 곳으로 추천합니다.</p><div class="tags"><span class="tag">종합</span><span class="tag">신품·중고</span></div><a class="go" href="https://www.daara.co.kr/" target="_blank" rel="noopener">사이트 열기 →</a></article>
+      <article class="card"><h3>대원기계</h3><p>중고기계 위탁판매. 포장·충진·살균·세척·분쇄·혼합 장비를 폭넓게 취급합니다.</p><div class="tags"><span class="tag">중고</span><span class="tag">포장·충진</span></div><a class="go" href="https://blog.daara.co.kr/m/sell_list.html?bc=07&amp;cid=dyfandi" target="_blank" rel="noopener">제품 목록 →</a></article>
+      <article class="card"><h3>성우산업</h3><p>식품·제약 산업기계 매입·매각. 교반·농축·살균·포장 등 대형 중고 설비 탐색에 유용합니다.</p><div class="tags"><span class="tag">중고</span><span class="tag">배합·가열</span></div><a class="go" href="https://blog.daara.co.kr/m/sell_list.html?bc=07&amp;cid=lhk3367" target="_blank" rel="noopener">제품 목록 →</a></article>
+      <article class="card"><h3>씨마트</h3><p>절단기·분쇄기 등 전처리 기계의 판매가가 공개돼 있어 초기 예산을 가늠하기 좋습니다.</p><div class="tags"><span class="tag">전처리</span><span class="tag">가격 공개</span></div><a class="go" href="https://seamart24.cafe24.com/" target="_blank" rel="noopener">사이트 열기 →</a></article>
+    </div>
+  </section>
+
+  <section>
+    <h2>공정별 전문 업체</h2>
+    <div class="grid">
+      <article class="card"><h3>베이트리</h3><p>국산·수입 제과·제빵 장비 공급, 생산설비 상담과 설치.</p><div class="tags"><span class="tag">베이커리</span><span class="tag">디저트·과자</span></div><a class="go" href="https://baytreekorea.com/" target="_blank" rel="noopener">사이트 열기 →</a></article>
+      <article class="card"><h3>신학식품종합기계</h3><p>교반솥, 진공볶음기, 반죽기, 혼합기 제작·판매, 중고 매입과 수리.</p><div class="tags"><span class="tag">소스·조리</span><span class="tag">교반·가열</span></div><a class="go" href="https://shmachine.co.kr/" target="_blank" rel="noopener">사이트 열기 →</a></article>
+      <article class="card"><h3>케이씨팩</h3><p>충진기, 실링기, 레토르트 멸균기를 용량별 판매가와 함께 볼 수 있습니다.</p><div class="tags"><span class="tag">충진·실링</span><span class="tag">레토르트</span></div><a class="go" href="https://m.kcpack.kr/product/list.html?cate_no=130" target="_blank" rel="noopener">충진기 목록 →</a></article>
+      <article class="card"><h3>코리아팩</h3><p>레토르트 멸균기 모델별 가격·전력 사양이 공개돼 있습니다.</p><div class="tags"><span class="tag">레토르트</span><span class="tag">사양 비교</span></div><a class="go" href="https://korea-pack.co.kr/" target="_blank" rel="noopener">사이트 열기 →</a></article>
+      <article class="card"><h3>로얄팩</h3><p>자동 파우치 포장기, 교반기, 레토르트 살균기. 포장·충진 설비를 함께 견적받기 좋습니다.</p><div class="tags"><span class="tag">자동 포장</span><span class="tag">교반</span></div><a class="go" href="https://royal-pack.kr/category/%EC%9E%90%EB%8F%99%ED%8F%AC%EC%9E%A5/80/" target="_blank" rel="noopener">자동포장기 목록 →</a></article>
+      <article class="card"><h3>대경페트산업</h3><p>레토르트용 파우치(투명·알루미늄) 판매. 용량·수량별 단가를 확인할 수 있습니다.</p><div class="tags"><span class="tag">포장재</span><span class="tag">레토르트</span></div><a class="go" href="https://dkpet.kr/category/%EB%A0%88%ED%86%A0%EB%A5%B4%ED%8A%B8%ED%8C%8C%EC%9A%B0%EC%B9%98/310/" target="_blank" rel="noopener">파우치 목록 →</a></article>
+    </div>
+  </section>
+
+  <section>
+    <h2>제품 종류별로 먼저 볼 장비</h2>
+    <div class="tw"><table>
+      <thead><tr><th>만드는 제품</th><th>먼저 검토할 장비</th><th>먼저 볼 곳</th></tr></thead>
+      <tbody>
+        <tr><td>소스·양념</td><td>교반가열솥, 고점도 충진기, 냉각설비, 포장기</td><td>신학식품종합기계, 다아라</td></tr>
+        <tr><td>한과·전통 과자</td><td>반죽기, 성형기, 튀김·굽기 설비, 건조기, 개별 포장기</td><td>대원기계, 베이트리, 다아라</td></tr>
+        <tr><td>베이커리·디저트</td><td>컨벡션 오븐, 믹서, 급속냉각·냉동기, 포장기</td><td>베이트리, 다아라</td></tr>
+        <tr><td>그래놀라·스낵</td><td>배합기, 오븐, 냉각설비, 계량·포장기</td><td>다아라, 베이트리</td></tr>
+        <tr><td>레토르트 제품</td><td>교반·배합기, 충진기, 밀봉기, 레토르트 살균기</td><td>케이씨팩, 코리아팩, 로얄팩</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">레토르트 제품은 살균기만 산다고 바로 만들 수 있는 것이 아닙니다. 살균 조건 검증, 포장재, HACCP 인증 범위 추가가 필요하니 장비 구매 전에 운영사·컨설턴트와 먼저 상의해 주세요.</p>
+  </section>
+
+  <section>
+    <h2>더 알아볼 곳</h2>
+    <div class="grid">
+      <article class="card"><h3>디지털 식품정보플랫폼</h3><p>한국식품산업클러스터진흥원. 시험분석, 시설·장비 활용, 전문가 연결을 먼저 알아볼 수 있습니다.</p><a class="go" href="https://www.foodpolis.kr/dfip/fo/main.do" target="_blank" rel="noopener">사이트 열기 →</a></article>
+      <article class="card"><h3>서울푸드앤호텔</h3><p>제조·포장·자동화 업체를 직접 만나 상담하는 전시회. 다음 전시는 2027년 6월 8~11일 킨텍스로 안내돼 있습니다.</p><a class="go" href="https://www.seoulfoodnhotel.com/" target="_blank" rel="noopener">전시회 열기 →</a></article>
+      <article class="card"><h3>네이버 카페</h3><p>'식품기계 중고매매', '제과제빵 기계 중고'로 검색해 후기와 매물을 봅니다. 거래 전 판매자와 최근 게시글을 꼭 확인하세요.</p><a class="go" href="https://cafe.naver.com/" target="_blank" rel="noopener">네이버 카페 →</a></article>
+    </div>
+  </section>
+
+  <footer>업체 정보는 2026년 11월 기준 공개 자료로 정리했으며, 코플레이트가 보증하거나 제휴한 업체가 아닙니다. 가격·사양은 판매처에서 직접 확인해 주세요. 장비 반입·전기 연결 전에는 운영사에 장비 목록과 명판 사진을 보내 주세요.</footer>
+</main>
+
+</body></html>
