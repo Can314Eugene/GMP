@@ -33,24 +33,33 @@ table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--muted);font-weight:600;font-size:13px}
 footer{color:var(--muted);font-size:13px}
+.steps{margin:0;padding-left:1.3em;display:grid;gap:8px}
+.qa{display:grid;gap:8px}
+.qa details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.qa summary{cursor:pointer;font-weight:600}
+.qa summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.qa p{margin:8px 0 0;color:var(--muted);font-size:14px}
 </style>
 </head><body>
 <main>
   <header>
     <div class="eyebrow">COPLATE 고양센터 · 입주사 안내</div>
     <h1>식품기계, 어디서 비교하고 사나요?</h1>
-    <p class="lead">신품·중고 가격을 비교할 곳과 공정별 전문 업체를 모았습니다. 장비를 고르기 전에 아래 '고양센터에서 먼저 확인할 것'부터 맞춰 보세요.</p>
+    <p class="lead">신품·중고 가격을 비교할 곳과 공정별 전문 업체를 모았습니다. 장비를 고르기 전에 아래 '기계장치 사기 전 주의사항'부터 맞춰 보세요.</p>
   </header>
 
   <section class="check">
-    <h2>고양센터에서 먼저 확인할 것</h2>
-    <ul>
-      <li>전기: 생산실마다 3상 4선식 <span class="spec">380V / 220V</span>, 생산실 차단기 <span class="spec">40A</span>. 동시에 켜 두는 장비 합계 <span class="spec">18kW 이하</span>가 적정입니다.</li>
-      <li>3상 장비 회로는 <span class="spec">20A</span>(약 10kW까지), 콘센트 회로는 <span class="spec">20A</span>(회로당 3.5kW까지)입니다. 큰 장비는 전용 회로가 필요합니다.</li>
-      <li>반입: 출입문 폭 <span class="spec">약 73cm</span>(8·9호실 실측). 이보다 넓은 장비는 분해 반입을 확인하세요.</li>
-      <li>HACCP: 식품 접촉부 재질, 분해 세척, 이물 방지, 공정 기록이 가능한지 확인합니다. 금속검출기는 외포장실 공용 장비를 씁니다.</li>
-      <li>견적: 장비값만 보지 말고 운송·설치·시운전·전기공사·A/S·부가세를 포함한 총액으로 비교하세요.</li>
-    </ul>
+    <h2>기계장치 사기 전 주의사항</h2>
+    <ol class="steps">
+      <li><b>사기 전에 운영사에 먼저 보내 주세요.</b> 장비명, 명판 사진(정격전압·상·정격전류 또는 kW), 가로×세로×높이·무게, 동시에 켜는 장비. 운영사가 전기·반입·HACCP 기준에 맞는지 답합니다.</li>
+      <li><b>전기</b>: 생산실마다 3상 4선식 <span class="spec">380V / 220V</span>, 생산실 차단기 <span class="spec">40A</span>. 동시에 켜 두는 장비 합계 <span class="spec">18kW 이하</span>가 적정하고, 잠깐 몰려도 <span class="spec">21kW</span>를 넘기면 안 됩니다.</li>
+      <li><b>회로</b>: 3상 장비 회로 <span class="spec">20A</span>(계속 쓸 때 약 10kW), 콘센트 회로 <span class="spec">20A</span>(회로당 3.5kW). 오븐·인덕션처럼 3kW가 넘는 장비는 멀티탭 대신 전용 회로가 필요합니다.</li>
+      <li><b>반입</b>: 출입문 폭 <span class="spec">약 73cm</span>, 높이 <span class="spec">216cm</span>(8·9호실 실측), 천장 <span class="spec">약 280cm</span>. 더 큰 장비는 문을 떼거나 분해 반입이 되는지 판매처에 확인하세요.</li>
+      <li><b>배수·배기</b>: 배수관 높이 바닥에서 <span class="spec">약 24cm</span>. 한 번에 많은 물을 빼는 세척기, 연기·증기가 많은 장비는 설비 업체가 현장을 본 뒤 결정합니다.</li>
+      <li><b>위생·HACCP</b>: 식품 접촉부 스테인리스(STS304 이상), 분해 세척, 이물 방지, 온도·시간 표시와 기록이 되는지 확인하세요. 금속검출기는 외포장실 공용 장비를 씁니다.</li>
+      <li><b>설치</b>: 전기 결선·배선 변경은 전기공사업 등록 업체가 하고, 공사 전에 운영사 승인을 받습니다. 분전반(가로 50 × 세로 60cm)은 장비로 가리지 않게 두세요.</li>
+      <li><b>견적</b>: 장비값만 보지 말고 운송·설치·시운전·전기공사·A/S·부가세를 포함한 총액, KC 인증, 방문 A/S 지역을 함께 비교하세요.</li>
+    </ol>
   </section>
 
   <section>
@@ -88,6 +97,23 @@ footer{color:var(--muted);font-size:13px}
       </tbody>
     </table></div>
     <p class="note">레토르트 제품은 살균기만 산다고 바로 만들 수 있는 것이 아닙니다. 살균 조건 검증, 포장재, HACCP 인증 범위 추가가 필요하니 장비 구매 전에 운영사·컨설턴트와 먼저 상의해 주세요.</p>
+  </section>
+
+  <section>
+    <h2>자주 묻는 질문</h2>
+    <div class="qa">
+      <details><summary>생산실에서 전기를 얼마나 쓸 수 있나요?</summary><p>동시에 켜 두는 장비 합계 18kW 이하가 적정이고, 잠깐 몰려도 21kW를 넘기면 안 됩니다. 차단기의 물리적 한계는 약 26kVA(40A)이며, 모든 생산실이 같은 기준입니다.</p></details>
+      <details><summary>왜 26kW가 아니라 18kW인가요?</summary><p>차단기는 정격의 80% 안에서 계속 쓰는 것이 설계 관행이고(40A의 80% = 32A), 냉동기·믹서 같은 모터 장비는 켜는 순간 몇 배의 전류가 흐릅니다. 단상 220V 장비가 한 상에 몰리면 그 상이 먼저 한계에 닿습니다. 이 여유를 두면 18kW가 적정선입니다.</p></details>
+      <details><summary>3상 R·S·T·N이 다 들어오나요?</summary><p>네. 3상 4선식(R·S·T와 중성선 N)과 접지가 들어와 3상 380V 장비와 단상 220V 장비를 모두 쓸 수 있습니다. 3상 장비 회로는 20A라 약 10kW가 넘는 3상 장비는 회로 차단기 교체가 필요합니다.</p></details>
+      <details><summary>장비별 소비전력은 어느 정도인가요?</summary><p>일반적인 범위입니다(정확한 값은 장비 명판 확인). 덱 오븐 6~15kW, 컨벡션 오븐 3~10kW, 전기 튀김기 6~12kW, 인덕션 3.5~10kW, 반죽기·믹서 0.5~3kW, 업소용 냉장·냉동고 0.3~1.5kW, 실링기·포장기 0.5~2kW. 예: 덱 오븐 9 + 컨벡션 6 + 냉장·냉동 2 + 믹서 1.5 = 18.5kW로 적정선 경계라, 두 오븐의 예열 시간을 엇갈리면 됩니다.</p></details>
+      <details><summary>우리 장비는 18kW가 넘어요.</summary><p>지금 설비로는 어렵습니다. 예를 들어 28kW는 380V 3상에서 약 43~47A라 생산실 차단기(40A)와 계량기 최대 전류(40A)를 넘습니다. 증설하려면 차단기·전선·계량기 교체와 센터 전체 용량 확인, 전기안전관리자 확인이 필요하니 장비 목록을 보내 주시면 가능 여부·비용·기간을 안내드립니다.</p></details>
+      <details><summary>장비가 문으로 들어갈까요?</summary><p>출입문 폭이 약 73cm라 그보다 넓은 오븐·냉장고는 문을 떼거나 분해해서 들여야 합니다. 장비 규격서의 폭·깊이를 보내 주시면 반입 가능 여부를 확인해 드립니다.</p></details>
+      <details><summary>콘센트를 더 달고 싶어요.</summary><p>전기공사업 등록 업체가 생산실 분전반에서 나눠 증설합니다. 물 쓰는 곳은 덮개 달린 방수형 콘센트를 물이 닿지 않는 높이에 달고, 새 콘센트는 반드시 누전차단기를 거치게 합니다. 공사 전에 배선 계획을 운영사에 공유해 주세요.</p></details>
+      <details><summary>업소용 세척기·보일러·배기 덕트를 달 수 있나요?</summary><p>세척기 배수 역류 가능성과 보일러 배관은 제품 사양에 따라 달라 설비 업체가 현장을 본 뒤 정합니다. 배기 덕트는 베란다 창문으로 빼는 방식으로 설치한 사례가 있으며, 설치 전 운영사가 이웃 생산실에 안내합니다.</p></details>
+      <details><summary>금속검출기를 사야 하나요?</summary><p>외포장실에 공용 금속검출기를 두고 함께 씁니다. HACCP상 금속검출기는 외포장실에 있어야 합니다. 제품 특성상 개별 장비가 필요하면 컨설턴트와 협의합니다.</p></details>
+      <details><summary>영업등록 실사 때 꼭 있어야 하는 장비가 있나요?</summary><p>작업대와 가열기 1대(핫플레이트 또는 유탕기)를 갖추는 것이 지금까지의 안내 기준입니다. 제품에 따라 달라질 수 있어 입주 때 컨설턴트가 장비 목록을 확정합니다.</p></details>
+      <details><summary>발효기·레토르트 살균기처럼 특수 장비는요?</summary><p>장비만으로 바로 생산할 수 있는 것이 아닙니다. 우유로 만드는 발효유는 별도 허가(유가공업)가 필요할 수 있고, 레토르트 제품은 살균 조건 검증과 HACCP 인증 범위 추가가 필요합니다. 사기 전에 만들 제품·원료·생산량을 정해 운영사·컨설턴트와 먼저 상의해 주세요.</p></details>
+    </div>
   </section>
 
   <section>
