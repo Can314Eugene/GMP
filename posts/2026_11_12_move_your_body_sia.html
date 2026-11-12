@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move Your Body · 굿모닝팝송</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#2A1B26; --ink-soft:#584653; --muted:#8A7480;
+  --ground:#FDF9F7; --surface:#FFFFFF; --rule:#EBDDE3;
+  --accent:#B0325C; --accent-soft:#F6E6EC; --amber:#C8862A; --amber-soft:#FBF0DC;
+  --mono:'IBM Plex Mono','SFMono-Regular',Menlo,'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',monospace;
+  --sans:'IBM Plex Sans KR','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Gowun Batang','Apple SD Gothic Neo',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+    --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+    --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F3E8EC; --ink-soft:#CDB8C2; --muted:#9C8794;
+  --ground:#1A1218; --surface:#241A21; --rule:#3B2C35;
+  --accent:#F08AAC; --accent-soft:#3A2129; --amber:#E8B45F; --amber-soft:#33261A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.78;
+  -webkit-font-smoothing:antialiased}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  padding:10px 20px;background:var(--ground);border-bottom:1px solid var(--rule)}
+.bar .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-right:auto}
+button{font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  padding:7px 15px;border-radius:999px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--surface);transition:opacity .15s}
+button:hover{opacity:.85}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.ghost{background:transparent;color:var(--accent)}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px 72px}
+.hero{padding:44px 0 30px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,7vw,52px);
+  line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.hero .artist{font-family:var(--sans);font-size:15px;color:var(--muted);margin:10px 0 0}
+.hero .deck{font-size:15px;color:var(--ink-soft);margin:20px 0 0;
+  padding-left:14px;border-left:2px solid var(--accent-soft)}
+.sec{padding:34px 0;border-bottom:1px solid var(--rule)}
+.sec h2{font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;
+  color:var(--ink);margin:0 0 18px}
+.sec-expr h2{color:var(--accent);font-family:var(--mono);font-size:12.5px;
+  letter-spacing:.16em;text-transform:uppercase}
+.phrase{font-family:var(--mono);font-weight:600;font-size:clamp(23px,4.6vw,30px);
+  color:var(--ink);margin:0;line-height:1.25;letter-spacing:-.01em}
+.phrase-ko{font-size:15px;color:var(--muted);margin:6px 0 24px}
+.blk{margin:0 0 20px}
+.blk:last-child{margin-bottom:0}
+.blk p{margin:0}
+p.en{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink);
+  line-height:1.6;margin-top:2px}
+p.gloss{color:var(--ink-soft);font-size:15.5px}
+p.point{background:var(--accent-soft);color:var(--ink);border-radius:8px;
+  padding:11px 14px;font-size:15px;margin-top:6px}
+p.tip{border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:11px 15px;font-size:15px;margin-top:6px}
+p.tip + p{padding-left:15px;font-size:15px}
+p.bullet{font-family:var(--mono);font-size:14px;color:var(--ink-soft)}
+p.numbered{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--accent);
+  margin-top:10px}
+p.numbered + p.gloss{padding-left:22px;font-size:15px}
+.sec-pick .blk p.en{font-family:var(--mono);font-size:26px;font-weight:600;
+  color:var(--accent);line-height:1.3}
+.sec-turn{background:var(--surface);border:1px solid var(--rule);border-radius:14px;
+  padding:26px 24px;margin:34px 0}
+.sec-turn h2{margin-bottom:14px}
+.sec-aside h2{color:var(--amber)}
+.sec-aside{background:var(--amber-soft);border:1px solid var(--rule);
+  border-radius:14px;padding:24px 22px;margin:8px 0}
+.sec-intro{padding-top:30px}
+.sec-intro .blk p{font-size:16.5px;color:var(--ink)}
+p.url a{font-family:var(--mono);font-size:13.5px;color:var(--accent);
+  word-break:break-all}
+.sec-end{border-bottom:none}
+.sec-end .blk p{color:var(--ink-soft)}
+.tags{font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  line-height:2;padding-top:26px;word-spacing:.3em}
+.copytitle{margin:38px 0 0;padding:18px 20px;background:var(--surface);
+  border:1px dashed var(--rule);border-radius:12px}
+.copytitle .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.copytitle .val{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:13.5px;font-weight:500;
+  padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="who">Good Morning Pops · 원고</span>
+  <button class="ghost" onclick="copyTitle()">제목 복사</button>
+  <button onclick="copyAll()">본문 복사</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">오늘의 팝송 영어</p>
+    <h1>Move Your Body</h1>
+    <p class="artist">Sia</p>
+    <p class="deck">네이버 블로그에 올릴 원고 그대로입니다. 위의 <b>본문 복사</b>를 누르면 줄바꿈까지 그대로 복사됩니다.</p>
+  </header>
+
+  <section class="sec sec-intro"><div class="blk"><p>이 글은 제가 만든 수업 카드를 바탕으로 AI의 도움을 받아 정리했습니다.</p></div><div class="blk"><p>오늘의 곡은 호주 싱어송라이터 Sia의 Move Your Body입니다.</p><p>2016년 1월 29일 앨범 This Is Acting에 실린 곡으로, 2017년에는 따로 Single Mix가 나왔습니다.</p><p>상대의 춤을 한 편의 시에 빗대고, 가슴으로 비트를 느끼며 억눌린 에너지를 풀어내라고 권하는 노래라 듣기만 해도 몸이 들썩입니다.</p></div><div class="blk"><p>🎥 오늘 노래 먼저 듣기</p><p class="url"><a href="https://www.youtube.com/watch?v=0GoGcVs6pbU" target="_blank" rel="noopener">https://www.youtube.com/watch?v=0GoGcVs6pbU</a></p></div><div class="blk"><p>오늘 방송 다시 보기</p><p class="url"><a href="https://www.youtube.com/watch?v=4lJ-iRirBrk" target="_blank" rel="noopener">https://www.youtube.com/watch?v=4lJ-iRirBrk</a></p></div><div class="blk"><p>그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 칭찬의 범위를 넓히고, 질리지 않을 만큼 좋아하는 것을 말하고, 몸으로 느끼는 감각을 표현하는 말들입니다.</p><p>코플레이트 고양센터 업무 예문은 학습을 위해 가정한 상황입니다.</p></div><div class="blk"><p>오늘의 목표도 늘 똑같습니다.</p><p>세 표현을 보고, 하나라도 내 문장으로 만들기.</p><p>그럼 오늘의 GMP 영어 시작합니다.</p></div></section>
+
+  <section class="sec sec-expr"><h2>📌 오늘의 영어 ①</h2><p class="phrase">in every way</p><p class="phrase-ko">모든 면에서</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">You got it in every way.</p><p class="gloss">→ 당신은 어느 면에서나 매력적이에요.</p></div><div class="blk"><p>여기서 it은 상대에게서 느끼는 매력을 가리킵니다. in every way는 칭찬이나 비교에 ‘빠짐없이 모든 면에서’라는 범위를 더해 줍니다.</p></div><div class="blk"><p class="en">The new layout is better in every way.</p><p class="gloss">→ 새 배치가 모든 면에서 더 나아요.</p></div><div class="blk"><p class="en">The new design meets our needs in every way.</p><p class="gloss">→ 새 설계가 모든 면에서 우리 요구에 맞아요.</p></div><div class="blk"><p class="tip">💡 사람을 칭찬할 때는 You’re amazing in every way.처럼 말하면 됩니다.</p></div><div class="blk"><p>새로 바꾼 휴대폰이 마음에 든다면 이렇게 말할 수 있습니다. &quot;This new phone is better in every way.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ②</h2><p class="phrase">can’t get enough of + 명사</p><p class="phrase-ko">아무리 즐겨도 질리지 않다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">I know you can&#x27;t get enough.</p><p class="gloss">→ 아무리 즐겨도 더 즐기고 싶다는 걸 알아요.</p></div><div class="blk"><p>불만이 아니라 ‘너무 좋아서 계속 더 원한다’는 뜻입니다. 무엇이 좋은지 밝힐 때는 뒤에 of + 명사를 붙입니다.</p></div><div class="blk"><p class="en">Our team can&#x27;t get enough of this playlist.</p><p class="gloss">→ 우리 팀은 이 플레이리스트를 아무리 들어도 질리지 않아요.</p></div><div class="blk"><p class="en">I can&#x27;t get enough of these sample cookies.</p><p class="gloss">→ 이 시식용 쿠키는 먹어도 먹어도 질리지 않아요.</p></div><div class="blk"><p class="tip">💡 좋아하는 음식, 음악, 활동에 두루 씁니다. 한국어의 ‘중독됐어요’와 비슷한 느낌으로 가볍게 쓸 수 있습니다.</p></div><div class="blk"><p>요즘 빠져 있는 드라마가 있다면 이렇게 말해 보세요. &quot;I can’t get enough of this show.&quot;</p></div></section><section class="sec sec-expr"><h2>📌 오늘의 영어 ③</h2><p class="phrase">feel + 명사</p><p class="phrase-ko">몸으로 ~을 느끼다</p><div class="blk"><p>오늘 문장에서는:</p><p class="en">Feel the beat in your chest.</p><p class="gloss">→ 가슴으로 비트를 느껴 봐요.</p></div><div class="blk"><p>beat는 음악의 박자입니다. feel 뒤에 리듬, 진동, 바람처럼 몸에 와닿는 감각을 두면 됩니다. in your chest가 어디에서 느끼는지를 구체적으로 보여 줍니다.</p></div><div class="blk"><p class="en">Can you feel the airflow from this vent?</p><p class="gloss">→ 이 통풍구에서 나오는 바람이 느껴지나요?</p></div><div class="blk"><p class="en">I can feel the vibration from here.</p><p class="gloss">→ 여기서도 진동이 느껴져요.</p></div><div class="blk"><p class="tip">💡 감각을 느낄 수 있는지 물을 때는 Can you feel…?, 지금 느껴진다고 할 때는 I can feel…로 말하면 자연스럽습니다.</p></div><div class="blk"><p>아침 산책길에 찬 공기가 느껴진다면 이렇게 말하면 됩니다. &quot;I can feel winter in the air.&quot;</p></div><div class="blk"><p>30초 복습</p></div><div class="blk"><p class="numbered">① in every way — 모든 면에서</p><p class="numbered">② can’t get enough of + 명사 — 아무리 즐겨도 질리지 않다</p><p class="numbered">③ feel + 명사 — 몸으로 ~을 느끼다</p></div><div class="blk"><p>한 문장으로 연결하면 이렇습니다.</p><p>모든 면에서 매력적인 상대의 몸짓에 빠지고(①), 리듬을 아무리 즐겨도 더 원하며(②), 가슴으로 비트를 느끼는(③) 노래입니다.</p><p>움직임을 시에 빗대며 억눌린 에너지를 풀어내자고 권하는 곡입니다.</p></div><div class="blk"><p>발음도 한 줄만</p><p class="bullet">· get enough → 게리너프 (모음 앞에서 이어 읽기)</p><p class="bullet">· in every way → 이네브리 웨이</p><p class="bullet">· chest → 첫소리는 ‘ㅊ’에 가까운 /tʃ/</p></div></section><section class="sec sec-pick"><h2>⭐ 오늘 딱 한 표현</h2><div class="blk"><p>하나만 고른다면 can’t get enough of입니다.</p><p>좋아하는 것을 영어로 말하는 연습은 프리토킹에서 가장 쉽게 대화를 여는 방법입니다.</p><p>I can’t get enough of… 한 문장 뒤에 이유 하나만 붙이면 1분 스피치가 됩니다.</p></div><div class="blk"><p class="en">YOUR TURN</p><p>아래 문장을 완성해 보세요.</p></div><div class="blk"><p class="en">I can’t get enough of ________ because ________.</p></div><div class="blk"><p>예를 들면,</p><p class="en">I can’t get enough of morning walks because they clear my head.</p><p>머리가 맑아져서 아침 산책은 아무리 해도 질리지 않아요.</p></div><div class="blk"><p>댓글에 여러분의 문장 하나 남겨주세요.</p><p>읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.</p></div></section><section class="sec sec-link"><h2>🔗 오늘 카드 바로 보기</h2><div class="blk"><p>발음 듣기 · 문장 암기 퀴즈 · 누적 복습 · 말하기 훈련까지 한 페이지에 담았습니다.</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/2026_11_12_move_your_body_sia.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/2026_11_12_move_your_body_sia.html</a></p></div><div class="blk"><p>게임으로 복습하기 (GMP Quest)</p><p class="url"><a href="https://can314eugene.github.io/GMP/cards/2026_11_12_move_your_body_sia_quest.html" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/cards/2026_11_12_move_your_body_sia_quest.html</a></p></div><div class="blk"><p>지난 카드 전체 보기</p><p class="url"><a href="https://can314eugene.github.io/GMP/" target="_blank" rel="noopener">https://can314eugene.github.io/GMP/</a></p></div><div class="blk"><p class="en">내일 아침에도 Good Morning Pops와 함께</p><p>하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.</p><p>매일 아침 5분, 영어 한 문장을 쌓아갑니다.</p></div></section>
+
+  <p class="tags">#GoodMorningPops #MoveYourBody #Sia #팝송영어</p>
+
+  <div class="copytitle">
+    <span class="lbl">블로그 제목</span>
+    <span class="val" id="post-title">[굿모닝팝스 26년 11월 12일] Move Your Body — Sia | in every way</span>
+  </div>
+</div>
+
+<div class="toast" id="toast">복사했습니다</div>
+<pre id="raw" hidden>제목: [굿모닝팝스 26년 11월 12일] Move Your Body — Sia | in every way
+
+🎧 Good Morning Pops
+Move Your Body — Sia
+
+이 글은 제가 만든 수업 카드를 바탕으로 AI의 도움을 받아 정리했습니다.
+
+오늘의 곡은 호주 싱어송라이터 Sia의 Move Your Body입니다.
+2016년 1월 29일 앨범 This Is Acting에 실린 곡으로, 2017년에는 따로 Single Mix가 나왔습니다.
+상대의 춤을 한 편의 시에 빗대고, 가슴으로 비트를 느끼며 억눌린 에너지를 풀어내라고 권하는 노래라 듣기만 해도 몸이 들썩입니다.
+
+🎥 오늘 노래 먼저 듣기
+https://www.youtube.com/watch?v=0GoGcVs6pbU
+
+오늘 방송 다시 보기
+https://www.youtube.com/watch?v=4lJ-iRirBrk
+
+그런데 오늘 챙겨갈 영어는 노래보다 훨씬 실용적입니다. 칭찬의 범위를 넓히고, 질리지 않을 만큼 좋아하는 것을 말하고, 몸으로 느끼는 감각을 표현하는 말들입니다.
+코플레이트 고양센터 업무 예문은 학습을 위해 가정한 상황입니다.
+
+오늘의 목표도 늘 똑같습니다.
+세 표현을 보고, 하나라도 내 문장으로 만들기.
+그럼 오늘의 GMP 영어 시작합니다.
+
+📌 오늘의 영어 ①
+in every way
+모든 면에서
+
+오늘 문장에서는:
+You got it in every way.
+→ 당신은 어느 면에서나 매력적이에요.
+
+여기서 it은 상대에게서 느끼는 매력을 가리킵니다. in every way는 칭찬이나 비교에 ‘빠짐없이 모든 면에서’라는 범위를 더해 줍니다.
+
+The new layout is better in every way.
+→ 새 배치가 모든 면에서 더 나아요.
+
+The new design meets our needs in every way.
+→ 새 설계가 모든 면에서 우리 요구에 맞아요.
+
+💡 사람을 칭찬할 때는 You’re amazing in every way.처럼 말하면 됩니다.
+
+새로 바꾼 휴대폰이 마음에 든다면 이렇게 말할 수 있습니다. &quot;This new phone is better in every way.&quot;
+
+📌 오늘의 영어 ②
+can’t get enough of + 명사
+아무리 즐겨도 질리지 않다
+
+오늘 문장에서는:
+I know you can&#x27;t get enough.
+→ 아무리 즐겨도 더 즐기고 싶다는 걸 알아요.
+
+불만이 아니라 ‘너무 좋아서 계속 더 원한다’는 뜻입니다. 무엇이 좋은지 밝힐 때는 뒤에 of + 명사를 붙입니다.
+
+Our team can&#x27;t get enough of this playlist.
+→ 우리 팀은 이 플레이리스트를 아무리 들어도 질리지 않아요.
+
+I can&#x27;t get enough of these sample cookies.
+→ 이 시식용 쿠키는 먹어도 먹어도 질리지 않아요.
+
+💡 좋아하는 음식, 음악, 활동에 두루 씁니다. 한국어의 ‘중독됐어요’와 비슷한 느낌으로 가볍게 쓸 수 있습니다.
+
+요즘 빠져 있는 드라마가 있다면 이렇게 말해 보세요. &quot;I can’t get enough of this show.&quot;
+
+📌 오늘의 영어 ③
+feel + 명사
+몸으로 ~을 느끼다
+
+오늘 문장에서는:
+Feel the beat in your chest.
+→ 가슴으로 비트를 느껴 봐요.
+
+beat는 음악의 박자입니다. feel 뒤에 리듬, 진동, 바람처럼 몸에 와닿는 감각을 두면 됩니다. in your chest가 어디에서 느끼는지를 구체적으로 보여 줍니다.
+
+Can you feel the airflow from this vent?
+→ 이 통풍구에서 나오는 바람이 느껴지나요?
+
+I can feel the vibration from here.
+→ 여기서도 진동이 느껴져요.
+
+💡 감각을 느낄 수 있는지 물을 때는 Can you feel…?, 지금 느껴진다고 할 때는 I can feel…로 말하면 자연스럽습니다.
+
+아침 산책길에 찬 공기가 느껴진다면 이렇게 말하면 됩니다. &quot;I can feel winter in the air.&quot;
+
+30초 복습
+
+① in every way — 모든 면에서
+② can’t get enough of + 명사 — 아무리 즐겨도 질리지 않다
+③ feel + 명사 — 몸으로 ~을 느끼다
+
+한 문장으로 연결하면 이렇습니다.
+모든 면에서 매력적인 상대의 몸짓에 빠지고(①), 리듬을 아무리 즐겨도 더 원하며(②), 가슴으로 비트를 느끼는(③) 노래입니다.
+움직임을 시에 빗대며 억눌린 에너지를 풀어내자고 권하는 곡입니다.
+
+발음도 한 줄만
+· get enough → 게리너프 (모음 앞에서 이어 읽기)
+· in every way → 이네브리 웨이
+· chest → 첫소리는 ‘ㅊ’에 가까운 /tʃ/
+
+⭐ 오늘 딱 한 표현
+하나만 고른다면 can’t get enough of입니다.
+좋아하는 것을 영어로 말하는 연습은 프리토킹에서 가장 쉽게 대화를 여는 방법입니다.
+I can’t get enough of… 한 문장 뒤에 이유 하나만 붙이면 1분 스피치가 됩니다.
+
+YOUR TURN
+아래 문장을 완성해 보세요.
+
+I can’t get enough of ________ because ________.
+
+예를 들면,
+I can’t get enough of morning walks because they clear my head.
+머리가 맑아져서 아침 산책은 아무리 해도 질리지 않아요.
+
+댓글에 여러분의 문장 하나 남겨주세요.
+읽는 것보다 내 문장으로 한 번 만들어 볼 때 훨씬 오래 갑니다.
+
+🔗 오늘 카드 바로 보기
+발음 듣기 · 문장 암기 퀴즈 · 누적 복습 · 말하기 훈련까지 한 페이지에 담았습니다.
+https://can314eugene.github.io/GMP/cards/2026_11_12_move_your_body_sia.html
+
+게임으로 복습하기 (GMP Quest)
+https://can314eugene.github.io/GMP/cards/2026_11_12_move_your_body_sia_quest.html
+
+지난 카드 전체 보기
+https://can314eugene.github.io/GMP/
+
+내일 아침에도 Good Morning Pops와 함께
+하루 세 표현, 그중 하나만 제대로 가져가도 성공입니다.
+매일 아침 5분, 영어 한 문장을 쌓아갑니다.
+
+#GoodMorningPops #MoveYourBody #Sia #팝송영어
+</pre>
+
+<script>
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},1600);
+}
+function put(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(msg);},function(){fallback(text,msg);});
+  } else { fallback(text,msg); }
+}
+function fallback(text,msg){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast(msg); }
+  catch(e){ toast('복사에 실패했어요. 길게 눌러 직접 선택해 주세요'); }
+  document.body.removeChild(ta);
+}
+function copyAll(){
+  var raw=document.getElementById('raw').textContent;
+  var body=raw.replace(/^제목:.*\n+/,'');
+  put(body,'본문을 복사했습니다');
+}
+function copyTitle(){
+  put(document.getElementById('post-title').textContent.trim(),'제목을 복사했습니다');
+}
+</script>
+</body>
+</html>
