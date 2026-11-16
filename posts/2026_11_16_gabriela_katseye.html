@@ -294,10 +294,11 @@ function richHtml(body){
   // 네이버 에디터에 붙였을 때 가사 세 문장만 초록색 굵게 남도록 줄마다 <p>로 만든다
   var lyrics=[];
   try{ lyrics=JSON.parse(document.getElementById('lyrics').textContent||'[]'); }catch(e){}
+  var prev='';
   return body.split('\n').map(function(l){
-    var t=l.trim();
+    var t=l.trim(), after=(prev==='오늘 문장에서는:'); prev=t;
     if(!t) return '<p>&nbsp;</p>';
-    if(lyrics.indexOf(t)>=0) return '<p><span style="color:#1E8E3E;font-weight:bold">'+esc(l)+'</span></p>';
+    if(after && lyrics.indexOf(t)>=0) return '<p><span style="color:#1E8E3E;font-weight:bold">'+esc(l)+'</span></p>';
     return '<p>'+esc(l)+'</p>';
   }).join('');
 }
