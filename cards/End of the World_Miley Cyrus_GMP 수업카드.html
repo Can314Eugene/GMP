@@ -1294,5 +1294,193 @@ if(document.readyState !== 'loading'){ renderQuiz(); rvRender('all'); }
 
 </script>
 <!-- GMP-TTS-FIX:end -->
+<script>
+/* ===== 문장 순서 맞추기 탭 (GMP WORD ORDER v1) =====
+   카드의 QUIZ_GROUPS(문장 암기 데이터)를 그대로 써서
+   '✏️ 문장 암기' 탭 바로 옆에 '🧩 문장 순서' 탭을 붙인다.
+   카드 원본은 건드리지 않고, 사이트에 올릴 때 build_site.py가 끼워 넣는다. */
+(function(){
+  if(window.__gmpWordOrder) return;
+  window.__gmpWordOrder = true;
+
+  function ready(fn){
+    if(document.readyState !== 'loading') fn();
+    else document.addEventListener('DOMContentLoaded', fn);
+  }
+
+  ready(function(){
+    var groups;
+    try { groups = QUIZ_GROUPS; } catch(e){ return; }
+    if(!groups || !groups.length) return;
+
+    var items = [];
+    groups.forEach(function(g){ (g.items || []).forEach(function(it){
+      if(it && it.en && it.ko) items.push({ en: it.en, ko: it.ko });
+    }); });
+    if(!items.length) return;
+
+    var quizBtn = null;
+    document.querySelectorAll('.tab-row .tab').forEach(function(b){
+      if((b.getAttribute('onclick') || '').indexOf("'quiz'") >= 0) quizBtn = b;
+    });
+    var quizPanel = document.getElementById('panel-quiz');
+    if(!quizBtn || !quizPanel || document.getElementById('panel-order')) return;
+
+    /* --- 스타일 --- */
+    var css = document.createElement('style');
+    css.textContent = [
+      '.wo-card{background:#fff;border-radius:16px;padding:22px 20px;border:1px solid rgba(0,0,0,.08)}',
+      '.wo-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#888;font-weight:600;margin-bottom:6px}',
+      '.wo-title{font-size:20px;font-weight:800;color:#1F2A37;margin:0 0 16px}',
+      '.wo-ask{display:flex;align-items:center;gap:10px;margin-bottom:6px}',
+      '.wo-bird{font-size:44px;line-height:1}',
+      '.wo-bubble{position:relative;flex:1;border:2px solid #E5E5E5;border-radius:16px;padding:12px 14px;font-size:16px;font-weight:700;color:#1F2A37;background:#fff}',
+      '.wo-bubble:before{content:"";position:absolute;left:-10px;top:50%;margin-top:-8px;border:8px solid transparent;border-right-color:#E5E5E5;border-left:0}',
+      '.wo-answer{min-height:92px;border-bottom:2px solid #E5E5E5;display:flex;flex-wrap:wrap;align-content:flex-end;gap:8px;padding:14px 0 10px;margin-bottom:18px}',
+      '.wo-bank{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;min-height:52px}',
+      '.wo-chip{font:inherit;font-size:16px;font-weight:700;color:#3C3C3C;background:#fff;border:2px solid #E5E5E5;border-bottom-width:4px;border-radius:14px;padding:9px 15px;cursor:pointer}',
+      '.wo-chip:active{transform:translateY(2px);border-bottom-width:2px}',
+      '.wo-chip.used{visibility:hidden}',
+      '.wo-answer .wo-chip{background:#F7F7F7}',
+      '.wo-note{text-align:center;font-size:13px;color:#888;margin-top:14px}',
+      '.wo-result{display:none;margin-top:16px;border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.6}',
+      '.wo-result.ok{display:block;background:#E8F5EC;color:#1E6B34}',
+      '.wo-result.no{display:block;background:#FDECEC;color:#9B2C2C}',
+      '.wo-result b{display:block;font-size:16px}',
+      '.wo-actions{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}',
+      '.wo-btn{font:inherit;font-size:14px;font-weight:700;border-radius:999px;padding:9px 16px;cursor:pointer;border:1px solid #CABE9B;background:#fff;color:#454E3E}',
+      '.wo-btn.main{background:#58A700;border-color:#58A700;color:#fff}',
+      '.wo-score{text-align:center;font-size:13px;color:#666;margin-top:10px}'
+    ].join('\n');
+    document.head.appendChild(css);
+
+    /* --- 탭 버튼 · 패널 --- */
+    var btn = document.createElement('button');
+    btn.className = 'tab';
+    btn.textContent = '🧩 문장 순서';
+    btn.setAttribute('onclick', "showTab('order',this)");
+    quizBtn.parentNode.insertBefore(btn, quizBtn.nextSibling);
+
+    var panel = document.createElement('div');
+    panel.id = 'panel-order';
+    panel.className = 'panel';
+    panel.innerHTML =
+      '<div class="song-hd"><div class="song-icon">🧩</div><div>' +
+      '<h2>문장 순서 맞추기</h2><p>단어를 순서대로 눌러 오늘의 문장을 완성하세요</p></div></div>' +
+      '<div class="wo-card">' +
+        '<div class="wo-top"><span>문장 만들기</span><span id="wo-count"></span></div>' +
+        '<p class="wo-title">이 문장을 영어로 만들어 보세요</p>' +
+        '<div class="wo-ask"><div class="wo-bird">🦜</div><div class="wo-bubble" id="wo-ko"></div></div>' +
+        '<div class="wo-answer" id="wo-answer"></div>' +
+        '<div class="wo-bank" id="wo-bank"></div>' +
+        '<p class="wo-note" id="wo-note"></p>' +
+        '<div class="wo-result" id="wo-result"></div>' +
+        '<div class="wo-actions" id="wo-actions"></div>' +
+        '<p class="wo-score" id="wo-score"></p>' +
+      '</div>';
+    quizPanel.parentNode.insertBefore(panel, quizPanel.nextSibling);
+
+    /* --- 문제 만들기 --- */
+    function words(s){
+      return s.replace(/[.,!?]+$/,'').split(/\s+/).map(function(w){ return w.replace(/[.,!?]+$/,''); }).filter(Boolean);
+    }
+    function norm(w){ return w.toLowerCase().replace(/[’]/g,"'"); }
+    function shuffle(a){
+      for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+      return a;
+    }
+    var pool = [];
+    items.forEach(function(it){ words(it.en).forEach(function(w){ pool.push(w); }); });
+
+    var idx = 0, picked = [], solved = {}, tries = {};
+    var elKo = panel.querySelector('#wo-ko'), elAns = panel.querySelector('#wo-answer'),
+        elBank = panel.querySelector('#wo-bank'), elNote = panel.querySelector('#wo-note'),
+        elRes = panel.querySelector('#wo-result'), elAct = panel.querySelector('#wo-actions'),
+        elCount = panel.querySelector('#wo-count'), elScore = panel.querySelector('#wo-score');
+
+    function speak(text){
+      if(!window.speechSynthesis) return;
+      try { speechSynthesis.cancel(); } catch(e){}
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; u.rate = 0.9;
+      speechSynthesis.speak(u);
+    }
+
+    function render(){
+      var it = items[idx], target = words(it.en);
+      var mine = target.map(norm);
+      var extra = shuffle(pool.filter(function(w){ return mine.indexOf(norm(w)) < 0; })
+        .filter(function(w, i, a){ return a.map(norm).indexOf(norm(w)) === i; })).slice(0, Math.min(3, Math.max(2, Math.round(target.length / 2))));
+      var bank = shuffle(target.concat(extra).map(function(w, i){ return { w: w, id: i }; }));
+      picked = [];
+      elCount.textContent = (idx + 1) + ' / ' + items.length;
+      elKo.textContent = it.ko;
+      elRes.className = 'wo-result'; elRes.innerHTML = '';
+      elAct.innerHTML = '';
+      elAns.innerHTML = '';
+      elBank.innerHTML = '';
+      bank.forEach(function(b){
+        var c = document.createElement('button');
+        c.className = 'wo-chip'; c.textContent = b.w;
+        c.onclick = function(){
+          if(c.classList.contains('used') || elRes.className !== 'wo-result') return;
+          c.classList.add('used');
+          var a = document.createElement('button');
+          a.className = 'wo-chip'; a.textContent = b.w;
+          a.onclick = function(){
+            if(elRes.className !== 'wo-result') return;
+            picked.splice(picked.indexOf(a), 1); a.remove(); c.classList.remove('used'); note();
+          };
+          a._w = b.w;
+          picked.push(a); elAns.appendChild(a); note();
+          if(picked.length === target.length) grade();
+        };
+        elBank.appendChild(c);
+      });
+      note(); score();
+    }
+
+    function note(){
+      var n = words(items[idx].en).length;
+      elNote.textContent = picked.length + ' / ' + n + '개 선택 · 마지막 단어를 누르면 바로 채점해요';
+    }
+
+    function grade(){
+      var it = items[idx];
+      var ok = picked.map(function(a){ return norm(a._w); }).join(' ') === words(it.en).map(norm).join(' ');
+      tries[idx] = (tries[idx] || 0) + 1;
+      if(ok){
+        solved[idx] = true;
+        elRes.className = 'wo-result ok';
+        elRes.innerHTML = '<b>정답이에요!</b>' + it.en;
+        speak(it.en);
+      } else {
+        elRes.className = 'wo-result no';
+        elRes.innerHTML = '<b>아쉬워요. 정답은 이 문장이에요.</b>' + it.en;
+      }
+      elAct.innerHTML = '';
+      addBtn('🔊 듣기', '', function(){ speak(it.en); });
+      if(!ok) addBtn('다시 해 보기', '', render);
+      if(idx < items.length - 1) addBtn('다음 문장 →', 'main', function(){ idx++; render(); });
+      else addBtn('처음부터 다시', 'main', function(){ idx = 0; solved = {}; tries = {}; render(); });
+      score();
+    }
+
+    function addBtn(label, cls, fn){
+      var b = document.createElement('button');
+      b.className = 'wo-btn ' + cls; b.textContent = label; b.onclick = fn;
+      elAct.appendChild(b);
+    }
+
+    function score(){
+      var n = Object.keys(solved).length;
+      elScore.textContent = '맞힌 문장 ' + n + ' / ' + items.length;
+    }
+
+    render();
+  });
+})();
+
+</script>
 </body>
 </html>
