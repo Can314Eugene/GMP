@@ -114,6 +114,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .tile.placed.ok,.chip.ok{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
 .tile.placed.no,.chip.no{border-color:var(--red);background:var(--red-l);color:var(--red-d)}
 .tile-count{margin-top:12px;text-align:center;font-size:13px;color:var(--sub)}
+.order-hint{margin:0 0 10px;border:1px solid var(--gray);border-radius:12px;background:#f7fbff;color:var(--text)}
+.order-hint summary{padding:10px 14px;cursor:pointer;font-size:14px;font-weight:800}
+.order-hint-body{padding:0 14px 12px;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
+.order-hint-btn{margin-top:8px;min-height:36px;padding:5px 10px;border:1px solid var(--blue-d);border-radius:8px;color:#125777;font-size:13px;font-weight:800;background:#fff}
+.order-hint-btn:disabled{opacity:.6}
+.order-hint-result:not(:empty){margin-top:6px;font-weight:700;color:#125777}
 .typebox{width:100%;min-height:110px;border:2px solid var(--gray);border-radius:14px;padding:14px;font-size:18px;font-family:inherit;resize:none;outline:none;background:#F7F7F7;color:var(--text)}
 .typebox[type="text"]{min-height:54px}
 .typebox:focus{border-color:var(--blue);background:#fff}
@@ -385,19 +391,22 @@ var LESSON_DATA = {
       "id": "s1",
       "en": "I only wish you the best.",
       "ko": "난 그저 당신에게 좋은 일만 가득하길 바라요.",
-      "tip": "wish + 사람 + the best는 그 사람에게 좋은 일만 있길 바란다는 뜻이에요."
+      "tip": "wish + 사람 + the best는 그 사람에게 좋은 일만 있길 바란다는 뜻이에요.",
+      "orderHint": "주어 → only + 바란다는 동사 → 누구에게 → 무엇을"
     },
     {
       "id": "s2",
       "en": "You were everything I need all along.",
       "ko": "당신은 내가 처음부터 줄곧 필요로 했던 전부였어요.",
-      "tip": "all along은 처음부터 줄곧이라는 뜻이에요. 방송에서는 가사의 need와, 과거를 돌아보는 연습 문장 all I needed를 함께 익혔어요."
+      "tip": "all along은 처음부터 줄곧이라는 뜻이에요. 방송에서는 가사의 need와, 과거를 돌아보는 연습 문장 all I needed를 함께 익혔어요.",
+      "orderHint": "주어 → 과거 be동사 → everything + 무엇이 필요했는지 → 처음부터 줄곧"
     },
     {
       "id": "s3",
       "en": "I can't help but notice.",
       "ko": "알아차릴 수밖에 없네요.",
-      "tip": "can’t help but 뒤에는 동사원형이 와요. notice 뒤에 눈에 띈 사실을 이어 말할 수 있습니다."
+      "tip": "can’t help but 뒤에는 동사원형이 와요. notice 뒤에 눈에 띈 사실을 이어 말할 수 있습니다.",
+      "orderHint": "주어 → can’t help but → 동사원형"
     }
   ],
   "examples": [
@@ -406,63 +415,72 @@ var LESSON_DATA = {
       "en": "I wish you all the best in Seoul.",
       "ko": "서울에서 좋은 일만 가득하길 바라요.",
       "tip": "wish you all the best는 전근이나 새 출발을 앞둔 사람에게 건넬 수 있어요.",
-      "g": 1
+      "g": 1,
+      "orderHint": "주어 → wish → 누구에게 → 바라는 것 → 장소"
     },
     {
       "id": "e2",
       "en": "I hope your first day goes well.",
       "ko": "첫날이 순조롭게 지나가길 바라요.",
       "tip": "goes well은 일이 순조롭게 진행된다는 뜻이에요.",
-      "g": 1
+      "g": 1,
+      "orderHint": "주어 → hope → 바라는 일의 주어(첫날) → 순조롭게 진행되다"
     },
     {
       "id": "e3",
       "en": "Best of luck with your new role.",
       "ko": "새 역할에서 좋은 일 가득하길 바라요.",
       "tip": "업무 메신저에서 짧게 응원할 때 쓸 수 있어요.",
-      "g": 1
+      "g": 1,
+      "orderHint": "행운을 비는 짧은 인사 → with + 새 역할"
     },
     {
       "id": "e4",
       "en": "This was the checklist we needed all along.",
       "ko": "처음부터 우리에게 필요했던 목록이 바로 이거였어요.",
       "tip": "all along은 뒤늦게 알게 된 사실이 처음부터 그랬다고 말할 때도 써요.",
-      "g": 2
+      "g": 2,
+      "orderHint": "주어 + was → 목록 → 누가 필요로 했는지 → 처음부터 줄곧"
     },
     {
       "id": "e5",
       "en": "The discrepancy was in the same row all along.",
       "ko": "수량 차이는 줄곧 같은 행에 있었어요.",
       "tip": "in the same row는 표의 같은 가로줄에 있다는 뜻이에요.",
-      "g": 2
+      "g": 2,
+      "orderHint": "수량 차이 + was → 위치 → 처음부터 줄곧"
     },
     {
       "id": "e6",
       "en": "We had the updated schedule all along.",
       "ko": "우리에겐 처음부터 수정된 일정표가 있었어요.",
       "tip": "all along은 ‘알고 보니 처음부터’라는 뉘앙스를 줄 수 있어요.",
-      "g": 2
+      "g": 2,
+      "orderHint": "주어 → had → 가지고 있던 것 → 처음부터 줄곧"
     },
     {
       "id": "e7",
       "en": "I can't help but notice the change in volume.",
       "ko": "물량이 달라진 게 눈에 띄네요.",
       "tip": "notice 뒤에 눈에 띈 대상인 the change를 붙였어요.",
-      "g": 3
+      "g": 3,
+      "orderHint": "주어 → can’t help but → 알아차리다 → 눈에 띈 변화"
     },
     {
       "id": "e8",
       "en": "I noticed that two labels had the same number.",
       "ko": "라벨 두 장의 번호가 같다는 걸 알아챘어요.",
       "tip": "업무에서 관찰한 사실을 담담히 전달할 때 I noticed that …를 쓸 수 있어요.",
-      "g": 3
+      "g": 3,
+      "orderHint": "주어 → 알아차렸다 → that + 무엇이 같았는지"
     },
     {
       "id": "e9",
       "en": "I couldn’t help noticing the missing date.",
       "ko": "날짜가 빠진 게 눈에 띄었어요.",
       "tip": "couldn’t help + -ing로 과거에 자연히 눈에 들어온 일을 말해요.",
-      "g": 3
+      "g": 3,
+      "orderHint": "주어 → couldn’t help → -ing 동작 → 눈에 띈 대상"
     }
   ],
   "challenges": [
@@ -477,7 +495,8 @@ var LESSON_DATA = {
         "smooth",
         "started",
         "ending"
-      ]
+      ],
+      "orderHint": "주어 → hope + 바라는 상황 → when + 시작하는 상황"
     },
     {
       "id": "l2c2",
@@ -490,7 +509,8 @@ var LESSON_DATA = {
         "leave",
         "roles",
         "good"
-      ]
+      ],
+      "orderHint": "주어 + wanted to → wish + 사람 + well → before + 떠난 일"
     },
     {
       "id": "l3c1",
@@ -503,7 +523,8 @@ var LESSON_DATA = {
         "has",
         "alongside",
         "wrong"
-      ]
+      ],
+      "orderHint": "It turns out → 누가 무엇을 갖고 있었는지 → 처음부터 줄곧"
     },
     {
       "id": "l3c2",
@@ -516,7 +537,8 @@ var LESSON_DATA = {
         "has",
         "looked",
         "sharing"
-      ]
+      ],
+      "orderHint": "파일 + 우리가 찾던(주어 덩어리) → had been → 장소 → 처음부터 줄곧"
     },
     {
       "id": "l4c1",
@@ -529,7 +551,8 @@ var LESSON_DATA = {
         "heaviest",
         "is",
         "usually"
-      ]
+      ],
+      "orderHint": "주어 + couldn’t help + -ing → that + 주어 + 비교급 + than usual"
     },
     {
       "id": "l4c2",
@@ -542,7 +565,8 @@ var LESSON_DATA = {
         "doesn’t",
         "date",
         "matched"
-      ]
+      ],
+      "orderHint": "주어 + can’t help but + 동사원형 → that + 날짜 + 일치하지 않다"
     },
     {
       "id": "l5c1",
@@ -558,7 +582,8 @@ var LESSON_DATA = {
       ],
       "alternatives": [
         "I just wanted to wish you all the best before you head to Busan."
-      ]
+      ],
+      "orderHint": "Before + 떠나는 일정 → 주어 + just wanted to → wish + 사람 + 응원 인사"
     },
     {
       "id": "l5c2",
@@ -571,7 +596,8 @@ var LESSON_DATA = {
         "needing",
         "front",
         "instruction"
-      ]
+      ],
+      "orderHint": "지침 + 필요했던(주어 덩어리) → 과거 be동사 → 라벨 뒷면 → 처음부터 줄곧"
     },
     {
       "id": "l5c3",
@@ -584,7 +610,8 @@ var LESSON_DATA = {
         "opening",
         "is",
         "cartons"
-      ]
+      ],
+      "orderHint": "While + -ing → 주어 + noticed → that + 상자 + had been + 과거분사"
     },
     {
       "id": "l5c4",
@@ -597,7 +624,8 @@ var LESSON_DATA = {
         "wishing",
         "their",
         "successfully"
-      ]
+      ],
+      "orderHint": "Could + 주어 → let + 거래처 + know → that + 우리가 바라는 것"
     },
     {
       "id": "l5c5",
@@ -610,7 +638,8 @@ var LESSON_DATA = {
         "following",
         "can",
         "need"
-      ]
+      ],
+      "orderHint": "What + 처음부터 필요했던 일 → was → 점검 목록 + 누구나 따를 수 있는"
     },
     {
       "id": "l5c6",
@@ -623,7 +652,8 @@ var LESSON_DATA = {
         "beginning",
         "has",
         "good"
-      ]
+      ],
+      "orderHint": "주어 + noticed → that + 물품 + had been + 과거분사 → before + 수량을 센 일"
     },
     {
       "id": "l5c7",
@@ -636,7 +666,8 @@ var LESSON_DATA = {
         "good",
         "suiting",
         "suited"
-      ]
+      ],
+      "orderHint": "주어 + hope → 인수인계가 잘되다 → and → 새 역할이 잘 맞다"
     },
     {
       "id": "l5c8",
@@ -649,7 +680,8 @@ var LESSON_DATA = {
         "do",
         "reviewing",
         "signed"
-      ]
+      ],
+      "orderHint": "Only after + 검토한 일 → did + 주어 + 동사원형 → 발견한 것"
     },
     {
       "id": "l6c1",
@@ -662,7 +694,8 @@ var LESSON_DATA = {
         "will",
         "wishing",
         "soonest"
-      ]
+      ],
+      "orderHint": "Had + 주어 + 과거분사 → 떠나는 상황 → 주어 + would have + 과거분사"
     },
     {
       "id": "l6c2",
@@ -675,7 +708,8 @@ var LESSON_DATA = {
         "ending",
         "have",
         "does"
-      ]
+      ],
+      "orderHint": "Not until + 감사 종료 → did + 주어 + 동사원형 → 처음부터 알고 있던 사실"
     },
     {
       "id": "l6c3",
@@ -688,7 +722,8 @@ var LESSON_DATA = {
         "notice",
         "was",
         "more"
-      ]
+      ],
+      "orderHint": "주어 + couldn’t help + -ing → that + fewer + 셀 수 있는 명사 → 비교 대상"
     },
     {
       "id": "l6c4",
@@ -701,7 +736,8 @@ var LESSON_DATA = {
         "wishes",
         "successful",
         "gone"
-      ]
+      ],
+      "orderHint": "Even though + 아쉬운 마음 → 주어 → wish + 상대 + 바라는 것"
     },
     {
       "id": "l6c5",
@@ -717,7 +753,8 @@ var LESSON_DATA = {
       ],
       "alternatives": [
         "If nobody had noticed the missing label, the shipment would have been delayed."
-      ]
+      ],
+      "orderHint": "주어 + would have been + 과거분사 → if + 주어 + had + 과거분사"
     },
     {
       "id": "l6c6",
@@ -730,7 +767,8 @@ var LESSON_DATA = {
         "were",
         "have",
         "these"
-      ]
+      ],
+      "orderHint": "What + 몰랐던 것 → was → that + 답 + had been + 장소 + 처음부터 줄곧"
     },
     {
       "id": "l6c7",
@@ -743,7 +781,8 @@ var LESSON_DATA = {
         "are",
         "wish",
         "sends"
-      ]
+      ],
+      "orderHint": "By + 미래 시점 → 주어 + will have + 과거분사 → 보낼 것 → 대상"
     },
     {
       "id": "l6c8",
@@ -756,7 +795,8 @@ var LESSON_DATA = {
         "wandering",
         "has",
         "figure"
-      ]
+      ],
+      "orderHint": "주어 + can’t help but + 동사원형 → whether + 무엇이 맞았는지 → 처음부터 줄곧"
     },
     {
       "id": "l6c9",
@@ -772,7 +812,8 @@ var LESSON_DATA = {
       ],
       "alternatives": [
         "Make sure you've included the whole team before you send the farewell message."
-      ]
+      ],
+      "orderHint": "Before + 발송할 일 → make sure → 포함했는지 확인할 대상"
     },
     {
       "id": "l6c10",
@@ -785,7 +826,8 @@ var LESSON_DATA = {
         "shows",
         "appear",
         "reports"
-      ]
+      ],
+      "orderHint": "I wish → 주어 + had + 과거분사 → 알아챈 대상 → before + 나타난 일"
     }
   ],
   "vocab": [
@@ -981,7 +1023,7 @@ function exWordOrder(sent, listen){
     type: listen ? 'listen' : 'tiles',
     title: listen ? '들리는 대로 문장을 만들어 보세요' : '이 문장을 영어로 만들어 보세요',
     text:sent.ko, tiles:shuffle(w.concat(extra)), en:sent.en, ko:sent.ko, answerWords:w, tip:sent.tip,
-    alternatives:listen ? [] : sent.alternatives
+    alternatives:listen ? [] : sent.alternatives, orderHint:sent.orderHint
   };
 }
 function exBlank(sent){ // 빈칸 (칩 선택)
@@ -1211,6 +1253,10 @@ function renderExercise(){
     } else {
       h += '<div class="mascot-row"><div class="mascot">🦜</div><div class="bubble">'+esc(ex.text)+'</div></div>';
     }
+    var structure = ex.orderHint || '먼저 문장의 첫 덩어리를 잡고, 동작과 그 대상을 이어 보세요. 시간이나 조건을 나타내는 덩어리도 찾아보세요.';
+    h += '<details class="order-hint"><summary>💡 어순 힌트</summary><div class="order-hint-body"><p>'+esc(structure)+'</p>'+
+      '<button class="order-hint-btn" id="order-hint-btn" onclick="showNextWordHint()">다음 단어 힌트</button>'+
+      '<p class="order-hint-result" id="order-hint-result" role="status" aria-atomic="true"></p></div></details>';
     h += '<div class="answer-line'+(ex.tiles.length>7?' two':'')+'" id="ans-line"></div>';
     h += '<div class="tiles" id="tiles">'+ex.tiles.map(function(t,i){ return '<button class="tile" id="tile'+i+'" onclick="tapTile('+i+')">'+esc(t)+'</button>'; }).join('')+'</div>';
     h += '<p class="tile-count"><span id="tile-count">0 / '+ex.answerWords.length+'</span>개 선택 · 마지막 단어를 누르면 바로 채점해요</p>';
@@ -1276,6 +1322,25 @@ function selChip(i){
 }
 function updateTileCount(ex){
   document.getElementById('tile-count').textContent=G.answer.length+' / '+ex.answerWords.length;
+  document.getElementById('order-hint-result').textContent='';
+}
+function showNextWordHint(){
+  if(!canAnswer()) return;
+  var ex = currentEx();
+  var placed = G.answer.map(function(i){ return norm(ex.tiles[i]); });
+  var paths = [ex.answerWords].concat((ex.alternatives || []).map(words));
+  var matched = 0, nextWord = '';
+  paths.forEach(function(path){
+    var prefix = 0;
+    while(prefix<placed.length && placed[prefix]===norm(path[prefix])) prefix++;
+    if(!nextWord || prefix>matched){
+      matched = prefix;
+      nextWord = path[prefix];
+    }
+  });
+  document.getElementById('order-hint-result').textContent = matched<placed.length
+    ? (matched+1)+'번째 단어부터 살펴보세요. 이 자리에 올 수 있는 단어는 '+nextWord+'입니다.'
+    : '다음 단어 · '+nextWord;
 }
 function tapTile(i){
   if(!canAnswer()) return;
@@ -1386,7 +1451,7 @@ function grade(ok, note, isSpeak){
   G.graded = true;
   var ex=currentEx(); stopSpeak();
   var fb=document.getElementById('feedback');
-  document.querySelectorAll('#ex .opt, #ex .chip, #ex .tile, #ex .mt, #ex #typebox, #ex .speak-box button').forEach(function(el){
+  document.querySelectorAll('#ex .opt, #ex .chip, #ex .tile, #ex .mt, #ex #typebox, #ex .speak-box button, #ex .order-hint-btn').forEach(function(el){
     el.disabled=true;
   });
   var gain = 0;
